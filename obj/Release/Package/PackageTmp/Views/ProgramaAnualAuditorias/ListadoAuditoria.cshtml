@@ -1,0 +1,121 @@
+﻿@model IEnumerable<SAG2.Models.ProgramaAnualAuditorias>
+@{
+      SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    ViewBag.Title = "Auditorías / Programa Anual";
+    var ProyectoSelected = (SAG2.Models.Proyecto)Session["Proyecto"];
+}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".js-autocomplete").select2();
+    });
+</script>
+<div class="permisos" style="width: 800px;">
+
+<h2 align="center">Programa Anual de Auditorías Administrativas y Contables</h2>
+
+@using (Html.BeginForm())
+{
+
+    <div class="form-group form-inline"  style="margin-top: 20px;">
+        <div class="form-group">
+       Proyecto
+    </div>
+    <div class="form-group">
+        <select name="ProyectoID" id="ProyectoID"  class="js-autocomplete" style="width: 300px;">
+            <option value="0" > - Seleccione proyecto</option>
+            @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            { 
+            <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+            }
+        </select>
+    </div>
+        <div class="form-group" style="margin-left: 30px;">
+      Auditor
+    </div>
+    <div class="form-group">
+        <select name="PersonaID" id="PersonaID"  class="js-autocomplete" style="width: 300px;">
+            <option  value="0"> - Seleccione Auditor</option>
+            @foreach (SAG2.Models.Persona Pers in ViewBag.PersonaID)
+            { 
+            <option value="@Pers.ID">@Pers.NombreCompleto </option>
+            }
+        </select>
+    </div>
+
+
+</div>
+    <div class="form-group">
+              <input type="submit" value="Buscar" class="btn btn-success" />
+              </div>
+      
+
+
+}
+
+<table class="table table-bordered table-striped">
+    <tr>
+         <th>
+            Supervisor 
+        </th>
+        <th>
+            Proyecto
+        </th>
+
+        <th>
+            Aud. N°
+        </th>
+        <th>
+            Fecha Estimada
+        </th>
+        <th>
+            Fecha Informe
+        </th>
+      
+        <th></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+                <td>
+                     @Html.DisplayFor(modelItem => item.Auditor.NombreCompleto)
+            
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Proyecto.Nombre)
+        </td>
+
+        <td align="center">
+            @try
+            {
+                @Html.Raw(@item.Informe.ID.ToString());
+            }
+            catch (Exception)
+            { }
+        </td>
+        <td align="center">
+            @item.FechaProgramada.ToShortDateString()
+        </td>
+        <td align="center">
+            @if (item.FechaReal != null && item.FechaReal.Value != null)
+            {
+                @item.FechaReal.Value;
+            }
+            else
+            { 
+                @Html.Raw("Informe no realizado.");
+            }
+        </td>
+
+        <td style="width: 40px;">
+        @if (@item.Informe != null)
+        {
+            <input type="button" value="Ver reporte" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Auditorias/ReporteIndividual?Informe=@item.Informe.ID&Programa=@item.ID';" class="btn btn-default" />
+        }
+        </td>
+    </tr>
+}
+
+</table>
+
+</div>

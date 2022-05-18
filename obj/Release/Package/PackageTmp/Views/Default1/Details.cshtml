@@ -1,0 +1,20 @@
+﻿@model SAG2.Models.Objetivo
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Objetivo</legend>
+
+    <div class="display-label">Descripcion</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Descripcion)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ObjetivoID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

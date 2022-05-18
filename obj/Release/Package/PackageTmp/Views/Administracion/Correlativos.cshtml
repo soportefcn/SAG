@@ -1,0 +1,148 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Correlativos";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    SAG2.Classes.Constantes ctes = new SAG2.Classes.Constantes();
+}
+<div class="permisos">
+@using (Html.BeginForm())
+{
+<h2>Correlativos</h2>
+@Html.Raw(@ViewBag.Mensaje)
+<table class="table table-hover table-bordered">
+    <tr>
+        <th style="width: 80px;">Proyecto</th>
+        <th style="width: 70px;">Estado</th>
+        <th style="width: 70px;">Ingreso</th>
+        <th style="width: 70px;">Egreso</th>
+        <th style="width: 70px;">Reintegro</th>
+        <th style="width: 70px;">Deudas</th>
+        <th style="width: 70px;">Saldo</th>
+        <th width="100px;">Acciones</th>
+    </tr>
+    @foreach (var Proyecto in Model)
+    {
+        int rvigente = 1;
+        DateTime fecha = DateTime.Now;
+        try
+        {
+            DateTime fecha2 = db.Resolucion.Where(p => p.ProyectoID == Proyecto.ID && p.Estado == 1).Single().FechaProrroga;
+
+            if (fecha > fecha2)
+            {
+                rvigente = 0;
+            }
+
+        }
+        catch (Exception)
+        {
+            rvigente = 0;
+        }
+        if (rvigente == 1)
+        {
+
+            var CuentaCorrienteID = 0;
+            try
+            {
+                CuentaCorrienteID = db.CuentaCorriente.Where(c => c.ProyectoID == Proyecto.ID).Single().ID;
+            }
+            catch (Exception)
+            { }
+    <tr>
+        <td>@Proyecto.NombreLista</td>
+        <td>
+            @if (@Proyecto.estaCerrado)
+            {
+                <span class="label label-default">Cerrado</span>
+            }
+            else if (@Proyecto.estaEliminado)
+            {
+                <span class="label label-danger">Eliminado</span>
+            }
+            else
+            {
+                <span class="label label-success">Abierto</span>
+            }
+        </td>
+        @if (!@Proyecto.estaCerrado && !@Proyecto.estaEliminado)
+        {
+            int ingreso = 0;
+            try
+            {
+                ingreso = db.Movimiento.Where(i => i.TipoComprobanteID == ctes.tipoIngreso && i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            { }
+
+            int egreso = 0;
+            try
+            {
+                egreso = db.Movimiento.Where(i => i.TipoComprobanteID == ctes.tipoEgreso && i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            { }
+
+            int reintegro = 0;
+            try
+            {
+                reintegro = db.Movimiento.Where(i => i.TipoComprobanteID == ctes.tipoReintegro && i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            { }
+
+            int deuda = 0;
+            try
+            {
+                deuda = db.DeudaPendiente.Where(i => i.ProyectoID == Proyecto.ID).OrderByDescending(i => i.ID).Take(1).Single().NumeroComprobante;
+            }
+            catch (Exception)
+            { }
+
+            int monto = 0;
+            try
+            {
+                monto = db.Saldo.Where(i => i.CuentaCorrienteID == CuentaCorrienteID).OrderByDescending(i => i.ID).Take(1).Single().SaldoFinal;
+            }
+            catch (Exception)
+            { }
+
+        <td align="center"><input type="text" style="text-align: right;" value="@ingreso" size="3" class="@Html.Raw("ingreso_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@egreso" size="3" class="@Html.Raw("egreso_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@reintegro" size="3" class="@Html.Raw("reintegro_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@deuda" size="3" class="@Html.Raw("deuda_" + @Proyecto.ID)" /></td>
+        <td align="center"><input type="text" style="text-align: right;" value="@monto" size="7" class="@Html.Raw("monto_" + @Proyecto.ID)" /></td>
+        <td>
+            <div class="form-inline">
+                  <a  data-toggle="tooltip" data-placement="top" title="Cerrar "  class="btn btn-warning proyecto_cerrar" proyecto="@Proyecto.ID" >
+                  <span class ="fa fa-times"></span>
+                 </a>
+                  <a  data-toggle="tooltip" data-placement="top" title="Eliminar"  class="btn btn-danger proyecto_eliminar" proyecto="@Proyecto.ID" >
+                  <span class ="fa fa-trash "></span>
+                 </a>
+                  <a  data-toggle="tooltip" data-placement="top" title="Reiniciar"  class="btn btn-info proyecto_reiniciar" proyecto="@Proyecto.ID" >
+                  <span class ="fa fa-refresh  "></span>
+                 </a>
+                
+                 <a  data-toggle="tooltip" data-placement="top" title="Reiniciar Saldo"  class="btn btn-default proyecto_saldo" proyecto="@Proyecto.ID" >
+                  <span class ="fa fa-refresh  "></span>
+                 </a>
+                
+            </div>   
+        </td>
+        }
+        else
+        {
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        }
+    </tr>
+        }
+    }
+</table>
+}
+</div>

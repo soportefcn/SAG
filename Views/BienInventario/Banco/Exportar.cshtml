@@ -1,0 +1,386 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@using SAG2.Models;
+@{
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+    
+    Layout = null;
+    ViewBag.Title = "Conciliación Bancaria";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.ContentEncoding = System.Text.Encoding.UTF8;
+    Response.AddHeader("Content-Disposition", "attachment;filename=Conciliacion.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    int cantidad = 18;
+    var Saldo = 0;
+    if (@ViewBag.SaldoInicial != null && !@ViewBag.SaldoInicial.Equals("0"))
+    {
+        Saldo = Int32.Parse(@ViewBag.SaldoInicial.ToString());
+    }
+    int chequesTotal = 0;
+    int PeriodoSeleccionado = (int)@ViewBag.periodo;
+    int mesSeleccionado = (int)@ViewBag.mes;
+    CuentaCorriente CuentaCorriente = (CuentaCorriente)@ViewBag.cuentaCorriente;
+    Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+
+    var itemp = Model.Where(i => i.TipoComprobanteID == 2).ToList();
+
+    foreach (var item in itemp)
+    {
+        List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+        foreach (var detalle in detalles)
+        {
+            bool conciliado = false;
+            bool salto = true;
+
+            try
+            {
+                int detalleID = detalle.ID;
+                SAG2.Models.ConciliacionRegistro cr = db.ConciliacionRegistro.Where(c => c.DetalleID == detalleID).Single();
+
+                if (cr.Fecha != null && cr.PersonaID != null)
+                {
+                    //mensaje = "Conciliado el " + cr.Fecha.Value.ToShortDateString() + " a las " + cr.Fecha.Value.ToShortTimeString() + " por " + cr.Persona.NombreCompleto;
+                }
+
+
+                if (cr.Periodo < PeriodoSeleccionado)
+                {
+                    continue;
+                }
+                else if (cr.Periodo == PeriodoSeleccionado && cr.Mes < mesSeleccionado)
+                {
+                    continue;
+                }
+
+
+                if (cr.Mes > mesSeleccionado)
+                {
+                    conciliado = false;
+                }
+                else
+                {
+                    conciliado = true;
+                }
+
+                if (cr.Periodo == PeriodoSeleccionado && cr.Mes == mesSeleccionado)
+                {
+                    salto = false;
+                }
+
+                if (cr.Periodo > PeriodoSeleccionado)
+                {
+                    conciliado = false;
+                }
+
+            }
+            catch (Exception)
+            {
+                conciliado = false;
+            }
+
+            if (detalle.Conciliado != null && detalle.Conciliado.Equals("S") && !(item.Periodo == PeriodoSeleccionado && item.Mes == mesSeleccionado) && salto)
+            {
+                continue;
+            }
+
+            if (!conciliado)
+            {
+                //totalNoConciliado = totalNoConciliado + detalle.Monto;
+            }
+
+            if (!conciliado)
+            {
+                cantidad++;
+            }
+        }
+     }
+}
+<html>
+<head>
+<style>
+	body, table, tr, td {
+		font-family: Arial Unicode MS, Arial, Helvetica, sans-serif;
+		font-size: 10pt;	
+	}
+    .num {
+      mso-number-format:"$ #,##0";
+    }
+</style>
+</head>
+
+<body>
+<table border="0">
+	<tr>
+		<td colspan="5" align="center" style="text-decoration: underline;"><strong>CUENTA BANCO @CuentaCorriente.Banco.Nombre</strong></td>
+	</tr>
+	<tr>
+		<td colspan="5" align="center" style="text-decoration: underline;"><strong>CTA. CTE. @System.Web.HttpUtility.UrlDecode("N°") @CuentaCorriente.Numero</strong></td>
+	</tr>
+    <tr>
+		<td colspan="5" align="center" style="text-decoration: underline;"><strong>@System.Web.HttpUtility.UrlDecode(@Proyecto.NombreLista)</strong></td>
+	</tr>
+    <tr>
+		<td colspan="5" align="center" style="text-decoration: underline;"><strong>@System.Web.HttpUtility.UrlDecode("Período") @Meses[mesSeleccionado - 1] @PeriodoSeleccionado</strong></td>
+	</tr>
+	<tr>
+		<td width="93" style="width: 93px;">&nbsp;</td>
+		<td width="80" style="width: 80px;">&nbsp;</td>
+		<td width="290" style="width: 290px;">&nbsp;</td>
+		<td width="60" style="width: 60px;">&nbsp;</td>
+		<td width="105" style="width: 105px;">&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="3"><strong>SALDO @System.Web.HttpUtility.UrlDecode("SEGÚN") BALANCE AL @ViewBag.Fecha</strong></td>
+		<td>&nbsp;</td>
+		<td class="num" style="mso-number-format:'$ #,##0';"><strong><span style="text-decoration: underline;">@Html.Raw("+E" + (11 + cantidad).ToString())</span></strong></td>
+	</tr>
+	<tr>
+	  <td colspan="3">&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3">&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3">&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3" style="text-decoration: underline;">@System.Web.HttpUtility.UrlDecode("Análisis") del saldo</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3">&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3">Saldo @System.Web.HttpUtility.UrlDecode("según") cartola del Banco </td>
+	  <td>&nbsp;</td>
+	  <td>$ @ViewBag.SaldoCartola</td>
+  </tr>
+	<tr>
+	  <td colspan="3">&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3">&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3">Cheques sin cobrar:</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td colspan="3">&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td style="text-decoration: underline; display: block;">FECHA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td style="text-decoration: underline; display: block;">CHEQUE&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td style="text-decoration: underline; display: block;">NOMBRE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+    @{
+        cantidad = 18;
+    }
+    @foreach (var item in Model)
+    {
+        if (item.TipoComprobanteID != 2)
+        {
+            continue;
+        }
+        if (item.TipoComprobanteID == 2)
+        {
+
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+            foreach (var detalle in detalles)
+            {
+                bool conciliado = false;
+                bool salto = true;
+
+                try
+                {
+                    int detalleID = detalle.ID;
+                    SAG2.Models.ConciliacionRegistro cr = db.ConciliacionRegistro.Where(c => c.DetalleID == detalleID).Single();
+
+                    if (cr.Fecha != null && cr.PersonaID != null)
+                    {
+                        //mensaje = "Conciliado el " + cr.Fecha.Value.ToShortDateString() + " a las " + cr.Fecha.Value.ToShortTimeString() + " por " + cr.Persona.NombreCompleto;
+                    }
+
+
+                    if (cr.Periodo < PeriodoSeleccionado)
+                    {
+                        continue;
+                    }
+                    else if (cr.Periodo == PeriodoSeleccionado && cr.Mes < mesSeleccionado)
+                    {
+                        continue;
+                    }
+
+
+                    if (cr.Mes > mesSeleccionado)
+                    {
+                        conciliado = false;
+                    }
+                    else
+                    {
+                        conciliado = true;
+                    }
+
+                    if (cr.Periodo == PeriodoSeleccionado && cr.Mes == mesSeleccionado)
+                    {
+                        salto = false;
+                    }
+
+                    if (cr.Periodo > PeriodoSeleccionado)
+                    {
+                        conciliado = false;
+                    }
+
+                }
+                catch (Exception)
+                {
+                    conciliado = false;
+                }
+
+                if (detalle.Conciliado != null && detalle.Conciliado.Equals("S") && !(item.Periodo == PeriodoSeleccionado && item.Mes == mesSeleccionado) && salto)
+                {
+                    continue;
+                }
+
+                if (!conciliado)
+                {
+                    //totalNoConciliado = totalNoConciliado + detalle.Monto;
+                }
+
+                if (conciliado)
+                {
+                    continue;
+                }
+
+                //Cheques = Cheques + detalle.Monto;
+
+                cantidad++;
+	<tr>
+	  <td align="left">@item.Fecha.Value.ToShortDateString()</td>
+	  <td align="left">@Html.DisplayFor(modelItem => item.Cheque)</td>
+	  <td>
+        @if (item.Persona != null)
+        {
+            @System.Web.HttpUtility.UrlDecode(@item.Persona.NombreCompleto)
+        }
+        else if (item.Proveedor != null)
+        {
+            @System.Web.HttpUtility.UrlDecode(@item.Proveedor.Nombre)
+        }
+        else
+        { 
+            @System.Web.HttpUtility.UrlDecode(@item.Beneficiario)
+        }
+	  </td>
+	  <td>$ @Html.Raw(@detalle.Monto.ToString("#,##0"))</td>
+	  <td>&nbsp;</td>
+  </tr>
+                chequesTotal += @detalle.Monto;
+            }
+        }
+    }
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>=SUMA(D18:@Html.Raw("D" + cantidad.ToString()+")")</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <col width="93" />
+  <col width="80" />
+  <col width="289" />
+  <col width="60" />
+  <col width="104" />
+  <tr>
+    <td width="93" style="border-top: 1px solid black;">&nbsp;</td>
+    <td width="80" style="border-top: 1px solid black;">&nbsp;</td>
+    <td width="289"></td>
+    <td width="60"></td>
+    <td width="104" style="border-top: 1px solid black;">&nbsp;</td>
+  </tr>
+    @{
+        // Saldo es Saldo Cartola - Cheques sin cobrar
+        int saldoCartola = 0;
+        try
+        {
+            saldoCartola = ViewBag.SaldoCartola;
+        } 
+        catch (Exception)
+        {
+            saldoCartola = 0;
+        }
+        
+        int saldoFinal = saldoCartola - chequesTotal;
+        string saldo = "ACREEDOR";
+        if (saldoFinal >= 0)
+        {
+            saldo = "DEUDOR";
+        }
+     }
+  <tr>
+    <td colspan="4"><strong>SALDO @saldo IGUAL MAYOR AL @ViewBag.Fecha</strong></td>
+    <td><strong>=E12-@Html.Raw("E" + (cantidad+2).ToString())</strong></td>
+  </tr>
+  <tr>
+    <td style="border-bottom: 1px solid black;">&nbsp;</td>
+    <td style="border-bottom: 1px solid black;">&nbsp;</td>
+    <td></td>
+    <td></td>
+    <td style="border-bottom: 1px solid black;">&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

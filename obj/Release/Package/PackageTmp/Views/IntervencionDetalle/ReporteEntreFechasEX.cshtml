@@ -1,0 +1,120 @@
+﻿@model SAG2.Models.EstadoIntervencion
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Intervenciones por Rango de fechas";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    List<SAG2.Models.IntervencionResumen> intervenciones = new List<SAG2.Models.IntervencionResumen>();
+    List<SAG2.Models.Region> regiones = db.Region.ToList();
+    List<SAG2.Models.TipoProyecto> tipoPro = db.TipoProyecto.ToList();
+    List<SAG2.Models.LineasAtencion> linea = db.LineasAtencion.ToList();
+    List<SAG2.Models.Comuna> comunas = db.Comuna.ToList();
+    List<SAG2.Models.EstadoIntervencion> estadoInt = db.EstadoIntervencion.ToList();
+    List<SAG2.Models.Proyecto> pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S");
+    int proyectoID = Model.ID;
+
+    Layout = null;
+    ViewBag.Title = "Intervenciones por Rango de fechas";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Intervenciones.Rango.Fechas.Sag2-" + DateTime.Now.ToShortDateString() + ".xls");
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 20px;
+    }
+</style>
+
+<table cellpadding="5" border="1" style="width: 80%;">
+
+    <tr>
+        <th rowspan="2" colspan="8" style="font-size: 30px; font-weight: bold;">Intervenciones por Rango de fechas</th>
+
+    </tr>
+    <tr></tr>
+    <tr>
+        <th colspan="1" rowspan="1">Per&iacute;odo</th>
+        <th colspan="1" rowspan="1">Mes</th>
+        <th colspan="1" rowspan="1">Proyecto</th>
+        <th colspan="1" rowspan="1">Cod. Sename</th>
+        <th colspan="1" rowspan="1">Tipo Proyecto</th>
+        <th colspan="1" rowspan="1">L&iacute;nea de Protecci&oacute;n</th>
+        <th colspan="1" rowspan="1">Regi&oacute;n</th>
+        <th colspan="1" rowspan="1">Comuna</th>
+        <th colspan="1" rowspan="1">Tipo</th>
+        <th colspan="1" rowspan="1">N&deg; Interv.</th>
+        <th colspan="1" rowspan="1">Estado</th>
+        <th colspan="1" rowspan="1">Monto Intervenci&oacute;n</th>
+        <th colspan="1" rowspan="1">Monto Pagado</th>
+        <th colspan="1" rowspan="1">Saldo Pendiente de Deuda</th>
+    </tr>
+    @{List<SAG2.Models.IntervencionResumen> inter = db.IntervencionResumen.ToList();
+        List<SAG2.Models.IntervencionDetalle> interD = db.IntervencionDetalle.ToList();
+    }
+    @foreach (var item in inter)
+    {
+        var numInterDeuda = 0;
+        var numInter = interD.Where(p => p.ProyectoID == item.ProyectoID).Where(m => m.Mes == item.Mes).Where(a => a.Anio == item.Anio).Where(d => d.Bis == item.Tipo).Sum(n => n.TotalIntervencionesAPagar);
+        var montoDeuda = item.Monto;
+        var saldo = item.Valor - item.Monto;
+        if (item.EstadoID == 2)
+        {
+            numInterDeuda = interD.Where(p => p.ProyectoID == item.ProyectoID).Where(m => m.Mes == item.Mes).Where(a => a.Anio == item.Anio).Where(d => d.Bis == item.Tipo).Sum(n => n.TotalIntervencionesAPagar);
+        }
+        if (item.EstadoID == 2)
+        {
+            montoDeuda = item.Monto;
+        }
+
+
+        var reg = regiones.Find(p => p.ID == item.RegionID).Nombre;
+        var nombrePro = pro.Find(p => p.ID == item.ProyectoID).Nombre;
+        var tp = tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).Nombre;
+        var tpID = tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).ID;
+        var cSename = pro.Find(p => p.ID == item.ProyectoID).CodSename;
+        var lin = linea.Find(d => d.ID == tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).LineasAtencionID).Sigla;
+        var com = comunas.Find(p => p.ID == item.ComunaID).Nombre;
+        var ie = estadoInt.Find(p => p.ID == item.EstadoID).Nombre;
+        var ieID = estadoInt.Find(p => p.ID == item.EstadoID).ID;
+        DateTime fechaInicio = new DateTime(ViewBag.anioInicio, ViewBag.mesInicio, 1, 0, 0, 0);
+        DateTime fechaHasta = new DateTime(ViewBag.anioHasta, ViewBag.mesHasta, 1, 0, 0, 0);
+        DateTime fechaLinea = new DateTime(item.Anio, item.Mes, 1, 0, 0, 0);
+
+        //   if (ViewBag.mesInicio <= item.Mes && ViewBag.anioInicio <= item.Anio)
+        if ((fechaInicio <= fechaLinea) && (fechaHasta >= fechaLinea))
+        {
+            <tr>
+                <td colspan="1">@item.Anio</td>
+                <td colspan="1">@item.Mes</td>
+                <td colspan="1">@nombrePro</td>
+                <td colspan="1">@cSename</td>
+                <td colspan="1">@tp</td>
+                <td colspan="1">@lin</td>
+                <td colspan="1">@reg</td>
+                <td colspan="1">@com</td>
+                <td colspan="1">@item.Descripcion</td>
+                <th colspan="1">@numInter</th>
+                <th colspan="1">@ie</th>
+                <th colspan="1">$@item.Valor.ToString("#,##0")</th>
+                <th colspan="1">@montoDeuda.ToString("#,##0")</th>
+                <th colspan="1">$@saldo.ToString("#,##0")</th>
+            </tr>
+        }
+
+
+    }
+
+</table>
+

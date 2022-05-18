@@ -1,0 +1,51 @@
+﻿@model SAG2.Models.Movimiento
+@{
+    ViewBag.Title = "Comprobante " + Model.TipoComprobante.Nombre;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Oculta los menús
+        $('.menu').visible(false);
+    });
+</script>
+
+<h2>CODENI</h2>
+@Model.Establecimiento.Nombre
+
+Nº Comprobante @Model.NumeroComprobante
+
+<fieldset>
+    <legend>Movimiento</legend>
+
+    <div class="display-label">Cuenta contable</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PlanDeCuenta.NombreLista)
+    </div>
+
+    <div class="display-label">Cuenta corriente</div>
+    <div class="display-field">
+         @Html.DisplayFor(model => model.CuentaCorriente.Numero)
+    </div>
+
+    <div class="display-label">Fecha</div>
+    <div class="display-field">
+        @Model.Fecha.Value.ToShortDateString()
+    </div>
+
+    <div class="display-label">Nº Cheque</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Cheque)
+    </div>
+
+    <div class="display-label">Monto $</div>
+    <div class="display-field">
+        $@Model.Monto_Ingresos.ToString("##.#")***
+    </div>
+
+    <div class="display-label">Glosa</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Descripcion)
+    </div>
+</fieldset>
+
+Firma y Timbre Director(a)

@@ -1,0 +1,737 @@
+﻿@using System.Text.RegularExpressions;
+@using System;
+@using System.Text;
+@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    System.Text.RegularExpressions.Regex replace_a_Accents = new System.Text.RegularExpressions.Regex("[á|à|ä|â]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    System.Text.RegularExpressions.Regex replace_e_Accents = new System.Text.RegularExpressions.Regex("[é|è|ë|ê]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    System.Text.RegularExpressions.Regex replace_i_Accents = new System.Text.RegularExpressions.Regex("[í|ì|ï|î]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    System.Text.RegularExpressions.Regex replace_o_Accents = new System.Text.RegularExpressions.Regex("[ó|ò|ö|ô][Ó]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    System.Text.RegularExpressions.Regex replace_u_Accents = new System.Text.RegularExpressions.Regex("[ú|ù|ü|û]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    System.Text.RegularExpressions.Regex replace_n_Accents = new System.Text.RegularExpressions.Regex("[ñ][Ñ]", System.Text.RegularExpressions.RegexOptions.Compiled);
+   // textBox1.Text = replace_a_Accents.Replace(textBox1.Text, "a");
+   // textBox1.Text = replace_e_Accents.Replace(textBox1.Text, "e");
+   // textBox1.Text = replace_i_Accents.Replace(textBox1.Text, "i");
+   // textBox1.Text = replace_o_Accents.Replace(textBox1.Text, "o");
+   // textBox1.Text = replace_u_Accents.Replace(textBox1.Text, "u");
+   Response.ContentEncoding = System.Text.Encoding.GetEncoding("utf-8");
+ Response.HeaderEncoding = System.Text.Encoding.GetEncoding("utf-8");
+ Response.Charset = "utf-8"; 
+   Response.ContentType = "text/plain";
+   // Response.Charset = "utf-8";
+   
+  //  Response.AddHeader("content-disposition", "attachment;filename=rendicion-senainfo-" + @ViewBag.periodo + "-" + @ViewBag.mes + "-" + string.Format("{0:yyyyMMdd}", DateTime.Today) + ".txt");
+   // Response.Clear();
+}
+@foreach (var item in Model)
+{
+    if (@item.Proyecto.estaCerrado || @item.Proyecto.estaEliminado)
+    {
+        continue;
+    }
+    
+    // Filtro proyectos de prueba
+    if (@item.ID == 48 || @item.ID == 112 || @item.ID == 113 || @item.ID == 114 || @item.ID == 115 || @item.ID == 121 || @item.ID == 121)
+    {
+        continue;
+    }
+    
+    // Filtro si no tiene codigo sename 
+    if (@item.Proyecto.CodSename == null)
+    {
+        continue;
+    }
+
+    int ultimoEgreso = 0;
+    
+    if (@item.TipoComprobanteID == 1)
+    {
+        //1	IngresoEgreso	int	1		1 = Ingreso, 0 = Egreso
+        @Html.Raw("1");
+    
+        //2	CodProyecto	int	9		Anteponer ceros
+        try
+        {
+            @Html.Raw(Convert.ToInt64(@item.Proyecto.CodSename).ToString("000000000"));
+        }
+        catch (Exception)
+        {
+            @Html.Raw("000000000");
+        }
+
+        //3	AnoMes	int	6	aaaamm	Año y mes de la conciliacion
+        try
+        {
+            @Html.Raw(@item.Periodo.ToString("0000")+@item.Mes.ToString("00"));
+        }
+        catch (Exception)
+        {
+            @Html.Raw("000000");
+        }
+
+        //4	FechaRegistro	DateTime	10	dd-mm-aaaa	Fecha de cuando se creo la rendición
+        try
+        {
+            @Html.Raw(DateTime.Now.Day.ToString("00") + "-"+DateTime.Now.Month.ToString("00") +"-"+ DateTime.Now.Year.ToString("0000"));
+        }
+        catch (Exception)
+        {
+            @Html.Raw("00-00-0000");
+        }
+    
+        //5	NroComprobante	int	9		Anteponer ceros   ID
+        try
+        {
+            @Html.Raw(@item.ID.ToString("000000000"));
+        }
+        catch (Exception)
+        {
+            @Html.Raw("000000000");
+        }
+    
+        //6	Correlativo	int	9		Correlativo del comprobante
+        try
+        {
+            @Html.Raw("000000001");
+            //@Html.Raw(@item.NumeroComprobante.ToString("000000000"));
+        }
+        catch (Exception)
+        {
+            @Html.Raw("000000001");
+        }
+    
+        //7	FechaComprobante	DateTime	10	dd-mm-aaaa	La fecha tiene que ser dentro del mes a rendir.
+        try
+        {
+            @Html.Raw(@item.Fecha.Value.ToShortDateString());
+        }
+        catch (Exception)
+        {
+            @Html.Raw("00-00-0000");
+        }
+    
+        // 8	Nulo	int	1		Comprobantes 1 = Nulo, 0 = NO Nulo
+        try
+        {
+            if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
+            {
+                @Html.Raw("1");
+            }
+            else
+            {
+                @Html.Raw("0");
+            }
+        }
+        catch (Exception)
+        {
+            @Html.Raw("0");
+        }
+    
+        // 9	CodDetalleIngreso	int	9		Código del detalle del Ingreso, anteponer ceros
+        try
+        {
+            @Html.Raw(@item.Cuenta.SenameDetalle.Value.ToString("000000000"));
+        }
+        catch (Exception)
+        {
+            @Html.Raw("000000000");
+        }
+
+        // 10	Monto	int	9		El monto debe ser mayor a cero
+        try
+        {
+            if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
+            {
+                @Html.Raw("000000001");
+            }
+            else
+            {
+                @Html.Raw(@item.Monto_Ingresos.ToString("000000000"));
+            }
+        }
+        catch (Exception)
+        {
+            @Html.Raw("000000001");
+        }
+    
+        //11	Glosa	varchar	20		Anteponer espacios
+        try
+        {
+            string descripcion = @item.Descripcion.ToLower().Trim();
+            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"[^\w\.@-]", " ");
+            descripcion = replace_a_Accents.Replace(descripcion.ToLower(), "a");
+            descripcion = replace_e_Accents.Replace(descripcion.ToLower(), "e");
+            descripcion = replace_i_Accents.Replace(descripcion.ToLower(), "i");
+            //descripcion = replace_o_Accents.Replace(descripcion.ToLower(), "O");
+            descripcion.Replace("Ó", "O").Replace("Ñ","N");
+            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion,"Ó", "O");
+            descripcion = replace_u_Accents.Replace(descripcion.ToLower(), "u");
+            descripcion = replace_n_Accents.Replace(descripcion.ToLower(), "n"); 
+            try
+            {
+                descripcion = descripcion.Substring(0, 20).Trim();
+            }
+            catch (Exception)
+            { }
+        
+            @Html.Raw(HttpUtility.HtmlDecode(descripcion));
+        
+            if (descripcion.Length < 20)
+            {
+                int largo = descripcion.Length;
+                for (int i = 0; i < (20 - largo); i++)
+                {
+                    @Html.Raw(" ");
+                }
+            }
+        }
+        catch (Exception)
+        {
+            @Html.Raw("                    ");
+        }
+    
+        // 12	Relleno	varchar	69		Campo de relleno para que todos los registros tengan el mismo ancho, este campo debe tener 69 caracteres "-" (menos)
+
+        for (int i = 0; i < 69; i++)
+        {
+            @Html.Raw("-");
+        }
+        @Html.Raw("\r\n");
+    }
+    else if (item.TipoComprobanteID == 2)
+    {
+        int correlativo = 1;
+        // Caja Chica
+        ultimoEgreso = item.NumeroComprobante;
+        if ((item.FondoFijo != null && item.FondoFijo.Equals("S")))
+        {
+            List<SAG2.Models.DetalleEgreso> Detalles = db.DetalleEgreso.Where(d => d.Egreso.auto == 0).Where(d => d.MovimientoID == item.ID).ToList();
+            var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
+            foreach (var detalle in detalles)
+            {
+                //1	IngresoEgreso	int	1		1 = Ingreso, 0 = Egreso
+                @Html.Raw("0");
+                //2	CodProyecto	int	9		Anteponer ceros
+                try
+                {
+                    @Html.Raw(Convert.ToInt64(@item.Proyecto.CodSename).ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000000");
+                }
+
+                //3	AnoMes	int	6	aaaamm	Año y mes de la conciliacion
+                try
+                {
+                    @Html.Raw(@item.Periodo.ToString("0000") + @item.Mes.ToString("00"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000");
+                }
+
+                //4	FechaRegistro	DateTime	10	dd-mm-aaaa	Fecha de cuando se creo la rendición
+                try
+                {
+                    @Html.Raw(DateTime.Now.Day.ToString("00") + "-" + DateTime.Now.Month.ToString("00") + "-" + DateTime.Now.Year.ToString("0000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("00-00-0000");
+                }
+
+                //5	NroComprobante	int	9		Anteponer ceros   ID
+                try
+                {
+                    @Html.Raw(@item.ID.ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000000");
+                }
+                //6	Correlativo	int	9		Correlativo del comprobante
+                try
+                {
+                    @Html.Raw(@correlativo.ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000001");
+                }
+
+                //7	FechaComprobante	DateTime	10	dd-mm-aaaa	La fecha tiene que ser dentro del mes a rendir.
+                try
+                {
+                    @Html.Raw(@item.Fecha.Value.ToShortDateString());
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("00-00-0000");
+                }
+
+                // 8	Nulo	int	1		Comprobantes 1 = Nulo, 0 = NO Nulo
+                try
+                {
+                    if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
+                    {
+                        @Html.Raw("1");
+                    }
+                    else
+                    {
+                        @Html.Raw("0");
+                    }
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("0");
+                }
+
+                //9	CodMedioDePago	int	9		Código del medio de pago  1 cheque, 2 efectivo
+                @Html.Raw("000000001");
+
+                //10	Monto	int	9		El monto debe ser mayor a cero
+                try
+                {
+                    if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
+                    {
+                        @Html.Raw("0000000001");
+                    }
+                    else
+                    {
+                        @Html.Raw(@Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto).ToString("000000000"));
+                    }
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000001");
+                }
+
+                //11	Glosa	varchar	20		Anteponer espacios
+                try
+                {
+                    string descripcion = @item.Descripcion.ToLower().Trim();
+                    descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"[^\w\.@-]", " ");
+                    descripcion = replace_a_Accents.Replace(descripcion.ToLower(), "a");
+                    descripcion = replace_e_Accents.Replace(descripcion.ToLower(), "e");
+                    descripcion = replace_i_Accents.Replace(descripcion.ToLower(), "i");
+                    //descripcion = replace_o_Accents.Replace(descripcion.ToLower(), "o");
+                    descripcion.Replace("Ó", "O").Replace("Ñ", "N");
+                   // descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
+                   // descripcion = replace_u_Accents.Replace(descripcion.ToLower(), "u");
+                    descripcion = replace_n_Accents.Replace(descripcion.ToLower(), "n");
+                    if (descripcion.Length > 20)
+                    {
+                        descripcion = descripcion.Substring(0, 20);
+                    }
+
+                    @Html.Raw(HttpUtility.HtmlDecode(descripcion.PadLeft(20, ' ')));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("                    ");
+                }
+
+                //12	CodUso	int	9		Código del uso, anteponer ceros
+                try
+                {
+                    @Html.Raw(@detalle.Cuenta.SenameUso.Value.ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000000");
+                }
+
+                //13	NumeroCheque	varchar	20		Anteponer espacios
+                try
+                {
+                    @Html.Raw(@item.Cheque.Value.ToString("").PadLeft(20, ' '));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("                    ");
+                }
+
+                // 14	Destino	varchar	40		Anteponer espacios
+                string destino = "";
+                try
+                {
+                    if (item.Persona != null)
+                    {
+                        destino = @item.Persona.NombreCompleto.ToUpper();
+                    }
+                    else if (item.Proveedor != null)
+                    {
+                        destino = @item.Proveedor.Nombre.ToUpper();
+                    }
+                    else
+                    {
+                        destino = @item.Beneficiario.ToUpper();
+                    }
+                }
+                catch (Exception)
+                { }
+
+                destino = destino.ToLower().Trim();
+                destino = System.Text.RegularExpressions.Regex.Replace(destino, @"[^\w\.@-]", " ");
+                destino = replace_a_Accents.Replace(destino.ToLower(), "a");
+                destino = replace_e_Accents.Replace(destino.ToLower(), "e");
+                destino = replace_i_Accents.Replace(destino.ToLower(), "i");
+                destino = replace_o_Accents.Replace(destino.ToLower(), "o");
+                destino = replace_u_Accents.Replace(destino.ToLower(), "u");
+                destino = replace_n_Accents.Replace(destino.ToLower(), "n");
+                destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ó", "O");
+                destino.Replace("Ó", "O").Replace("Ñ", "N");
+                if (destino.Length > 40)
+                {
+                    destino = destino.Substring(0, 40);
+                }
+
+                @Html.Raw(HttpUtility.HtmlDecode(destino.PadLeft(40, ' ')));
+                @Html.Raw("\r\n");
+                correlativo++;
+            }
+        }
+        else
+        {
+            // Llamar a detalles
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.Egreso.auto == 0).Where(d => d.MovimientoID == item.ID).ToList();
+            foreach (var detalle in detalles)
+            {
+                //1	IngresoEgreso	int	1		1 = Ingreso, 0 = Egreso
+                @Html.Raw("0");
+
+                //2	CodProyecto	int	9		Anteponer ceros
+                try
+                {
+                    @Html.Raw(Convert.ToInt64(@item.Proyecto.CodSename).ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000000");
+                }
+
+                //3	AnoMes	int	6	aaaamm	Año y mes de la conciliacion
+                try
+                {
+                    @Html.Raw(@item.Periodo.ToString("0000") + @item.Mes.ToString("00"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000");
+                }
+
+                //4	FechaRegistro	DateTime	10	dd-mm-aaaa	Fecha de cuando se creo la rendición
+                try
+                {
+                    @Html.Raw(DateTime.Now.Day.ToString("00") + "-" + DateTime.Now.Month.ToString("00") + "-" + DateTime.Now.Year.ToString("0000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("00-00-0000");
+                }
+
+                //5	NroComprobante	int	9		Anteponer ceros   ID
+                try
+                {
+                    @Html.Raw(@item.ID.ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000000");
+                }
+                //6	Correlativo	int	9		Correlativo del comprobante
+                try
+                {
+                    @Html.Raw(@correlativo.ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000001");
+                }
+
+                //7	FechaComprobante	DateTime	10	dd-mm-aaaa	La fecha tiene que ser dentro del mes a rendir.
+                try
+                {
+                    @Html.Raw(@item.Fecha.Value.ToShortDateString());
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("00-00-0000");
+                }
+
+                // 8	Nulo	int	1		Comprobantes 1 = Nulo, 0 = NO Nulo
+                try
+                {
+                    if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
+                    {
+                        @Html.Raw("1");
+                    }
+                    else
+                    {
+                        @Html.Raw("0");
+                    }
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("0");
+                }
+
+                //9	CodMedioDePago	int	9		Código del medio de pago  1 cheque, 2 efectivo
+                @Html.Raw("000000001");
+
+                //10	Monto	int	9		El monto debe ser mayor a cero
+                // Si el comprobante es nulo o el cheque es nulo el monto es 1 ya que SENAINFO no acepta valores iguales a cero
+                try
+                {
+                    if (@item.Nulo != null && @item.Nulo.ToString().Equals("S") || @detalle.DocumentoID.Equals(100) || @detalle.Monto.Equals(0))
+                    {
+                        @Html.Raw("000000001");
+                    }
+                    else
+                    {
+                        @Html.Raw(@detalle.Monto.ToString("000000000"));
+                    }
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000001");
+                }
+
+                //11	Glosa	varchar	20		Anteponer espacios
+                try
+                {
+                    string descripcion = @item.Descripcion.ToLower().Trim();
+                    descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"[^\w\.@-]", " ");
+                    descripcion = replace_a_Accents.Replace(descripcion.ToLower(), "a");
+                    descripcion = replace_e_Accents.Replace(descripcion.ToLower(), "e");
+                    descripcion = replace_i_Accents.Replace(descripcion.ToLower(), "i");
+                    descripcion = replace_o_Accents.Replace(descripcion.ToLower(), "o");
+                    descripcion = replace_u_Accents.Replace(descripcion.ToLower(), "u");
+                    descripcion = replace_n_Accents.Replace(descripcion.ToLower(), "n");
+                    descripcion.Replace("Ó", "").Replace("Ñ", "N");
+                    descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
+                    if (descripcion.Length > 20)
+                    {
+                        descripcion = descripcion.Substring(0, 20);
+                    }
+                
+                    @Html.Raw(HttpUtility.HtmlDecode(descripcion.PadLeft(20, ' ')));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("                    ");
+                }
+            
+                //12	CodUso	int	9		Código del uso, anteponer ceros
+                try
+                {
+                    //@Html.Raw(@detalle.Cuenta.Codigo.ToString());
+                    @Html.Raw(@detalle.Cuenta.SenameUso.Value.ToString("000000000"));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("000000000");
+                }
+            
+                //13	NumeroCheque	varchar	20		Anteponer espacios
+                try
+                {
+                    @Html.Raw(@item.Cheque.Value.ToString("").PadLeft(20, ' '));
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("                    ");
+                }
+            
+                // 14	Destino	varchar	40		Anteponer espacios
+                string destino = "";
+                try
+                {
+                    if (item.Persona != null)
+                    {
+                        destino = @item.Persona.NombreCompleto.ToLower();
+                    }
+                    else if (item.Proveedor != null)
+                    {
+                        destino = @item.Proveedor.Nombre.ToLower();
+                    }
+                    else
+                    {
+                        destino = @item.Beneficiario.ToLower();
+                    }
+                }
+                catch (Exception)
+                {}
+
+                destino = destino.Trim();
+                destino = System.Text.RegularExpressions.Regex.Replace(destino, @"[^\w\.@-]", " ");
+                destino = replace_a_Accents.Replace(destino.ToLower(), "a");
+                destino = replace_e_Accents.Replace(destino.ToLower(), "e");
+                destino = replace_i_Accents.Replace(destino.ToLower(), "i");
+                destino = replace_o_Accents.Replace(destino.ToLower(), "o");
+                destino = replace_u_Accents.Replace(destino.ToLower(), "u");
+                destino = replace_n_Accents.Replace(destino.ToLower(), "n");
+                destino.Replace("Ó", "").Replace("Ñ", "N"); 
+                destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ó", "O");
+                if (destino.Length > 40)
+                {
+                    destino = destino.Substring(0, 40);
+                }
+
+                @Html.Raw(HttpUtility.HtmlDecode(destino.PadLeft(40, ' ')));
+            
+            
+                @Html.Raw("\r\n");
+                correlativo++;
+            }
+        }
+    }
+    else if (item.TipoComprobanteID == 3)
+    {
+        continue;
+        //1	IngresoEgreso	int	1		1 = Ingreso, 0 = Egreso
+            @Html.Raw("0");
+
+            //2	CodProyecto	int	9		Anteponer ceros
+            try
+            {
+                @Html.Raw(Convert.ToInt64(@item.Proyecto.CodSename).ToString("000000000"));
+            }
+            catch (Exception)
+            {
+                @Html.Raw("000000000");
+            }
+
+            //3	AnoMes	int	6	aaaamm	Año y mes de la conciliacion
+            try
+            {
+                @Html.Raw(@item.Periodo.ToString("0000") + @item.Mes.ToString("00"));
+            }
+            catch (Exception)
+            {
+                @Html.Raw("000000");
+            }
+
+            //4	FechaRegistro	DateTime	10	dd-mm-aaaa	Fecha de cuando se creo la rendición
+            try
+            {
+                @Html.Raw(DateTime.Now.Day.ToString("00") + "-" + DateTime.Now.Month.ToString("00") + "-" + DateTime.Now.Year.ToString("0000"));
+            }
+            catch (Exception)
+            {
+                @Html.Raw("00-00-0000");
+            }
+
+            //5	NroComprobante	int	9		Anteponer ceros   ID
+            try
+            {
+                @Html.Raw(@ultimoEgreso.ToString("000000000"));
+            }
+            catch (Exception)
+            {
+                @Html.Raw("000000001");
+            }
+            //6	Correlativo	int	9		Correlativo del comprobante
+            try
+            {
+                @Html.Raw("000000001");
+            }
+            catch (Exception)
+            {
+                @Html.Raw("000000001");
+            }
+
+            //7	FechaComprobante	DateTime	10	dd-mm-aaaa	La fecha tiene que ser dentro del mes a rendir.
+            try
+            {
+                @Html.Raw(@item.Fecha.Value.ToShortDateString());
+            }
+            catch (Exception)
+            {
+                @Html.Raw("00-00-0000");
+            }
+
+            // 8	Nulo	int	1		Comprobantes 1 = Nulo, 0 = NO Nulo
+            try
+            {
+                if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
+                {
+                    @Html.Raw("1");
+                }
+                else
+                {
+                    @Html.Raw("0");
+                }
+            }
+            catch (Exception)
+            {
+                @Html.Raw("0");
+            }
+
+            //9	CodMedioDePago	int	9		Código del medio de pago  1 cheque, 2 efectivo
+            @Html.Raw("000000001");
+
+            //10	Monto	int	9		El monto debe ser mayor a cero
+            try
+            {
+                @Html.Raw(@item.Monto_Ingresos.ToString("000000000"));
+            }
+            catch (Exception)
+            {
+                @Html.Raw("000000000");
+            }
+
+            //11	Glosa	varchar	20		Anteponer espacios
+            try
+            {
+                string descripcion = @item.Descripcion.ToLower().Trim();
+                descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"[^\w\.@-]", " ");
+                descripcion = replace_a_Accents.Replace(descripcion, "a");
+                descripcion = replace_e_Accents.Replace(descripcion, "e");
+                descripcion = replace_i_Accents.Replace(descripcion, "i");
+                descripcion = replace_o_Accents.Replace(descripcion, "o");
+                descripcion = replace_u_Accents.Replace(descripcion, "u");
+                descripcion = replace_n_Accents.Replace(descripcion, "n");
+                descripcion.Replace("Ó", "").Replace("Ñ", "N"); 
+                descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
+              // descripcion = 
+               // descripcion.
+                if (descripcion.Length > 20)
+                {
+                    descripcion = descripcion.Substring(0, 20);
+                }
+
+                @Html.Raw(HttpUtility.HtmlDecode(descripcion.PadLeft(20, ' ')));
+            }
+            catch (Exception)
+            {
+                @Html.Raw("                    ");
+            }
+
+            //12	CodUso	int	9		Código del uso, anteponer ceros
+            try
+            {
+                @Html.Raw("000000029");
+            }
+            catch (Exception)
+            {
+                @Html.Raw("000000029");
+            }
+
+            //13	NumeroCheque	varchar	20		Anteponer espacios
+            try
+            {
+                @Html.Raw(@item.Cheque.Value.ToString().PadLeft(20, ' '));
+            }
+            catch (Exception)
+            {
+                @Html.Raw("                    ");
+            }
+            
+            @Html.Raw("             CONSEJO DE DEFENSA DEL NINO");
+        @Html.Raw("\r\n");
+    }
+}

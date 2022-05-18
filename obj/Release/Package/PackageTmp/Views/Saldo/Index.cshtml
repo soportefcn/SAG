@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SAG2.Models.Saldo>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Saldos";
+}
+<div id="SAGBox">
+    <h3>@ViewBag.Title</h3>
+    <div id="controles">
+        <p>@Html.ActionLink("ACTUALIZAR", "Create",null,new{@style="font-size:10px;"})</p>
+        <p>@Html.ActionLink("SALDOS", "Index")</p>
+    </div>
+    <div id="contenido">
+@if (Model.Count() > 0)
+{
+    <table cellpadding="5" border="1">
+    <tr>
+        <th>
+            Banco
+        </th>
+        <th>
+            Nº Cta. Cte.
+        </th>
+        <th>
+            Período
+        </th>
+        <th>
+            Saldo Inicial $
+        </th>
+        <th>
+            Saldo Final $
+        </th>
+        <th></th>
+    </tr>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CuentaCorriente.Banco.Nombre)
+        </td>
+        <td align="right">
+            @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+        </td>
+        <td align="center">
+            @Html.DisplayFor(modelItem => item.Periodo)
+        </td>
+        <td align="right">
+            $@item.SaldoInicialCartola.ToString("0,0")
+        </td>
+        <td align="right">
+            $@item.SaldoFinal.ToString("0,0")
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", "Saldo", new { id = item.ID })" title="Modificar"><img src="@Url.Content("~/Content/Images/Edit.png")" alt="" width="15" height="15" /></a> 
+        </td>
+    </tr>
+}
+        </table>
+}
+    </div>
+</div>

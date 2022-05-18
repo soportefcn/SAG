@@ -1,0 +1,116 @@
+﻿@model IEnumerable<SAG2.Models.InventarioHoja>
+@{
+    ViewBag.Title = "Hoja Inventario";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    int i = 0;
+}
+<style type="text/css" media="print">
+    @@page
+    {
+        margin: 1cm !important;
+    }
+    body 
+    {
+        font-family: Arial;   
+        font-size: 9pt;    
+    }
+    h2, h3, h1 {
+        text-align: center;
+        font-size: 11pt;  
+        margin-bottom: 11pt;  
+    }
+    
+    td, th
+    {
+        border: 1px solid black;
+        padding: 2px;  
+    }
+    
+    .resumen tr, .resumen tr th, .resumen tr td
+    {
+        border: 0;
+    }
+
+    </style>
+<div class="permisos">
+    <div class="ocultoImpresion">
+        <input value="IMPRIMIR" type="button" style="float: right; margin-left: 10px;" id="imprimirDirecto" />
+    </div>
+    <input type="button" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Inventario/Dependencias';" value="VOLVER" style="float: right;" class="oculto" />
+    <h2>HOJA DE INVENTARIOS</h2>
+    <br />
+    <table>
+        <tr>
+            <th width="100px;" align="left">Proyecto:</th>
+            <td style="padding-right: 10px;">@ViewBag.Dependencia.Proyecto.Nombre</td>
+            <th width="100px;" align="left">Código:</th>
+            <td>@ViewBag.Dependencia.Proyecto.CodCodeni</td>
+        </tr>
+        <tr>
+            <th align="left">Dependencia:</th>
+            <td>@ViewBag.Dependencia.Nombre</td>
+            <th align="left">Fecha:</th>
+            <td>@DateTime.Now.ToShortDateString()</td>
+        </tr>
+    </table>
+    <br />
+    @using (Html.BeginForm())
+    {
+    <input type="hidden" name="dependenciaID" id="dependenciaID" value="@ViewBag.Dependencia.ID" />
+    @Html.Raw("Especie:&nbsp;&nbsp;")
+        <select name="ItemID" id="ItemID" class="oculto">
+            <option> - Seleccione -</option>
+        @foreach (SAG2.Models.InventarioItem item in @ViewBag.Inventario)
+        {
+            int cantidadUsada = 0;
+            try
+            {
+                cantidadUsada = db.InventarioHoja.Where(h => h.ItemID == item.ID).Sum(h => h.Cantidad);
+            }
+            catch (Exception)
+            { }
+            <option value="@item.ID" disponible="@(item.Cantidad-cantidadUsada)" @if(cantidadUsada==item.Cantidad){@Html.Raw("disabled=\"disabled\"");}>@item.Especie.Nombre - @item.Descripcion (@(item.Cantidad-cantidadUsada) disponibles)</option>   
+        }
+    </select><br />
+    @Html.Raw("Cantidad: ")
+    <input name="Cantidad" id="Cantidad" size="3" value="" class="oculto" /><br />
+    <input value="Agregar" type="submit" class="oculto" style="margin-left: 60px;" />
+    }
+    <br />
+    @if (Model.Count() > 0)
+    {
+    <table cellpadding="5" align="center" width="100%">
+        <tr>
+            <th width="10px">Nº</th>
+            <th>Especie</th>
+            <th>Descripción y/o características de la<br />especie</th>
+            <th>Procedencia<br />(S); (T); (I)</th>
+            <th>Nº C/E<br />/ Año</th>
+            <th>Cantidad</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th width="10px" class="oculto"></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td align="right">@i</td>
+            <td>@item.Item.Especie.Nombre</td>
+            <td>@item.Item.Descripcion</td>
+            <td>@item.Item.Procedencia</td>
+            <td>@item.Item.Egreso.Egreso.NumeroComprobante / @item.Item.Periodo</td>
+            <td>@item.Cantidad</td>
+            <td>@item.Item.Estado</td>
+            <td>@item.Item.Observaciones</td>
+            <td class="oculto"><input type="button" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Inventario/EliminarHoja/@item.ID';" value="ELIMINAR" /></td>
+        </tr>
+        }
+    </table>
+    <p align="center">Las especies registradas en esta Hoja de Inventarios no deben ser sacadas de la dependencia.</p>
+    }
+    else
+    {
+        <p align="center">No existen especies registradas en esta Hoja de Inventario.</p>
+    }
+</div>

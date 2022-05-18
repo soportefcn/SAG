@@ -1,0 +1,43 @@
+﻿@model SAG2.Models.Referencia
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Referencia</legend>
+
+    <div class="display-label">GRUPO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GRUPO)
+    </div>
+
+    <div class="display-label">VALOR</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VALOR)
+    </div>
+
+    <div class="display-label">PERIODO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PERIODO)
+    </div>
+
+    <div class="display-label">PREDETERMINADO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PREDETERMINADO)
+    </div>
+
+    <div class="display-label">ESTADO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ESTADO)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

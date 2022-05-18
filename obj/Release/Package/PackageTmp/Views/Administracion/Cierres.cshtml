@@ -1,0 +1,232 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@using SAG2.Models;
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Cierres";
+    SAG2DB db = new SAG2DB();
+    int periodo = @ViewBag.periodo;
+    var pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
+    int proyectoID = 0;
+  }
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".js-autocomplete").select2();
+            });
+        </script>
+        <div class="permisos">
+            <h2 align="center">REGISTRO CIERRES PERÍODO @periodo</h2>
+            @using (Html.BeginForm())
+            {
+                <div class="form-inline form-group">
+                    <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                        @Html.Raw("Período:")
+                    </div>
+                    <div class="form-group" style="margin-right: 10px">
+                        <select class="form-control" name="periodo" id="periodo" onchange="funcion()">
+                            @for (var i = DateTime.Now.Year; i > DateTime.Now.Year - 5; i--)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (i == periodo) { @Html.Raw("selected=\"selected\"") ; }>@Html.Raw((@i).ToString())</option>
+                            }
+                        </select>
+                       
+                        <select name="Proyecto" id="proyectoID" class="js-autocomplete form-control" onchange="funcion()">
+                            <option value="-1"> - Seleccione proyecto</option>
+                            @foreach (SAG2.Models.Proyecto Proyecto in pro)
+                            {
+                                if (proyectoID == Proyecto.ID)
+                                {
+                                    <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                                }
+                                else
+                                {
+                                    <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                                }
+                            }
+                        </select>
+         
+                    </div>
+                    <a class="btn btn-info" href="@Url.Action("Cierres", "Administracion", new { proyectoID = @ViewBag.Seleccion})" id="link">Ver resultados</a>
+                    <a class="btn btn-success" href="@Url.Action("CierresExcel", "Administracion", new { proyectoID = @ViewBag.Seleccion})" id="link1">Excel</a>
+                </div>
+
+
+            }
+            <br />
+            <table class="table" style="margin-bottom: 0px; border: 1px solid #ddd>">
+                <tr>
+                    <td style="width: 280px;"></td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Enero</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Febrero</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Marzo</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Abril</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Mayo</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Junio</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Julio</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Agosto</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Septiembre</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Octubre</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Noviembre</td>
+                    <td style="width: 75px; text-align: center; font-weight: bold;">Diciembre</td>
+                </tr>
+            </table>
+            <div style="height: 400px; overflow: scroll;">
+                <table class="table table-hover table-bordered">
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+                    </tr>
+                    @foreach (var Proyecto in Model)
+                    {
+                        proyectoID = Proyecto.ID;
+
+                        int rvigente = Proyecto.estado  ;
+                        DateTime fecha = DateTime.Now;
+                        //try
+                        //{
+                        //    DateTime fecha2 = db.Resolucion.Where(p => p.ProyectoID == Proyecto.ID && p.Estado == 1).Single().FechaProrroga;
+
+                        //    if (fecha > fecha2)
+                        //    {
+                        //        rvigente = 0;
+                        //    }
+
+                        //}
+                        //catch (Exception)
+                        //{
+                        //    rvigente = 0;
+                        //}
+                        if (rvigente == 1)
+                        {
+
+
+                            <tr>
+                                <td>@Proyecto.NombreLista</td>
+
+                                @for (int i = 1; i < 13; i++)
+                                {
+                                    try
+                                    {
+                                        Periodo pe = db.Periodo.Where(p => p.ProyectoID == proyectoID && p.Mes == i & p.Ano == periodo).Single();
+                                        DateTime d1 = pe.Fecha.Value;
+                                        DateTime d2;
+                                        if (i == 12)
+                                        {
+                                            d2 = Convert.ToDateTime("7/1/" + (periodo + 1)); ;
+                                        }
+                                        else
+                                        {
+                                            d2 = Convert.ToDateTime("7/" + (i + 1) + "/" + periodo); ;
+                                        }
+                                        TimeSpan t1 = d2.Subtract(d1);
+                                        if (t1.Days < 0)
+                                        {
+                                            @Html.Raw("<td align=\"center\" style=\"color: white; background-color: red;\">");
+                                            @Html.Raw(@pe.Fecha.Value.ToShortDateString());
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<td align=\"center\">");
+                                            @Html.Raw(@pe.Fecha.Value.ToShortDateString());
+                                        }
+                                        @Html.Raw("</td>");
+                                    }
+                                    catch
+                                    {
+                                        @Html.Raw("<td align=\"center\"></td>");
+                                    }
+                                }
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>Mínimo</td>
+                        <td>
+                            @try
+                            {
+
+                            }
+                            catch
+                            {
+                                @Html.Raw("-");
+                            }
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>Máximo</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>Promedio</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+            <script>
+        function funcion() {
+            var a = $("#proyectoID").val();
+            var b = $("#periodo").val();
+            $("#link").attr("href", '@Url.Action("Cierres", "Administracion")' + "/?periodo=" + b + "&proyectoID=" + a);
+            $("#link1").attr("href", '@Url.Action("CierresExcel", "Administracion")' + "/?periodo="+b+"&proyectoID=" + a);
+        }
+
+            </script>
+        </div>

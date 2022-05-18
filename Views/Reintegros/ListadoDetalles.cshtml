@@ -1,0 +1,146 @@
+﻿<style type="text/css">
+    table {
+        width: 600px;
+        border-spacing: 0;
+    }
+    tbody, thead tr { display: block; }
+    tbody {
+        height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    tbody td, thead th {
+        width: 140px;
+    }
+
+    thead th:last-child {
+        width: 156px; /* 140px + 16px scrollbar width */
+    }
+</style>
+
+@model IEnumerable<SAG2.Models.DetalleEgreso>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Detalles de Egresos";
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("a").click(function () {
+            window.opener.document.getElementById("Rut").value = $(this).attr("Brut");
+            window.opener.document.getElementById("DVBuscar").value = $(this).attr("Bdv");
+            window.opener.document.getElementById("Beneficiario").value = $(this).attr("Bnombre");
+            window.opener.document.getElementById("ComprobanteEgreso").value = $(this).attr("ComprobanteEgreso");
+            window.opener.document.getElementById("DetalleEgresoID").value = $(this).attr("DetalleEgresoID");
+            window.opener.document.getElementById("eMonto").value = $(this).attr("Monto");
+            window.opener.document.getElementById("fechaEgreso").value = $(this).attr("Fecha");
+            window.opener.document.getElementById("CuentaID").value = $(this).attr("CuentaID");
+            window.opener.document.getElementById("Descripcion").value = $(this).attr("Descripcion");
+            window.opener.document.getElementById("MontoI").value = $(this).attr("Montol");
+
+            window.close();
+            return false;
+        });
+
+        $("a").hover(
+            function() {
+                $(this).html('<i class="fa fa-check"></i>'); $(this).removeClass();
+                $(this).addClass('label label-success');
+            }, function() {
+                $(this).html('<i class="fa fa-square-o"></i>'); $(this).removeClass();
+                $(this).addClass('label label-warning');
+            }
+        );
+    }); 
+</script>
+
+<div class="top alert alert-warning"><i class="fa fa-list"></i> SELECIONAR EGRESO</div>
+<div id="contenido_popup">
+    <table class="table table-bordered table-hover">
+        <thead>
+           <tr>
+                <th class="controles"></th>
+                <th class="cien">Nº Egreso</th>
+                <th class="cien">Fecha</th>
+                <th class="cien">Nº Cheque</th>
+                <th class="cien">Monto $</th>
+                <th class="trescientos">Beneficiario</th>
+                <th class="cien">Cta. cte.</th>
+                <th class="doscientos">Cuenta</th>
+               <th class="doscientos">Reintegros</th>
+            </tr>  
+        </thead>
+        <tbody >
+            @foreach (var item in Model)
+            {
+                int valor_reintegros = 0;
+              /*  SAG2.Models.SAG2DB db2 = new SAG2.Models.SAG2DB();
+               
+                try
+                {
+                    valor_reintegros = db2.Movimiento.Where(d => d.DetalleEgresoID == item.ID).Sum(d => d.Monto_Ingresos);
+                }
+                catch (Exception)
+                {
+                    valor_reintegros = 0;
+                }
+                int resultado = item.Monto - valor_reintegros;*/
+                int resultado = item.Monto;
+                <tr>
+                    @try
+                    {
+                        var rut = "";
+                        var nombre ="";
+                        var dv = "";
+                           if (item.Egreso.Persona != null)
+                                {
+                                    rut = item.Egreso.Persona.Rut;
+                                    nombre = item.Egreso.Persona.NombreCompleto;
+                                    dv = item.Egreso.Persona.DV;
+                                  }
+                                  else if (item.Egreso.Proveedor != null)
+                                  {
+                                     rut = item.Egreso.Proveedor.Rut;
+                                     nombre = item.Egreso.Proveedor.Nombre;
+                                     dv = item.Egreso.Proveedor.DV;
+                       
+                                  }
+                                  else
+                                  { 
+                                      rut = item.Egreso.Rut;
+                                      nombre = item.Egreso.Beneficiario;
+                                      dv = item.Egreso.DV;
+           
+                                  }         
+                        
+                        
+                    <td class="controles"><a href="./" title="Seleccionar" ComprobanteEgreso="@item.Egreso.NumeroComprobante" DetalleEgresoID="@item.ID" Monto='@resultado.ToString("#,##0")' Fecha="@item.Egreso.Fecha.Value.ToShortDateString()" CuentaID="@item.CuentaID" Descripcion="@item.Glosa" Brut="@rut" Bnombre="@nombre" Bdv="@dv" Montol="@item.Monto" class="label label-warning"><i class="fa fa-square-o"></i></a></td>
+                    <td class="cien">@Html.DisplayFor(modelItem => item.Egreso.NumeroComprobante)</td>
+                    <td class="cien">@item.Egreso.Fecha.Value.ToShortDateString()</td>
+                    <td class="cien">@Html.DisplayFor(modelItem => item.Egreso.Cheque)</td>
+                    <td class="cien num">$ @item.Monto.ToString("#,##0")</td>
+                    <td class="trescientos">
+                    @if (item.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Egreso.Persona.NombreLista)
+                    }
+                    else if (item.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Egreso.Proveedor.NombreLista)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@item.Egreso.Rut + "-" + @item.Egreso.DV + " " + @item.Egreso.Beneficiario)
+                    }
+                    </td>
+                    <td class="cien">@Html.DisplayFor(modelItem => item.Egreso.CuentaCorriente.NumeroLista)</td>
+                     <td class="cien">@Html.DisplayFor(modelItem => item.Cuenta.Nombre)</td>
+                    <td class="cien">@valor_reintegros.ToString("#,##0")</td>
+                    }
+                    catch (Exception)
+                    { }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

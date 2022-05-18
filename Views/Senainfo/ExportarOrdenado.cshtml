@@ -1,0 +1,162 @@
+﻿@using SAG2.Models;
+@{
+    Layout = null;
+    SAG2DB db = new SAG2DB();
+    Response.ContentType = "text/plain";
+    Response.AddHeader("content-disposition", "attachment;filename=rendicion-senainfo-" + @ViewBag.periodo + "-" + @ViewBag.mes + "-" + string.Format("{0:yyyyMMdd}", DateTime.Today) + ".txt");
+    Response.Clear();
+    List<Movimiento> Movimientos = (List<Movimiento>)@ViewBag.Movimientos;
+    List<Movimiento> Ingresos = Movimientos.Where(m => m.TipoComprobanteID == 1).ToList();
+    List<Movimiento> Egresos = Movimientos.Where(m => m.TipoComprobanteID == 2).ToList();
+}
+@foreach (Movimiento item in Ingresos)
+{
+    // Despliegue de Ingresos
+    //1	IngresoEgreso	int	1		1 = Ingreso, 0 = Egreso
+    @Html.Raw("1");
+    //2	CodProyecto	int	9		Anteponer ceros
+    try
+    {
+        @Html.Raw(Convert.ToInt64(@item.Proyecto.CodSename).ToString("000000000"));
+    }
+    catch (Exception)
+    {
+        @Html.Raw("000000000");
+    }
+
+    //3	AnoMes	int	6	aaaamm	Año y mes de la conciliacion
+    try
+    {
+        @Html.Raw(@item.Periodo.ToString("0000") + @item.Mes.ToString("00"));
+    }
+    catch (Exception)
+    {
+        @Html.Raw("000000");
+    }
+
+    //4	FechaRegistro	DateTime	10	dd-mm-aaaa	Fecha de cuando se creo la rendición
+    try
+    {
+        @Html.Raw(DateTime.Now.Day.ToString("00") + "-" + DateTime.Now.Month.ToString("00") + "-" + DateTime.Now.Year.ToString("0000"));
+    }
+    catch (Exception)
+    {
+        @Html.Raw("00-00-0000");
+    }
+
+    //5	NroComprobante	int	9		Anteponer ceros   ID
+    try
+    {
+        @Html.Raw(@item.NumeroComprobante.ToString("000000000"));
+    }
+    catch (Exception)
+    {
+        @Html.Raw("000000000");
+    }
+
+    //6	Correlativo	int	9		Correlativo del comprobante
+    try
+    {
+        @Html.Raw("000000001");
+        //@Html.Raw(@item.NumeroComprobante.ToString("000000000"));
+    }
+    catch (Exception)
+    {
+        @Html.Raw("000000001");
+    }
+
+    //7	FechaComprobante	DateTime	10	dd-mm-aaaa	La fecha tiene que ser dentro del mes a rendir.
+    try
+    {
+        @Html.Raw(@item.Fecha.Value.ToShortDateString());
+    }
+    catch (Exception)
+    {
+        @Html.Raw("00-00-0000");
+    }
+
+    // 8	Nulo	int	1		Comprobantes 1 = Nulo, 0 = NO Nulo
+    try
+    {
+        if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
+        {
+            @Html.Raw("1");
+        }
+        else
+        {
+            @Html.Raw("0");
+        }
+    }
+    catch (Exception)
+    {
+        @Html.Raw("0");
+    }
+
+    // 9	CodDetalleIngreso	int	9		Código del detalle del Ingreso, anteponer ceros
+    try
+    {
+        @Html.Raw(@item.Cuenta.SenameDetalle.Value.ToString("000000000"));
+    }
+    catch (Exception)
+    {
+        @Html.Raw("000000000");
+    }
+
+    // 10	Monto	int	9		El monto debe ser mayor a cero
+    try
+    {
+        int monto = @item.Monto_Ingresos;
+        if (monto == 0)
+        {
+            @Html.Raw(monto.ToString("000000001"));
+        }
+        else
+        {
+            @Html.Raw(Math.Abs(monto).ToString("000000000"));
+        }
+    }
+    catch (Exception)
+    {
+        @Html.Raw("000000001");
+    }
+
+    //11	Glosa	varchar	20		Anteponer espacios
+    try
+    {
+        string descripcion = @item.Descripcion.ToUpper().Trim();
+        descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"\s+", " ");
+
+        try
+        {
+            descripcion = descripcion.Substring(0, 20).Trim();
+        }
+        catch (Exception)
+        { }
+
+        @Html.Raw(descripcion);
+
+        if (descripcion.Length < 20)
+        {
+            int largo = descripcion.Length;
+            for (int i = 0; i < (20 - largo); i++)
+            {
+                @Html.Raw(" ");
+            }
+        }
+    }
+    catch (Exception)
+    {
+        @Html.Raw("                    ");
+    }
+
+    // 12	Relleno	varchar	69		Campo de relleno para que todos los registros tengan el mismo ancho, este campo debe tener 69 caracteres "-" (menos)
+
+    for (int i = 0; i < 69; i++)
+    {
+        @Html.Raw("-");
+    }
+    @Html.Raw("\r\n");
+}
+<!--
+    Ingreso/Egreso, Mes de rendición, Código de Proyecto, , número de comprobante y correlativo.
+-->

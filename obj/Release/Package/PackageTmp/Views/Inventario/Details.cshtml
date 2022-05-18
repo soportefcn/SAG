@@ -1,0 +1,75 @@
+﻿@model SAG2.Models.Inventario
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Inventario</legend>
+
+    <div class="display-label">Proyecto</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Proyecto.Nombre)
+    </div>
+
+    <div class="display-label">Egreso</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Egreso.Glosa)
+    </div>
+
+    <div class="display-label">Especie</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Especie.Nombre)
+    </div>
+
+    <div class="display-label">Descripcion</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Descripcion)
+    </div>
+
+    <div class="display-label">Procedencia</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Procedencia)
+    </div>
+
+    <div class="display-label">Resolucion</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Resolucion)
+    </div>
+
+    <div class="display-label">Cantidad</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Cantidad)
+    </div>
+
+    <div class="display-label">Estado</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Estado)
+    </div>
+
+    <div class="display-label">Baja</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Baja)
+    </div>
+
+    <div class="display-label">CantidadBajas</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CantidadBajas)
+    </div>
+
+    <div class="display-label">Observaciones</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Observaciones)
+    </div>
+
+    <div class="display-label">Fecha</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Fecha)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

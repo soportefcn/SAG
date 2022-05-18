@@ -1,0 +1,67 @@
+﻿@model SAG2.Models.DetalleInformes
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DetalleInformes</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <label class="control-label col-md-2"> N°</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.informeID)
+        </dd>
+
+        <dt>
+             <label class="control-label col-md-2"> Cuenta ID</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cuentaID)
+        </dd>
+
+        <dt>
+           <label class="control-label col-md-2"> Tipo cuenta</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tipoCuenta)
+        </dd>
+
+        <dt>
+            <label class="control-label col-md-2"> Valor</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.valor)
+        </dd>
+
+        <dt>
+             <label class="control-label col-md-2"> Fecha</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.estado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.estado)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

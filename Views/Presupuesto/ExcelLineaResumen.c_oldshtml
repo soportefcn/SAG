@@ -1,0 +1,432 @@
+@model IEnumerable<SAG2.Models.Cuenta>
+@{
+    ViewBag.Title = "Control Presupuestario";
+    Layout = null;
+    List<SAG2.Models.DetallePresupuesto> dp = new List<SAG2.Models.DetallePresupuesto>();
+    List<SAG2.Models.Movimiento> ingresos = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleEgreso> egresos = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Movimiento> reintegros = new List<SAG2.Models.Movimiento>();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    //int proyectoid = ViewBag.pr_id;
+    
+   // string Proyecto = ((SAG2.Models.Proyecto)Session["Proyecto"]).NombreLista;
+    //string proyecto_file = Proyecto.Replace(" ", string.Empty);
+    List<int> Ingresos = (List<int>)@ViewBag.MovIngresos;
+    List<int> Egresos = (List<int>)@ViewBag.MovEgresos;
+    List<int> Reintegros = (List<int>)ViewBag.MovReintegros;
+    List<int> PreIngresos = (List<int>)ViewBag.PreIngresos;
+    List<int> PreEgresos = (List<int>)ViewBag.PreEgresos;
+    SAG2.Models.Cuenta cuentaAnterior = new SAG2.Models.Cuenta();
+    bool totalIngresos = false;
+    int mes_inicio = 0, periodo_inicio = 0;
+    bool subtotales = false;
+    try
+    {
+        dp = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.Detalle;
+        ingresos = (List<SAG2.Models.Movimiento>)@ViewBag.Ingresos;
+        reintegros = (List<SAG2.Models.Movimiento>)@ViewBag.Reintegros;
+        egresos = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Egresos;
+        mes_inicio = 1;
+        periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+    }
+    catch (Exception)
+    { }
+    int tr = 0;
+    int j = 0;
+    var Meses = new string[12]
+    {
+	    "Ene.",
+	    "Feb.",
+	    "Mar.",
+	    "Abr.",
+	    "May.",
+	    "Jun.",
+	    "Jul.",
+	    "Ago.",
+	    "Sep.",
+	    "Oct.",
+	    "Nov.",
+	    "Dic."
+	};
+
+    var celdas = new string[]
+    {
+	    "", "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","AA","AB","AC","AD","AE","AF","AG","AH","AI","AJ","AK","AL","AM","AN","AO","AP","AQ","AR","AS","AT","AU","AV","AW","AX","AY","AZ","BA","BB","BC","BD","BE","BF","BG","BH","BI","BJ","BK","BL","BM","BN","BO","BP","BQ","BR","BS","BT","BU","BV","BW","BX","BY","BZ", "CA", "CB", "CC", "CD"
+	};
+    var glosaresumen = new string[]
+    {
+     "", "1. Subvenci&oacute;n","2. Otros Aportes del SENAME","3. Otros Ingresos","a. Remuneraciones","b. Pr&oacute;vision de Fondos para Indemnizaciones","1) Consumos B&aacute;sicos","2) Arriendo Inmueble","3) Materiales de Escritorio y Aseo", "4) Mantencion y Reparaciones","5) Servicios Generales"," 6) Caja Chica y Fondos a Rendir","7) Aportes a la Administraci&oacute;n Central","8) Excedentes aportados a otros Proyectos","9) Devoluci&oacute;n de Fondos al SENAME","1) Alimentaci&oacute;n","2) Autocuidado","3) Capacitaci&oacute;n", "4) Materiales e Insumos Tecnicos","5) Movilizaci&oacute;n","1) Alimentaci&oacute;n","2) Ayuda a las Familias","3) Capacitaci&oacute;n y Educaci&oacute;n","4) Deportes y Recreaci&oacute;n","5) Movilizaci&oacute;n","6) Salud e Higiene","7) Vestuario y Calzado","a. Equipamiento","b. Infraestructura","2. Prestamos Institucionales","3. Aportes Institucionales"
+   
+    };
+
+    int columna_actual = 1;
+    int fila_actual = 0;
+    int filas = 0;
+    string Proyecto = "";
+
+    /*foreach (SAG2.Models.Proyecto Proyectos2 in ViewBag.Proyectos)
+    {
+        if (proyectoid == Proyectos2.ID)
+        {
+            Proyecto = Proyectos2.NombreLista;
+
+        }
+    }*/
+    string proyecto_file = "Excel";
+    
+    
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.Charset = "utf-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=CONTROL.PRESUP-" + proyecto_file + "-ANUAL-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Control Presupuestario</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Black\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Black\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+            /*mso-number-format:"\#\,\#\#0\.000";*/
+            /*mso-number-format: "[Azul][>0]#.##0";*/
+            /*mso-number-format:"0";*/
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <td><h2>Control Presupuestario </h2></td>
+        <td colspan="6"><h3>Periodo @periodo_inicio @ViewBag.NombreLinea  @ViewBag.NombreTipoproyecto</h3></td>
+    </tr>
+</table>
+@if (@ViewBag.NoHayPresupuesto != null)
+{
+        @Html.Raw(@ViewBag.NoHayPresupuesto);
+}
+else
+{
+    j = 0;
+    using (Html.BeginForm())
+    {
+    <table align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+        <tr>
+            <th rowspan="2">
+               Cuenta
+            </th>
+            @for (int i = mes_inicio; i < 12 + mes_inicio; i++)
+            {
+                if (i > 12)
+                {
+                    j = j + 1;
+                    <th style="width: 55px;" colspan="4" class="@Html.Raw("Periodo" + j)">@Html.Raw(Meses[j - 1])</th>
+                }
+                else
+                {
+                    <th style="width: 55px;" colspan="4" class="@Html.Raw("Periodo" + i)">@Html.Raw(Meses[i - 1])</th>
+                }
+            }
+            @{
+            j = 0;
+            }
+            <th style="white-space: nowrap;" colspan="4">Totales</th>
+        </tr>
+        <tr>
+            @for (int i = mes_inicio; i < 12 + mes_inicio; i++)
+            {
+                if (i > 12)
+                {
+                    j = j + 1;
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + j)">Ppto. $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + j)">Real  $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + j)">Desv. $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + j)">Desv. %</th>
+                }
+                else
+                {
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + i)">Ppto. $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + i)">Real  $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + i)">Desv. $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + i)">Desv. %</th>
+                }
+            }
+            <th style="white-space: nowrap;">Ppto. $</th>
+            <th style="white-space: nowrap;">Real  $</th>
+            <th style="white-space: nowrap;">Desv. $</th>
+            <th style="white-space: nowrap;">Desv. %</th>
+        </tr>
+        <!-- Fila 4 -->
+
+        <!-- Fila 6 -->
+        <tr>
+            <th>Ingresos</th>
+        </tr>
+       
+             
+                @for (int ix = 1; ix < 29; ix++)
+                {
+                    
+                    if (ix == 4){
+                            tr = 2;
+                            @Html.Raw("<tr ><td style=\"background-color: Silver; text-align: right;\" class=\"text\">&nbsp;" + "&nbsp;<b> Total Ingresos <b></td>");
+                           for (int ij = 0; ij < 13; ij++)
+                            { 
+                             @Html.Raw("<td class=\"num\">=SUMA("+celdas[tr]+"7:"+celdas[tr]+"9)</td><td class=\"num\">=SUMA("+celdas[tr +1]+"7:"+celdas[tr +1]+"9)</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "10 / "+ celdas[tr] +"10 </td>");
+                              tr = tr + 4;   
+                            }
+                           @Html.Raw("</tr><tr ><th >&nbsp;" + "&nbsp; Egresos </th></tr>");
+                           @Html.Raw("<tr ><th class=\"text\">&nbsp;" + "&nbsp; 1. Personal</th></tr>");
+                        }
+                     tr = 2;
+                    if (ix == 6){
+                            @Html.Raw("<tr ><td style=\"background-color: Silver; text-align: right;\" class=\"text\">&nbsp;" + "&nbsp;<b> Total Personal </b></td>");
+                            for (int ij = 0; ij < 13; ij++)
+                            {
+                                @Html.Raw("<td class=\"num\">=SUMA(" + celdas[tr] + "13:" + celdas[tr] + "14)</td><td class=\"num\">=SUMA(" + celdas[tr + 1] + "13:" + celdas[tr + 1] + "14)</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "15 /  "+ celdas[tr] +"10</td>");
+                                tr = tr + 4;
+                            }
+                            @Html.Raw("</tr><tr ><th class=\"text\">&nbsp;" + "&nbsp;2. Operacion</th></tr>");
+                            @Html.Raw("<tr ><th class=\"text\">&nbsp;" + "&nbsp;a Funcionamiento</th></tr>");
+                        }
+                    tr = 2;
+                    if (ix == 15)
+                    {
+                        @Html.Raw("<tr ><td style=\"text-align: right;\"class=\"text\">&nbsp;" + "&nbsp; <b>Total Funcionamiento <b></td>");
+                        for (int ij = 0; ij < 13; ij++)
+                        {
+                            @Html.Raw("<td class=\"num\">=SUMA(" + celdas[tr] + "18:" + celdas[tr] + "26)</td><td class=\"num\">=SUMA(" + celdas[tr + 1] + "18:" + celdas[tr + 1] + "26)</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "18 /  "+ celdas[tr] +"10 </td>");
+                            tr = tr + 4;
+                        }
+                        @Html.Raw("</tr><tr ><th class=\"text\">&nbsp;" + "&nbsp;b. Apoyo Tecnico</th></tr>");
+                       
+                    }
+                    tr = 2;
+                    if (ix == 20)
+                    {
+                        @Html.Raw("<tr ><td style=\"text-align: right;\" class=\"text\">&nbsp;" + "&nbsp; <b>Total Apoyo Tecnico<b> </td>");
+                        for (int ij = 0; ij < 13; ij++)
+                        {
+                            @Html.Raw("<td class=\"num\">=SUMA(" + celdas[tr] + "29:" + celdas[tr] + "33)</td><td class=\"num\">=SUMA(" + celdas[tr + 1] + "29:" + celdas[tr + 1] + "33)</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "29 /  "+ celdas[tr] +"10 </td>");
+                            tr = tr + 4;
+                        }
+                        @Html.Raw("</tr><tr ><th class=\"text\">&nbsp;" + "&nbsp;c. Apoyo Beneficiario</th></tr>");
+
+                    }
+                    tr = 2;
+                    if (ix == 27)
+                    {
+                        @Html.Raw("<tr ><td class=\"text\" style=\"text-align: right;\" >&nbsp;" + "&nbsp; <b>Total Apoyo Beneficiario <b> </td>");
+                        for (int ij = 0; ij < 13; ij++)
+                        {
+                            @Html.Raw("<td class=\"num\">=SUMA(" + celdas[tr] + "36:" + celdas[tr] + "42)</td><td class=\"num\">=SUMA(" + celdas[tr + 1] + "36:" + celdas[tr + 1] + "42)</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "36 /  "+ celdas[tr] +"10</td>");
+                            tr = tr + 4;
+                        }
+                        @Html.Raw("</tr><tr ><td style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;<b>Total Operacion<b></td>");
+                         tr = 2;     
+                        for (int ij = 0; ij < 13; ij++)
+                        {
+                            @Html.Raw("<td class=\"num\">=" + celdas[tr] + "27+" + celdas[tr] + "34+" + celdas[tr] + "43 </td><td class=\"num\">=" + celdas[tr +1] + "27+" + celdas[tr+1] + "34+" + celdas[tr+1] + "43 </td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "43 /  "+ celdas[tr] +"10</td>");
+                            tr = tr + 4;
+                        }
+                        @Html.Raw("</tr><tr ><td class=\"text\">&nbsp;" + "&nbsp;3. Inversion</td></tr>");
+                    }       
+                   
+                        @Html.Raw("<tr ><td  class=\"text\">&nbsp;" + "&nbsp;" + @glosaresumen[ix] + "</td>");
+                        // Se imprimen valores mensuales
+                        try
+                        {
+                            mes_inicio = 1;
+                            periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                        }
+                        catch (Exception)
+                        { }
+                        //periodo_actual = periodo_inicio;
+                        int  letra = 2;
+                        for (int i = 0; i < 12; i++)
+                        { 
+                            if (mes_inicio > 12)
+                            {
+                                mes_inicio = 1;
+                                //periodo_actual = periodo_inicio + 1;
+                            }
+
+                            int valor_presupuesto = dp.Where(d => d.Cuenta.resumen == ix).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_inicio).Sum(d => d.Monto);
+                            int valor_ingresos = ingresos.Where(d => d.Cuenta.resumen == ix).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_inicio).Sum(d => d.Monto_Ingresos);
+                            int valor_egresos = egresos.Where(d => d.Cuenta.resumen == ix).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_inicio).Sum(d => d.Monto);
+                            int valor_reintegros = reintegros.Where(d => d.Cuenta.resumen == ix).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_inicio).Sum(d => d.Monto_Ingresos);
+                            
+                            <td style="text-align: right;" class="num">@valor_presupuesto.ToString("#,##0")</td>
+                            if (ix <= 3)
+                            {
+                                <td style="text-align: right;" class="num">@valor_ingresos.ToString("#,##0") </td>
+                                <td style="text-align: right;" class="num">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td>
+                                <td class="por100">=@Html.Raw( "VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))))/ " + celdas[letra] +"10" )</td>
+                            }
+                            else
+                            {
+                                <td class="num">@((valor_egresos-valor_reintegros).ToString("#,##0"))</td>
+                                <td class="num">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td>
+                                <td class="por100">=@Html.Raw( "VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))))/ " + celdas[letra] +"10" )</td>
+                            }
+                            mes_inicio++;
+                            letra = letra + 4;
+                        }
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                
+                        if (ix > 3)
+                        {
+                        <td class="num" style="background-color: #D3D3D3;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2)))</td>
+                        <td class="por100" style="background-color: #D3D3D3;">=@Html.Raw( "VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))))/ " + celdas[letra] +"10" )</td>
+                        }
+                        else
+                        {
+                        <td class="num" style="background-color: #D3D3D3;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2)))</td>
+                        <td class="por100" style="background-color: #D3D3D3;">=@Html.Raw( "VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))))/ " + celdas[letra] +"10" )</td>
+                        }
+                        @Html.Raw("</tr>");
+                    }
+               
+                               
+                              
+                                }
+                    @{
+                             tr = 2;
+                            @Html.Raw("<tr ><td style=\"background-color: Silver;text-align: right;\" class=\"text\">&nbsp;" + "&nbsp; <b>Total Inversion <b></td>");
+                           for (int ij = 0; ij < 13; ij++)
+                            {
+
+                                @Html.Raw("<td class=\"num\">=SUMA(" + celdas[tr] + "46:" + celdas[tr] + "47)</td><td class=\"num\">=SUMA(" + celdas[tr + 1] + "46:" + celdas[tr + 1] + "47)</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "48 /  "+ celdas[tr] +"10 </td>");
+                                tr = tr + 4; 
+                            }
+                           @Html.Raw("</tr><tr ><td style=\"background-color: Silver;text-align: right;\" class=\"text\">&nbsp;" + "&nbsp;<b>Total Egresos<b></td>");
+                           tr = 2;
+                           for (int ij = 0; ij < 13; ij++)
+                           {
+                               @Html.Raw("<td class=\"num\">=" + celdas[tr] + "48+" + celdas[tr] + "44+" + celdas[tr] + "15 </td><td class=\"num\">=" + celdas[tr + 1] + "48+" + celdas[tr + 1] + "44+" + celdas[tr + 1] + "15 </td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "49 /  "+ celdas[tr] +"10</td>");
+                               tr = tr + 4;
+                           }
+                           @Html.Raw("</tr><tr ><td class=\"text\" style=\"background-color: Silver;text-align: right\" >&nbsp;" + "&nbsp;<b>Resultado <B></td>");
+                           tr = 2;
+                           for (int ij = 0; ij < 13; ij++)
+                           {
+                               @Html.Raw("<td class=\"num\">=" + celdas[tr] + "10 -" + celdas[tr] + "49 </td><td class=\"num\">=" + celdas[tr + 1] + "10-" + celdas[tr + 1] + "49 </td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "50 /  "+ celdas[tr] +"10 </td>");
+                               tr = tr + 4;
+                           }
+
+                            @Html.Raw("</tr ><tr ><td style=\"background-color: Silver;text-align: right;\" class=\"text\">&nbsp;" + "&nbsp; <b>Financiamiento <b></td></tr >");
+
+
+                           @Html.Raw("</tr><tr ><td  class=\"text\">&nbsp;" + "&nbsp;<b>Saldo Inicial <B></td>");
+                           tr = 2;
+                           int trant = 2;
+                           mes_inicio = 1;
+                           int saldoInicial = Int32.Parse(ViewBag.SaldoInicial.ToString());
+                           int saldoInicialPre = Int32.Parse(ViewBag.SaldoInicial.ToString());
+                           for (int ij = 0; ij < 12; ij++)
+                           {
+                           if (mes_inicio == 1){
+                          @Html.Raw("<td class=\"num\">" + (saldoInicialPre).ToString("#,##0") + "</td><td class=\"num\">" + (saldoInicialPre).ToString("#,##0") +"</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "52 /  "+ celdas[tr] +"10 </td>");
+                            }else
+                            {
+                                tr = tr + 4;
+                                @Html.Raw("<td class=\"num\">="  + celdas[trant] + "55 </td><td  class=\"num\">=" + celdas[trant+1] + "55 </td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "52 /  "+ celdas[tr] +"10 </td>");
+                                trant = trant + 4; 
+                           } 
+                        
+                           mes_inicio++;
+                           }
+                            tr = tr + 4;
+                            @Html.Raw("<td class=\"num\">" + (saldoInicialPre).ToString("#,##0") + "</td><td>" + (saldoInicialPre).ToString("#,##0") + "</td><td class=\"num\">=0</td><td class=\"por100\">="+ celdas[tr+2] + "52 /  "+ celdas[tr] +"10 </td>");
+                                
+                           @Html.Raw("</tr><tr ><td  class=\"text\">&nbsp;" + "&nbsp;<b>Prestamos Institucionales <B></td>");
+                           tr = 2;
+                           mes_inicio = 1;
+                           for (int ij = 0; ij < 12; ij++)
+                          {
+                           //int valor_presupuesto3 = dp.Where(d => d.Cuenta.resumen == 31).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_inicio).Sum(d => d.Monto);
+
+                            int valor_ingresos = ingresos.Where(d => d.Cuenta.resumen == 29).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_inicio).Sum(d => d.Monto_Ingresos);
+                           int valor_egresos = egresos.Where(d => d.Cuenta.resumen == 30).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_inicio).Sum(d => d.Monto);                                
+                            @Html.Raw("<td></td><td class=\"num\">" + (valor_ingresos - valor_egresos).ToString("#,##0") + "</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "53 /  "+ celdas[tr] +"10 </td>");
+                            tr = tr + 4;
+                            mes_inicio ++;     
+                             }    
+                           <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                            <td style="text-align: right;" class="num">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td>
+                             <td class="por100">=@Html.Raw( "VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))))/ " + celdas[tr] +"10" )</td>
+                        
+                           @Html.Raw("</tr><tr ><td  class=\"text\">&nbsp;" + "&nbsp;<b>Aportes Institucionales <B></td>");
+                           tr = 2;
+                           mes_inicio = 1;
+                           for (int ij = 0; ij < 12; ij++)
+                          {
+
+                              
+                           int valor_ingresos = ingresos.Where(d => d.Cuenta.resumen == 31).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_inicio).Sum(d => d.Monto_Ingresos);
+                           int valor_presupuesto2 = dp.Where(d => d.Cuenta.resumen == 31).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_inicio).Sum(d => d.Monto);
+                                 
+                            @Html.Raw("<td>" + valor_presupuesto2.ToString("#,##0") + "</td><td class=\"num\">" + valor_ingresos.ToString("#,##0") + " </td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "54 /  "+ celdas[tr] +"10 </td>");
+                            tr = tr + 4;
+                             mes_inicio++;
+                          }
+                       <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                         <td style="text-align: right;" class="num">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td>
+                             <td class="por100">=@Html.Raw( "VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))))/ " + celdas[tr] +"10" )</td>
+                           @Html.Raw("</tr><tr ><td  class=\"text\">&nbsp;" + "&nbsp;<b>Saldo Final<B></td>");
+                           tr = 2;
+                           mes_inicio = 1;
+                           for (int ij = 0; ij < 13; ij++)
+                           {
+
+                               @Html.Raw("<td class=\"num\">=SUMA(" + celdas[tr] + "50:" + celdas[tr] + "54)  </td><td  class=\"num\">=SUMA(" + celdas[tr +1] + "50:" + celdas[tr+1] + "54)</td><td class=\"num\">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td><td class=\"por100\">="+ celdas[tr+2] + "55 /  "+ celdas[tr] +"10 </td>");
+                               tr = tr + 4;
+                               mes_inicio++;
+                           }                                             
+                        
+                        
+                         }   
+                    
+        </table>
+    }
+}
+</body>
+</html>

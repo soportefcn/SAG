@@ -1,0 +1,271 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Egresos";
+    var total = 0;
+    var totReintegro = 0;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    var ProyectoSelected = (SAG2.Models.Proyecto)Session["Proyecto"];
+}
+<div id="SAGBox">
+    <h2>Informe de Fondos a Rendir</h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+         <fieldset>
+     <div class="panel panel-default">
+    <div class="panel-body">
+
+        <h3>Proyecto</h3>
+            <div class="form-group">
+        <select name="ProyID" id="ProyID"  class="js-autocomplete" style="width: 400px;">
+            <option> - Seleccione proyecto</option>
+            @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            { 
+            <option value="@Proyecto.ID" @if (@Proyecto.ID.Equals(ViewBag.ProSel)) { @Html.Raw("selected=\"selected\"") }>@Proyecto.NombreEstado</option>
+            }
+        </select>
+    </div>
+      <h3>Periodo</h3> 
+     <div class="form-inline form-group">
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Desde</label>
+            </div>
+         <div class ="form-group">
+             <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" />
+         </div>
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Hasta</label>
+           </div>
+          <div class ="form-group">
+              <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" style="margin-right: 20px;" />
+            </div>
+         <div class ="form-group">
+             <input type="submit" value="Ver resultados!" class="btn btn-primary"  />
+        </div>
+          <div class="form-group">
+             <a  data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="fondorendir" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
+                  <span class ="fa fa-file-excel-o  fa-2x"></span>
+             </a>
+         </div>
+        
+      
+     </div>
+  </div>
+
+</div>
+                       
+</fieldset>
+          
+    }
+}
+   
+  
+
+    <div style="height: 280px; overflow: scroll;">
+    <table class="table table-bordered">
+         <tr>
+            <th style="width: auto;">Nº E.</th>
+            <th  style="width: auto;">Fecha</th>
+            <th style="width: auto;">Nº Cheque</th>
+            <th style="width: auto;">Documento</th>
+            <th style="width: auto;">Nº Doc.</th>
+            <th style="width: auto;">Fecha</th>
+            <th style="width: auto;">Rut </th>
+            <th style="width: auto;">Beneficiario</th>
+            <th style="width: auto;">Monto $</th>
+            <th style="width: auto;">Monto Reintegro$</th>
+            <th style="width: auto;">Cuenta</th>
+            <th>Glosa</th>
+            <th style="width: 90px;">Cta. Cte.</th>
+        </tr>
+    @foreach (var item in Model)
+    {
+
+            SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).Where(d=> d.CuentaID == 60).ToList();
+            foreach (var detalle in detalles)
+            {
+                total = total + detalle.Monto;
+                SAG2.Models.SAG2DB db2 = new SAG2.Models.SAG2DB();
+                int valor_reintegros = 0;
+                try
+                {
+                     valor_reintegros = db2.Movimiento.Where(d => d.DetalleEgresoID == detalle.ID).Sum(d => d.Monto_Ingresos);
+                }
+                catch (Exception)
+                {
+                    valor_reintegros = 0;
+                }
+                totReintegro = totReintegro + valor_reintegros;
+                
+                
+                
+            <tr detalleid="@detalle.ID">
+                <td align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @detalle.Egreso.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @detalle.Egreso.Cheque
+                </td>
+                <td>
+                    @if (@detalle.Documento != null)
+                    {
+                        @detalle.Documento.Nombre
+                    }
+                </td>
+                <td>
+                    @detalle.NDocumento
+                </td>
+                <td>
+                    @detalle.FechaEmision.ToShortDateString()
+                </td>
+                  <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Persona.RutDV)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.RutDV)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@detalle.Egreso.Rut)
+                    }
+                </td>
+                <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Persona.NombreCompleto)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@detalle.Egreso.Beneficiario)
+                    }
+                </td>
+                <td align="right">
+                    <strong>
+                    $@detalle.Monto.ToString("#,##0")
+                    </strong>
+                </td>
+                   <td align="right">
+                    <strong>
+                    $@valor_reintegros.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="left">@if (@detalle.Cuenta != null)
+                                 { @Html.Raw(utils.cuentaPadre(@detalle.Cuenta)) }</td>
+                <td>
+                    @detalle.Glosa
+                </td>
+                <td>
+                    @detalle.Egreso.CuentaCorriente.Numero
+                </td>
+            </tr>
+      
+            if (valor_reintegros != 0){
+
+            <tr>
+                <td colspan="13" style="background:#e2e0e0">
+                    Reintegros
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: auto;">Nº Comp.</th>
+                            <th style="width: auto;">Fecha</th>
+                            <th style="width: auto;">Monto $</th>
+                            <th style="width: auto;">Nº Doc.</th>
+                            <th style="width: auto;">Cta. Cte.</th>
+                            <th style="width: auto;">Glosa</th>                        
+               
+                        </tr>
+            @{
+            SAG2.Models.SAG2DB db3 = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.Movimiento> Reintegros = db.Movimiento.Where(d => d.DetalleEgresoID == detalle.ID).ToList();
+            foreach (var Reintegro in Reintegros)
+            {
+                <tr>
+                                <td align="center">
+                @Reintegro.NumeroComprobante
+            </td>
+            <td>
+                @Reintegro.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="right">
+                <strong>
+                $@Reintegro.Monto_Ingresos.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                @Reintegro.Cheque
+            </td>
+            <td>
+                @Reintegro.CuentaCorriente.Numero
+            </td>
+            <td>
+                @Reintegro.Descripcion
+            </td>
+</tr>
+            }
+            }
+                     </table>
+
+                </td>
+            </tr>
+    }
+    
+   
+            }
+        }
+    
+         </table>
+    </div>
+   
+    <br />
+     <div class="form-group form-inline">
+         @using (Html.BeginForm())
+        {
+          
+              <div class="form-group" >
+               <a class="btn btn-default imprimirInformePeriodo" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../Imprimir/Informefondorendir?Desde=@Html.Raw(@ViewBag.Desde)&Hasta=@Html.Raw(@ViewBag.Hasta)" >
+                       <span class ="fa fa-print fa-2x"></span>  
+                </a>
+        </div>
+        
+        <div class="form-group form-inline">
+            <div class="form-group" style="margin-right:10px" >
+                 <label>Total Egresos</label>
+            </div><br />
+            <div class="form-group" style="margin-right:10px" >
+                <b><input class="form-control" value="$@total.ToString("#,###")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+            </div>
+            </div>
+          <div class="form-group form-inline ">
+          <div class="form-group" style="margin-right:10px" >
+              <label>Total Reintegros</label>
+            </div><br />
+          <div class="form-group" style="margin-right:10px" >
+           <b><input class="form-control" value="$@totReintegro.ToString("#,###")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+        </div></div>
+             
+               <div class="form-group form-inline ">
+          <div class="form-group" style="margin-right:10px" >
+              <label>Total</label>
+            </div><br />
+          <div class="form-group" style="margin-right:10px" >
+              @{ var resultado = total - totReintegro;
+                  
+                  }
+           <b><input class="form-control" value="$@resultado.ToString("#,###")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+        </div></div>
+          }
+        </div>
+</div>

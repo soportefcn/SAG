@@ -1,0 +1,1985 @@
+﻿@model SAG2.Models.Proyecto
+@{
+    Layout = null;
+    ViewBag.Title = "Indicadores SAG 2";
+    int mesPeriodoActual = (int)Session["Mes"];
+    int periodoActual = (int)Session["Periodo"];
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    List<SAG2.Models.Movimiento> ingresos = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleEgreso> egresos = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Movimiento> reintegros = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetallePresupuesto> dp = new List<SAG2.Models.DetallePresupuesto>();
+    List<SAG2.Models.Convenio> Pl = new List<SAG2.Models.Convenio>();
+    List<SAG2.Models.Intervencion> Inter = new List<SAG2.Models.Intervencion>();
+    //List<int> Ingresos = (List<int>)@ViewBag.MovIngresos;
+    List<SAG2.Models.DetalleEgreso> Egresos = ViewBag.Egresos;
+    //List<int> Reintegros = (List<int>)ViewBag.MovReintegros;
+    List<SAG2.Models.DeudaPendiente> dpen = new List<SAG2.Models.DeudaPendiente>();
+    List<SAG2.Models.IndicadorCalidad> Calidad = new List<SAG2.Models.IndicadorCalidad>();
+    List<SAG2.Models.BoletaHonorario> Retencion = new List<SAG2.Models.BoletaHonorario>();
+    List<SAG2.Models.HorasExtras> HorasEx = new List<SAG2.Models.HorasExtras>();
+    List<SAG2.Models.IndicadoresGestion> Estandares = new List<SAG2.Models.IndicadoresGestion>();
+
+    try
+    {
+        dp = (List<SAG2.Models.DetallePresupuesto>)ViewBag.Detalle;
+        ingresos = (List<SAG2.Models.Movimiento>)ViewBag.Ingresos;
+        reintegros = (List<SAG2.Models.Movimiento>)ViewBag.Reintegros;
+        egresos = (List<SAG2.Models.DetalleEgreso>)ViewBag.Egresos;
+        dpen = (List<SAG2.Models.DeudaPendiente>)ViewBag.Deudapen;
+        Pl = (List<SAG2.Models.Convenio>)ViewBag.Plazas;
+        Inter = (List<SAG2.Models.Intervencion>)ViewBag.Inter;
+        Calidad = (List<SAG2.Models.IndicadorCalidad>)ViewBag.Indcal;
+        Retencion = (List<SAG2.Models.BoletaHonorario>)ViewBag.BolHon;
+        HorasEx = (List<SAG2.Models.HorasExtras>)ViewBag.HHExtras;
+        Estandares = (List<SAG2.Models.IndicadoresGestion>)ViewBag.Indca;
+    }
+    catch (Exception)
+    { } 
+
+     string proyecto_file = "Excel";
+    // Date.ToString("yyyy-MM-dd");
+     proyecto_file = DateTime.Now.ToString("yyyy-MM-dd") + "_Indicadores_P" + ViewBag.CodigoCodeni + "_A" + @ViewBag.Periodo + ".xls";
+     
+     Response.Clear();
+     Response.Buffer = true;
+     Response.ContentType = "application/vnd.ms-excel";
+     Response.Charset = "utf-8";
+     Response.AddHeader("Content-Disposition", "attachment;filename="+proyecto_file);
+}
+<!DOCTYPE html>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+<html>
+<head>
+    <title>Indicadores</title>
+    <style>
+      .text{
+        mso-number-format:"\@@"; /*force text*/
+        white-space: nowrap;
+        text-align: left;
+        mso-protection:locked;
+        font-weight:bold;
+        vertical-align: middle;
+      }
+
+      .por100 {
+        white-space: nowrap;
+        mso-number-format:"Percent";
+        text-align: center;
+        mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        font-weight:bold;
+        vertical-align: middle;
+      }
+
+      .num {
+        white-space: nowrap;
+        text-align: right;
+        mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+        font-weight:bold;
+        vertical-align: middle;
+        /*mso-number-format:"\#\,\#\#0\.000";*/
+        /*mso-number-format: "[Azul][>0]#.##0";*/
+        /*mso-number-format:"0";*/
+      }
+      .moneda{
+        mso-style-parent:style0;
+        font-size:10.0pt;
+        font-weight:bold;
+        mso-number-format:"\0022$\0022\#\,\#\#0";
+        text-align:right;
+        vertical-align: middle;
+        border:.5pt solid black;
+      }
+      .active {
+       background-color: #f5f5f5;
+      }
+      .ajustarFactor{
+        vertical-align: middle;
+        font-weight:bold;
+        white-space: pre-line; /* CSS 3.0 */
+        text-align:center;
+      }
+      .ajustarFactorL{
+        vertical-align: middle;
+        font-weight:bold;
+        white-space: pre-line; /* CSS 3.0 */
+        text-align:left;
+      }
+      .encabezado {
+        vertical-align: middle;
+        text-align: center;
+        background: #f8cbad;
+      }
+      .cdn {
+        background: #00ADE5;
+        vertical-align: middle;
+        font-weight:bold;
+        white-space: pre-line; /* CSS 3.0 */
+        text-align:center;
+        color: white;
+        font-size:16px;
+      }
+
+      .tind {
+        vertical-align: middle;
+        font-weight:bold;
+        white-space: pre-line; /* CSS 3.0 */
+        text-align:center;
+        color: black;
+        font-size:19px;
+      }
+
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+      <td colspan="11" class="cdn">FUNDACI&Oacute;N CIUDAD DEL NI&Ntilde;O</td>
+    </tr>
+</table >
+
+<br />
+<table cellpadding='5' border='1' style='width: 100%;'>
+<tr>
+<td colspan="5" class="tind">INDICADORES DE GESTI&Oacute;N A&Ntilde;O @ViewBag.Periodo</td>
+</tr>
+</table>
+
+<br />
+<table cellpadding='5' border='1' style='width: 100%;'>
+    <tr>
+        <td class="ajustarFactorL">Proyecto : @ViewBag.NombreProyecto </td>
+        <td class="ajustarFactorL">Código SENAME.</td>
+        <td class="ajustarFactorL">@ViewBag.CodigoSename</td>
+        <td class="ajustarFactorL">Cod. Inst.</td>
+        <td class="ajustarFactorL">@ViewBag.CodigoCodeni</td>
+    </tr>
+    <tr>
+        <td class="ajustarFactorL">Region</td>
+        <td class="ajustarFactorL">@ViewBag.Region</td>
+        <td class="ajustarFactorL">Ciudad</td>
+        <td colspan="2" class="ajustarFactorL">@ViewBag.Ciudad</td>
+    </tr>
+    <tr>
+        <td class="ajustarFactorL">Auditor</td>
+        <td colspan="4" class="ajustarFactorL">@ViewBag.Auditor</td>
+    </tr>
+</table>
+
+<br />
+<br />
+
+
+<table cellpadding='5' border='1' style='width: 100%;'>
+   <thead>
+       <th class="encabezado" ><b>Factor</b></th>
+       <th class="encabezado" >Variable</th>
+       <th class="encabezado" >Indicador</th>
+       <th class="encabezado">Estandar</th>
+       <th class="encabezado";>Base de Medición</th>
+       <th class="encabezado">1° Trimestre </th>
+       <th class="encabezado">2° Trimestre</th>
+       <th class="encabezado">1° Semestre</th>
+       <th class="encabezado">3° Trimestre</th>
+       <th class="encabezado">4° Trimestre</th>
+       <th class="encabezado">2° Semestre</th>
+      
+</thead>
+
+     @{
+       
+            }
+    <tr> 
+        @{ 
+            var coberturasestandares = 0;
+            try{
+                coberturasestandares =  (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CapCobertura);
+           } catch { }
+           
+            double factor1 = 0; 
+            try{
+            factor1 = Pl.Where(p => p.Mes <= 3).Sum(p => p.NroPlazas)/3; 
+            }catch { }
+            int factor2 = 0; 
+            try{
+           factor2 = Pl.Where(p => p.Mes >= 4 && p.Mes <= 6).Sum(p => p.NroPlazas) / 3; 
+            }catch { }
+            int factor3 = 0;
+            try
+            {
+                factor3 = Pl.Where(p => p.Mes >= 7 && p.Mes <= 9).Sum(p => p.NroPlazas) / 3;
+            }
+            catch { }
+            int factor4 = 0;
+            try
+            {
+                factor4 = Pl.Where(p => p.Mes >= 10 && p.Mes <= 12).Sum(p => p.NroPlazas) / 3;
+            }
+            catch { }
+
+            int factor5 = 0;
+            try
+            {
+                factor5 = Pl.Where(p => p.Mes <= 6).Sum(p => p.NroPlazas) / 6;
+            }
+            catch { }
+
+            int factor6 = 0;
+            try
+            {
+                factor6 = Pl.Where(p => p.Mes >= 7 && p.Mes <= 12).Sum(p => p.NroPlazas) / 6;
+            }
+            catch { } 
+            
+           } 
+        <td class="ajustarFactor" rowspan="2" class ="" >Capacidad</td>
+        <td class="ajustarFactor"  rowspan="2">Cobertura</td>
+        <td class="ajustarFactor" >N&deg; de plazas establecidas en el Convenio</td>
+        <td class="ajustarFactor" >@coberturasestandares.ToString("##,##0")</td>
+        <td class="ajustarFactor">Trimestral</td>        
+        <td class="ajustarFactor">@factor1.ToString("##,##0")</td>
+        <td class="ajustarFactor"> @((factor2).ToString("#,##0")) </td>
+        <td class="ajustarFactor"> @((factor5).ToString("#,##0"))  </td>
+        <td class="ajustarFactor"> @((factor3).ToString("#,##0")) </td>
+        <td class="ajustarFactor"> @((factor4).ToString("#,##0")) </td>
+        <td class="ajustarFactor"> @((factor6).ToString("#,##0"))  </td>
+   
+    </tr>
+    <tr>
+
+        <td class="ajustarFactor" > % de Intervenciones Mensuales</td>
+        @{
+        float intermensualesestandares = 0;
+        try{
+        intermensualesestandares = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CapIntervenciones);}
+        catch{}
+        }
+        <td class="ajustarFactor">@intermensualesestandares.ToString("0.#0") %</td>
+        <td class="ajustarFactor">Trimestral</td>
+         <td class="por100">@{
+             int cobertura = 0;
+             float plaza = 0;
+             float porcentaje = 0;
+             var porcentaje_str2 = "";
+               try
+                {
+                    cobertura = Inter.Where(p => p.Mes <= 3).Sum(p => p.Atenciones);
+
+                      plaza = Pl.Where(p => p.Mes <= 3).Sum(p => p.NroPlazas);
+                     porcentaje = cobertura * 100/ plaza;
+                   if (plaza == 0){
+                        porcentaje_str2 = "0,00";
+                   }else{
+                       porcentaje_str2 = porcentaje.ToString("0.#0");
+                   }
+               }
+               catch (Exception)
+               {
+                    cobertura = 0;
+                   plaza = 0;
+                    porcentaje = 0;
+                   porcentaje_str2 = "0";
+               }
+               
+         }
+              @Html.Raw(porcentaje_str2.ToString()) %
+              </td>
+        <td class="por100">@{
+            float cobertura2 = 0;
+             try
+             {
+                 cobertura2 = Inter.Where(p => p.Mes >= 4 && p.Mes <= 6).Sum(p => p.Atenciones);
+                 plaza = Pl.Where(p => p.Mes >= 4 && p.Mes <= 6).Sum(p => p.NroPlazas);
+                 if (cobertura2 == 0){
+                     porcentaje_str2 = cobertura2.ToString(("0.#0"));
+                  }else{   
+                 porcentaje = (cobertura2 * 100) / plaza;
+                 porcentaje_str2 = porcentaje.ToString(("0.#0"));}
+                 }
+                   catch (Exception)
+               {
+                    cobertura2 = 0;
+                   plaza = 0;
+                    porcentaje = 0;
+                   porcentaje_str2 = "";
+               }
+                 
+         }
+             @Html.Raw(porcentaje_str2) %
+            
+            </td>
+        <td class="por100">
+            @{
+  
+               try
+                {
+                    cobertura = Inter.Where(p => p.Mes <= 6).Sum(p => p.Atenciones);
+
+                      plaza = Pl.Where(p => p.Mes <= 6).Sum(p => p.NroPlazas);
+                     porcentaje = cobertura * 100/ plaza;
+                   if (plaza == 0){
+                        porcentaje_str2 = "0,00";
+                   }else{
+                       porcentaje_str2 = porcentaje.ToString("0.#0");
+                   }
+               }
+               catch (Exception)
+               {
+                    cobertura = 0;
+                   plaza = 0;
+                    porcentaje = 0;
+                   porcentaje_str2 = "0";
+               }
+               
+         }
+              @Html.Raw(porcentaje_str2.ToString()) %
+
+
+        </td>
+        <td class="por100" >
+            @{
+                float cobertura3;
+                float porcentaje3 = 0;
+                try
+                {
+                cobertura3 = Inter.Where(p => p.Mes >= 7 && p.Mes <= 9).Sum(p => p.Atenciones);
+                plaza = Pl.Where(p => p.Mes >= 7 && p.Mes <= 9).Sum(p => p.NroPlazas);
+              porcentaje3 = cobertura3 * 100/ plaza;
+             if(cobertura3 == 0){
+                 porcentaje3 = 0;
+             }
+                                              }
+                              catch (Exception)
+               {
+                    cobertura3 = 0;
+                   plaza = 0;
+                    porcentaje3 = 0;
+                  
+               }   
+         }
+            @Html.Raw(porcentaje3.ToString("0.#0"))  % </td>
+         @{
+            float cobertura4 = 0;
+            float plaza4 = 0;
+            float porcentaje4 = 0;
+             try
+                {
+                    cobertura4 = Inter.Where(p => p.Mes >= 10 && p.Mes <= 12).Sum(p => p.Atenciones);
+                    plaza4 = Pl.Where(p => p.Mes >= 10 && p.Mes <= 12).Sum(p => p.NroPlazas);
+                    porcentaje4 = (cobertura4 / plaza4) * 100;
+                                  }
+                   catch (Exception)
+                   {
+                       cobertura4 = 0;
+                       plaza4 = 0;
+                       porcentaje4 = 0;
+                       
+                   }   
+            }
+           <td class="por100"> @Html.Raw(porcentaje4.ToString("0.#0")) % </td>
+        <td class="por100">
+              @{
+           
+             try
+                {
+                    cobertura4 = Inter.Where(p => p.Mes >= 7 && p.Mes <= 12).Sum(p => p.Atenciones);
+                    plaza4 = Pl.Where(p => p.Mes >= 7 && p.Mes <= 12).Sum(p => p.NroPlazas);
+                    porcentaje4 = (cobertura4 / plaza4) * 100;
+                                  }
+                   catch (Exception)
+                   {
+                       cobertura4 = 0;
+                       plaza4 = 0;
+                       porcentaje4 = 0;
+                       
+                   }   
+            }
+            @Html.Raw(porcentaje4.ToString("0.#0")) % 
+        </td>
+       
+      </tr>
+    <tr>
+        <td class="ajustarFactor" rowspan="2"> Ingresos</td>
+        <td class="ajustarFactor">Subvenci&oacute;n SENAME</td>
+        <td class="ajustarFactor">Ingresos por subenci&oacute;n </td>
+        @{
+            int subencionsenameestandar = 0;
+            try{
+            subencionsenameestandar = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.IngSubvencion);
+            }catch{}
+        }
+        <td class="moneda">$ @subencionsenameestandar.ToString("#,###,##0")</td>
+
+        <td class="ajustarFactor">Trimestral</td>
+         @{ 
+            double subenvion_1 = 0;
+            double subenvion_2= 0;
+            double subenvion_3 = 0;
+            double subenvion_4 = 0;
+            double subenvion_5 = 0;
+            double subenvion_6 = 0;
+             try{
+            subenvion_1 = Model.Movimientos.Where(p => p.Periodo == ViewBag.Periodo).Where(p => p.Mes < 4).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Sum(p => p.Monto_Ingresos);
+            subenvion_1 = subenvion_1 / 3;  
+             }catch{}
+            try{
+            subenvion_2 = Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 4 && p.Mes <= 6).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Sum(p => p.Monto_Ingresos);
+            subenvion_2 = subenvion_2 / 3;  
+            }catch{}
+            try{
+            subenvion_3 = Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 7 && p.Mes <= 9).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID ==2 || p.Cuenta.ID == 8 ).Sum(p => p.Monto_Ingresos);
+            subenvion_3 = subenvion_3 / 3;   
+            }catch{}
+            try{
+            subenvion_4 = Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 9 && p.Mes <= 12).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Sum(p => p.Monto_Ingresos);
+            subenvion_4 = subenvion_4 / 3;
+            }catch{}
+            try
+            {
+                subenvion_5 = Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p =>  p.Mes <= 6).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Sum(p => p.Monto_Ingresos);
+                subenvion_5 = subenvion_5 / 6;
+            }
+            catch { }
+            try
+            {
+                subenvion_6 = Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6 && p.Mes <= 12).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Sum(p => p.Monto_Ingresos);
+                subenvion_6 = subenvion_6 / 6;
+            }
+            catch { }
+            }
+        <td class="moneda"> $@( (subenvion_1).ToString("#,###,##0"))</td>
+         <td class="moneda">$ @( (subenvion_2).ToString("#,###,##0")) </td>
+        <td class="moneda">$ @( (subenvion_5).ToString("#,###,##0"))</td>
+         <td class="moneda">$ @( (subenvion_3).ToString("#,###,##0")) </td>
+        <td class="moneda">$ @( (subenvion_4).ToString("#,###,##0"))</td>
+        <td class="moneda">$ @( (subenvion_6).ToString("#,###,##0")) </td>
+         
+         
+     
+    </tr>
+    <tr>
+         
+        <td class="ajustarFactor">Otros Ingresos </td>
+        <td class="ajustarFactor">Otros Ingresos </td>
+        @{
+            int otrosingresoestandares = 0;
+            try{
+                otrosingresoestandares = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.IngOtros);
+            }catch{}
+                
+        }
+        <td class="moneda" >$ @otrosingresoestandares</td>
+        <td class="ajustarFactor">Trimestral</td>
+         <td class="moneda">$ @Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes < 4).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID ==11 || p.CuentaID == 16).Sum(p => p.Monto_Ingresos).ToString("#,###,#0") </td>
+         <td class="moneda">$ @Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 4 && p.Mes <= 6).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID ==11 ||  p.CuentaID == 16).Sum(p => p.Monto_Ingresos).ToString("#,###,#0") </td>
+        <td class="moneda">$ @Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes < 7).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID ==11 || p.CuentaID == 16).Sum(p => p.Monto_Ingresos).ToString("#,###,#0")</td>
+         <td class="moneda">$ @Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 7 && p.Mes <= 9).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID ==11 || p.CuentaID == 16).Sum(p => p.Monto_Ingresos).ToString("#,###,#0")</td>
+        <td class="moneda">$ @Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 9 && p.Mes <= 12).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID ==11  ||  p.CuentaID == 16).Sum(p => p.Monto_Ingresos).ToString("#,###,#0") </td>
+        <td class="moneda">$ @Model.Movimientos.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6 && p.Mes <= 12).Where(p => p.TipoComprobanteID == 1).Where(p => p.Cuenta.CuentaID ==11  ||  p.CuentaID == 16).Sum(p => p.Monto_Ingresos).ToString("#,###,#0") </td>
+        
+         
+
+    </tr>
+        
+            @foreach (SAG2.Models.IndicadoresCuenta  FCostosReales in  ViewBag.CostosReales )
+            {
+               
+                <tr>
+                 @if (FCostosReales.ID  == 1)
+                {
+                    <td class="ajustarFactor" rowspan="6"> Costos Reales</td>
+                }
+           
+                 <td class="ajustarFactor">@FCostosReales.VARIABLE </td>
+                 <td class="ajustarFactor">@FCostosReales.INDICADOR  </td>
+                @{
+                 float cospersonalestandar = 0;
+                 float cosfuncionamiento = 0;
+                 float costecnico = 0;
+                 float cosbeneficiario = 0;
+                 float cosinversion = 0;
+                 float cosfondo = 0;
+                 try
+                 {
+                     cospersonalestandar = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CosPersonal);
+                     cosfuncionamiento = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CosFuncionamiento);
+                     costecnico = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CosTecnico);
+                     cosbeneficiario = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CosBeneficiario);
+                     cosinversion = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CosInversion);
+                     cosfondo = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CosFondo);
+                 }
+                 catch { }
+                
+                  }
+                 @if (FCostosReales.ID  == 1)
+                {
+                    <td class="ajustarFactor" > @cospersonalestandar.ToString("0.#0") %</td>
+                }
+                @if (FCostosReales.ID  == 2)
+                {
+                    <td class="ajustarFactor" > @cosfuncionamiento.ToString("0.#0") %</td>
+                }
+                @if (FCostosReales.ID  == 3)
+                {
+                    <td class="ajustarFactor" > @costecnico.ToString("0.#0") %</td>
+                }
+                @if (FCostosReales.ID  == 4)
+                {
+                    <td class="ajustarFactor" > @cosbeneficiario.ToString("0.#0") %</td>
+                }
+               @if (FCostosReales.ID  == 5)
+                {
+                    <td class="ajustarFactor" > @cosinversion.ToString("0.#0") %</td>
+                }
+               @if (FCostosReales.ID  == 6)
+                {
+                    <td class="ajustarFactor"> @cosfondo.ToString("0.#0") %</td>
+                }
+                <td class="ajustarFactor">Trimestral</td>
+              @{
+                 double valor_egresos_1t = 0;
+                 double valor_reintegros_1t = 0;
+                 double valor_ingresos_1t = 0;
+                 double resultado_1t = 0;
+                try
+                {
+                    valor_ingresos_1t = ingresos.Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Where(d => d.Mes <= 3).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                                      
+                    valor_egresos_1t = egresos.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Egreso.Mes < 4).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                     valor_reintegros_1t = reintegros.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Mes < 4).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                     if (valor_ingresos_1t == 0)
+                     {
+                         valor_ingresos_1t = 1;
+                     }
+                     resultado_1t = (valor_egresos_1t - valor_reintegros_1t)*100/(valor_ingresos_1t); ///valor_egresos_1t - valor_reintegros_1t)*100/
+                }
+                catch (Exception)
+                {
+                    valor_egresos_1t = 0;
+                     valor_reintegros_1t =0;
+                }
+        
+             }
+           <td class="por100">  @( (resultado_1t).ToString("0.#0")) % </td>   
+         @{
+              double valor_egresos_2p = 0;
+              double valor_reintegros_2p = 0;
+              double valor_ingresos_2p = 0;
+              double resultado_2p = 0;
+             try{
+                 valor_ingresos_2p = ingresos.Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                 
+                  valor_egresos_2p = egresos.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Egreso.Mes >= 4 && d.Egreso.Mes <= 6).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                  valor_reintegros_2p = reintegros.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+             if (valor_ingresos_2p == 0){
+                 valor_ingresos_2p = 1;
+             }
+                 resultado_2p = (valor_egresos_2p-valor_reintegros_2p)*100/valor_ingresos_2p;
+             }
+             catch (Exception)
+             {
+                  valor_egresos_2p = 0;
+                 valor_reintegros_2p = 0;
+                 valor_ingresos_2p = 1;
+             }
+   
+             }
+ <td class="por100" >   @((resultado_2p).ToString("0.#0")) % </td>
+                  @{
+                 double valor_egresos_1s = 0;
+                 double valor_reintegros_1s = 0;
+                 double valor_ingresos_1s = 0;
+                 double resultado_1s = 0;
+                try
+                {
+                    valor_ingresos_1s = ingresos.Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Where(d => d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                                      
+                    valor_egresos_1s = egresos.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Egreso.Mes < 7).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                     valor_reintegros_1s = reintegros.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                     if (valor_ingresos_1s == 0)
+                     {
+                         valor_ingresos_1s = 1;
+                     }
+                     resultado_1s = (valor_egresos_1s - valor_reintegros_1s)*100/(valor_ingresos_1s); ///valor_egresos_1t - valor_reintegros_1t)*100/
+                }
+                catch (Exception)
+                {
+                    valor_egresos_1s = 0;
+                     valor_reintegros_1s =0;
+                }
+        
+             }
+          <td class="por100"> @((resultado_1s).ToString("0.#0")) %</td>
+            @{
+                double valor_egresos_3p = 0;
+                double valor_reintegros_3p = 0;
+                double valor_ingresos_3p = 1;
+                double resultado_3p = 0;
+             try
+             {
+                 valor_ingresos_3p = ingresos.Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                 
+                 valor_egresos_3p = egresos.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 9).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                 valor_reintegros_3p = reintegros.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                 if (valor_ingresos_3p == 0)
+                 {
+                     valor_ingresos_3p = 1;
+                 }
+             resultado_3p = (valor_egresos_3p-valor_reintegros_3p)*100/valor_ingresos_3p;
+             }
+             catch (Exception)
+             {
+                 valor_egresos_3p = 0;
+                 valor_reintegros_3p = 0;
+                 valor_ingresos_3p = 1;
+             }
+                
+             
+                 }
+           <td class="por100">   @((resultado_3p).ToString("0.#0")) % </td>
+             @{
+                double valor_egresos_4p = 0;
+                double valor_reintegros_4p = 0;
+                double valor_ingresos_4p = 1;
+                double resultado_4p = 0;
+                try
+                {
+                    valor_ingresos_4p = ingresos.Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                   valor_egresos_4p = egresos.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Egreso.Mes >= 10 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                    valor_reintegros_4p = reintegros.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    if (valor_ingresos_4p == 0)
+                    {
+                        valor_ingresos_4p = 1;
+                    }
+                resultado_4p = (valor_egresos_4p-valor_reintegros_4p)* 100/valor_ingresos_4p;
+                }
+                catch (Exception)
+                {
+                    valor_egresos_4p = 0;
+                    valor_reintegros_4p = 0;
+                }
+                   
+               }
+          <td class="por100">   @((resultado_4p).ToString("0.#0")) % </td>
+             @{
+                double valor_egresos_2s = 0;
+                double valor_reintegros_2s = 0;
+                double valor_ingresos_2s = 1;
+                double resultado_2s = 0;
+                try
+                {
+                    valor_ingresos_2s = ingresos.Where(p => p.Cuenta.CuentaID == 2 || p.Cuenta.ID == 8).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                   valor_egresos_2s = egresos.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                    valor_reintegros_2s = reintegros.Where(d => d.Cuenta.indicador == FCostosReales.ID).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    if (valor_ingresos_2s == 0)
+                    {
+                        valor_ingresos_2s = 1;
+                    }
+                resultado_2s = (valor_egresos_2s - valor_reintegros_2s)* 100/valor_ingresos_2s;
+                }
+                catch (Exception)
+                {
+                    valor_egresos_2s = 0;
+                    valor_reintegros_2s = 0;
+                }
+                   
+               }
+         <td class="por100"> @((resultado_2s).ToString("0.#0")) %</td>
+
+
+</tr> 
+                }
+
+    @{ int pinf = 0; }
+              @foreach (SAG2.Models.IndicadoresCuenta FFinanciamiento in ViewBag.Financiamiento)
+            {
+               
+                <tr>
+                 @if (pinf == 0 )
+                {
+                    pinf = 1;
+                    <td class="ajustarFactor" rowspan="6"> Financiamiento</td>
+                }
+           
+                 <td class="ajustarFactor" >@FFinanciamiento.VARIABLE </td>
+                 <td class="ajustarFactor" >@FFinanciamiento.INDICADOR  </td>
+                                @{
+                int fnPrestamos = 0;
+                int fnPrestamosOtros = 0;
+                int fnAportes = 0;
+                int fnAportesExcedentes = 0;
+                int fnAportesTerceros = 0;
+           
+                try{
+                    fnPrestamos = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.FinPrestamos);
+                    fnPrestamosOtros = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.FinPrestamosOtros);
+                    fnAportes = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.FinAportes);
+                    fnAportesExcedentes = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.FinAportesExcendentes);
+                    fnAportesTerceros = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.FinAportesTerceros);
+                 
+                }catch{}
+                
+                  }
+                 @if (FFinanciamiento.ID == 7)
+                {
+                    <td class="moneda" >$ @fnPrestamos </td>
+                }
+
+                @if (FFinanciamiento.ID == 8)
+                {
+                    <td class="moneda" >$ @fnPrestamosOtros </td>
+                }
+                @if (FFinanciamiento.ID == 9)
+                {
+                    <td class="moneda" >$ @fnAportes </td>
+                }
+                @if (FFinanciamiento.ID == 10)
+                {
+                    <td class="moneda" >$ @fnAportesExcedentes </td>
+                }
+                @if (FFinanciamiento.ID == 11)
+                {
+                    <td class="moneda" >$ @fnAportesTerceros </td>
+                }
+                <td class="ajustarFactor">Trimestral</td>
+              @{
+                float valor_egresos_1ft = 0;
+                float valor_reintegros_1ft = 0;
+                float resultado_1ft = 0;
+                try
+                {
+                    resultado_1ft = ingresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes <= 3).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+              /*      valor_egresos_1ft = egresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Egreso.Mes < 4).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                     valor_reintegros_1ft = reintegros.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes < 4).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                resultado_1ft = valor_egresos_1ft -valor_reintegros_1ft;*/
+                }
+                catch (Exception)
+                {
+               
+                }
+                
+                }
+           <td class="moneda"> $  @((resultado_1ft).ToString("#,##0")) </td>   
+         @{
+             int valor_egresos_2fp = 0;
+             int valor_reintegros_2fp =  0;
+             resultado_1ft = 0;
+               try
+                {
+                    resultado_1ft = ingresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+               //  valor_egresos_2fp = egresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Egreso.Mes >= 4 && d.Egreso.Mes <= 6).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                // valor_reintegros_2fp = reintegros.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                 }
+                catch (Exception)
+                {
+               
+                }
+               
+               }
+            <td class="moneda"> $  @((resultado_1ft).ToString("#,##0")) </td>
+                          @{
+                resultado_1ft = 0;
+                try
+                {
+                    resultado_1ft = ingresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+              //      valor_egresos_1ft = egresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Egreso.Mes < 7).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+               //      valor_reintegros_1ft = reintegros.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+               // resultado_1ft = valor_egresos_1ft -valor_reintegros_1ft;
+                }
+                catch (Exception)
+                {
+               
+                }
+                
+                }
+          <td class="moneda">$  @((resultado_1ft).ToString("#,##0"))</td>
+            @{
+                int valor_egresos_3fp = 0;
+                int valor_reintegros_3fp = 0;
+                resultado_1ft = 0;
+                 try
+                {
+            //     valor_egresos_3fp = egresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 9).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+             //    valor_reintegros_3fp = reintegros.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    resultado_1ft = ingresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                    }
+                catch (Exception)
+                {
+               
+                }
+                }
+           <td class="moneda"> $  @((resultado_1ft).ToString("#,##0")) </td>
+             @{
+                resultado_1ft = 0;
+                 int valor_egresos_4fp = 0;
+                 int valor_reintegros_4fp =  0;
+                 try
+                {  
+                 
+              //   valor_egresos_4fp = egresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Egreso.Mes >= 10 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+               //  valor_reintegros_4fp = reintegros.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    resultado_1ft = ingresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                }
+                 catch (Exception)
+                 {
+                     valor_egresos_4fp = 0;
+                     valor_reintegros_4fp = 0;
+                 }
+                 }
+          <td class="moneda"> $  @((resultado_1ft).ToString("#,##0")) </td>
+                        @{
+             
+                 try
+                {  
+                 
+                 valor_egresos_4fp = egresos.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                 valor_reintegros_4fp = reintegros.Where(d => d.Cuenta.indicador == FFinanciamiento.ID).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                }
+                 catch (Exception)
+                 {
+                     valor_egresos_4fp = 0;
+                     valor_reintegros_4fp = 0;
+                 }
+                 }
+         <td class="moneda"> $  @((valor_egresos_4fp-valor_reintegros_4fp).ToString("#,##0")) </td>
+
+
+</tr> 
+                }
+    <tr>
+       
+        <td class="ajustarFactor">Proveedores</td>
+        <td class="ajustarFactor">Deudas por Pagar a Proveedores</td>
+        @{
+            int deudaspagar = 0;
+            try{
+                deudaspagar = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.FinProveedores);
+            }catch{}
+        }
+        <td class="moneda">$ @deudaspagar.ToString("#,##0")</td>
+        <td class="ajustarFactor">Trimestral</td>
+        @{
+            int prove1t = 0;
+            int prove2t = 0;
+            int prove3t = 0;
+            int prove4t = 0;
+            int prove5t = 0;
+            int prove6t = 0;
+            try{
+            prove1t = dpen.Where(d => d.Mes < 4).Sum(d => d.Monto);
+            }
+            catch{
+                prove1t = 0;
+            }
+            
+            try
+            {
+                prove2t = dpen.Where(d => d.Mes >= 4 && d.Mes <= 6 ).Sum(d => d.Monto);
+            }
+            catch
+            {
+                prove2t = 0;
+            }
+            
+            try
+            {
+                prove3t = dpen.Where(d => d.Mes >= 7 && d.Mes <= 9).Sum(d => d.Monto);
+            }
+            catch
+            {
+                prove3t = 0;
+            }
+            try
+            {
+                prove4t = dpen.Where(d => d.Mes >= 10 && d.Mes <= 12).Sum(d => d.Monto);
+            }
+            catch
+            {
+                prove4t = 0;
+            }
+            try
+            {
+                prove5t = dpen.Where(d => d.Mes < 7).Sum(d => d.Monto);
+            }
+            catch
+            {
+                prove5t = 0;
+            }
+            try
+            {
+                prove6t = dpen.Where(d => d.Mes >= 7 && d.Mes <= 12).Sum(d => d.Monto);
+            }
+            catch
+            {
+                prove6t = 0;
+            }
+            
+        }
+         <td class="moneda"> $  @((prove1t).ToString("#,##0")) </td>
+        <td class="moneda">  $ @((prove2t).ToString("#,##0")) </td>
+        <td class="moneda"> $ @((prove5t).ToString("#,##0"))</td>
+         <td class="moneda"> $  @((prove3t).ToString("#,##0")) </td>
+        <td class="moneda">  $ @((prove4t).ToString("#,##0")) </td>
+        <td class="moneda"> $ @((prove6t).ToString("#,##0"))</td>
+    </tr>
+    <tr>
+    @{
+         int GastosObjetados_1s = 0;
+          int GastosRechazados_1s = 0;
+          int Observaciones_1s = 0;
+          
+          int GastosObjetados_1sCodeni = 0;
+          int GastosRechazados_1sCodeni = 0;
+          int Observaciones_1sCodeni = 0;
+          int Observaciones_1sCodeniInventario = 0;
+
+          try{
+          GastosObjetados_1s = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 1).Sum(d => d.GastoObjetado);
+          }catch{}
+          try{
+          GastosObjetados_1sCodeni = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 2).Sum(d => d.GastoObjetado);
+          }catch{}
+          try{    
+          GastosRechazados_1s = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 1).Sum(d => d.GastoRechazado);
+          }catch{}
+          try{
+          GastosRechazados_1sCodeni = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 2).Sum(d => d.GastoRechazado);
+          }catch{}
+          try{
+          Observaciones_1s = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 1).Sum(d => d.CantidadObservaciones);
+          }catch{}
+          try{
+          Observaciones_1sCodeni = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 2).Sum(d => d.CantidadObservaciones);
+          }catch{}
+          try{
+          Observaciones_1sCodeniInventario = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 4).Sum(d => d.CantidadObservaciones);
+          }catch{}
+      }
+        @{       
+          int GastosObjetados_2s = 0;
+          int GastosRechazados_2s = 0;
+          int Observaciones_2s = 0;
+          
+          int GastosObjetados_2sCodeni = 0;
+          int GastosRechazados_2sCodeni = 0;
+          int Observaciones_2sCodeni = 0;
+          int Observaciones_2sCodeniInventario = 0;
+        
+          try{
+          GastosObjetados_2s = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 1).Sum(d => d.GastoObjetado);
+          }catch{}
+          try{
+          GastosObjetados_2sCodeni = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 2).Sum(d => d.GastoObjetado);
+          }catch{}
+          try{
+          GastosRechazados_2s = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 1).Sum(d => d.GastoRechazado);
+          }catch{}
+          try{
+          GastosRechazados_2sCodeni = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 2).Sum(d => d.GastoRechazado);
+          }catch{}   
+          try{ 
+          Observaciones_2s = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 1).Sum(d => d.CantidadObservaciones);
+          } catch{}
+          try{
+          Observaciones_2sCodeni = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 2).Sum(d => d.CantidadObservaciones);
+          }catch{}
+          try{
+          Observaciones_2sCodeniInventario = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 4).Sum(d => d.CantidadObservaciones);
+          }catch{}
+       }    
+        @{
+          int retencion_1 = 0;
+          int retencion_2 = 0;
+          int retencion_3 = 0;
+          int retencion_4 = 0;
+          int retencion_5 = 0;
+          int retencion_6 = 0;
+          
+         /* try{
+          retencion_1 = Retencion.Where(d => d.Mes < 4 && d.Nula != "S").Sum(d => d.Retencion);
+          }catch{} 
+          try{
+          retencion_2 = Retencion.Where(d => d.Mes >= 4 && d.Mes <= 6 && d.Nula != "S").Sum(d => d.Retencion);
+          }catch{} 
+          try{  
+          retencion_3 = Retencion.Where(d => d.Mes >= 7 && d.Mes <= 9 && d.Nula != "S").Sum(d => d.Retencion);
+          }catch{} 
+          try{    
+          retencion_4 = Retencion.Where(d => d.Mes >= 10 && d.Mes <= 12 && d.Nula != "S").Sum(d => d.Retencion);
+          }catch{}*/
+          try
+          {
+              retencion_5 = Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 3).Sum(d => d.CantidadObservaciones);
+          }
+          catch { }
+          try
+          {
+              retencion_6 = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Tipo == 3).Sum(d => d.CantidadObservaciones);
+          }
+          catch { }
+          // retencion 2
+          int retencion_1_2 = 0;
+          int retencion_2_2 = 0;
+          int retencion_3_2 = 0;
+          int retencion_4_2 = 0;
+          try{
+          retencion_1_2 = Calidad.Where(d => d.Mes < 4).Where(d => d.Tipo == 3).Sum(d => d.CantidadObservaciones);
+          }catch{}
+          try{
+          retencion_2_2 = Calidad.Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Tipo == 3).Sum(d => d.CantidadObservaciones);
+          }catch{}
+          try{
+          retencion_3_2 = Calidad.Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Tipo == 3).Sum(d => d.CantidadObservaciones);
+          }catch{}
+          try{
+          retencion_4_2 = Calidad.Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Tipo == 3).Sum(d => d.CantidadObservaciones);
+          }catch{}
+                
+            int gastoobjetadossename = 0;
+            try{
+                gastoobjetadossename = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CalObjSename);
+            }catch{}
+            int gastorechazadossename = 0;
+            try
+            {
+                gastorechazadossename = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CalObjSename);
+            }catch { }
+          
+            int observacionessename = 0;
+            try
+            {
+                observacionessename = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CalObsSename);
+            }
+            catch { }
+            int gastosobjetadoscodeni = 0;
+            try
+            {
+                gastosobjetadoscodeni = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CalObjCodeni);
+            }catch { }
+            int gastosrechazadoscodeni = 0;
+            try
+            {
+                gastosrechazadoscodeni = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CalRecCodeni);
+            }catch { }
+            int observacionescodeni = 0;
+             try
+            {
+                observacionescodeni = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CalObsCodeni);
+            }catch { }
+
+            int retenciones = 0;
+            try
+             {
+                 retenciones = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.CalImpuestos);
+             }
+             catch { }   
+            
+            int inventarioestandar = 0;
+            try{
+                inventarioestandar = (int) Estandares.Where(p => p.Periodo == ViewBag.Periodo).Sum(p => p.CalInventario);
+            }catch { }
+                 
+    }    
+      <td class="ajustarFactor" rowspan="8">Calidad</td>
+        <td class="ajustarFactor"> Gastos Objetados Sename</td>
+        <td class="ajustarFactor">Total ($) Gastos Objetados </td>
+        <td class="moneda">$ @gastoobjetadossename.ToString("#,###,##0")</td>
+        <td class="ajustarFactor">Semestral</td>
+        <td class="active"></td><td class="active"></td><td class="moneda"> $ @((GastosObjetados_1s).ToString("#,##0"))</td><td class="active"></td><td class="active"></td><td class="moneda">$ @((GastosObjetados_2s).ToString("#,##0"))</td>
+        
+          
+    </tr>
+    <tr>
+         <td class="ajustarFactor"> Gastos Rechazados Sename</td>
+        <td class="ajustarFactor">Total ($) Gastos Rechazados </td>
+        <td class="moneda">$ @gastorechazadossename.ToString("#,###,##0")</td>
+        <td class="ajustarFactor">Semestral</td>
+        <td  class="active"></td><td  class="active"></td><td class="moneda">$ @((GastosRechazados_1s).ToString("#,##0"))</td><td class="active"></td><td  class="active"></td><td class="moneda">$ @((GastosRechazados_2s).ToString("#,##0"))</td>
+
+    </tr>
+       <tr>
+         <td class="ajustarFactor"> Observaciones Sename</td>
+        <td class="ajustarFactor">N° Observaciones</td>
+        <td class="ajustarFactor">@observacionessename</td>
+        <td class="ajustarFactor">Semestral</td>
+        <td  class="active"></td><td  class="active"></td><td class="ajustarFactor"> @((Observaciones_1s).ToString("#,##0"))</td><td  class="active"></td><td  class="active"></td><td class="ajustarFactor"> @((Observaciones_2s).ToString("#,##0"))</td>
+
+    </tr>
+    <tr>
+      <td class="ajustarFactor"> Gastos Objetados Codeni</td>
+        <td class="ajustarFactor">Total ($) Gastos Objetados</td>
+        <td class="moneda">$ @gastosobjetadoscodeni</td>
+        <td class="ajustarFactor">Semestral</td>
+        <td  class="active"></td><td  class="active"></td><td class="moneda">$ @((GastosObjetados_1sCodeni).ToString("#,##0"))</td><td  class="active"></td><td  class="active"></td><td class="moneda"> $ @((GastosObjetados_2sCodeni).ToString("#,##0"))</td>
+        
+          
+    </tr>
+    <tr>
+         <td class="ajustarFactor"> Gastos Rechazados Codeni</td>
+        <td class="ajustarFactor">Total ($) Gastos Rechazados </td>
+        <td class="moneda"> $ @gastosrechazadoscodeni</td>
+        <td class="ajustarFactor">Semestral</td>
+        <td  class="active"></td><td  class="active"></td><td class="moneda">$ @((GastosRechazados_1sCodeni).ToString("#,##0"))</td><td class="active"></td><td class="active"></td><td class="moneda">$ @((GastosRechazados_2sCodeni).ToString("#,##0"))</td>
+
+    </tr>
+        <tr>
+         <td class="ajustarFactor"> Observaciones Codeni</td>
+        <td class="ajustarFactor">N° Observaciones </td>
+        <td class="ajustarFactor">@observacionescodeni</td>
+        <td class="ajustarFactor">Semestral</td>
+        <td class="active"></td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_1sCodeni).ToString("#,##0"))</td><td class="active"></td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_2sCodeni).ToString("#,##0"))</td>
+
+    </tr>
+       <tr>
+         <td class="ajustarFactor"> Retención de Impuestos</td>
+        <td class="ajustarFactor">N° Observaciones</td>
+        <td class="ajustarFactor">@retenciones</td>
+        <td class="ajustarFactor">Trimestral</td>
+        <td class="ajustarFactor">  @((retencion_1_2).ToString("#,##0"))</td><td class="ajustarFactor"> @(( retencion_2_2).ToString("#,##0"))</td><td class="ajustarFactor">  @((retencion_5).ToString("#,##0"))</td><td class="ajustarFactor"> @((retencion_3_2).ToString("#,##0"))</td><td class="ajustarFactor">  @((retencion_4_2).ToString("#,##0"))</td><td class="ajustarFactor">  @((retencion_6).ToString("#,##0")) </td>
+
+    </tr>
+        <tr>
+         <td class="ajustarFactor"> Inventario General</td>
+        <td class="ajustarFactor">N° Observaciones </td>
+        <td class="ajustarFactor">@inventarioestandar</td>
+        <td class="ajustarFactor">Semestral</td>
+        <td class="active"></td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_1sCodeniInventario).ToString("#,##0"))</td><td class="active"> </td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_2sCodeniInventario).ToString("#,##0"))</td>
+
+    </tr>
+    <tr>
+        @{
+            float prodefiestandar = 0;
+            try{
+                prodefiestandar = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.ProAporte);
+            }catch{}
+        }
+        <td class="ajustarFactor" rowspan="7" >Productividad / Eficiencia</td>
+        <td class="ajustarFactor"> Aporte subvención </td>
+        <td class="ajustarFactor"> Transferencia Mensual al Proy. Administración Centralizada </td>
+        <td  class="ajustarFactor">@prodefiestandar.ToString("0.#0") %</td>
+        <td class="ajustarFactor"> Trimestal</td>
+        @{
+            double valorPE1t1 = 0;
+            double porcentaje_PE1t1 = 0;
+            double porcentaje_PE1t3 = 0;
+            double porcentaje_PE1t4 = 0;
+            double valorPE1t1_r = 0;
+             
+            
+            try{
+                valorPE1t1_r = reintegros.Where(d => d.Cuenta.ID == 64).Where(d => d.Mes < 4).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                int valorPE1t1_T = ingresos.Where(d => d.Cuenta.resumen == 1).Where(d => d.Mes < 4).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                valorPE1t1 = (egresos.Where(d => d.Cuenta.ID == 64).Where(d => d.Egreso.Mes < 4).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto));
+            porcentaje_PE1t1 = ((valorPE1t1 - valorPE1t1_r)  * 100) / valorPE1t1_T;
+            }
+            catch { porcentaje_PE1t1 = 0; }   
+        }
+        <td class="por100">   @((porcentaje_PE1t1).ToString("0.#0")) %</td>
+                @{
+                    valorPE1t1_r = 0;
+                    valorPE1t1_r = reintegros.Where(d => d.Cuenta.ID == 64).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    double porcentaje_PE1t2 = 0;
+                    double valorPE1t2 = 0;
+                    double valorPE1t2_T = ingresos.Where(d => d.Cuenta.resumen == 1).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    valorPE1t2 = egresos.Where(d => d.Cuenta.ID == 64).Where(d => d.Egreso.Mes >= 4 && d.Egreso.Mes <= 6).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                    try
+                    {
+                        porcentaje_PE1t2 = ((valorPE1t2 - valorPE1t1_r) * 100) / valorPE1t2_T;
+                    }
+                    catch
+                    {
+                        porcentaje_PE1t2 = 0;
+                    }
+                }
+        <td class="por100">   @((porcentaje_PE1t2).ToString("0.#0")) % </td>
+             @{ try
+                 {
+                     valorPE1t1_r = 0;
+                     valorPE1t1_r = reintegros.Where(d => d.Cuenta.ID == 64).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                     double valorPE1t1_T = ingresos.Where(d => d.Cuenta.resumen == 1).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                     valorPE1t1 = (egresos.Where(d => d.Cuenta.ID == 64).Where(d => d.Egreso.Mes < 7).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto));
+                     porcentaje_PE1t1 = ((valorPE1t1 - valorPE1t1_r)  * 100) / valorPE1t1_T;
+                 }
+                 catch
+                 {
+                     porcentaje_PE1t1 = 0;
+                 } 
+                }
+        <td class="por100"> @((porcentaje_PE1t1).ToString("0.#0")) %</td>
+            @{
+
+                double valorPE1t3 = 0;
+
+                double valorPE1t3_T = ingresos.Where(d => d.Cuenta.resumen == 1).Where(d => d.Mes >=  7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                valorPE1t3 = egresos.Where(d => d.Cuenta.ID == 64).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 9).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                try
+                {
+                    valorPE1t1_r = 0;
+                    valorPE1t1_r = reintegros.Where(d => d.Cuenta.ID == 64).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    porcentaje_PE1t3 = ((valorPE1t3 - valorPE1t1_r) * 100) / valorPE1t3_T;
+                }
+                catch
+                {
+                    porcentaje_PE1t3 = 0;
+                }
+            }
+        <td class="por100">   @((porcentaje_PE1t3).ToString("0.#0")) % </td>
+            @{
+                double valorPE1t4 = 0;
+                double valorPE1t4_T = ingresos.Where(d => d.Cuenta.resumen == 1).Where(d => d.Mes >=  10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                valorPE1t4 = egresos.Where(d => d.Cuenta.ID == 64).Where(d => d.Egreso.Mes >= 10 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                try
+                {
+                    valorPE1t1_r = 0;
+                    valorPE1t1_r = reintegros.Where(d => d.Cuenta.ID == 64).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    porcentaje_PE1t4 = ((valorPE1t4 - valorPE1t1_r) * 100) / valorPE1t4_T;
+                }
+                catch
+                {
+                    porcentaje_PE1t3 = 0;
+                }
+            }
+        <td class="por100">   @((porcentaje_PE1t4).ToString("0.#0")) % </td>
+            @{
+                double porcentaje_PE1t41 = 0;
+                double valorPE1t41 = 0;
+                double valorPE1t41_T = ingresos.Where(d => d.Cuenta.resumen == 1).Where(d => d.Mes >=  7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                valorPE1t41 = egresos.Where(d => d.Cuenta.ID == 64).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                try
+                {
+                    valorPE1t1_r = 0;
+                    valorPE1t1_r = reintegros.Where(d => d.Cuenta.ID == 64).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    porcentaje_PE1t41 = ((valorPE1t41 - valorPE1t1_r) * 100) / valorPE1t41_T;
+                }
+                catch
+                {
+                    porcentaje_PE1t3 = 0;
+                }
+            }
+        <td class="por100"> @((porcentaje_PE1t41).ToString("0.#0")) %</td>
+    </tr>
+        <tr>
+       @{
+           int TotHorasExtras1 = 0;
+           int TotHorasExtras2 = 0;
+           int TotHorasExtras3 = 0;
+           int TotHorasExtras4 = 0;
+           int TotHorasExtras5 = 0;
+           int TotHorasExtras6 = 0;
+
+           try
+           {
+               TotHorasExtras1 = HorasEx.Where(d => d.Mes < 4).Sum(d => d.MontoHorasExtras);
+           }
+           catch
+           {
+
+           }
+           try
+           {
+               TotHorasExtras2 = HorasEx.Where(d => d.Mes >= 4 && d.Mes <= 6).Sum(d => d.MontoHorasExtras);
+           }
+           catch
+           {
+
+           }
+           try
+           {
+               TotHorasExtras3 = HorasEx.Where(d => d.Mes >= 7 && d.Mes <= 9).Sum(d => d.MontoHorasExtras);
+           }
+           catch
+           {
+
+           }
+           try
+           {
+               TotHorasExtras4 = HorasEx.Where(d => d.Mes >= 10 && d.Mes <= 12).Sum(d => d.MontoHorasExtras);
+           }
+           catch
+           {
+
+           }
+           try
+           {
+               TotHorasExtras5 = HorasEx.Where(d => d.Mes < 7).Sum(d => d.MontoHorasExtras);
+           }
+           catch
+           {
+
+           }
+           try
+           {
+               TotHorasExtras6 = HorasEx.Where(d => d.Mes >= 7 && d.Mes <= 12).Sum(d => d.MontoHorasExtras);
+           }
+           catch
+           {
+
+           }
+           int prohoras = 0;
+           try
+           {
+               prohoras = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.ProHoras);
+           }
+           catch
+           {
+               prohoras = 0;
+           }
+           int prosaldo = 0;
+           try
+           {
+               prosaldo = (int)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.ProSaldo);
+           }catch
+           {
+               prosaldo = 0;
+           }
+        }
+       
+       
+        <td class="ajustarFactor"> Horas Extraordinarias </td>
+        <td class="ajustarFactor"> Costo Total  </td>
+        <td class="moneda"> $ @prohoras</td>
+        <td class="ajustarFactor"> Trimestal</td>
+        <td class="moneda"> $  @((TotHorasExtras1).ToString("#,##0")) </td>
+        <td class="moneda"> $  @((TotHorasExtras2).ToString("#,##0")) </td>
+        <td class="moneda"> $  @((TotHorasExtras5).ToString("#,##0"))</td>   
+        <td class="moneda"> $  @((TotHorasExtras3).ToString("#,##0")) </td>       
+        <td class="moneda"> $  @((TotHorasExtras4).ToString("#,##0")) </td>
+        <td class="moneda"> $  @((TotHorasExtras6).ToString("#,##0"))</td>
+    </tr>
+        </tr>
+        <tr>
+       
+        <td class="ajustarFactor"> Saldo Banco </td>
+        <td class="ajustarFactor"> Saldo Banco Ultimo día del Trimestre </td>
+        <td class="moneda">$ @prosaldo.ToString("#,##0")</td>
+        <td class="ajustarFactor"> Trimestal</td>
+            @{
+                List<SAG2.Models.Saldo> Sbanco = new List<SAG2.Models.Saldo>();
+                 Sbanco = (List<SAG2.Models.Saldo >)ViewBag.SaldoBanco;
+                 int saldo1 = 0;
+                 int saldo2 = 0;
+                 int saldo3 = 0;
+                 int saldo4 = 0;
+                 int vingresos = 0;
+                 int vegresos = 0;
+                 int vreintegros = 0;
+                 int vresultado = 0;    
+                 try
+                 {
+                    //int mesPeriodoActual = (int)Session["Mes"];
+                    vingresos = ingresos.Where(d => d.Mes == mesPeriodoActual).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    vegresos = egresos.Where(d => d.Egreso.Mes == mesPeriodoActual).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                    vreintegros = reintegros.Where(d => d.Mes == mesPeriodoActual).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                    vresultado = (vingresos) - (vegresos - vreintegros);
+                 
+                    saldo1 = Sbanco.Where(ms => ms.Mes == 3).Sum(d => d.SaldoFinal);   
+                    saldo2 = Sbanco.Where(ms => ms.Mes == 6).Sum(d => d.SaldoFinal);
+                    saldo3 = Sbanco.Where(ms => ms.Mes == 9).Sum(d => d.SaldoFinal);
+                    saldo4 = Sbanco.Where(ms => ms.Mes == 12).Sum(d => d.SaldoFinal);
+                    if (mesPeriodoActual == 3 && (periodoActual == ViewBag.Periodo))
+                    {
+                        saldo1 = saldo1 + vresultado;
+                    }
+                     if (mesPeriodoActual == 6 && (periodoActual == ViewBag.Periodo))
+                     {
+                          saldo2 = saldo2 + vresultado;
+                      }
+                     if (mesPeriodoActual == 9 && (periodoActual == ViewBag.Periodo))
+                      {
+                          saldo3 = saldo3 + vresultado;
+                      }
+                     if (mesPeriodoActual == 12 && (periodoActual == ViewBag.Periodo))
+                      {
+                          saldo4 = saldo4 + vresultado;
+                      }      
+                     }
+                     catch
+                     {
+                         saldo1 = 0;
+                         saldo2 = 0;
+                         saldo3 = 0;
+                         saldo4 = 0;
+                     }
+                }
+            <td class="moneda">$ @((saldo1).ToString("#,##0")) </td>
+            <td class="moneda">$ @((saldo2).ToString("#,##0")) </td>
+            <td class="moneda">$ @((saldo2).ToString("#,##0"))</td>
+            <td class="moneda">$ @((saldo3).ToString("#,##0")) </td>
+            <td class="moneda">$ @((saldo4).ToString("#,##0")) </td>
+            <td class="moneda">$ @((saldo4).ToString("#,##0"))</td>
+    </tr>
+    <tr>
+        @{
+            float resultadoestandar = 0;
+            try
+            {
+                resultadoestandar = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.ProResultado);
+            }
+            catch
+            {
+
+            }
+        }
+        <td class="ajustarFactor">Resultado </td>
+        <td class="ajustarFactor"> (Ingresos Operacionales - Gastos Operacionales) / Ingresos Operacionales  </td>
+        <td class="ajustarFactor">@resultadoestandar %</td>
+        <td class="ajustarFactor"> Trimestral </td>
+        @{
+            float valorIngresos1T = 0;
+            float valorEgresos1T = 0;
+            float valorReintegros1T = 0;
+            float resultado1;
+            try
+            {
+                valorIngresos1T = ingresos.Where(d => d.Cuenta.ProResultado == 1 ).Where(d => d.Mes < 4).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                valorEgresos1T = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes < 4).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                valorReintegros1T = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes < 4).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+            }
+            catch
+            {
+                valorIngresos1T = 0;
+                valorEgresos1T = 0;
+                valorReintegros1T = 0;
+            }
+            resultado1 = (valorEgresos1T - valorReintegros1T);
+            if (resultado1 != 0)
+            {
+                resultado1 = ((valorIngresos1T - (valorEgresos1T - valorReintegros1T)) / valorIngresos1T) * 100;
+            }
+
+        }
+         <td class="por100">   @( (resultado1 ).ToString("0.#0")) %</td>
+               
+         @{
+
+             try
+             {
+                 valorIngresos1T = ingresos.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                 valorEgresos1T = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 4 && d.Egreso.Mes <= 6).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                 valorReintegros1T = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+             }
+             catch
+             {
+                 valorIngresos1T = 0;
+                 valorEgresos1T = 0;
+                 valorReintegros1T = 0;
+             }
+             resultado1 = (valorEgresos1T - valorReintegros1T);
+             if (resultado1 != 0)
+             {
+                 resultado1 = ((valorIngresos1T - (valorEgresos1T - valorReintegros1T)) / valorIngresos1T) * 100;
+             }
+              
+        }
+        <td class="por100"> @( (resultado1).ToString("0.#0")) %</td>
+            @{
+
+                try
+                {
+                    valorIngresos1T = ingresos.Where(d => d.Cuenta.ProResultado == 1 ).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                    valorEgresos1T = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes < 7).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                    valorReintegros1T = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                }
+                catch
+                {
+                    valorIngresos1T = 0;
+                    valorEgresos1T = 0;
+                    valorReintegros1T = 0;
+                }
+                resultado1 = (valorEgresos1T - valorReintegros1T);
+                if (resultado1 != 0)
+                {
+                    resultado1 = ((valorIngresos1T - (valorEgresos1T - valorReintegros1T)) / valorIngresos1T) * 100;
+                }
+            }
+        <td class="por100"> @( (resultado1).ToString("0.#0")) %</td>
+            @{
+
+                 try
+                 {
+                     valorIngresos1T = ingresos.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                     valorEgresos1T = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 9).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                     valorReintegros1T = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                 }
+                 catch
+                 {
+                     valorIngresos1T = 0;
+                     valorEgresos1T = 0;
+                     valorReintegros1T = 0;
+                 }
+
+                 resultado1 = ((valorIngresos1T - (valorEgresos1T - valorReintegros1T)) / valorIngresos1T) * 100;
+                 if (valorIngresos1T == 0)
+                 {
+                     resultado1 = 0;
+                 }
+        }
+        <td class="por100">   @( (resultado1).ToString("0.#0")) % </td>
+        @{
+
+             try
+             {
+                 valorIngresos1T = ingresos.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                 valorEgresos1T = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 10 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                 valorReintegros1T = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+             }
+             catch
+             {
+                 valorIngresos1T = 0;
+                 valorEgresos1T = 0;
+                 valorReintegros1T = 0;
+             }
+
+             resultado1 = ((valorIngresos1T - (valorEgresos1T - valorReintegros1T)) / valorIngresos1T) * 100;
+             if (valorIngresos1T == 0)
+             {
+                 resultado1 = 0;
+             } 
+              
+        }
+        <td class="por100"> @( (resultado1).ToString("0.#0")) %</td>
+          @{
+
+             try
+             {
+                 valorIngresos1T = ingresos.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+                 valorEgresos1T = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                 valorReintegros1T = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+
+             }
+             catch
+             {
+                 valorIngresos1T = 0;
+                 valorEgresos1T = 0;
+                 valorReintegros1T = 0;
+             }
+
+             resultado1 = ((valorIngresos1T - (valorEgresos1T - valorReintegros1T)) / valorIngresos1T) * 100;
+             if (valorIngresos1T == 0)
+             {
+                 resultado1 = 0;
+             } 
+              
+        }
+        <td class="por100"> @( (resultado1).ToString("0.#0")) %</td>
+    </tr>
+    <tr>
+        @{
+            float desviacionpestandar = 0;
+            try
+            {
+                desviacionpestandar = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.ProDesviacion);
+            }
+            catch
+            {
+
+            }
+        }
+        <td class="ajustarFactor">Desviación Presupuesto </td>
+        <td class="ajustarFactor"> Desviación (+/-) de los Ingresos Operacionales </td>
+        <td class="ajustarFactor">@desviacionpestandar.ToString("0.#0") %</td>
+        <td class="ajustarFactor"> Semestral </td>
+        @{
+            float valorIngresos1TD = 0;
+            float presupuesto1TD = 0;
+            float resultado1D = 0;
+            try
+            {
+                valorIngresos1TD = ingresos.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                presupuesto1TD = dp.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+            }
+            catch
+            {
+                valorIngresos1TD = 0;
+                presupuesto1TD = 0;
+            }
+            if (presupuesto1TD == 0)
+            {
+                resultado1D = 0;
+            }
+            else
+            {
+                if (valorIngresos1TD == 0)
+                {
+                    resultado1D = 0;
+                }
+                else
+                {
+                    resultado1D =(( valorIngresos1TD - presupuesto1TD   )/presupuesto1TD)*100;
+                }
+            }
+
+        }
+        <td class="active"></td><td class="active"></td>
+        <td class="por100"> @( ( resultado1D).ToString("0.#0")) %</td>
+        <td class="active"></td><td class="active"></td>
+        @{
+            float valorIngresos2TD = 0;
+            float presupuesto2TD = 0;
+            float resultado2D = 0;
+            try
+            {
+                valorIngresos2TD = ingresos.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+                presupuesto2TD = dp.Where(d => d.Cuenta.ProResultado == 1).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+            }
+            catch
+            {
+                valorIngresos2TD = 0;
+                presupuesto2TD = 0;
+            }
+            if (presupuesto2TD == 0)
+            {
+                resultado2D = 0;
+            }
+            else
+            {
+                if (valorIngresos2TD == 0)
+                {
+                    resultado2D = 0;
+                }
+                else
+                {
+                    resultado2D = ((valorIngresos2TD - presupuesto2TD) / presupuesto2TD)*100;
+                }
+            }
+
+        }
+        <td class="por100"> @( (resultado2D).ToString("0.#0")) %</td>
+        
+    </tr>
+    <tr>
+     @{
+         float desviacionestandar2 = 0;
+         try
+         {
+             desviacionestandar2 = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.ProDesviacionEgr);
+         }
+         catch
+         {
+
+         }
+     }
+        <td class="ajustarFactor">Desviación Presupuesto </td>
+        <td class="ajustarFactor"> Desviación (+/-) de los Gastos Operacionales </td>
+        <td class="ajustarFactor">@desviacionestandar2.ToString("0.#0") %</td>
+        <td class="ajustarFactor"> Semestral </td>
+        <td class="active"></td><td class="active"></td>
+ @{
+     float valorEgresos1TD = 0;
+     float valorReintegros1TD = 0;
+     float gastoso1td = 0;
+     presupuesto1TD = 0;
+     try
+     {
+         valorEgresos1TD = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes < 7).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+         valorReintegros1TD = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+         presupuesto1TD = dp.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+     }
+     catch
+     {
+         valorEgresos1TD = 0;
+         valorReintegros1TD = 0;
+     }
+     resultado1D = 0;
+     if (presupuesto1TD == 0)
+     {
+         resultado1D = 0;
+     }
+     else
+     {
+         gastoso1td = valorEgresos1TD - valorReintegros1TD;
+         if (gastoso1td == 0)
+         {
+             resultado1D = 0;
+         }
+         else
+         {
+             resultado1D = ((gastoso1td - presupuesto1TD ) / presupuesto1TD)*100;
+         }
+     }
+  }
+         <td class="por100"> @( (resultado1D).ToString("0.#0")) % </td>
+        <td class="active"></td><td class="active"></td>
+ @{
+     float valorEgresos2TD = 0;
+     float valorReintegros2TD = 0;
+     presupuesto2TD = 0;
+     try
+     {
+         valorEgresos2TD = egresos.Where(d => d.Cuenta.ProResultado == 2 ).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+         valorReintegros2TD = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+         presupuesto2TD = dp.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+     }
+     catch
+     {
+         valorEgresos2TD = 0;
+         valorReintegros2TD = 0;
+     }
+     resultado2D = 0;
+     if (presupuesto2TD == 0)
+     {
+         resultado2D = 0;
+     }
+     else
+     {
+         gastoso1td = valorEgresos2TD - valorReintegros2TD;
+         if (gastoso1td == 0)
+         {
+             resultado1D = 0;
+         }
+         else
+         {
+             resultado1D = ((gastoso1td - presupuesto2TD ) / presupuesto2TD) * 100;
+         }
+     }
+  }
+         <td class="por100"> @( (resultado1D).ToString("0.#0")) %</td>
+       
+
+    </tr>
+    <tr>
+       @{
+           float totgastoestandar = 0;
+           try
+           {
+               totgastoestandar = (float)Estandares.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.ProCostoNino);
+           }catch
+           {
+
+           }
+       }
+        <td class="ajustarFactor">Costo Niño/Mes</td>
+        <td class="ajustarFactor">Total Gastos Operacionales Trim. / Nº de Intervenciones  Trim.)/ Valor de la Subvención</td>
+        <td class="ajustarFactor"> @totgastoestandar.ToString("0.#0") %</td>
+        <td class="ajustarFactor">Trimestral</td>
+
+
+        @{
+            float intervenciones1tf =0;
+            float valorEgresos1Tf = 0;
+            float valorReintegros1Tf = 0;
+            float valorSub = (int)ViewBag.ValorSubvencion;
+            float resultado1t = 0;
+            try
+            {
+                intervenciones1tf = Model.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes < 4).Sum(p => p.Atenciones);
+                valorEgresos1Tf = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes < 4).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                valorReintegros1Tf = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes < 4).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+            }
+            catch
+            {
+                intervenciones1tf = 0;
+                valorEgresos1Tf = 0;
+                valorReintegros1Tf = 0;
+            }
+            if(intervenciones1tf == 0)
+            {
+                resultado1t = 0;
+            }
+            else
+            {
+                if (valorSub == 0)
+                {
+                    resultado1t = 0;
+                }
+                else
+                {
+                    resultado1t = (valorEgresos1Tf - valorReintegros1Tf) / intervenciones1tf;// ) / valorSub)*100;
+                    resultado1t = (resultado1t / valorSub)*100;
+                }
+            }
+        }
+         <td class="por100"> @( (resultado1t).ToString("0.#0")) %</td>
+
+                @{
+             intervenciones1tf =0;
+             valorEgresos1Tf = 0;
+             valorReintegros1Tf = 0;
+            valorSub = (int)ViewBag.ValorSubvencion;
+             resultado1t = 0;
+            try
+            {
+                intervenciones1tf = Model.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 4 && p.Mes <= 6).Sum(p => p.Atenciones);
+                valorEgresos1Tf = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 4 && d.Egreso.Mes <= 6).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                valorReintegros1Tf = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 4 && d.Mes <= 6).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+        
+            }
+            catch{
+                intervenciones1tf = 0;
+                valorEgresos1Tf = 0;
+                valorReintegros1Tf = 0;
+            }
+            if(intervenciones1tf == 0){
+                resultado1t = 0;               
+            }
+            else{
+                if (valorSub == 0)
+                {
+                    resultado1t = 0;
+                }
+                else
+                {
+                    resultado1t = (valorEgresos1Tf - valorReintegros1Tf) / intervenciones1tf;// ) / valorSub)*100;
+                    resultado1t = (resultado1t / valorSub)*100;
+                } 
+            }  
+        }
+         <td class="por100"> @( (resultado1t).ToString("0.#0")) %</td>
+    
+        @{
+            float intervenciones1tfs =0;
+            float valorEgresos1Tfs = 0;
+            float valorReintegros1Tfs = 0;
+           float valorSubs = (int)ViewBag.ValorSubvencion;
+            float resultado1ts = 0;
+            try
+            {
+                intervenciones1tfs = Model.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes < 7).Sum(p => p.Atenciones);
+                valorEgresos1Tfs = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes < 7).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                valorReintegros1Tfs = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes < 7).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+        
+            }
+            catch{
+                intervenciones1tfs = 0;
+                valorEgresos1Tfs = 0;
+                valorReintegros1Tfs = 0;
+            }
+            if(intervenciones1tfs == 0){
+                resultado1ts = 0;               
+            }
+            else{
+                if (valorSubs == 0)
+                {
+                    resultado1ts = 0;
+                }
+                else
+                {
+                    resultado1ts = (valorEgresos1Tfs - valorReintegros1Tfs) / intervenciones1tfs;// ) / valorSub)*100;
+                    resultado1ts = (resultado1ts / valorSubs)*100;
+                } 
+            }  
+        }
+        <td class="por100"> @( (resultado1ts).ToString("0.#0")) %</td>
+                @{
+             intervenciones1tf =0;
+             valorEgresos1Tf = 0;
+             valorReintegros1Tf = 0;
+            valorSub = (int)ViewBag.ValorSubvencion;
+             resultado1t = 0;
+            try
+            {
+                intervenciones1tf = Model.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 7 && p.Mes <= 9).Sum(p => p.Atenciones);
+                valorEgresos1Tf = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 9).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                valorReintegros1Tf = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 7 && d.Mes <= 9).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+        
+            }
+            catch{
+                intervenciones1tf = 0;
+                valorEgresos1Tf = 0;
+                valorReintegros1Tf = 0;
+            }
+            if(intervenciones1tf == 0){
+                resultado1t = 0;               
+            }
+            else{
+                if (valorSub == 0)
+                {
+                    resultado1t = 0;
+                }
+                else
+                {
+                    resultado1t = (valorEgresos1Tf - valorReintegros1Tf) / intervenciones1tf;// ) / valorSub)*100;
+                    resultado1t = (resultado1t / valorSub)*100;
+                } 
+            }  
+        }
+         <td class="por100"> @( (resultado1t).ToString("0.#0")) %</td>
+                @{
+             intervenciones1tf =0;
+             valorEgresos1Tf = 0;
+             valorReintegros1Tf = 0;
+            valorSub = (int)ViewBag.ValorSubvencion;
+             resultado1t = 0;
+            try
+            {
+                intervenciones1tf = Model.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 10 && p.Mes <= 12).Sum(p => p.Atenciones);
+                valorEgresos1Tf = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 10 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                valorReintegros1Tf = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 10 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+        
+            }
+            catch{
+                intervenciones1tf = 0;
+                valorEgresos1Tf = 0;
+                valorReintegros1Tf = 0;
+            }
+            if(intervenciones1tf == 0){
+                resultado1t = 0;               
+            }
+            else{
+                if (valorSub == 0)
+                {
+                    resultado1t = 0;
+                }
+                else
+                {
+                    resultado1t = (valorEgresos1Tf - valorReintegros1Tf) / intervenciones1tf;// ) / valorSub)*100;
+                    resultado1t = (resultado1t / valorSub)*100;
+                } 
+            }  
+        }
+         <td class="por100"> @( (resultado1t).ToString("0.#0")) %</td>
+                        @{
+             intervenciones1tf =0;
+             valorEgresos1Tf = 0;
+             valorReintegros1Tf = 0;
+            valorSub = (int)ViewBag.ValorSubvencion;
+             resultado1t = 0;
+            try
+            {
+                intervenciones1tf = Model.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes >= 7 && p.Mes <= 12).Sum(p => p.Atenciones);
+                valorEgresos1Tf = egresos.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Egreso.Mes >= 7 && d.Egreso.Mes <= 12).Where(d => d.Egreso.Periodo == @ViewBag.Periodo).Sum(d => d.Monto);
+                valorReintegros1Tf = reintegros.Where(d => d.Cuenta.ProResultado == 2).Where(d => d.Mes >= 7 && d.Mes <= 12).Where(d => d.Periodo == @ViewBag.Periodo).Sum(d => d.Monto_Ingresos);
+        
+            }
+            catch{
+                intervenciones1tf = 0;
+                valorEgresos1Tf = 0;
+                valorReintegros1Tf = 0;
+            }
+            if(intervenciones1tf == 0){
+                resultado1t = 0;               
+            }
+            else{
+                if (valorSub == 0)
+                {
+                    resultado1t = 0;
+                }
+                else
+                {
+                    resultado1t = (valorEgresos1Tf - valorReintegros1Tf) / intervenciones1tf;// ) / valorSub)*100;
+                    resultado1t = (resultado1t / valorSub)*100;
+                } 
+            }  
+        }
+        <td class="por100">@( (resultado1t).ToString("0.#0")) %</td>
+    </tr>
+   
+</table>
+    </body>
+</html>

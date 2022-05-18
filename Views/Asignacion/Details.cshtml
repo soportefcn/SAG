@@ -1,0 +1,35 @@
+﻿@model SAG2.Models.InventarioBien
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>InventarioBien</legend>
+
+    <div class="display-label">Inventario</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Inventario.Numero)
+    </div>
+
+    <div class="display-label">BienInventario</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BienInventario.NumeroInventario)
+    </div>
+
+    <div class="display-label">DependenciaID_Origen</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DependenciaID_Origen)
+    </div>
+
+    <div class="display-label">DependenciaID_Destino</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DependenciaID_Destino)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

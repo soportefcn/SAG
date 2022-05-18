@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "~/Views/Shared/Entrada.cshtml";
+    ViewBag.Title = "Ingreso de usuario";
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+ <div style="margin: 30px auto; border: 1px solid #DDDDDD; width: 500px; border-radius: 5px; text-align:center; padding: 8px; background:white; box-shadow: 2px 2px 5px #D8D8D8;"><a href="http://www.codeni.cl">
+<img src="@Url.Content("~/Content/Images/SAG2.png")" alt="CodeniSAG2" border="0"  style="margin-bottom: 10px; height: 200px;" /></a>
+<br />
+<br />
+     
+@using (Html.BeginForm())
+{
+     <fieldset>
+
+         <table class="table table-hover">
+<tr><td><label>Usuario</label></td>
+<td> 
+    <div class="input-group">
+  <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+        <input type="text" value="" name="NombreUsuario" id="NombreUsuario" class="form-control" placeholder="Usuario">
+        </div>   
+         </td></tr>
+          
+<tr><td> @Html.Label("Contraseña")</td>
+<td>
+	
+    <div class="input-group">
+  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+  <input class="form-control" type="password" name="Password" placeholder="Contraseña">
+</div>
+	
+</td></tr>
+
+</table>
+     @Html.Raw(ViewBag.Mensaje)
+        <p>
+            <input type="submit" value="Ingresar" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<hr>
+<div class="alert alert-info" style="text-align:center; font-weight:bold;"><i class="fa fa-warning fa-3x"></i> <br> SAG DESARROLLO <br> PRUEBA DE FUNCIONAMIENTO</div>
+</div>

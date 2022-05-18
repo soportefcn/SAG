@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SAG2.Models.ParametroInforme>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Lista";
+
+    
+}
+ <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+ <div id="contenido_popup">
+    <table class ="table table-bordered table-hover">
+    <thead class="fixedHeader">
+    <tr class="info">
+        <th style="width: 350px;">Cuenta Asociada </th>
+        <th style="width: 250px;">Proyecto</th>
+        <th style="width: auto;">T</th>
+        <th style="width: auto;">Parametro</th>
+        <th class="controles" style="width: 35px;"></th>
+    </tr>
+</thead>
+ <tbody class="scrollContent">  
+
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombrecuenta )
+        </td>
+               <td>
+            @Html.DisplayFor(modelItem => item.NombreProyecto )
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tipo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Parametro)
+        </td>
+ 
+         <td>
+            <a href="@Url.Action("EditParametros", "SaldoCierre", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+</tbody>
+</table>
+     </div> 

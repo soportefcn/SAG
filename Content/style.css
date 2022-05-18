@@ -1,0 +1,75 @@
+/* 
+	LEVEL ONE
+*/
+ul.dropdown li                      { float: left; }
+ul.dropdown li:last-child a         { border-right: none; } /* Doesn't work in IE */
+ul.dropdown li:hover                { position: relative; }
+
+/* 
+	LEVEL TWO
+*/
+ul.dropdown ul 						{ visibility: hidden; position: absolute; top: 100%; left: 0; }
+ul.dropdown ul li 					{ font-weight: normal; border-bottom: 1px solid #ccc; float: none; }
+									  
+                                    /* IE 6 & 7 Needs Inline Block */
+ul.dropdown ul li a					{ border-right: none; } 
+
+/* 
+	LEVEL THREE
+*/
+ul.dropdown ul ul 					{ left: 100%; top: 0; }
+ul.dropdown li:hover > ul 			{ visibility: visible; }
+
+#data tr {
+  display: none;
+}
+
+.soloImpresion
+{
+    /* display: none;*/    
+
+}
+.controles {
+    width:40px;
+}
+.cien {
+    width: 100px;
+}
+.doscientos {
+    width: 200px;
+}
+.trescientos {
+    width: 300px;
+}
+.btn {
+    border-radius: 0px !important;
+}
+.text{
+    mso-number-format:"\@@"; /*force text*/
+    white-space: nowrap;
+    text-align: left;
+    mso-protection:locked;
+}
+
+.por100 {
+    white-space: nowrap;
+    mso-number-format:"Percent";
+    text-align: right;
+    mso-number-format:"\[Black\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+}
+
+.num {
+    white-space: nowrap;
+    text-align: right;
+    mso-number-format:"\[Black\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+    /*mso-number-format:"\#\,\#\#0\.000";*/
+    /*mso-number-format: "[Azul][>0]#.##0";*/
+    /*mso-number-format:"0";*/
+}
+
+.alert-danger2 {
+    color: #a94442 !important;
+    background-color: #f2dede !important;
+    border-color: #ebccd1 !important;
+}
+.centrado { text-align: center !important; }

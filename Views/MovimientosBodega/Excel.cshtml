@@ -1,0 +1,97 @@
+﻿@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    Layout = null;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=MOV.BODEGA.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movimientos de Bodega</title>
+</head>
+<body>
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Fundaci&oacute;n Ciudad del Ni&ntilde;o<br />
+    @Html.Raw(@ViewBag.NombreProyecto)</strong><br />
+    <strong>Cod. Sename: @Html.Raw(@ViewBag.CodSename)</strong>
+    </td> 
+  </tr>
+  
+</table>
+    <h3 align="center">Movimientos de Bodega @Html.Raw(@Meses[@ViewBag.Mes - 1]) @Html.Raw(@ViewBag.Periodo.ToString())</h3>
+    <div>
+        @if (Model.Count() > 0)
+{
+    <table cellspacing="0" cellpadding="5" style="width: 100%;" border="1">
+        <tr>
+            <th nowrap="nowrap">Fecha</th>
+            <th nowrap="nowrap">Descripci&oacute;n</th>
+            <th nowrap="nowrap">Ingreso de Articulos</th>
+            <th nowrap="nowrap">Egreso de Articulos</th>
+            <th nowrap="nowrap">N&deg; Doc.</th>
+            <th nowrap="nowrap">Documento</th>
+            <th nowrap="nowrap">Observaci&oacute;n</th>
+        </tr>
+        @foreach (var movimiento in Model)
+        {
+        <tr>
+            <td nowrap="nowrap" align="center">@movimiento.Fecha.ToShortDateString()</td>
+            <td nowrap="nowrap">@movimiento.Articulo.Nombre.ToUpper() (@movimiento.Articulo.UnidadMedida.Descripcion)</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Entrada > 0){ @movimiento.Entrada }</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Salida > 0){ @movimiento.Salida }</td>
+            @if (@movimiento.Entrada > 0)
+            {
+            <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
+            <td nowrap="nowrap">" "</td>
+            }
+            else
+            {
+            <td align="center" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            }
+            <td nowrap="nowrap">
+                @try
+                {
+                    @movimiento.Observaciones.ToUpper()
+                }
+                catch (Exception)
+                {
+
+                    
+                }
+                    </td>
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+    </div>
+    <p align="right" style="font-size: 10px;">Generado el @DateTime.Today.ToShortDateString() a las @DateTime.Now.ToShortTimeString()</p>
+</body>
+</html>

@@ -1,0 +1,82 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    ViewBag.Title = "Informe de Ingresos";
+    var MontoTotal = 0;
+}
+<div class="permisos">
+<h2>Informe Ingresos</h2>
+<table align="center" cellpadding="5" cellspacing="0" style="width: 100%;">
+    <tr>
+        <th>
+            Nº Comprobante
+        </th>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Cuenta
+        </th>
+        <th>
+            Descripción
+        </th>
+        <th>
+            Nº Cheque
+        </th>
+        <th>
+            Monto $
+        </th>
+            <th>
+            Cta. Cte.
+        </th>
+        <th>
+            Glosa
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        MontoTotal += item.Monto_Ingresos;
+    <tr>
+        <td align="center">
+            @Html.DisplayFor(modelItem => item.NumeroComprobante)
+        </td>
+        <td>
+            @item.Fecha.Value.ToShortDateString()
+        </td>
+            
+        <td align="center">
+            @Html.DisplayFor(modelItem => item.CuentaID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlanDeCuenta.Descripcion)
+        </td>
+        <td align="right">
+            @Html.DisplayFor(modelItem => item.Cheque)
+        </td>
+        <td align="right">
+            <strong>
+            $@Html.DisplayFor(modelItem => item.Monto_Ingresos) 
+            </strong>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+    </tr>
+    }
+</table>
+    <p></p>
+   <table align="center" cellpadding="5" cellspacing="0" style="width: 100%;">
+        <tr>
+            <th style="width:25%;">Nº Comprobantes: </th>
+            <td align="right"><strong>@Html.Raw(Model.Count().ToString())</strong></td>
+        </tr>
+        <tr>
+            <th>Monto Total: </th>
+            <td align="right"><strong>$@Html.Raw(MontoTotal.ToString())</strong></td>
+        </tr>
+    </table>
+    <p></p>
+    <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Movimiento/ImprimirInforme/?Informe=Ingresos" target="_blank"><img src="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Content/Images/Printer.png" alt="Print" width="25" height="25" style="vertical-align:middle;" /> Imprimir informe</a> 
+    </div>

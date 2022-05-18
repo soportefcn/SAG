@@ -1,0 +1,59 @@
+﻿@model IEnumerable<SAG2.Models.InventarioMovimiento>
+@{
+    ViewBag.Title = "Bajas de Inventario";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+}
+<div class="permisos">
+    <input type="button" value="GENERAR BAJA" style="float: right;" id="Inventario_Generar_Baja" />
+    <h2>BAJA DE INVENTARIOS</h2>
+    @if (Model.Count() > 0)
+    {
+    <table cellpadding="5" border="0" align="center" style="width: 100%;">
+        <tr>
+            <th>N°</th>
+            <th>Fecha Creación</th>
+            <th>Fecha Modificación</th>
+            <th># Especies</th>
+            <th>Cantidad</th>
+            <th style="width: 40px;">Acciones</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td align="center">@item.ID</td>
+            <td style="text-align: center;">@item.FechaCreacion.ToShortDateString() @item.FechaCreacion.ToShortTimeString()</td>
+            <td style="text-align: center;">@item.FechaModificacion.ToShortDateString() @item.FechaModificacion.ToShortTimeString()</td>
+            @{
+                <td align="center">
+                @try
+                {
+                     @Html.Raw(@db.InventarioBaja.Where(i => i.MovimientoID == item.ID).Count().ToString());
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("0");
+                }
+                </td>
+            }
+            @{
+                <td align="center">
+                @try
+                {
+                     @Html.Raw(@db.InventarioBaja.Where(i => i.MovimientoID == item.ID).Sum(i => i.Cantidad).ToString());
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("0");
+                }
+                </td>   
+            }
+            <td align="center"><input type="button" value="VER" onclick="window.location='./Baja?movimientoID=@item.ID'" /> </td>
+        </tr>
+        }
+    </table>
+    }
+    else
+    { 
+        <div class="warning">No existen Bajas para este Proyecto</div>
+    }
+</div>

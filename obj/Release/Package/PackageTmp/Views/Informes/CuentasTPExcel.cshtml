@@ -1,0 +1,96 @@
+﻿@model IEnumerable<SAG2.Models.movcuenta>
+@using SAG2.Models
+@{
+    ViewBag.Title = "Cuentas";
+    SAG2DB db = new SAG2DB();
+    var proyectos = db.Proyecto.ToList();
+
+    Layout = null;
+    ViewBag.Title = "Cuentas por Tipo de Programa";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=CuentasGeneral-" + DateTime.Now.ToShortDateString() + ".xls");
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>
+<div id="SAGBox">
+    <h2>Informe de Cuenta: @Model.Select(x => x.NombreCuenta).First()</h2>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+                <h3>Periodo @ViewBag.Desde - @ViewBag.Hasta</h3>
+            }
+        </div>
+
+    </div>
+
+    @if (ViewBag.Entrada == 1)
+    {
+        <table class="table table-striped table-bordered" cellpadding="5" border="1" style="width: 80%;">
+            <tr>
+                <th>Código Sag.</th>
+                <th>Tipo Movimiento</th>
+                <th>N° Comprobante</th>
+                <th>Fecha</th>
+                <th>Cuenta </th>
+                <th>N° Cheque</th>
+                <th>Monto</th>
+                <th>Cta Cte </th>
+                <th> Glosa</th>
+
+            </tr>
+            @foreach (var item in Model)
+            {
+
+            <tr>
+                <td>@proyectos.Find(i => i.ID == item.ProyectoID).CodCodeni</td>
+                <td align="center">
+                    @{
+                        if (item.TipoComprobanteID == 1)
+                        {
+                            <a>Ingreso</a>
+                        }
+                        if (item.TipoComprobanteID == 2)
+                        {
+                            <a>Egreso</a>
+                        }
+                        if (item.TipoComprobanteID == 3)
+                        {
+                            <a>ReIntegro</a>
+                        }
+                        if (item.TipoComprobanteID == 4)
+                        {
+                            <a>Gasto ReIntegro </a>
+                        }
+
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumeroComprobante)
+                </td>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td>@item.NombreCuenta</td>
+                <td>@item.Cheque</td>
+                <td align="right">
+                    @item.Monto.ToString("###,##")
+                </td>
+                <td>@item.CtaCte</td>
+                <td>@item.Glosa</td>
+            </tr>
+            }
+        </table>
+
+    }
+
+
+</div>

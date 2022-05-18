@@ -1,0 +1,64 @@
+﻿@model IEnumerable<SAG2.Models.FondoFijo>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Fondo fijo";
+    var monto = 0;
+}
+
+ <div id="contenido_popup">
+     
+    <table class ="table table-bordered table-hover">
+    <tr class="info">
+    <th class="controles"></th>
+        <th>
+            Cuenta
+        </th>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Nº Doc. Resp.
+        </th>
+        <th>
+            Monto $
+        </th>
+        <th>
+            Glosa
+        </th>
+        
+    </tr>
+@foreach (var item in Model)
+{
+    monto = monto + item.Monto;
+    <tr>
+    <td>
+            <a href="@Url.Action("Edit", "CajaChica", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td>
+            @item.Cuenta.NombreLista
+        </td>
+        <td>
+            @item.Fecha.ToShortDateString()
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumeroDocumento)
+        </td>
+        <td align="right">
+            @item.Monto.ToString("#,##0")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Glosa)
+        </td>
+        
+    </tr>
+}
+    <tr>
+        <th align="right" colspan="4">
+            Total
+        </th>
+        <td align="right">
+            @Html.Raw(@monto.ToString("#,##0"))
+        </td>
+        </tr>
+    </table>
+</div>

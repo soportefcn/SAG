@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Movimientos de mercadería e insumos";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox" class="control_bodega">
+    <h2>Control de bodega</h2>
+@using (Html.BeginForm())
+{
+    @Html.Hidden("MovimientosBodegaID")
+   
+    <div class="form-inline form-group">
+    <div class="form-group">
+     <fieldset>
+        <div class="panel panel-default" style="width: 380px;">
+  <div class="panel-heading"><h3 class="panel-title">Período</h3></div>
+  <div class="panel-body">
+      <div  class="form-group form-inline">
+             <div  class="form-group form-inline">
+                <div class="form-group"> 
+                    <label>Mes </label>
+                </div>
+                <div class="form-group">
+                    <select name="PeriodoMes" id="PeriodoMes" class="form-control">
+                        @for (var i = 0; i < 12; i++)
+                        {
+                        <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.mes.Equals((i + 1).ToString())) { @Html.Raw("selected=\"selected\"");}>@Html.Raw(@Meses[@i])</option>
+                        }
+                    </select>
+                </div>
+            </div> 
+            
+               <div class="form-group">
+                 <input type="button" name="BodegaPeriodo" id="BodegaPeriodo" value="Ver" class="btn btn-default"/>
+                 <input type="button" name="ImprimirBodega" id="ImprimirBodega" value="Imprimir" class="btn btn-default" />
+                 <input type="button" name="ExcelBodega" id="ExcelBodega" value="Excel" class="btn btn-default" />
+             </div>
+             <br />
+             <div class="form-group form-inline">
+                 <div class="form-group">
+                     <label>Año</label>
+                 </div>
+                 <div class="form-group">
+                      <select name="PeriodoAnio" id="PeriodoAnio" class="form-control">
+                                @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                                {
+                                    <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo.Equals((i).ToString()))
+                                                                               { @Html.Raw("selected=\"selected\"");
+                                                                               }>@Html.Raw((@i).ToString())</option>
+                                }
+                                </select>
+                 </div>
+             </div>
+           
+          </div>       
+  </div>
+</div>                  
+      </fieldset>
+     </div>
+      <div class="form-group">       
+    <fieldset>
+                      
+  <div class="panel panel-default" style="width: 110px; margin-top: -14px;">
+  <div class="panel-heading"><h3 class="panel-title">Movimiento</h3></div>
+  <div class="panel-body">
+   <label><input type="radio" name="tipo_movimiento" id="tipo_movimiento_e" value="E" checked="checked" /> Entrada</label><br />
+   <label><input  type="radio" name="tipo_movimiento" id="tipo_movimiento_s" value="S" /> Salida</label>
+      <br />
+  </div>
+</div>   
+                                   
+                </fieldset>
+          </div>
+        <div class="form-group">  
+       <fieldset>
+           <div class="panel panel-default" style="margin-top: -9px;">
+  <div class="panel-heading">
+    <h3 class="panel-title">Documento de respaldo</h3>
+  </div>
+  <div class="panel-body">
+    Tipo
+    @Html.DropDownList("DocumentoID", null, new { style = "width: 290px;" })
+    <br /><br />                        
+    Nº Doc.<input type="text" name="NroDocumento" id="NroDocumento" />
+  </div>
+</div>
+            
+                </fieldset>
+     </div>    
+    
+    </div>     
+        
+                <fieldset>
+         <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Artículo</h3>
+  </div>
+  <div class="panel-body">
+    <div class="form-group form-inline">
+       <div class="form-group">
+           <label>Fecha</label>
+        </div>
+         <div class="form-group">
+           <input class="form-control" type="text" name="Fecha" id="Fecha" class="calendario" value="@DateTime.Now.ToShortDateString()" readonly="readonly" maxlength="10" size="10" />
+        </div>
+        </div>
+      <div class="form-group form-inline">
+          <div class="form-group">
+           <label>Artículo</label>
+        </div>
+        <div class="form-group">
+             @Html.DropDownList("ArticuloID", null, new { style = "width: 100%;", @class = "form-control" })
+        </div>
+          <div class="form-group">
+           <label>Cantidad</label>
+        </div>
+          <div class="form-group"><input type="text" name="Cantidad" id="Cantidad" class="form-control"/></div> 
+            
+  </div>
+       <label>Observaciones </label>
+       <input type="text" name="Observaciones" id="Observaciones" style="width: 610px;" />
+      <input class="btn btn-primary" type="button" name="BodegaMovimiento" id="BodegaMovimiento" value="Guardar" style="height: 100%;" />
+</div>
+     </div>               
+                                      
+                   </fieldset>
+          
+    
+           
+                <fieldset style="height: 18px;">
+                    <img src="@Url.Content("~/Content/Images/Empty.png")" id="LimpiarFormulario" width="20" height="20" style="cursor: pointer;" title="Limpiar formulario" />
+                    <img src="@Url.Content("~/Content/Images/Delete.png")" id="BorrarMovimientoBodega" width="20" height="20" style="cursor: pointer;" title="Borrar movimiento" />
+                </fieldset>
+           
+
+    <iframe src="/SAG_5_desarrollo/MovimientosBodega/ListarMovimientos" width="796px" height="150px" id="iframeBodega" frameborder="0" scrolling="auto" style="margin-top: 3px; margin-left: 3px;"></iframe>
+}
+</div>

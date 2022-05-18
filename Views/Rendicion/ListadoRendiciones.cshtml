@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Rendiciones de Cuenta";
+    var periodos_anteriores = (List<SAG2.Models.Periodo>)@ViewBag.periodos_anteriores;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div class="inicio">
+    <h2>Rendiciones de Cuenta Anteriores</h2>
+<br />
+@{
+    var Proyecto = (SAG2.Models.Proyecto)Session["Proyecto"];
+    var Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+    <fieldset>
+        <h3>Rendiciones</h3>
+                @if (periodos_anteriores != null && periodos_anteriores.Count() > 0)
+                {
+        <table class="table table-hover">
+            <tr>
+                <th style="width: 60px;" align="center">Año</th>
+                <th style="width: 60px;" align="center">Mes</th>
+                <th style="width: 25%;">Ingresos</th>
+                <th style="width: 25%;">Egresos</th>
+                <th style="width: 25%;">Reintegros</th>
+                <th style="width: 25%;">Rendición CODENI</th>
+            </tr>
+        @foreach (SAG2.Models.Periodo periodo in periodos_anteriores)
+        {
+            <tr>
+                <td align="center">@periodo.Ano</td>
+                <td align="center">@Html.Raw(@Meses[periodo.Mes - 1])</td>
+                <td align="center">@Html.ActionLink("Ver informe", "../Informes/Ingresos", new { Periodo = periodo.Ano, Mes = periodo.Mes })</td>
+                <td align="center">@Html.ActionLink("Ver informe", "../Informes/Egresos", new { Periodo = periodo.Ano, Mes = periodo.Mes })</td>
+                <td align="center">@Html.ActionLink("Ver informe", "../Informes/Reintegros", new { Periodo = periodo.Ano, Mes = periodo.Mes })</td>
+                <td align="center">@Html.ActionLink("Ver carátula", "Codeni", new { Periodo = periodo.Ano, Mes = periodo.Mes })</td>
+            </tr>
+        }
+        </table>
+                }
+                else
+                { 
+        <div class="warning">No existen rendiciones para mostrar.</div>
+        <br />
+    
+        }
+    </fieldset>
+}
+    <br />
+</div>

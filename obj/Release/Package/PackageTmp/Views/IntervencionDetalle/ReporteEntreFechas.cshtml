@@ -1,0 +1,120 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>
+@model IEnumerable<SAG2.Models.Proyecto>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Intervenciones por Rango de fechas";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    //List<SAG2.Models.IntervencionResumen> inter = db.IntervencionResumen.ToList();
+    List<SAG2.Models.IntervencionResumen> intervenciones = new List<SAG2.Models.IntervencionResumen>();
+    List<SAG2.Models.Region> regiones = db.Region.ToList();
+    List<SAG2.Models.TipoProyecto> tipoPro = db.TipoProyecto.ToList();
+    List<SAG2.Models.LineasAtencion> linea = db.LineasAtencion.ToList();
+    List<SAG2.Models.Comuna> comunas = db.Comuna.ToList();
+    List<SAG2.Models.EstadoIntervencion> estadoInt = db.EstadoIntervencion.ToList();
+    List<SAG2.Models.Proyecto> pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
+    List<SAG2.Models.EstadoIntervencion> estados = db.EstadoIntervencion.ToList();
+    int proyectoID = 0;
+
+
+    //int Periodo = @ViewBag.Periodo;
+    // int Mes = @ViewBag.Mes;
+}
+<div id="SAGBox" style="width: 90%;">
+    <h2>@ViewBag.Title</h2>
+    @using (Html.BeginForm())
+    {
+
+        <fieldset>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Mes Inicio:&nbsp;
+                    <select name="mesInicio" id="mesInicio" class="js-autocomplete" onchange="funcion()">
+                        <option selected="selected" value="-1"> - Seleccione Mes Inicio</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    &nbsp; Año Inicio:
+                    <select name="anioInicio" id="anioInicio" class="js-autocomplete" onchange="funcion()">
+                        <option selected="selected" value="-1"> - Seleccione Año Inicio</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                    </select><br />
+                    <br />
+                    
+                    Mes Hasta:
+                    <select name="mesHasta" id="mesHasta" class="js-autocomplete" onchange="funcion()">
+                        <option selected="selected" value="-1"> - Seleccione Mes Inicio</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    Año Hasta:
+                    <select name="anioHasta" id="anioHasta" class="js-autocomplete" onchange="funcion()">
+                        <option selected="selected" value="-1"> - Seleccione Año Inicio</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <option value="2017">2017</option>
+                        <option value="2016">2016</option>
+                        <option value="2015">2015</option>
+                        <option value="2014">2014</option>
+                    </select>
+                    <br />
+                    <br />
+
+                    <div class="ocultoImpresion">
+
+                        <a class="btn btn-info" href="@Url.Action("ResultadoEntreFechas", "IntervencionDetalle", new { id = proyectoID })" id="link">Ver resultados</a>
+                    </div>
+                </div>
+
+
+            </div>
+        </fieldset>
+
+    }
+   
+    <script>
+        function funcion() {
+            var a = $("#mesInicio").val();
+            var b = $("#anioInicio").val();
+            var c = $("#mesHasta").val();
+            var d = $("#anioHasta").val();
+            $("#link").attr("href", '@Url.Action("ResultadoEntreFechas", "IntervencionDetalle")' + "/?mesInicio=" + a + "&anioInicio=" + b + "&mesHasta=" + c + "&anioHasta=" + d);
+        }
+
+    </script>
+
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

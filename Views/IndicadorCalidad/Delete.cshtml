@@ -1,0 +1,88 @@
+﻿@model SAG2.Models.IndicadorCalidad
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>IndicadorCalidad</legend>
+
+    <div class="display-label">ProyectoID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProyectoID)
+    </div>
+
+    <div class="display-label">Periodo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Periodo)
+    </div>
+
+    <div class="display-label">Mes</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Mes)
+    </div>
+
+    <div class="display-label">NumeroInforme</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NumeroInforme)
+    </div>
+
+    <div class="display-label">FechaInforme</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaInforme)
+    </div>
+
+    <div class="display-label">GastoObjetado</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GastoObjetado)
+    </div>
+
+    <div class="display-label">GastoRechazado</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GastoRechazado)
+    </div>
+
+    <div class="display-label">CantidadObservaciones</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CantidadObservaciones)
+    </div>
+
+    <div class="display-label">Observacion</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Observacion)
+    </div>
+
+    <div class="display-label">FechaCumplimiento</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaCumplimiento)
+    </div>
+
+    <div class="display-label">AdjuntarInforme</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AdjuntarInforme)
+    </div>
+
+    <div class="display-label">Tipo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Tipo)
+    </div>
+
+    <div class="display-label">FechaSistema</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaSistema)
+    </div>
+
+    <div class="display-label">UsuarioID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UsuarioID)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

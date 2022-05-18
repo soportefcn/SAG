@@ -1,0 +1,224 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Egresos";
+    var total = 0;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Informe de Egresos</title>
+    <style type="text/css" media="print">
+    @@page
+    {
+    size: landscape;
+    margin: 2cm;
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+    font-size: 10px;    
+    }
+    
+    th 
+    {
+    font-size: 12px;    
+    }
+    
+    h2 {
+        text-align: center;
+    }
+    .registros td
+    {
+        border: 0;    
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+    .registro_nulo td 
+    {
+        text-decoration: line-through;
+    }
+    </style>
+
+<script language="javascript" type="text/javascript">
+       <!--
+    function printThis() {
+        window.print();
+        setTimeout('window.close()', 10);
+       // self.close();
+    }
+    //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Consejo de Defensa del Niño<br />
+    @Html.Raw(@ViewBag.Proyecto)</strong></td>
+    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2>Informe de Egresos</h2>
+<div align="right">Del @Html.Raw(@ViewBag.Desde) al @Html.Raw(@ViewBag.Hasta)</div>
+    <table cellpadding="5" border="0" style="width: 100%;" cellspacing="0">
+        <tr>
+            <th style="border-left: 1px solid black; white-space: nowrap;" align="center" width="60px">Nº Egreso</th>
+            <th align="left" width="50px">Fecha</th>
+            <th align="left" width="40px">Cheque</th>
+            <th align="left">Cuenta</th>           
+            <th align="left">Glosa</th>
+            <th align="left">Beneficiario</th>
+            <th align="left">Documento</th>
+            <th align="left" width="20px">N°</th>
+            <th align="left" width="50px"  style="white-space: nowrap;">Monto $</th>
+            <th style="border-right: 1px solid black;">Cta. Cte.</th>
+        </tr>
+    @foreach (var item in Model)
+    {
+        if (item.TipoComprobanteID != 2)
+        {
+            continue;
+        }
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            <tr style="text-decoration: line-through;">
+            <td align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @item.Cheque
+                </td>
+                <td>
+                    @if (@item.Cuenta != null)
+               { @Html.Raw(utils.cuentaPadre(@item.Cuenta)) }
+                </td>
+                <td>COMPROBANTE NULO</td>
+                 <td>
+                    @if (item.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                    }
+                    else if (item.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Proveedor.Nombre)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@item.Beneficiario)
+                    }
+                </td>
+                <td>@try
+                    {
+                        @Html.Raw(@item.Documento.NombreLista)
+                    }
+                    catch (Exception)
+                    {}</td>
+                <td>@try
+                    {
+                        @Html.Raw(@item.NDocumento.ToString())
+                    }
+                    catch (Exception)
+                    {}</td>
+                <td align="right">
+                    <strong>
+                    $@item.Monto_Egresos.ToString("#,##0")
+                    </strong>
+                </td>
+                <td>
+                    @item.CuentaCorriente.Numero
+                </td>
+            </tr>
+        }
+        else
+        {
+            SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+            foreach (var detalle in detalles)
+            {
+                total = total + detalle.Monto;
+    
+        <tr>
+            <td align="center">
+                @item.NumeroComprobante
+            </td>
+            <td style="white-space: nowrap; overflow: hidden;">
+                @detalle.Egreso.Fecha.Value.ToShortDateString()
+            </td>
+            <td style="white-space: nowrap;" align="left">
+                @Html.DisplayFor(modelItem => detalle.Egreso.Cheque)
+            </td>
+            <td style="white-space: nowrap;">
+               @if (@detalle.Cuenta != null)
+               { @Html.Raw(utils.cuentaPadre(@detalle.Cuenta)) }
+                else
+                { @Html.Raw("")}
+            </td>
+            <td>
+                <div style="white-space: nowrap; overflow: hidden; width: 170px;"> 
+                @Html.DisplayFor(modelItem => detalle.Glosa)
+                </div>
+            </td>
+            <td style="white-space: nowrap;">
+                @if (detalle.Egreso.Persona != null)
+                {
+                    @Html.DisplayFor(modelItem => detalle.Egreso.Persona.NombreCompleto)
+                }
+                else if (detalle.Egreso.Proveedor != null)
+                {
+                    @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.Nombre)
+                }
+                else
+                { 
+                    @Html.Raw(@detalle.Egreso.Beneficiario)
+                }
+            </td>
+            <td>
+                <div style="white-space: nowrap; overflow: hidden; width: 100px;">
+                @if (@detalle.Documento != null)
+                { @Html.Raw(@detalle.Documento.NombreLista) }
+                </div>
+            </td>
+            <td align="center">
+                @detalle.NDocumento.ToString()
+            </td>
+            
+            <td align="right" style="background-color: orange;">
+                <strong>
+                $@Html.Raw(detalle.Monto.ToString("#,##0")) 
+                </strong>
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => detalle.Egreso.CuentaCorriente.Numero)
+            </td>
+        </tr>
+    }
+    }
+    }
+    </table>
+    <table style="width: 100%;">
+        <tr>
+            <th align="right" style="border-bottom: 0;"><strong>Total Informe de Egresos $@total.ToString("#,###")</strong> </th>
+            <th>&nbsp;&nbsp</th>
+        </tr>
+    </table>
+    <br /><br /><br /><br /><br />
+  <table style="width: 100%;">
+    <tr>
+      
+        <td width="33%" align="right" style="font-size: 14px;">_______________________<br />Firma y Timbre Director (a) </td>
+    </tr>
+</table>
+</body>
+</html>

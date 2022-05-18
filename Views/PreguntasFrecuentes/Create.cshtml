@@ -1,0 +1,80 @@
+﻿@model SAG2.Models.PreguntaFrecuente
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>PreguntaFrecuente</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Pregunta)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Pregunta)
+            @Html.ValidationMessageFor(model => model.Pregunta)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Respuesta)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Respuesta)
+            @Html.ValidationMessageFor(model => model.Respuesta)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PreguntaFecha)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PreguntaFecha)
+            @Html.ValidationMessageFor(model => model.PreguntaFecha)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RespondeFecha)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RespondeFecha)
+            @Html.ValidationMessageFor(model => model.RespondeFecha)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Comentario)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Comentario)
+            @Html.ValidationMessageFor(model => model.Comentario)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Activo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Activo)
+            @Html.ValidationMessageFor(model => model.Activo)
+        </div>
+
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

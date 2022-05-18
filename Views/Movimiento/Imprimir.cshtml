@@ -1,0 +1,209 @@
+﻿@model SAG2.Models.Movimiento
+@{
+    Layout = null;
+    var db = new SAG2.Models.SAG2DB();
+
+    //Response.AddHeader("content-type", "application/pdf");
+    //Response.AddHeader("Content-Disposition", "attachment; filename=result.pdf");
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Comprobante de @Model.TipoComprobante.Nombre</title>
+    <style type="text/css" media="all">
+        body 
+        {
+            font-size: 14pt;
+            font-family: Times New Roman; 
+        }
+        .display-label 
+        {
+            float: left;
+            width: 200px;
+        }
+        
+        .display-field, .display-label 
+        {
+            margin-bottom: 10px;
+        }
+        
+        legend 
+        {
+            text-align: center;
+            font-size: 20pt;
+            letter-spacing: 1px;
+            text-decoration: underline;
+        }
+        
+        .firma
+        {
+            float: right;
+            border-top: 2px solid Black;
+            width: 250px; 
+            padding-top: 10px;
+            text-align: center;
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+        
+        fieldset.parent
+        {
+            border: 0;
+        }
+        
+        .membrete-izq
+        {
+            float: left;
+            text-align: center;
+            clear: left;
+        }
+        
+        .membrete-der 
+        {
+            float: right;
+            text-align: right;
+            clear: right;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="membrete-izq">
+            CODENI<br />
+            @Model.Establecimiento.Nombre
+        </div>
+        <div class="membrete-der">
+            Comprobante Nº @Model.NumeroComprobante
+            @if (@Model.TipoComprobante.Nombre == "Reintegro")
+            {
+                <br />@Html.Raw("Fecha ")
+                @Model.Fecha.Value.ToShortDateString()
+                
+            }
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <fieldset class="parent">
+            <legend>Comprobante de @Model.TipoComprobante.Nombre</legend>
+            <p></p>
+            @if (@Model.TipoComprobante.Nombre == "Ingreso")
+            {
+                <fieldset>
+            
+                <div class="display-label">Fecha</div>
+                <div class="display-field">
+                    @Model.Fecha.Value.ToShortDateString()
+                </div>
+
+                <div class="display-label">Cuenta contable</div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.PlanDeCuenta.NombreLista)
+                </div>
+
+                <div class="display-label">Cuenta corriente</div>
+                <div class="display-field">
+                     @Html.DisplayFor(model => model.CuentaCorriente.Numero)
+                </div>
+
+                <div class="display-label">Nº Cheque</div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.Cheque)
+                </div>
+
+                <div class="display-label">Monto $</div>
+                <div class="display-field">
+                    $@Model.Monto_Ingresos.ToString("##.#")***
+                </div>
+                </fieldset>
+                <p></p>
+                <br />
+                <fieldset>
+                <div class="display-label">Glosa</div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </div>
+                </fieldset>
+            }
+            else if (@Model.TipoComprobante.Nombre == "Reintegro")
+            {
+                //var Cuenta = new SAG2.Models.PlanDeCuenta();
+                var Movimiento = new SAG2.Models.Movimiento();
+
+                int MovimientoID = db.Movimiento
+                           .Where(a => a.NumeroComprobante == Model.ComprobanteEgreso)
+                           .Where(a => a.TipoComprobanteID == 2)
+                           .Select(a => a.ID)
+                           .Single();
+
+                Movimiento = db.Movimiento.Find(MovimientoID);
+                //Cuenta = db.Cuenta.Find(Movimiento.CuentaID);
+                <fieldset>
+                <div class="display-label"><em>Datos de Egreso</em></div>
+                <div class="display-field">
+                    &nbsp;
+                </div>
+
+                <div class="display-label">Cta. Gastos</div>
+                <div class="display-field">
+                    @Movimiento.PlanDeCuenta.NombreLista
+                </div>
+
+                <div class="display-label">Descripcion</div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.PlanDeCuenta.NombreLista)
+                </div>
+
+                <div class="display-label">Comprobante de egreso</div>
+                <div class="display-field">
+                     @Html.DisplayFor(model => model.ComprobanteEgreso)
+                </div>
+
+                <div class="display-label">Fecha egreso</div>
+                <div class="display-field">
+                    @Movimiento.Fecha.Value.ToShortDateString()
+                </div>
+                </fieldset>
+                <p></p>
+                <br />
+                <fieldset>
+                <div class="display-label"><em>Datos de reintegro</em></div>
+                <div class="display-field">
+                    &nbsp;
+                </div>
+                <div class="display-label">Nº Cheque</div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.Cheque)
+                </div>
+
+                <div class="display-label">Monto $</div>
+                <div class="display-field">
+                    $@Model.Monto_Ingresos.ToString("##.#")***
+                </div>
+                </fieldset>
+                <p></p>
+                <br />
+                <fieldset>
+                <div class="display-label">Glosa</div>
+                <div class="display-field">
+                    @Html.DisplayFor(model => model.Descripcion)
+                </div>
+                </fieldset>
+            }
+        </fieldset>
+        <p>&nbsp;</p>
+        <div class="firma">
+        Firma y Timbre Director(a)
+        </div>
+    </div>
+    <script type="text/javascript">
+        print();
+        window.close();
+        self.close();
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>
+@model IEnumerable<SAG2.Models.IntervencionResumen>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Intervenciones por Región";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    //List<SAG2.Models.IntervencionResumen> inter = db.IntervencionResumen.ToList();
+    List<SAG2.Models.IntervencionResumen> intervenciones = new List<SAG2.Models.IntervencionResumen>();
+    List<SAG2.Models.Region> regiones = db.Region.ToList();
+    List<SAG2.Models.TipoProyecto> tipoPro = db.TipoProyecto.ToList();
+    List<SAG2.Models.LineasAtencion> linea = db.LineasAtencion.ToList();
+    List<SAG2.Models.Comuna> comunas = db.Comuna.ToList();
+    List<SAG2.Models.EstadoIntervencion> estadoInt = db.EstadoIntervencion.ToList();
+    List<SAG2.Models.Proyecto> pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
+    int proyectoID = 0;
+    int comunaID = 0;
+
+
+    //int Periodo = @ViewBag.Periodo;
+    // int Mes = @ViewBag.Mes;
+}
+<div id="SAGBox" style="width: 90%;">
+    <h2>@ViewBag.Title</h2>
+    @using (Html.BeginForm())
+    {
+
+        <fieldset>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <select name="Proyecto" id="Proyecto" class="js-autocomplete" onchange="funcion()">
+                        <option value="-1"> - Seleccione una región</option>
+                        @foreach (SAG2.Models.Region Proyecto in regiones)
+                        {
+                            if (proyectoID == Proyecto.ID)
+                            {
+                                <option selected="selected" value="@Proyecto.ID">@Proyecto.Nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@Proyecto.ID">@Proyecto.Nombre</option>
+                            }
+                        }
+                    </select>
+                    <select name="comuna" id="comuna" class="js-autocomplete" onchange="funcion2()">
+                        <option value="-1"> - Seleccione una comuna</option>
+                        @foreach (SAG2.Models.Region Proyecto in regiones)
+                        {
+                            if (proyectoID == Proyecto.ID)
+                            {
+                                <option selected="selected" value="@Proyecto.ID">@Proyecto.Nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@Proyecto.ID">@Proyecto.Nombre</option>
+                            }
+                        }
+                    </select>
+                    <br />
+                    <br />
+                    <div class="ocultoImpresion">
+
+                        <a class="btn btn-info" href="@Url.Action("ResultadoPorTipoProyecto", "IntervencionDetalle", new { id = proyectoID, id2 = comunaID })" id="link">Ver resultados</a>
+                    </div>
+                </div>
+
+
+            </div>
+        </fieldset>
+
+    }
+   
+    <script>
+        function funcion() {
+            var x = $("#Proyecto").val();
+            $("#link").attr("href", '@Url.Action("ResultadoRegion", "IntervencionDetalle")'+"/"+x);
+        }
+
+        $("#Proyecto").change(function () {
+            $("#comuna").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetComuna")', // we are calling json method
+                dataType: 'json',
+                data: { id: $("#Proyecto").val() },
+                // here we are get value of selected country and passing same value
+                //as inputto json method GetStates.
+                success: function (comunas) {
+                    // states contains the JSON formatted list
+                    // of states passed from the controller
+                    $.each(comunas, function (i, comunas) {
+                        $("#comuna").append('<option value="' + comunas.Value + '">' +
+                            comunas.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Error Al Cargar las dependencias' + ex);
+                }
+            });
+            return false;
+        })
+
+            function funcion2() {
+            var x = $("#comuna").val();
+            $("#link").attr("href", '@Url.Action("ResultadoComuna", "IntervencionDetalle")'+"/"+x);
+        }
+    </script>
+
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

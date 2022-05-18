@@ -1,0 +1,160 @@
+﻿
+@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    Layout = null;
+    ViewBag.Title = "ListarLineas";
+    string arti = "";
+    string categoria = "";
+    var saldo_inicial = 0 ;
+    var entrada = 0;
+    var salida = 0;
+    var saldo = 0;
+    //list<SAG2.Models.Bodega> ba = new SAG2.Models.Bodega();
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+
+<html>
+    <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >    
+    <link href="@Url.Content("~/Content/dist/css/bootstrap-submenu.min.css")" rel="stylesheet" >
+    
+
+<head>
+    <title>Listado de Movimiento   </title>
+        <script language="javascript" type="text/javascript">
+       <!--
+    function printThis() {
+        window.print();
+        setTimeout('window.close()', 10);
+        // self.close();
+    }
+    //-->
+    </script>
+
+	<style>
+ 
+     @@page
+    {
+        size: landscape;
+     
+          margin-top: 0pt;
+    }
+ 		body {font-family: Helvetica;
+ 		font-size: 10pt;
+ 		}
+ 		p { margin: 0pt;
+ 		}
+ 		#pagina { 
+ 			width: 100%;
+ 			float: left;
+ 			margin: 5%;
+ 			text-align: justify;
+		}
+		#titulo {
+			text-align: center; 
+			font-size: 15pt;
+		}
+ 		#firma {
+ 			text-align: left; 
+ 			width: 50%; 
+ 			float: right
+ 		}
+
+ 		.items{
+ 			font-size: 9pt; 
+ 			border-collapse: collapse;
+ 		}
+	</style>
+	</head>
+	<body onLoad="printThis();">	
+ 		<head name="myheader">
+ 			<table width="90%"  style="font-size: 7pt;">
+ 				<tr>
+ 					<td width="50%" style="color:#000000;"> <br />
+ 						<img src="@Url.Content("~/Content/Images/logoimp.PNG")" width="140" >
+ 						<br /><span align="center" style="font-size: 7pt;">Consejo Defensa del Niño</span>
+ 						<br />@ViewBag.nombreproyecto
+ 					</td>
+ 					<td width="50%" style="text-align: right;"></td>
+ 				</tr>
+ 			</table>
+ 		</head>
+ 
+	
+ 		<div>
+		
+			<div id="titulo">Listado de Movimientos Periodo : @ViewBag.Periodo - @ViewBag.Mes</div>
+   	
+    @if (Model.Count() > 0)
+{
+    <table class ="table table-bordered table-hover">
+        <thead >
+        <tr class="info">
+            <th style="text-align: center;">Fecha</th>
+            
+            <th style="text-align: center;">Descripción</th>
+            <th style="text-align: center;">U. Medida</th>
+            <th style="text-align: center;">Entrada</th>
+            <th style="text-align: center;">Salida</th>
+            <th style="text-align: center;">Nº Egreso</th>
+            <th style="text-align: center;">Nº Documento</th>
+            
+        </tr>
+            </thead>
+       
+        @foreach (var movimiento in Model)
+        {
+        
+        <tr class="MovimientoBodega" MovimientosBodegaID="@movimiento.ID" Fecha="@movimiento.Fecha.ToShortDateString()" ArticuloID="@movimiento.ArticuloID" Cantidad="@if (@movimiento.Entrada > 0){ @movimiento.Entrada } else { @movimiento.Salida }" tipo_movimiento="@if (@movimiento.Entrada > 0){ @Html.Raw("E") } else { @Html.Raw("S") }" Observaciones="@movimiento.Observaciones" NroDocumento="@movimiento.NroDocumento" style="cursor: pointer;">
+             @if (@movimiento.Tdoc == 1)
+            {
+                 <td nowrap="nowrap">@movimiento.DetalleEgreso.FechaEmision.ToShortDateString()</td>
+             }
+            else
+            {
+            <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
+             }
+            <td nowrap="nowrap">@movimiento.Articulo.Nombre</td>
+            <td nowrap="nowrap">@movimiento.Articulo.UnidadMedida.Descripcion</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Entrada > 0){ @movimiento.Entrada }</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Salida > 0){ @movimiento.Salida }</td>
+            @if (@movimiento.Tdoc == 1)
+            {
+            <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
+            <td align="center">@movimiento.DetalleEgreso.NDocumento</td>
+            }
+            else
+            {
+            <td align="center" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            }
+            
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+		</div>
+ 	</body>
+</html>

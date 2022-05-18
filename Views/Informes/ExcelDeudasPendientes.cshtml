@@ -1,0 +1,90 @@
+﻿@model IEnumerable<SAG2.Models.DeudaPendiente>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Deudas Pendientes";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.DeudasPendientes.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    var total = 0;
+    }
+<style type="text/css" media="all">
+body 
+{
+    font-family: Arial;    
+}
+
+th
+{
+    font-weight: bold;    
+}
+
+td, th
+{
+    white-space: nowrap;
+    font-size: 12px;
+}
+</style>
+<table>
+    <tr>
+    <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.Proyecto </td>
+    </tr>
+</table>
+<h2>@ViewBag.Title</h2>
+Entre Fechas Desde :  @ViewBag.Desde Hasta :@ViewBag.Hasta 
+<table cellpadding="5" border="1" style="width: 100%;">
+        <tr>
+            <th>Estado</th>
+            <th>@System.Web.HttpUtility.UrlDecode("N° Comprobante")</th>
+            <th>Fecha</th>
+            <th>Documento</th>
+            <th>@System.Web.HttpUtility.UrlDecode("N° Doc.")</th>
+            <th>@System.Web.HttpUtility.UrlDecode("Emisión")</th>
+            <th>Vencimiento</th>
+            <th>Monto $</th>
+            <th>Cuenta</th>
+            <th>Proveedor</th>
+            <th>Glosa</th>
+        </tr>
+@foreach (var item in Model)
+{
+    total = total + item.Monto;
+        <tr>
+            <td style="color: White; text-align: center;">
+            @if (item.EgresoID != null)
+            { @Html.Raw("<span style=\"background-color: Green;\">Cancelado</span>"); }
+            else
+            { @Html.Raw("<span style=\"background-color: Red;\">No Cancelado</span>"); }
+            </td>
+            <td>@item.NumeroComprobante.ToString()</td>
+            <td>@item.Fecha.ToShortDateString()</td>
+            <td>@System.Web.HttpUtility.UrlDecode(item.Documento.Nombre)</td>
+            <td>@item.NumeroDocumento</td>
+            <td>@item.FechaEmision.ToShortDateString()</td>
+            <td>@item.FechaVencimiento.ToShortDateString()</td>
+            <td>@item.Monto.ToString("#,##0")</td>
+            <td>@System.Web.HttpUtility.UrlDecode(item.Cuenta.NombreLista)</td>
+            <td>
+            @if (item.Persona != null)
+            {
+                @System.Web.HttpUtility.UrlDecode(item.Persona.NombreLista)
+            }
+            else if (item.Proveedor != null)
+            {
+                @System.Web.HttpUtility.UrlDecode(item.Proveedor.NombreLista)
+            }
+            else
+            { 
+                @System.Web.HttpUtility.UrlDecode(@item.Rut + "-" + @item.DV + " " + @item.Beneficiario)
+            }
+            </td>
+            <td>@System.Web.HttpUtility.UrlDecode(item.Glosa)</td>
+        </tr>
+}
+    <tr></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Total</td><td>$@total.ToString("#,##0")</td></tr>
+</table>

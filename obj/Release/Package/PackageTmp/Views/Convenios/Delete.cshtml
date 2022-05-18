@@ -1,0 +1,43 @@
+﻿@model SAG2.Models.Convenio
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Convenio</legend>
+
+    <div class="display-label">ResEx</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ResEx)
+    </div>
+
+    <div class="display-label">FechaInicio</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaInicio)
+    </div>
+
+    <div class="display-label">FechaTermino</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaTermino)
+    </div>
+
+    <div class="display-label">NroPlazas</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NroPlazas)
+    </div>
+
+    <div class="display-label">Comentarios</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Comentarios)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

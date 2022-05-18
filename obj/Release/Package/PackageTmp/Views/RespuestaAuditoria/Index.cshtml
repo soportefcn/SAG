@@ -1,0 +1,63 @@
+﻿@model IEnumerable<SAG2.Models.RespuestaAuditoria>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            IndicadorCalidadID
+        </th>
+        <th>
+            FechaRespuestA
+        </th>
+        <th>
+            Observacion
+        </th>
+        <th>
+            AdjuntarInforme
+        </th>
+        <th>
+            FechaSistema
+        </th>
+        <th>
+            UsuarioID
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.IndicadorCalidadID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaRespuestA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Observacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdjuntarInforme)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaSistema)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UsuarioID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

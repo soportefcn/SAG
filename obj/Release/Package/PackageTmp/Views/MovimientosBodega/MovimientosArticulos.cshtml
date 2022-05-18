@@ -1,0 +1,99 @@
+﻿
+@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    ViewBag.Title = "ListarLineas";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/style.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+    <link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+	<!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Ccss/ie.css?" + @DateTime.Now.Ticks)" media="screen" />
+    <![endif]-->
+	<link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.dropdownPlain.js?" + @DateTime.Now.Ticks)"></script>
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/funciones.js?" + @DateTime.Now.Ticks)"></script>
+    <link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Iframe.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+      <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >
+        <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+</head>
+<body >
+@if (Model.Count() > 0)
+{
+    <div class="panel panel-default">
+  <div class="panel-body">
+      <table class ="table table-bordered">
+        <tr><td><label>Descripcion Articulo </label></td><td>@ViewBag.nombre</td></tr>
+         <tr><td><label>Saldo </label></td><td>@ViewBag.saldo</td></tr>
+    </table>
+  </div>
+</div>
+  
+    <h3>Listado de Movimientos</h3>
+     
+     
+    <table class ="table table-bordered table-hover">
+        <thead >
+        <tr class="info"> 
+            <th nowrap="nowrap">Fecha</th>
+            <th nowrap="nowrap">Cód.</th>
+            <th nowrap="nowrap">Descripción</th>
+            <th nowrap="nowrap">U. Medida</th>
+            <th nowrap="nowrap">Entrada</th>
+            <th nowrap="nowrap">Salida</th>
+            <th nowrap="nowrap">Nº Doc.</th>
+            <th nowrap="nowrap">Documento</th>
+            
+        </tr>
+            </thead>
+        @foreach (var movimiento in Model)
+        {
+        <tr class="MovimientoBodega" MovimientosBodegaID="@movimiento.ID" Fecha="@movimiento.Fecha.ToShortDateString()" ArticuloID="@movimiento.ArticuloID" Cantidad="@if (@movimiento.Entrada > 0){ @movimiento.Entrada } else { @movimiento.Salida }" tipo_movimiento="@if (@movimiento.Entrada > 0){ @Html.Raw("E") } else { @Html.Raw("S") }" Observaciones="@movimiento.Observaciones" NroDocumento="@movimiento.NroDocumento"  style="cursor: pointer;">
+            <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
+            <td align="center" nowrap="nowrap">@movimiento.ID</td>
+            <td nowrap="nowrap">@movimiento.Articulo.Nombre</td>
+            <td nowrap="nowrap">@movimiento.Articulo.UnidadMedida.Descripcion</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Entrada > 0){ @movimiento.Entrada }</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Salida > 0){ @movimiento.Salida }</td>
+            @if (@movimiento.Tdoc  == 1)
+            {
+              
+            <td align="center" nowrap="nowrap">@{try{
+                @movimiento.DetalleEgreso.Egreso.NumeroComprobante
+            }catch(Exception )
+            {} 
+                    }</td>
+            <td nowrap="nowrap">@{try{@movimiento.DetalleEgreso.NDocumento}catch(Exception )
+            {} 
+                    }</td>
+            }
+            else
+            {
+            <td align="center" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            }
+            
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+</body>
+</html>

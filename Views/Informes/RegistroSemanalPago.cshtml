@@ -1,0 +1,291 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Programa semanal de pago";
+    var Saldo = @ViewBag.SaldoFinal;
+    int SaldoPeriodo = @ViewBag.SaldoPeriodo;
+    var monto_ingresos = 0;
+    var monto_egresos = 0;
+    string Proyecto = ((SAG2.Models.Proyecto)Session["Proyecto"]).NombreLista;
+    SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)Session["CuentaCorriente"];
+    Saldo = Saldo + SaldoPeriodo;
+    int total_ingresos = @ViewBag.total_ingresos;
+    int total_egresos = @ViewBag.total_egresos;
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $('.calendario_semana').val("@ViewBag.Fecha");
+        // Seteamos calendario semanal a semana actual
+        var date = $('.calendario_semana').datepicker('getDate');
+        startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+        endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 5);
+        //var dateFormat = inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
+        $('#startDate').text($.datepicker.formatDate("dd-mm-yy", startDate));
+        $('#endDate').text($.datepicker.formatDate("dd-mm-yy", endDate));
+
+        $("#imprimirProgramaSemanal").click(function () {
+            window.print();
+            return false;
+        });
+    });
+</script>
+<style media="print">
+    /** {
+  margin: 0;
+  padding: 0;
+}
+    @@page
+    {
+        margin: 1in !important;
+    }*/
+    body   
+    {
+        font-family: Arial;
+        color: #000 
+    }
+    
+    td 
+    {
+    font-size: 10px;
+    padding: 5px; 
+    }
+    
+    th 
+    {
+    font-size: 12px;    
+    padding: 5px;
+    }
+    
+    h2
+    {
+        font-size: 16px;    
+    }
+    
+    .pie
+    {
+        display: none;    
+    }
+    
+    .permisos, .contenedor
+    {
+        width: 100%; margin: 0; float: none;
+        padding: 0 !important;
+        border: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .ocultoImpresion, .menu, .top
+    {
+        display: none;    
+    }
+    
+    .soloImpresion
+    {
+        display: block;    
+    }
+    
+    a, a:link, a:visited {color: #781351}
+</style>
+<div class="permisos">
+    
+    <div class="soloImpresion">
+    <table class="table table-hover">
+      <tr>
+        <td valign="top" style="border: 0;"><strong>Consejo de Defensa del Niño<br />
+        @Html.Raw(Proyecto)</strong> <br />
+             Cod. Sename: @Html.Raw(@ViewBag.CodSename)
+        </td>
+        <td align="right" valign="top" style="border: 0;">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+      </tr>
+    </table>
+        <div class="ocultoImpresion">
+            <div class="form-inline">
+                <div class="form-group" style="margin-right:10px">
+            <input value="Imprimir" type="button" style="float: left; height: 38px; margin-left: 10px;" id="imprimirProgramaSemanal" class="btn btn-primary" />
+                 </div>
+            <div style="float: left; text-align: left;">Seleccione un día de la semana<br /><input name="calendario_semana" class="calendario_semana" style="text-align: right;" /></div>
+            </div>
+            </div>
+    <br />
+    <br />
+    </div>
+    <h2 style="text-align: center;">Programa de Pagos de la Semana<br />Desde el lunes <span id="startDate"></span> al viernes <span id="endDate"></span></h2>
+    <br />
+    <br />
+    Cuenta Corriente N° @CuentaCorriente.Numero del Banco @CuentaCorriente.Banco.Nombre
+    <br />
+    <br />
+    @if (@ViewBag.SaldoInicial == 0)
+    { 
+        @*Html.Raw("<div class=\"error\">No hay saldo registrado para la semana seleccionada.</div><br />");
+        @Html.Raw("<div style=\"opacity: 0.2;\">");*@
+    }
+    else
+    { 
+        @Html.Raw("<div>");
+    }
+    <table class="table table-hover table-bordered" style="width: 300px;" >
+        <tr>
+            <th style="width: 130px; font-weight: bold; text-align: right;">Saldo anterior</th>
+            <td align="right" width="150px">$@{
+                @Html.Raw((@ViewBag.SaldoInicial + @ViewBag.Monto_Ingresos - @ViewBag.Monto_Egresos).ToString("#,##0"));    
+            }</td>
+        </tr>
+        <tr>
+            <th style="text-align: left;"">Ingresos</th>
+            <td align="right">$@total_ingresos.ToString("#,##0")</td>
+        </tr>
+        <tr>
+            <th style="text-align: left;"">Egresos</th>
+            <td align="right">$@total_egresos.ToString("#,##0")</td>
+        </tr>
+        <tr>
+            <th style="width: 130px; font-weight: bold; text-align: right;">Saldo Actual</th>
+            <td align="right">$
+                @Html.Raw((@ViewBag.SaldoInicial + @ViewBag.Monto_Ingresos - @ViewBag.Monto_Egresos + total_ingresos - total_egresos).ToString("#,##0"))
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <table class="table table-hover table-bordered">
+        <caption style="font-weight: bold; font-size: 12px;">Ingresos/Reintegros</caption>
+        <tr>
+            <th width="180px">Origen</th>
+            <th width="75px">Fecha</th>
+            <th width="75px" style="white-space: nowrap;">C/Ing. Nº</th>
+            <th>Glosa</th>
+            <th width="80px" style="white-space: nowrap;">Monto $</th>
+        </tr>
+        @foreach (SAG2.Models.Movimiento Ingreso in ViewBag.Ingresos_Reintegros)
+        {
+            if (Ingreso.Nulo != null && Ingreso.Nulo.Equals("S"))
+            {
+            <tr style="text-decoration: line-through;">
+                <td>@Ingreso.Cuenta.NombreLista</td>
+                <td align="center">@DateTime.Parse(@Ingreso.Fecha.ToString()).ToShortDateString()</td>
+                <td align="center">@Ingreso.NumeroComprobante</td>
+                <td style="white-space: nowrap;">COMPROBANTE NULO</td>
+                <td align="right">-</td>
+            </tr>
+            }
+            else
+            {
+                monto_ingresos = monto_ingresos + Int32.Parse(Ingreso.Monto_Ingresos.ToString());
+            <tr>
+                <td>@Ingreso.Cuenta.NombreLista</td>
+                <td align="center">@DateTime.Parse(@Ingreso.Fecha.ToString()).ToShortDateString()</td>
+                <td align="center">@Ingreso.NumeroComprobante</td>
+                <td style="white-space: nowrap;">
+                    @if (@Ingreso.Descripcion.Length > 85)
+                    {
+                        @Html.Raw(@Ingreso.Descripcion.Substring(0, 85));
+                    }
+                    else
+                    {
+                        @Html.Raw(@Ingreso.Descripcion);
+                    }
+                </td>
+                <td align="right">@Ingreso.Monto_Ingresos.ToString("#,##0")</td>
+            </tr>
+            }
+        }
+        <tr>
+                <th colspan="4" align="right">Total</th>
+                <td align="right">@monto_ingresos.ToString("#,##0")</td>
+            </tr>
+    </table>
+
+    <br />
+    <table class="table table-hover table-bordered">
+        <caption style="font-weight: bold; font-size: 12px;">Egresos</caption>
+        <tr>
+            <th width="180px">Destinatario</th>
+            <th width="75px">Fecha</th>
+            <th width="75px" style="white-space: nowrap;">C/Egr. Nº</th>
+            <th width="30px" style="white-space: nowrap;">Cheque</th>
+            <th>Glosa</th>
+            <th width="80px" style="white-space: nowrap;">Monto $</th>
+        </tr>
+        @foreach (SAG2.Models.Movimiento Egreso in ViewBag.Egresos)
+        {
+            if (Egreso.Nulo != null && Egreso.Nulo.Equals("S"))
+            {
+                <tr>
+                    <td style="white-space: nowrap; text-decoration: line-through;">
+                    @if (Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => Egreso.Persona.NombreCompleto)
+                    }
+                    else if (Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@Egreso.Beneficiario)
+                    }
+                    </td>
+                    <td align="center">@DateTime.Parse(@Egreso.Fecha.ToString()).ToShortDateString()</td>
+                    <td align="center">@Egreso.NumeroComprobante</td>
+                    <td>@Egreso.Cheque</td>
+                    <td style="white-space: normal;">COMPROBANTE NULO</td>
+                    <td align="right">-</td>
+                </tr>
+            }
+            else
+            {
+                monto_egresos = monto_egresos + Int32.Parse(Egreso.Monto_Egresos.ToString());
+                <tr>
+                    <td style="white-space: nowrap;">
+                    @if (Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => Egreso.Persona.NombreCompleto)
+                    }
+                    else if (Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@Egreso.Beneficiario)
+                    }
+                    </td>
+                    <td align="center">@DateTime.Parse(@Egreso.Fecha.ToString()).ToShortDateString()</td>
+                    <td align="center">@Egreso.NumeroComprobante</td>
+                    <td>@Egreso.Cheque</td>
+                    <td style="white-space: normal;">
+                        @if (@Egreso.Descripcion.Length > 85)
+                        {
+                            @Html.Raw(@Egreso.Descripcion.Substring(0, 85));
+                        }
+                        else
+                        {
+                            @Html.Raw(@Egreso.Descripcion);
+                        }
+                    </td>
+                    <td align="right">@Egreso.Monto_Egresos.ToString("#,##0")</td>
+                </tr>
+            }
+        }
+        <tr>
+            <th colspan="5" align="right">Total</th>
+            <td align="right">@monto_egresos.ToString("#,##0")</td>
+        </tr>
+    </table>   
+    </div>
+</div>
+<div class="soloImpresion">
+<p>&nbsp;</p>
+<table border="0" width="100%">
+    <tr>
+        <td width="33%" align="center" style="font-size: 14px;">____________________<br />Secretario (a)</td>
+        <td></td>
+        <td width="33%" align="center" style="font-size: 14px;">____________________<br />2° Apoderado (a)</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td align="center" style="font-size: 14px;">____________________<br />Director (a)</td>
+        <td></td>
+    </tr>
+</table>
+</div>

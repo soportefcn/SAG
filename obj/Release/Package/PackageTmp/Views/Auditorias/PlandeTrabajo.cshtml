@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Plan de Trabajo";
+    var ListadoDocumentos = (List<string>)ViewBag.ListadoDocumentos;
+    var i = 1;
+    var j = 1;
+    var k = 1;
+    var l = 1;
+}
+<div class="permisos" style="width: 800px;">
+<h2  align="center">Plan de Trabajo de Auditoría Administrativa y Contable</h2>
+@using (Html.BeginForm())
+{
+<h3>I. Fecha</h3>
+    <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 15px;">
+            <label>Fecha Plan de Trabajo</label>
+        </div> 
+        <div class="form-group">
+        <input class="calendario form-control" name="Fecha" id="Fecha" value="@ViewBag.Fecha" />
+        </div>
+    </div>
+  
+    <hr noshade="noshade" size="1" style="width: 100%;" />
+<h3>II. Objetivos</h3>
+    <table class="table table-hover table-bordered">
+        @foreach (var objetivos in ViewBag.Objetivos)
+        {
+            <tr>
+                <th>@i</th>
+                <td style="white-space: normal;">@objetivos.Objetivo</td>
+            </tr>
+            i = i + 1;
+        }
+    </table>
+    <hr noshade="noshade" size="1" style="width: 100%;" />
+<h3>III. Alcance</h3>
+    <h4>Período Auditado</h4>
+    <p>No existe períodos auditados</p>
+    <h4>Documentación</h4>
+    <table class="table table-hover table-bordered">
+        @foreach (var documento in ViewBag.Documentos)
+        { 
+            <tr>
+                <th>@j</th>
+                <td>@documento.Documento</td>
+                <td><input type="checkbox" name="Documento" value="@documento.ID" @if(ListadoDocumentos.Contains(@documento.ID.ToString())){ @Html.Raw("checked=\"checked\"");} /></td>
+            </tr>
+            j = j + 1;
+        }
+    </table>
+    <hr noshade="noshade" size="1" style="width: 100%;" />
+<h3>IV. Metodología Aplicada</h3>
+    <table class="table table-hover table-bordered">
+        @foreach (var metodologia in ViewBag.Metodologia)
+        { 
+            <tr>
+                <th>@k</th>
+                <td style="white-space: normal;">@metodologia.Metodologia</td>
+            </tr>
+            k = k + 1;
+        }
+    </table>
+    <hr noshade="noshade" size="1" style="width: 100%;" />
+<h3>V. Auditor</h3>
+    <p>Nombre del Auditor(a): <strong>@ViewBag.Auditor</strong></p>
+    <hr noshade="noshade" size="1" style="width: 100%;" />
+<h3>VI. Fechas de Auditorías</h3>
+    <table class="table table-hover table-bordered">
+    <tr>
+        <th></th>
+        <th>Fecha</th>
+        <th>Proyecto</th>
+        <th>Observaciones</th>
+    </tr>
+        @foreach (var auditorias in ViewBag.Auditorias)
+        { 
+            <tr>
+                <th>@l</th>
+                <td>@auditorias.FechaProgramada.ToShortDateString()</td>
+                <td>@auditorias.Proyecto.NombreLista</td>
+                <td style="width: 450px;"><input class="form-control" size ="65" type="text" name="Observaciones_@{@auditorias.ID}" value="@auditorias.Observaciones" /></td>
+            </tr>
+            l = l + 1;
+        }
+    </table>
+<p align="right">
+    <input class="btn btn-primary" type="submit" value="Guardar" />
+</p>   
+}
+</div>

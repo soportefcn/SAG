@@ -1,0 +1,79 @@
+﻿@model IEnumerable<SAG2.Models.SaldosCorporativos>
+
+@{
+    ViewBag.Title = "Detalle Importacion";
+}
+
+<h2>Detalle Importacion</h2>
+
+
+<table class ="table ">
+    <tr>
+
+        <th>
+            Numerocuenta
+        </th>
+        <th>
+            Moneda
+        </th>
+        <th>
+            SaldoContable
+        </th>
+        <th>
+            Retencion
+        </th>
+        <th>
+            Retencion1
+        </th>
+        <th>
+            Saldo_Contable
+        </th>
+        <th>
+            Saldo_Disponible
+        </th>
+        <th>
+            Periodo
+        </th>
+        <th>
+            Mes
+        </th>
+  
+   
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Numerocuenta)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Moneda)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SaldoContable)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Retencion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Retencion1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Saldo_Contable)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Saldo_Disponible)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Periodo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Mes)
+        </td>
+     
+    </tr>
+}
+
+</table>

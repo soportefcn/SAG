@@ -1,0 +1,30 @@
+﻿@model SAG2.Models.AuditoriasDocumento
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>AuditoriasDocumento</legend>
+
+    <div class="display-label">Documento</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Documento)
+    </div>
+
+    <div class="display-label">Orden</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Orden)
+    </div>
+
+    <div class="display-label">Activo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Activo)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

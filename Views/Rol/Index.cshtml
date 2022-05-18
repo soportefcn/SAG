@@ -1,0 +1,46 @@
+﻿@model IEnumerable<SAG2.Models.Rol>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Roles de usuario";
+}
+
+ <div id="contenido_popup">
+      <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+        <table class ="table table-bordered table-hover">
+        <thead class="fixedHeader">
+    <tr class ="info">
+        <th  style="width: 334px;">
+            Persona
+        </th>
+        <th style="width: 247px;">
+            Proyecto
+        </th>
+        <th style="width: 112px;">
+            Rol
+        </th>
+        <th style="width: 33px;" class="controles"></th>
+    </tr>
+</thead>
+ <tbody class="scrollContent">
+@foreach (var item in Model)
+{
+    <tr>
+        <td style="width: 334px;">
+            @Html.DisplayFor(modelItem => item.Persona.NombreLista)
+        </td>
+        <td style="width: 247px;">
+            @Html.DisplayFor(modelItem => item.Proyecto.NombreLista)
+        </td>
+        <td style="width: 112px;">
+            @Html.DisplayFor(modelItem => item.TipoRol.Nombre)
+        </td>
+        <td style="width: 33px;">
+            <a href="@Url.Action("Edit", "Rol", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+</tbody>
+        </table>
+    </div>

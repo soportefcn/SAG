@@ -1,0 +1,25 @@
+﻿@model SAG2.Models.BodegaCuenta
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>BodegaCuenta</legend>
+
+    <div class="display-label">Cuenta</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Cuenta.Nombre)
+    </div>
+
+    <div class="display-label">Tipo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Tipo)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

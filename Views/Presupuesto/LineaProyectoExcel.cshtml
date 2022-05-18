@@ -1,0 +1,164 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    ViewBag.Title = "Libro Banco";    
+    var Saldo = 0;
+    string Linea1;
+    string Linea2;
+    
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    List<SAG2.Models.Saldo> SaldoI = new List<SAG2.Models.Saldo>();
+    SaldoI = (List<SAG2.Models.Saldo>)@ViewBag.Saldos;
+    
+    List<SAG2.Models.DetalleEgreso> DetalleEgreso = new List<SAG2.Models.DetalleEgreso>();
+    DetalleEgreso = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Egresos;
+    
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    //Response.Charset = "utf-8";
+    System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+    System.Web.HttpContext.Current.Response.Charset = "";
+    Response.AddHeader("Content-Disposition", "attachment;filename=LINEAPROYECTO_" + @ViewBag.Periodo+ "_" + @ViewBag.Mes +" " + DateTime.Now.ToShortDateString() + ".xls");
+    
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Linea Proyecto Mensual</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+            /*mso-number-format:"\#\,\#\#0\.000";*/
+            /*mso-number-format: "[Azul][>0]#.##0";*/
+            /*mso-number-format:"0";*/
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <td colspan="6"><h2>Línea por Proyecto entre Fecha : @ViewBag.desde - @ViewBag.hasta </h2></td>
+        
+    </tr>
+</table>
+
+<div style="height: 300px; overflow: scroll">
+    <table align="center" style="width: 100%;" id="" cellspacing="3">
+    <thead>
+        <tr>
+           <th>Conceptos</th>
+        <th>Periodo</th>
+        <th>Mes</th>
+     
+
+  @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            {
+                    <th>@Proyecto.NombreEstado</th>
+                  
+      
+  }
+            <th>Totales Conceptos</th>
+       </tr>
+    
+        </thead>
+        <tbody>
+
+
+            @foreach (SAG2.Models.Cuenta Conceptos in ViewBag.Conceptos)
+            {
+                int sumar_lineaI = 0;
+                int sumar_lineaE = 0;
+              
+                <tr>   
+                  <td> @Conceptos.NombreLista </td>
+                    <td>@ViewBag.periodo </td>
+                        <td>@{ var ii  = @ViewBag.Mes -1;
+                       @Meses[ii]
+                                 }</td>
+            @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            {
+                int valor_ingresos = Model.Where(d => d.ProyectoID == Proyecto.ID).Where(d=> d.CuentaID == Conceptos.ID).Sum(d => d.Monto_Ingresos);
+                int valor_egresos = DetalleEgreso.Where(p => p.Egreso.ProyectoID == Proyecto.ID && p.CuentaID == Conceptos.ID).Sum(p => p.Monto);
+                 int resul =   valor_egresos - valor_ingresos;
+                sumar_lineaI = sumar_lineaI + valor_ingresos;
+                sumar_lineaE = sumar_lineaE + resul;
+                
+                 if (@Conceptos.Tipo == "I")
+                 {
+                    <td>@valor_ingresos.ToString("#,##0")</td>
+                 }   
+               if (@Conceptos.Tipo == "E")
+                 {
+                       
+                    <td>@resul.ToString("#,##0")</td>
+                 }  
+              
+            }
+              @{
+               if (@Conceptos.Tipo == "I")
+                 {
+                    <td>@sumar_lineaI.ToString("#,##0")</td>
+                 }   
+               if (@Conceptos.Tipo == "E")
+                 {
+                       
+                    <td>@sumar_lineaE.ToString("#,##0")</td>
+                 }
+                 } 
+              </tr>
+            }
+<tr></tr><tr></tr>
+
+            <tr>
+     <td>Saldo Inicial</td>
+     <td>@ViewBag.periodo </td>
+     <td>@{ var i2  = @ViewBag.Mes -1;
+                       @Meses[i2]
+                                 }</td>
+     @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            {
+                int saldo_inicial = SaldoI.Where(c => c.CuentaCorriente.ProyectoID == Proyecto.ID).Where(c => c.Mes == @ViewBag.Mes).Where(c => c.Periodo == @ViewBag.periodo).Sum(c => c.SaldoInicialCartola);           
+        <td>@saldo_inicial.ToString("#,##0")</td>
+                 
+  }
+
+</tr>
+
+         </tbody>
+    </table>
+    
+
+    </body>

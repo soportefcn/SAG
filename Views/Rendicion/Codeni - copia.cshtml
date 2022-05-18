@@ -1,0 +1,347 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutImp.cshtml";
+    ViewBag.Title = "Rendición CODENI";
+    var MontoDisponible = 0;
+    var SaldoInicial = @ViewBag.SaldoInicialCta;
+    var SaldoCuentaCorriente = @ViewBag.SaldoFinalCta;
+    var totalEgresos = 0;
+    var totalIngresos = 0;
+    int indemnizacion = 0;
+    try
+    {
+        indemnizacion = @ViewBag.indemnizacion;
+    }
+    catch (Exception)
+    { }
+    int monto = 0;
+    ViewBag.DisponibleCuentaCorriente = SaldoCuentaCorriente;
+    MontoDisponible = SaldoInicial;
+    SAG2.Models.Proyecto Proyecto = (SAG2.Models.Proyecto)Session["Proyecto"];
+    SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)Session["CuentaCorriente"];
+
+    List<SAG2.Models.Cuenta> CuentasIngresos = (List<SAG2.Models.Cuenta>)ViewBag.CuentasIngresos;
+    List<SAG2.Models.Cuenta> CuentasEgresos = (List<SAG2.Models.Cuenta>)ViewBag.CuentasEgresos;
+
+    List<SAG2.Models.Movimiento> Reintegros = (List<SAG2.Models.Movimiento>)ViewBag.Reintegros;
+    List<SAG2.Models.Movimiento> Ingresos = (List<SAG2.Models.Movimiento>)ViewBag.Ingresos;
+    List<SAG2.Models.DetalleEgreso> Egresos = (List<SAG2.Models.DetalleEgreso>)ViewBag.Egresos;
+}
+<style>
+   .soloImpresion  {
+  display:none;
+}
+.firma, .firma tr, .firma tr td, .firma tr th {
+  border:0;
+}
+
+</style>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("#imprimirProgramaSemanal").click(function () {
+            window.print();
+            return false;
+        });
+    });
+</script>
+<style media="print">
+    @@page
+    {
+    
+        margin: 2cm !important;
+    }
+    
+    body
+    {
+        background-color:#FFFFFF !important; background-image:none; color:#000000 !important;font-family: Arial !important;
+        font-size: 80%;
+    }   
+    
+    td 
+    {
+        font-size: 11px;    
+        color: Black !important;
+    }
+    
+    th 
+    {
+        font-size: 11px;
+        border: 1px solid black;
+        background-color: #C0C0C0;
+        -webkit-print-color-adjust: exact;
+        color: Black !important;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+    
+    .subtotal
+    {
+        border: 1px solid black;
+        padding: 0 3px;
+    }
+    
+    h2, .titulo
+    {
+        font-size: 12px !important;    
+    }
+    
+    .pie
+    {
+        display: none;    
+    }
+    
+    .inicio, .body, .contenedor
+    {
+        padding: 0 !important;
+        border: 0 !important;
+        margin: 0 auto !important;
+    }
+    
+    .inicio
+    {
+        width: 95% !important;    
+    }
+    
+    .ocultoImpresion, .menu, .top, oculto,  .pie
+    {
+        display: none;    
+    }
+    
+    .soloImpresion
+    {
+        display: block;    
+    }
+ 
+</style>
+<div class="blog-post">
+   
+    <div class="soloImpresion">
+    <table class="table table-hover">
+      <tr>
+        <td valign="top" style="border: 0;"><strong>Consejo de Defensa del Niño<br />
+        @Html.Raw(Proyecto.NombreLista)</strong></td>
+        <td align="right" valign="top" style="border: 0;">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+      </tr>
+    </table>
+    <br />
+    </div>
+    <br />
+     <div class="ocultoImpresion">
+         <br /><br /><br />
+       <input id="imprimirProgramaSemanal" type="button" class="btn btn-primary" value="Imprimir">
+    </div>
+
+<h2 style="text-align: center;">RENDICIÓN DE CUENTAS Período @Html.Raw(ViewBag.Mes.ToString())-@Html.Raw(ViewBag.Periodo.ToString())</h2>
+<br />
+
+<table align="center" style="width: 100%;">
+    <tr>
+        <td align="left" style="border: 0; background-color: 0;"><span style="font-size: 1.3em; font-weight: bold;" class="titulo">I. IDENTIFICACIÓN</span></td>
+    </tr>
+</table>
+<table align="center" style="width: 100%;">
+    <tr>
+        <td style="border: 0; width: 100px;"><strong>Institución</strong></td>
+        <td colspan="5" style="border: 0;">: @Proyecto.Institucion</td>
+    </tr>
+    <tr>
+        <td style="border: 0;"><strong>Proyecto</strong></td>
+        <td style="border: 0;" colspan="3">: @Proyecto.Nombre</td>
+        <td style="border: 0; width: 100px;"><strong>Cta. Cte.</strong></td>
+        <td style="border: 0; width: 100px;"">: @CuentaCorriente.Numero</td>
+    </tr>
+    <tr>
+        <td style="border: 0;"><strong>Banco</strong></td>
+        <td style="border: 0;">: @CuentaCorriente.Banco.Nombre</td>
+        <td style="border: 0; width: 100px;"><strong>N° Plazas</strong></td>
+        <td style="border: 0;">: @ViewBag.plazas</td>
+        <td style="border: 0;"><strong>Cód. Proyecto</strong></td>
+        <td style="border: 0;">: @try {@Html.Raw(Proyecto.CodSename);
+                                 }
+                                 catch (Exception)
+                                 {@Html.Raw("");
+                                 } </td>
+    </tr>
+</table>
+<p></p> 
+<table align="center" style="width: 100%;">
+    <tr>
+        <td align="left" style="border: 0; background-color: 0;"><span style="font-size: 1.3em; font-weight: bold;" class="titulo">II. SALDO ANTERIOR</span></td>
+        <th style="padding:10px 3px; width: 135px; text-align: right; color: Blue;background-color: silver; border: 1px solid black;">$@SaldoInicial.ToString("#,##0")</th>
+    </tr>
+</table>
+<p></p> 
+@if (ViewBag.Ingresos != null && ViewBag.Ingresos.Count > 0)
+{
+    <table align="center" style="width: 100%;">
+    <tr>
+        <td colspan="2" style=" border:0;">
+            <span style="font-size: 1.3em; font-weight: bold;" class="titulo">III. DETALLE INGRESOS DEL MES</span>
+        </td>
+    </tr>
+    @foreach (SAG2.Models.Cuenta item in CuentasIngresos)
+    {
+        monto = 0;
+        string codigo = item.Codigo;
+        try
+        {
+            monto = Ingresos.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto_Ingresos);
+            totalIngresos = totalIngresos + monto;
+        }
+        catch (Exception)
+        { }
+    <tr>
+        <td style="border: 0;">&nbsp;&nbsp;&nbsp;&nbsp;@Html.Raw(item.NombreLista)</td>
+        <td align="right" style="color: Blue;" class="subtotal">
+        @if (!item.Codigo.Equals("4"))
+        {
+            @Html.Raw("$" + monto.ToString("#,##0"));
+        }
+        </td>
+    </tr>
+        if (item.Codigo.Equals("4"))
+        {
+            foreach (SAG2.Models.Cuenta hijo in item.Hijos)
+            {
+                var montoHijo = 0;
+                try
+                {
+                    montoHijo = Ingresos.Where(i => i.Cuenta.ID == hijo.ID).Sum(i => i.Monto_Ingresos);
+                }
+                catch (Exception)
+                { }
+             <tr>
+                <td style="border: 0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Raw(hijo.NombreLista)</td>
+                <td align="right" style="color: Blue;" class="subtotal">$@Html.Raw(montoHijo.ToString("#,##0"))</td>
+            </tr>
+            }
+        }
+    }
+    <tr>
+        <td  style="border: 0; background-color: 0;">&nbsp;&nbsp;&nbsp;&nbsp;Total Ingresos del Período</td>
+        <th >$@Html.Raw(totalIngresos.ToString("#,##0"))</th>
+    </tr>
+</table>
+    MontoDisponible = MontoDisponible + totalIngresos;
+}
+else
+{ 
+<p>No existen registros para este período</p>
+}
+<p></p>
+<table align="center" style="width: 100%;" >
+    <tr>
+        <td align="left" style="border: 0; background-color: 0;"><span style="font-size: 1.3em; font-weight: bold;" class="titulo">IV. TOTAL DISPONIBLE</span> <span style="font-size: 11px;">(Suma saldo anterior y total Ingresos)</span></td>
+        <th  nowrap="nowrap" style="padding:10px 3px; width: 135px; text-align: right;background-color: silver; color: Blue; border: 1px solid black;" >$@MontoDisponible.ToString("#,##0")</th>
+    </tr>
+</table>
+<p></p>
+@if (ViewBag.Egresos != null && ViewBag.Egresos.Count > 0 || true)
+{
+<table align="center" style="width: 100%;">
+    <tr>
+        <td colspan="2" style=" border:0;">
+            <span style="font-size: 1.3em; font-weight: bold;" class="titulo">V. DETALLE EGRESOS DEL MES</span>
+        </td>
+    </tr>
+    @foreach (SAG2.Models.Cuenta item in CuentasEgresos)
+    {
+        monto = 0;
+        string codigo = item.Codigo;
+        try
+        {
+            monto = Egresos.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto);
+            monto = monto - Reintegros.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto_Ingresos);
+            totalEgresos = totalEgresos + monto;
+        }
+        catch (Exception)
+        { }
+    <tr>
+        <td style=" border:0;">&nbsp;&nbsp;&nbsp;&nbsp;@Html.Raw(item.NombreLista)</td>
+        <td align="right" style="color: Red;" class="subtotal">
+        @if (!item.Codigo.Equals("10"))
+        {
+            @Html.Raw("$" + monto.ToString("#,##0"));
+        }
+        </td>
+        @if (item.Codigo.Equals("10"))
+        {
+            foreach (SAG2.Models.Cuenta hijo in item.Hijos)
+            {
+                var montoHijo = 0;
+                try
+                {
+                    montoHijo = Egresos.Where(i => i.Cuenta.ID == hijo.ID).Sum(i => i.Monto);
+                }
+                catch (Exception)
+                { }
+             <tr>
+                <td style=" border:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Raw(hijo.NombreLista)</td>
+                <td align="right" style="color: Red;" class="subtotal">$@Html.Raw(montoHijo.ToString("#,##0"))</td>
+            </tr>
+            }
+        }
+    </tr>
+    }
+    <tr>
+        <td align="left" style="border: 0; background-color: 0;">&nbsp;&nbsp;&nbsp;&nbsp;Total Egresos del Período</td>
+        <th style="padding:10px 3px; width: 135px;  background-color: silver;text-align: right; color: Red; border: 1px solid black;">$@Html.Raw(totalEgresos.ToString("#,##0"))</th>
+    </tr>
+</table>
+}
+else
+{ 
+<p>No existen registros para este período</p>
+}
+<p></p>
+<table align="center" style="width: 100%;">
+    <tr>
+        <td align="left" style="border: 0; background-color: 0;">
+            <span style="font-size: 1.3em; font-weight: bold;" class="titulo">VI. SALDO DISPONIBLE CTA. CTE.</span> <span style="font-size: 11px;">(Diferencia entre disponible y egresos)</span>
+        </td>
+        <th style="padding:10px 3px; background-color: silver;width: 135px; text-align: right; @if ((totalIngresos - totalEgresos + SaldoInicial) < 0)
+                                                                      { @Html.Raw("color: Red;") }
+                                                                      else
+                                                                      { @Html.Raw("color: Blue;") } border: 1px solid black;">$@((totalIngresos - totalEgresos + SaldoInicial).ToString("#,##0"))</th>
+    </tr>
+</table>
+
+<p></p>
+<table align="center" style="width: 100%;" >
+    <tr>
+        <td align="left" style="border: 0; background-color: 0;">
+            <span style="font-size: 1.3em; font-weight: bold;" class="titulo">VII. PROVISIÓN POR INDEMNIZACIÓN.</span>
+        </td>
+        <th style="padding:10px 3px;background-color: silver; width: 135px; text-align: right; color: Red; border: 1px solid black;">$@((indemnizacion).ToString("#,##0"))</th>
+    </tr>
+</table>
+
+<p></p>
+<table  style="width: 100%;" >
+    <tr >
+        <td  style="border: 0; background-color: 0;">
+            <span style="font-size: 1.3em; font-weight: bold;" class="titulo">VIII. SALDO REAL.</span> <span style="font-size: 11px;">(Diferencia entre saldo disponible y provisión por indemnización)</span>
+        </td>
+        <td style="border: solid red; background-color: silver; padding:10px 3px; width: 135px; text-align: right; @if ((totalIngresos - totalEgresos + SaldoInicial - indemnizacion) < 0)
+                                                                      { @Html.Raw("color: Red;") }
+                                                                      else
+                                                                      { @Html.Raw("color: Blue;") } border: 1px solid black;">$@((totalIngresos - totalEgresos + SaldoInicial - indemnizacion).ToString("#,##0"))</td>
+    </tr>
+</table>
+<br />
+
+@if (@ViewBag.FechaRendicion != "0")
+{
+    <div style="text-align: right;" class="ocultoImpresion">
+        Rendición generada el @ViewBag.FechaRendicion
+    </div>
+}
+</div>
+<div class="soloImpresion">
+<table align="center" style="width: 100%;">
+    <tr>
+        <td  text-align="center" style="font-size: 14px;">____________________<br />Secretario (a)</td>
+        <td align="center" style="font-size: 14px;">____________________<br />Director (a)</td>
+        <td width="33%" align="center" style="font-size: 14px;">____________________<br />2° Apoderado (a)</td>
+    </tr>
+</table>
+</div>

@@ -1,0 +1,146 @@
+﻿@model SAG2.Models.DeudaPendiente
+@{
+    ViewBag.Title = "Modificar";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox">
+    <h3>Deudas pendientes</h3>
+    <div id="controles">
+    </div>
+<div id="contenido" class="cuentacorriente">
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    @Html.Raw(@ViewBag.Mensaje)
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.Periodo)
+    @Html.HiddenFor(model => model.Mes)
+    @Html.HiddenFor(model => model.NumeroComprobante)
+    @Html.HiddenFor(model => model.ProyectoID)
+    <fieldset>
+       
+        <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Modificar Deuda Pendiente</b></h3></div>
+  <div class="panel-body">
+         
+       <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 10px;">
+            @Html.LabelFor(model => model.NumeroComprobante)
+        </div>
+        <div class="form-group" style="margin-right: 350px;">
+            <input class="form-control" type="text" readonly="readonly" value="@Model.NumeroComprobante" size="@Model.NumeroComprobante.ToString().Length" />
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Fecha)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Fecha, new { @class = "calendario_mov form-control", @Value = DateTime.Now.ToShortDateString(), @readonly = "readonly" })
+        </div>
+           </div>
+      <div class ="form-group form-inline">
+        <div class="form-group" style="margin-right: 10px;">
+            @Html.LabelFor(model => model.CuentaID, "Cuenta")
+        </div>
+        <div class="form-group">
+            <select id="CuentaID" name="CuentaID" class="form-control">
+                @Html.Raw(ViewBag.Arbol)
+            </select>
+        </div>
+        </div>
+         <div class ="form-group form-inline">
+        <div class="form-group">
+            @Html.LabelFor(model => model.DocumentoID, "Documento")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("DocumentoID", String.Empty)
+        </div></div>
+
+         <div class ="form-group form-inline">
+        <div class="form-group" style="margin-right: 10px;">
+            @Html.LabelFor(model => model.NumeroDocumento)
+        <br />
+            @Html.EditorFor(model => model.NumeroDocumento)
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Monto)
+        <br />
+            @Html.EditorFor(model => model.Monto)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaEmision)
+        <br />
+            @Html.TextBoxFor(model => model.FechaEmision, new { @class = "calendario", @readonly = "readonly" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaVencimiento)
+        <br />
+            @Html.TextBoxFor(model => model.FechaVencimiento, new { @class = "calendario", @readonly = "readonly" })
+        </div>
+             </div>
+        <div class="form-group">
+            @Html.Label("Beneficiario")
+        </div>
+        <div class="form-group tipobeneficiario">
+            <select name="tipoBeneficiario" id="tipoBeneficiario" class="form-control" style="width:200px !important;">
+                <option value="1"@if (Model.Persona != null)
+                                        { @Html.Raw(" selected=\"selected\"") }>Personal</option>
+                <option value="2"@if (Model.Proveedor != null)
+                                           { @Html.Raw(" selected=\"selected\"") }>Proveedores</option>
+                <option value="3"@if (Model.Persona == null && Model.Proveedor == null)
+                                    { @Html.Raw(" selected=\"selected\"") }>Otro</option>
+            </select> 
+            @Html.Hidden("PersonaID")
+            @Html.Hidden("ProveedorID")
+
+            <span id="InfoBeneficiario">
+                @Html.TextBoxFor(model => model.Rut, new { @style = "width: 10px;", @maxlength = "8", @class="form-control" })-@Html.TextBoxFor(model => model.DV, new { @id="DVBuscar", @style = "width: 35px;", @maxlength = "1", @class="form-control" }) 
+                <img src="@Url.Content("~/Content/Images/Buscar2.png")" class="BuscarPopUpPersonal" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;" />
+                @Html.TextBoxFor(model => model.Beneficiario, new { @style = "width: 300px;", @readonly = "readonly", @class="form-control" })
+            </span>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Glosa)
+        </div>
+        <div class="form-group">
+            @Html.TextAreaFor(model => model.Glosa, new { @class="form-control" })
+        </div>
+  </div>
+  <div class="panel-footer">
+	<div  style ="width: 500px ; display:inline-block">
+               <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Buscar"  href="../Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-lg"></span></a>
+            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Nuevo" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/DeudasPendientes/Create"><span class ="fa fa-file-o  fa-lg"></a>
+            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../../Imprimir/DeudaPendiente/@Html.Raw(Model.ID.ToString())" onclick="window.open(this.href, 'Comprobante de Deuda Pendiente','width=800,height=600,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-print fa-lg"></span></a>
+            <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar"  href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-lg"></span></a>
+            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Cancelar" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/DeudasPendientes/Create"><span class ="fa fa-undo fa-lg"></span></a>
+             
+        </div>
+         <div style="float :right;width:100px;display:inline-block">
+	 <input class="btn btn-primary" type="submit" value="Guardar" id="botonGuardar" />
+
+	</div>
+
+  </div>
+</div>
+  
+
+        <p>
+           
+        </p>
+    </fieldset>
+}
+    </div>
+</div>

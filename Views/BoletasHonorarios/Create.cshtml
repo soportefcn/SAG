@@ -1,0 +1,137 @@
+﻿@model SAG2.Models.BoletaHonorario
+
+@{
+    ViewBag.Title = "Ingresar registro";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+ 
+<div id="SAGBox">
+    <h3>Boletas de honorarios</h3>
+    <div id="controles">
+   
+    </div>
+    <div id="contenido" class="cuentacorriente">
+@using (Html.BeginForm())
+{
+
+    
+    <fieldset>
+       <input type="hidden" name="VPorce" id="VPorce" value="@ViewBag.ValorPorcentaje" />
+        <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Ingresar boleta de honorario</b></h3></div>
+  <div class="panel-body">
+      <div class="form-group form-inline">
+     <div class="form-group"  style="margin-right: 15px;">
+            @Html.LabelFor(model => model.PersonaID, "Persona")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("PersonaID", String.Empty)
+        </div>
+</div> 
+      <div class="form-group form-inline">
+        <div class="form-group"  style="margin-right: 15px;">
+            @Html.LabelFor(model => model.NroBoleta)
+        </div>
+        <div class="form-group"  style="margin-right: 200px;">
+           <input id="NroBoleta" class="form-control" type="text" value="" name="NroBoleta" data-val-required="The N&#186; Boleta field is required." data-val-number="The field N&#186; Boleta must be a number." data-val="true">
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Fecha)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Fecha, new { @Value = DateTime.Now.ToShortDateString(), @readonly = "readonly", @class = "calendario_mov form-control" })
+        </div>
+        </div>
+      <div class="form-group form-inline">
+          <div class="form-group">
+           <label>Porcentaje</label>     <br />
+           @Html.DropDownList("PORCENTAJE", null, "-- SELECCIONE % --", new { @class = "form-control"} )      
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Bruto)
+        <br />
+           <input id="Bruto" class="form-control" type="text" value="" name="Bruto" data-val-required="The Bruto $ field is required." data-val-number="The field Bruto $ must be a number." data-val="true">
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Retencion)
+        <br />
+            @Html.TextBoxFor(model => model.Retencion, new { @readonly = "readonly", @class="form-control" })
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Neto)
+        <br />
+            <input id="Neto" class="form-control" type="text" value="" name="Neto" data-val-required="The A Pagar $ field is required." data-val-number="The field A Pagar $ must be a number." data-val="true">
+        </div></div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Concepto)
+        </div>
+        <div class="form-group">
+            @Html.TextAreaFor(model => model.Concepto, new { @class="form-control" })
+        </div>
+
+            <div class="form-group form-inline">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Electronica)
+        <br />
+            <input type="checkbox" name="Electronica" id="Electronica" value="1" />
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nula)
+        <br />
+            <input type="checkbox" name="Nula" id="Nula" value="1" />
+        </div>
+          </div>
+
+  </div>
+  <div class="panel-footer">
+	<div  style ="width: 500px ; display:inline-block">
+           <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=1000,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">BUSCAR</a>
+        <a class="btn btn-default" href="/SAG_5_desarrollo/BoletasHonorarios/Create">NUEVO</a>
+    
+           
+        </div>
+         <div style="float :right;display:inline-block">
+	    <input class="btn btn-primary" type="submit" value="Guardar" id="botonGuardar" />
+	</div>
+
+  </div>
+</div>
+        
+      
+     
+    </fieldset>
+}
+    </div>
+</div>
+<script>
+
+$(document).ready(function () {
+
+    $("#PORCENTAJE").change(function () {
+      
+        var valor = $("#PORCENTAJE").val();
+        $("#VPorce").val(valor);
+        $('#VPorce').val($('#VPorce').val().replace(",", "."));
+        var bruto = new Number($('#Bruto').val());
+        var porce = new Number($('#VPorce').val());
+        var retencion = bruto * porce / 100;
+        var neto = bruto - retencion;
+        $('#Retencion').val(Math.round(retencion));
+        $('#Neto').val(Math.round(neto));
+    });
+
+
+
+});
+</script>

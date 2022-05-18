@@ -1,0 +1,192 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Baja De Bienes";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+    /* Conversion a mayusculas */
+    input[type="text"], textarea {
+        text-transform: uppercase;
+    }
+</style>
+<div id="SAGBox">
+
+    <h3>Control de Inventario</h3>
+    <label>  </label>
+    <div id="controles">
+
+    </div>
+    <div id="contenido">
+        @using (Html.BeginForm("AsignarBaja", "BienModInventario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(true)
+            <fieldset>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3><b>Baja de inventario</b></h3></div>
+                    <div class="panel-body">
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 65px;">
+                                <label>Proyecto:</label>
+                            </div>
+                            <div class="form-group">
+                                @Html.DropDownListFor(model => model.ProyectoID, new SelectList(ViewBag.listadoproyecto, "Value", "Text"), new { @style = "width: 500px;", @class = "form-control js-autocomplete", required = "required" })
+                            </div>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 90px;">
+                                <label>Bien:</label>
+                            </div>
+                            <div class="form-group">
+                                @Html.DropDownListFor(model => model.ID, new SelectList(string.Empty, "Value", "Text"), new { @style = "width: 300px;", @class = "form-control js-autocomplete", required = "required" })
+                            </div>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 50px;">
+                                <label><strong>Categoría del bien</strong></label>
+                            </div>
+                            <div class="form-group" style="margin-right: 25px;">
+                                <label>Familia:</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                @Html.TextBoxFor(model => model.Familia, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly", required = "required"})
+                            </div>
+                            <div class="form-group" style="margin-right: 25px;">
+                                <label>Subfamilia:</label>
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.SubFamilia, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly",required="required" })
+                            </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 6px;">
+                                <label>Detalle Movimiento:</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                @Html.TextBoxFor(model => model.Detalle, new { @style = "width: 400px;", @class = "form-control", @placeholder = "Detalle movimiento", required = "required" })
+                            </div>
+                            <div class="form-group" style="margin-right: 25px;">
+                                <label>Cantidad:</label>
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.Cantidad, new { min = "1", @style = "width: 100px;", @class = "form-control", @placeholder = "XX", @type = "number", required = "required" })
+                            </div>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 67px;">
+                                <label>Adjuntar:</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                @Html.TextBoxFor(model => model.Archivo, new { @style = "width: 400px;", @class = "form-control", @type = "file", required = "required" })
+                            </div>
+                            <span class="badge badge-danger" style="margin-top: 10px;"> El nombre del archivo será el que se muestra en los reportes, asegurese de que este sea el número de acta o resolución</span>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 59px;">
+                                <label>Ubicacion:</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                @Html.TextBoxFor(model => model.Ubicacion, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly", required="required" })
+                            </div>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 71px;">
+                                <label>Usuario:</label>
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.Usuario, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly",required="required" })
+                            </div>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 58px;">
+                                <label>Condición:</label>
+                            </div>
+                            <div class="form-group">
+                                @Html.DropDownListFor(model => model.CondicionID, new SelectList(ViewBag.listacondicion, "Value", "Text"), new { @style = "width: 300px;", @class = "form-control js-autocomplete", required = "required" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div style="width: 400px ; display:inline-block">
+                            <a class="btn btn-success" href="./Bajas" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class="fa fa-search fa-fw"></span>BUSCAR</a>
+                            <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Baja"><span class="fa fa-file-o  fa-fw"></span>NUEVO</a>
+                        </div>
+                        <div style="float :right;display:inline-block">
+                            <input type="submit" value="Guardar" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+                @if (TempData["Message"] != null)
+                {
+                    @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+                }
+            </fieldset>
+        }
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //formateo fecha
+        jQuery.validator.methods["date"] = function (value, element) { return true; }
+        $("#ProyectoID").change(function () {
+            $("#ID").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetBienesBaja")', // we are calling json method
+                dataType: 'json',
+                data: { id: $("#ProyectoID").val() },
+                // here we are get value of selected country and passing same value
+                //as inputto json method GetStates.
+                success: function (bien) {
+                    // states contains the JSON formatted list
+                    // of states passed from the controller
+                    $.each(bien, function (i, bien) {
+                        $("#ID").append('<option value="' + bien.Value + '">' +
+                            bien.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Error Al Cargar Los Bienes' + ex);
+                }
+            });
+            return false;
+        })
+
+        $("#ID").change(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetDatosBien")', // we are calling json method
+                dataType: 'json',
+                data: { id: $("#ID").val() },
+                // here we are get value of selected country and passing same value
+                //as inputto json method GetStates.
+                success: function (bien) {
+                // states contains the JSON formatted list
+                    // of states passed from the controller
+                    document.getElementById("Usuario").value = bien['Usuario'];
+                    document.getElementById("Ubicacion").value = bien['Ubicacion'];
+                    document.getElementById("Familia").value = bien['Familia'];
+                    document.getElementById("SubFamilia").value = bien['SubFamilia'];
+                    document.getElementById("Cantidad").value = bien['Cantidad'];
+                    $("#Cantidad").attr("max", bien['Cantidad'])
+                },
+                error: function (ex) {
+                alert('Error Al Cargar Bienes del Proyecto. ' + ex);
+                }
+                });
+            return false;
+        })
+
+    });
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>

@@ -1,0 +1,163 @@
+﻿@model IEnumerable<SAG2.Models.FondoFijo>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Caja Chica";
+    var total = 0;
+    var cuenta = "";
+    var totalFinal = 0;
+    bool grupo = false;
+    
+    if (Request.QueryString["Grupo"] != null && Request.QueryString["Grupo"].ToString() != "")
+    {
+        grupo = true;
+    }
+
+    var Meses = new string[13]
+    {
+        "",
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <style type="text/css" media="print">
+    @@page
+    {
+    size: landscape;
+    /*margin: 2cm;*/
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+    font-size: 10px;    
+    }
+    
+    th 
+    {
+    font-size: 12px;    
+    }
+    h2 {
+        text-align: center;
+    }
+    
+    .registros td
+    {
+        border: 0;    
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+    </style>
+<script language="javascript" type="text/javascript">
+       <!--
+    function printThis() {
+        window.print();
+        setTimeout('window.close()', 10);
+        //self.close();
+    }
+        //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Consejo de Defensa del Niño<br />
+    @Html.Raw(@ViewBag.Proyecto)</strong></td>
+    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2>@ViewBag.Title</h2>
+@if (!grupo)
+{
+<div align="right">Período @Html.Raw(Meses[@ViewBag.Mes].ToString()) de @Html.Raw(@ViewBag.Periodo.ToString())</div>
+}
+    else   
+    {
+    <p>&nbsp;</p>
+}
+   <table cellpadding="5" border="0" style="width: 100%;" cellspacing="0">
+        <tr>
+            <th style="border-left: 1px solid black;" align="left" width="100px">Cuenta</th>
+            <th align="left" width="50px">Fecha</th>
+            <th align="left" width="55px" style="white-space: nowrap;">N° Doc.</th>
+            <th align="left" width="50px" style="white-space: nowrap;">Monto $</th>
+            <th align="left" style="border-right: 1px solid black;">Glosa</th>
+        </tr>
+    @foreach (var item in Model)
+    {
+        totalFinal = totalFinal + item.Monto;
+        if (cuenta != item.Cuenta.NombreLista)
+        {
+            if (cuenta != "")
+            {
+                <tr>
+                    <td style="border-top: 1px solid black;" colspan="3" align="right"><strong>Total Cuenta:</strong></td>
+                    <td style="border-top: 1px solid black;" align="right"><strong>$@total.ToString("#,###")</strong></td>
+                    <td style="border-top: 1px solid black;"></td>
+                </tr>
+            }
+            <tr>
+                <td colspan="5" style="white-space: nowrap;" align="left"><strong>@item.Cuenta.NombreLista</strong></td>
+            </tr>
+            cuenta = item.Cuenta.NombreLista;
+            total = 0;
+        }
+
+        total = total + item.Monto;
+         <tr class="registros">
+            <td align="center"></td>
+            <td align="center" style="white-space:nowrap;">@item.Fecha.ToShortDateString()</td>
+            <td align="center">@item.NumeroDocumento.ToString()</td>
+            <td align="right" style="background-color: orange;">
+                <strong>
+                $@Html.Raw(item.Monto.ToString("#,##0"))
+                </strong>
+            </td>
+            <td align="left">
+                <div style="white-space: nowrap; overflow: hidden; width: 500px;">
+                @Html.Raw(item.Glosa)
+                </div>
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="3" align="right" style="border-top: 1px solid black;"><strong>Total Cuenta:</strong></td>
+        <td align="right" style="border-top: 1px solid black;"><strong>$@total.ToString("#,##0")</strong></td>
+        <td style="border-top: 1px solid black;"></td>
+    </tr>
+    </table>
+    <br />
+    <table style="width: 100%;">
+        <tr>
+            <th align="right" style="border-bottom: 0;"><strong>Total Movimientos Caja Chica $@totalFinal.ToString("#,##0")</strong></th>
+           <th>&nbsp;&nbsp</th>
+        </tr>
+    </table>
+       <br /><br /><br /><br /><br />
+   <table style="width: 100%;">
+    <tr>
+      
+        <td width="33%" align="right" style="font-size: 14px;">_______________________<br />Firma y Timbre Director (a) </td>
+    </tr>
+</table>
+</body>
+</html>

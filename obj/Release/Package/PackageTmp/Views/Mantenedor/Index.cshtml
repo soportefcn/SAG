@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Mantenedores";
+}
+
+<h2>Mantenedores</h2>
+<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Mantenedor">Mantenedores</a>
+    <ul>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Banco/">Banco</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/CuentaCorriente/">&nbsp;&nbsp;Ctas. Ctes.</a></li>
+        <li>&nbsp;</li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ItemGasto/">Item gasto</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Documento/">Documentos</a></li>
+        <li>&nbsp;</li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Comuna/">Comunas</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Region/">Regiones</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Pais/">Países</a></li>
+        <li>&nbsp;</li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Establecimiento/">Establecimientos</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Programa/">Programas</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/SistemaAsistencial/">Sistema Asistencial</a></li>
+    </ul>
+    </li>

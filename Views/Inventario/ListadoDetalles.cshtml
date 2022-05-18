@@ -1,0 +1,68 @@
+﻿@model IEnumerable<SAG2.Models.DetalleEgreso>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Detalles de Egresos";
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("a").click(function () {
+            window.opener.document.getElementById("ComprobanteEgresoAlta").value = $(this).attr("ComprobanteEgreso");
+            window.opener.document.getElementById("DetalleEgresoID").value = $(this).attr("DetalleEgresoID");
+            window.opener.document.getElementById("Valor").value = $(this).attr("Monto");
+            window.opener.document.getElementById("Periodo").value = $(this).attr("Periodo");
+            window.close();
+            return false;
+        });
+    }); 
+</script>
+<div class="top" style="height: 15px;">EGRESOS&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+@if (Model.Count() > 0)
+{
+<table cellpadding="5" border="1" align="center">
+    <tr>
+        <th class="controles"></th>
+        <th>Nº Egreso</th>
+        <th>Fecha</th>
+        <th>Nº Cheque</th>
+        <th>Monto $</th>
+        <th>Beneficiario</th>
+        <th>Cuenta</th>
+    </tr>
+@foreach (var item in Model)
+{
+    <tr>
+        @try
+        {
+        <td><a href="./" title="Seleccionar" ComprobanteEgreso="@item.Egreso.NumeroComprobante" DetalleEgresoID="@item.ID" Monto="@item.Monto.ToString()" Fecha="@item.FechaEmision.ToShortDateString()" Periodo="@item.Egreso.Periodo" CuentaID="@item.CuentaID" Descripcion="@item.Glosa"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a></td>
+        <td  align="center">@Html.DisplayFor(modelItem => item.Egreso.NumeroComprobante)</td>
+        <td>@item.Egreso.Fecha.Value.ToShortDateString()</td>
+        <td align="right">@Html.DisplayFor(modelItem => item.Egreso.Cheque)</td>
+        <td align="right">@item.Monto.ToString("#,##0")</td>
+        <td>
+        @if (item.Egreso.Persona != null)
+        {
+            @Html.DisplayFor(modelItem => item.Egreso.Persona.NombreLista)
+        }
+        else if (item.Egreso.Proveedor != null)
+        {
+            @Html.DisplayFor(modelItem => item.Egreso.Proveedor.NombreLista)
+        }
+        else
+        { 
+            @Html.Raw(@item.Egreso.Rut + "-" + @item.Egreso.DV + " " + @item.Egreso.Beneficiario)
+        }
+        </td>
+        <td>@Html.DisplayFor(modelItem => item.Cuenta.NombreLista)</td>
+        }
+        catch (Exception)
+        { }
+    </tr>
+}
+</table>   
+}
+else
+{ 
+    <div class="warning">No hay Egresos disponibles para este Proyecto</div>
+}
+</div>

@@ -1,0 +1,121 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Reintegros";
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Reintegros.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    var total = 0;
+    }
+<style type="text/css" media="all">
+body 
+{
+    font-family: Arial;    
+}
+
+th
+{
+    font-weight: bold;    
+}
+
+td, th
+{
+    white-space: nowrap;
+    font-size: 12px;
+}
+</style>
+<table>
+    <tr>
+        <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.Proyecto </td>
+    </tr>
+    <tr>
+        <td>Cod. Sename: @ViewBag.CodSename </td>
+    </tr>
+
+
+
+
+
+</table>
+<h2>@ViewBag.Title</h2>
+Entre Fechas Desde :  @ViewBag.Desde Hasta :@ViewBag.Hasta 
+<table cellpadding="5" border="1" style="width: 100%;">
+        <tr>
+            <th>@System.Web.HttpUtility.UrlDecode("N° Comp.")</th>
+            <th>Fecha</th>
+            <th>Monto $</th>
+            <th>@System.Web.HttpUtility.UrlDecode("N° Doc.")</th>
+            <th>Beneficiario</th>
+            <th>Glosa</th>
+            <th>@System.Web.HttpUtility.UrlDecode("N° Egreso")</th>
+            <th>Fecha</th>
+            <th>Cuenta</th> 
+        </tr>
+    @{
+        SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();   
+    }
+    @foreach (var item in Model)
+    {
+        var style = "";
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            style = " style=\"text-decoration: line-through;\"";
+        }
+        else
+        {
+            total = total + item.Monto_Ingresos;
+        }    
+    
+        <tr @Html.Raw(style)>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td>
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="right">
+                <strong>
+                    $@item.Monto_Ingresos.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                @Html.DisplayFor(modelItem => item.Cheque)
+            </td>
+            <td>
+                @if (item.Persona != null)
+                {
+                    @System.Web.HttpUtility.UrlDecode(item.Persona.NombreCompleto)
+                }
+                else if (item.Proveedor != null)
+                {
+                    @System.Web.HttpUtility.UrlDecode(item.Proveedor.Nombre)
+                }
+                else
+                {
+                    @System.Web.HttpUtility.UrlDecode(item.Beneficiario)
+                }
+            </td>
+            <td>
+                @System.Web.HttpUtility.UrlDecode(item.Descripcion)
+            </td>
+            @try
+            {
+                SAG2.Models.DetalleEgreso detalle = db.DetalleEgreso.Find(item.DetalleEgresoID);
+                <td align="center">@Html.Raw(detalle.Egreso.NumeroComprobante.ToString())</td>
+                <td>@Html.Raw(detalle.Egreso.Fecha.Value.ToShortDateString())</td>
+                <td>@System.Web.HttpUtility.UrlDecode(detalle.Cuenta.NombreLista)</td>
+            }
+            catch (Exception)
+            {
+                <td>No disponible</td>
+                <td>No disponible</td>
+            }
+        </tr>
+    }
+    <tr></tr>
+    <tr><td></td><td>Total</td><td>$@total.ToString("#,##0")</td></tr>
+    </table>

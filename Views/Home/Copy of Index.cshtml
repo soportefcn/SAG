@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Página de inicio";
+    var registroActual = "";
+    var registroAnterior = "";
+    var monto = 0;
+    var MontoDisponible = 0;
+    var SaldoInicial = ViewBag.SaldoInicialCta;
+    var SaldoCuentaCorriente = ViewBag.SaldoFinalCta;
+    MontoDisponible = SaldoInicial;
+    SAG2.Models.Proyecto Establecimiento = (SAG2.Models.Proyecto)Session["Proyecto"];
+    SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)Session["CuentaCorriente"];
+}
+<div class="inicio">
+<h2 style="text-align: center;">RENDICIÓN DE CUENTAS A LA FECHA (@Html.Raw(Session["Mes"].ToString())-@Html.Raw(Session["Periodo"].ToString()))</h2>
+<h2>I. IDENTIFICACIÓN</h2>
+<table align="center" style="width: 100%;">
+    <tbody>
+        <tr>
+            <td style="width: 25%">Institución:</td>
+            <td colspan="3"><strong>@Html.Raw(Establecimiento.Institucion)</strong></td>
+        </tr>
+        <tr>
+            <td>Proyecto:</td>
+            <td style="width: 25%"><strong>@Html.Raw(Establecimiento.Nombre)</strong></td>
+            <td style="width: 25%">Código:</td>
+            <td style="width: 25%"><strong>@Html.Raw(Establecimiento.CodCodeni)</strong></td>
+        </tr>
+        <tr>
+            <td>Banco:</td>
+            <td><strong>@Html.Raw(CuentaCorriente.Banco.Nombre)</strong></td>
+            <td>Cuenta Corriente:</td>
+            <td><strong>@Html.Raw(CuentaCorriente.Numero)</strong></td>
+        </tr>
+    </tbody>
+</table>
+<h2>II. SALDO</h2>
+<table align="center" style="width: 100%;">
+    <tr>
+        <td align="left">Saldo inicial período actual</td>
+        <td style="width: 150px; text-align: right; color: Blue;">$@SaldoInicial.ToString("#,###")</td>
+    </tr>
+</table>
+<h2>III. DETALLE DE INGRESOS & REINTEGROS</h2>
+@if (ViewBag.Ingresos != null && ViewBag.Ingresos.Count > 0)
+{
+<table align="center" style="width: 100%;">
+    <tr>
+        <th align="left">Cuenta contable</th>
+        <th style="width: 150px;">Monto $</th>
+    </tr>  
+@foreach (var item in ViewBag.Ingresos)
+{
+    MontoDisponible = MontoDisponible + item.Monto_Ingresos;
+    registroActual = @item.PlanDeCuenta.Nombre;
+    if (registroActual != registroAnterior)
+    {
+        if (monto != 0)
+        { 
+    <tr>
+        <td>@Html.Raw(registroAnterior)</td>
+        <td align="right" style="color: Blue;">$@Html.Raw(monto.ToString("0,0"))</td>
+    </tr>    
+        }
+        monto = @item.Monto_Ingresos;
+    }
+    else
+    {
+        monto = monto + @item.Monto_Ingresos;
+    }
+    registroAnterior = registroActual;
+}
+    <tr>
+        <td>@Html.Raw(registroActual)</td>
+        <td align="right" style="color: Blue;">$@Html.Raw(monto.ToString("0,0"))</td>
+    </tr>
+</table>
+}
+else
+{ 
+<p>No existen registros para este período</p>
+}
+<h2>IV. DISPONIBLE</h2>
+<table align="center" style="width: 100%;">
+    <tr>
+        <td align="left">Saldo inicial período actual + Ingresos</td>
+        <td style="width: 150px; text-align: right; color: Blue;">$@MontoDisponible.ToString("0,0")</td>
+    </tr>
+</table>
+<h2>V. DETALLE DE EGRESOS</h2>
+@if (ViewBag.Egresos != null && ViewBag.Egresos.Count > 0)
+{
+<table align="center" style="width: 100%;">
+    <tr>
+        <th align="left">Cuenta contable</th>
+        <th style="width: 150px;">Monto $</th>
+    </tr> 
+@{
+    registroActual = "";
+    registroAnterior = "";
+    monto = 0;
+}
+@foreach (var item in @ViewBag.Egresos)
+{
+    MontoDisponible = MontoDisponible - item.Monto_Egresos;
+    registroActual = @item.PlanDeCuenta.Nombre;
+    if (registroActual != registroAnterior)
+    {
+        if (monto != 0)
+        {
+    <tr>
+        <td>@Html.Raw(registroAnterior)</td>
+        <td align="right" style="color: Red;">$@Html.Raw(monto.ToString("0,0"))</td>
+    </tr>    
+        }
+        monto = @item.Monto_Egresos;
+    }
+    else
+    {
+        monto = monto + @item.Monto_Egresos;
+    }
+    registroAnterior = registroActual;
+}
+    <tr>
+        <td>@Html.Raw(registroActual)</td>
+        <td align="right" style="color: Red;">$@Html.Raw(monto.ToString("0,0"))</td>
+    </tr>
+</table>
+}
+else
+{ 
+<p>No existen registros para este período</p>
+}
+<h2>VI. SALDOS</h2>
+<table align="center" style="width: 100%;">
+    <tr>
+        <td align="left">Disponible para este período</td>
+        <td style="width: 150px; text-align: right; @if (MontoDisponible < 0)
+                                                    { @Html.Raw("color: Red;") }
+                                                    else
+                                                    { @Html.Raw("color: Blue;") } ">$@MontoDisponible.ToString("0,0")</td>
+    </tr>
+    <tr>
+        <td align="left">Disponible en cuenta corriente</td>
+        <td style="width: 150px; text-align: right; @if (@ViewBag.DisponibleCuentaCorriente < 0)
+                                                    { @Html.Raw("color: Red;") }
+                                                    else
+                                                    { @Html.Raw("color: Blue;") } ">$@ViewBag.DisponibleCuentaCorriente.ToString("0,0")</td>
+    </tr>
+</table>
+<br />
+</div>

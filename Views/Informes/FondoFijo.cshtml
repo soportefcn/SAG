@@ -1,0 +1,138 @@
+﻿@model IEnumerable<SAG2.Models.FondoFijo>
+@{
+    ViewBag.Title = "Fondo fijo";
+    var total = 0;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox">
+    <h2>Informe de Caja Chica</h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+         <fieldset>
+         <div class="panel panel-default">
+    <div class="panel-body">
+      <h3>Periodo</h3> 
+     <div class="form-inline form-group">
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Mes</label>
+            </div>
+         <div class ="form-group">
+             <select name="Mes" id="Mes" class="form-control">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.Mes == (i + 1))
+                                                                              {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+         </div>
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Año</label>
+           </div>
+          <div class ="form-group" style="margin-right: 50px" >
+               <select name="Periodo" id="Periodo" class="form-control">
+                            @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                                                                           {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+            </div>
+         <div class ="form-group">
+             <input type="submit" value="Ver resultados!" class="btn btn-primary"  />
+</div>
+         <div class="form-group" style="margin-right: 20px;">
+             <a  data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="FondoFijo" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
+                  <span class ="fa fa-file-excel-o  fa-2x"></span>
+             </a>
+         </div>
+           
+             <div class="form-group" style="margin-right: 20px;">
+                <a class="btn btn-default imprimirInformeMes" data-toggle="tooltip" data-placement="top" title="Imprimir"  href="../Imprimir/InformeFondoFijo?Mes=@Html.Raw(@ViewBag.Mes.ToString())&Periodo=@Html.Raw(@ViewBag.Periodo.ToString())" >
+                    <span class ="fa fa-print fa-2x"></span> 
+                </a>
+                   
+              </div>
+     </div>
+  </div>
+
+</div>
+
+                </fieldset>
+            
+    }
+}
+     <table class="table" style="margin-bottom: 0px;">
+            <tr>
+                <th style="width: 90px;">Nº Doc.</th>
+                <th style="width: 90px;">Fecha</th>
+                <th>Cuenta</th>
+                <th>Monto $</th>
+                <th>Glosa</th>
+            </tr>
+         </table>
+    <div style="height: 300px; overflow: scroll;">
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        @foreach (var item in Model)
+        {
+            total = total + item.Monto;
+            <tr>
+                <td align="center">
+                    @item.NumeroDocumento.ToString()
+                </td>
+                <td>
+                    @item.Fecha.ToShortDateString()
+                </td>
+                <td>
+                    @item.Cuenta.NombreLista
+                </td>
+                <td>
+                    $@item.Monto.ToString("#,##0")
+                </td>
+                <td>
+                    @item.Glosa
+                </td>
+            </tr>
+        }
+        </table>
+    </div>
+
+    <div class="form-group form-inline" style="margin-top: 10px;">
+         @using (Html.BeginForm())
+        {
+          
+          
+         
+              <div class="form-group"  style="margin-right: 20px;">
+                  Total Caja Chica
+              </div>
+             <div class="form-group">
+                 <b><input class="form-control" value="$@total.ToString("#,###")" readonly="readonly" style="text-align: right;" /></b>
+             </div>
+         }
+     </div>
+    
+           
+</div>

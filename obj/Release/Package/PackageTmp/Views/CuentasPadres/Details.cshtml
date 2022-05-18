@@ -1,0 +1,43 @@
+﻿@model SAG2.Models.CuentasPadres
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>CuentasPadres</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CuentaID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CuentaID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreGrupo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NombreGrupo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.estado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.estado)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

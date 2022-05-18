@@ -1,0 +1,162 @@
+﻿@model IEnumerable<SAG2.Models.Cuenta>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Formulación de Presupuesto";
+    List<SAG2.Models.DetallePresupuesto> dp = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.Detalle;
+    SAG2.Models.Cuenta cuentaAnterior = new SAG2.Models.Cuenta();
+    int mes_inicio = 1;
+    int periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+    if (ViewBag.PresupuestoID.Equals(""))
+    {
+        ViewBag.PresupuestoID = "0";
+    }
+    
+    bool subtotales = false;
+    var Meses = new string[12]
+    {
+	    "Ene.",
+	    "Feb.",
+	    "Mar.",
+	    "Abr.",
+	    "May.",
+	    "Jun.",
+	    "Jul.",
+	    "Ago.",
+	    "Sep.",
+	    "Oct.",
+	    "Nov.",
+	    "Dic."
+	};
+
+    /*foreach (var item in dp)
+    {
+        Response.Write(item.Monto);
+    }*/
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("#GuardarPresupuesto").click(function () {
+            if ($("#SaldoInicial").val() == "") {
+                alert("Debe ingresar el saldo inicial");
+                $("#SaldoInicial").focus();
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+
+    });
+</script>
+<div class="permisos">
+    <h2>Formulación de Presupuesto</h2>
+@using (Html.BeginForm())
+{
+    <input type="hidden" name="PresupuestoID" id="PresupuestoID" value="@Html.Raw(@ViewBag.PresupuestoID)" />
+    <table class="table table-bordered" >
+        <tr>
+            <th style="text-align: right;">
+                <label> <input class="btn btn-primary"  type="submit" value="Guardar" id="GuardarPresupuesto" />
+            </th>
+        </tr>
+    </table>
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>
+               Concepto
+                <select name="TipoCuenta" id="TipoCuenta" class="TipoCuenta">
+                    <option value="I">Ingresos</option>
+                    <option value="E">Egresos</option>
+                </select> Año 
+                <input type="hidden" name="MesInicioPresupuesto" id="MesInicioPresupuesto" class="MesInicioPresupuesto" value="1">
+                <select name="periodoPresupuesto" id="periodoPresupuesto" class="añoPresupuesto">
+                    @for (int i = DateTime.Now.Year - 2; i < DateTime.Now.Year + 5; i++)
+                    {
+                    <option value="@Html.Raw((i).ToString())"@{
+                        if (i.ToString().Equals(ViewBag.Periodo_Inicio))
+                        {
+                            @Html.Raw(" selected=\"selected\"");
+                        }
+                        }>@Html.Raw((i).ToString())</option>
+                    }
+                </select>
+            </th>
+            @for (int i = 0; i < 12; i++)
+            {
+            <th style="width: 55px;" class="Mes_@{@Html.Raw((i + 1).ToString());}">@Html.Raw(Meses[i])</th>
+            }
+        </tr>
+        <tr>
+            <th align="right">Saldo Inicial: <input type="text" name="SaldoInicial" id="SaldoInicial" value="@ViewBag.SaldoInicial" size="7" style="text-align: right;" /></th>
+            <th colspan="12"></th>
+        </tr>
+        @foreach (var cuenta in Model)
+        {
+            var periodo_actual = periodo_inicio;
+            mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+            if ((cuenta.Padre.ID == 1 || cuenta.Padre.ID == 6))
+            {
+                if (subtotales)
+                {
+                <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)" style="background-color: Silver;">
+                    <th align="left">Total @cuentaAnterior.Nombre</th>
+                    @for (int i = 0; i < 12; i++)
+                    {
+                        <td valign="middle">
+                        <input type="text" valorAnterior="0" value="0" padre="@Html.Raw(cuentaAnterior.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" class="Presupuesto" disabled="disabled" size="7" style="font-size: 10px; text-align: right;" />
+                        </td>
+                    }
+                </tr>
+                <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)"><td colspan="13">&nbsp;</td></tr>
+                }
+                subtotales = true;
+                cuentaAnterior = cuenta;
+            }
+            <tr class="@Html.Raw("cuenta_" + @cuenta.Tipo) Padre_@{@cuenta.Padre.ID}" cuentaID="@cuenta.ID" @if (cuenta.Hijos.Count > 0){@Html.Raw(" style='background-color: Silver;'");}>
+            <th align="left"@if (cuenta.Hijos.Count == 0){@Html.Raw(" style='font-weight: normal;'");}else{@Html.Raw(" class=\"Mostrar\"")} visible="true" cuentaID="@cuenta.ID">@cuenta.NombreLista</th>
+            @for (int i = 0; i < 12; i++)
+            {
+                if (mes_inicio > 12)
+                {
+                    mes_inicio = 1;
+                    periodo_actual = periodo_inicio + 1;
+                }
+                <td valign="middle">
+                    @if (cuenta.Hijos.Count > 0)
+                    {
+                        if ((cuenta.Padre.ID != 1 && cuenta.Padre.ID != 6))
+                        {
+                        <input type="text" valorAnterior="0" value="0" padre="@Html.Raw(cuenta.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuenta.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuenta.ID.ToString());}" class="Presupuesto" disabled="disabled" size="7" style="font-size: 10px; text-align: right;" />
+                        }
+                    }
+                    else
+                    {
+                        var value = "0";
+                        try
+                        {
+                            value = dp.Where(d => d.CuentaID == cuenta.ID).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Single().Monto.ToString();
+                        }
+                        catch (Exception e)
+                        { }
+                        <input type="text" valorAnterior="@value.ToString()" value="@value.ToString()" padre="@Html.Raw(cuenta.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuenta.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuenta.ID.ToString());}" class="Presupuesto" size="7" style="font-size: 10px; text-align: right;" eshoja="true" />
+                                                                                                                                                                                                                                                                                                                                                                     if (i == 0)
+                                                                                                                                                                                                                                                                                                                                                                     {
+                        <img src="@Url.Content("~/Content/Images/FlechaDerecha.png")" height="10" width="10" style="vertical-align: middle; cursor: pointer;" class="ReplicarValor" cuenta="@Html.Raw(cuenta.ID.ToString())"  title="Replicar valor" />
+                                                                                                                                                                                                                                                                                                                                                                     }
+                    }
+                </td>
+                    mes_inicio++;
+            }   
+            </tr>
+        }
+        <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)" style="background-color: Silver;"><th align="left">Total @cuentaAnterior.Nombre</th>
+        @for (int i = 0; i < 12; i++)
+                    {
+                        <td valign="middle">
+                        <input type="text" valorAnterior="0" value="0" padre="@Html.Raw(cuentaAnterior.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" class="Presupuesto" disabled="disabled" size="7" style="font-size: 10px; text-align: right;" />
+                        </td>
+                    }</tr>
+        <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)"><td colspan="13">&nbsp;</td></tr>
+    </table>
+}
+</div>

@@ -1,0 +1,55 @@
+﻿@model SAG2.Models.Resolucion
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Resolucion</legend>
+
+    <div class="display-label">ProyectoID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProyectoID)
+    </div>
+
+    <div class="display-label">ResEx</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ResEx)
+    </div>
+
+    <div class="display-label">FechaInicio</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaInicio)
+    </div>
+
+    <div class="display-label">FechaTermino</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaTermino)
+    </div>
+
+    <div class="display-label">Fechaprorroga</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaProrroga)
+    </div>
+
+    <div class="display-label">NroPlazas</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NroPlazas)
+    </div>
+
+    <div class="display-label">Comentarios</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Comentarios)
+    </div>
+
+    <div class="display-label">Estado</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Estado)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

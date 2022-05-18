@@ -1,0 +1,55 @@
+﻿@model SAG2.Models.PreguntaFrecuente
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>PreguntaFrecuente</legend>
+
+    <div class="display-label">Pregunta</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Pregunta)
+    </div>
+
+    <div class="display-label">Respuesta</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Respuesta)
+    </div>
+
+    <div class="display-label">PreguntaFecha</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PreguntaFecha)
+    </div>
+
+    <div class="display-label">RespondeFecha</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RespondeFecha)
+    </div>
+
+    <div class="display-label">Comentario</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Comentario)
+    </div>
+
+    <div class="display-label">Activo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Activo)
+    </div>
+
+    <div class="display-label">PreguntaID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PreguntaID)
+    </div>
+
+    <div class="display-label">RespondeID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RespondeID)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

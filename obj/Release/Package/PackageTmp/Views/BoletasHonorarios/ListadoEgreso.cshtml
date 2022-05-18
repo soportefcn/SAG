@@ -1,0 +1,87 @@
+﻿@model IEnumerable<SAG2.Models.BoletaHonorario>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Boletas de Honorarios";
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("a").click(function () {
+            window.opener.document.getElementById("DocumentoIDD").value = $(this).attr("DocumentoID");
+            window.opener.document.getElementById("NDocumentoD").value = $(this).attr("NumeroDocumento");
+            window.opener.document.getElementById("Monto").value = $(this).attr("Monto");
+            window.opener.document.getElementById("FechaEmision").value = $(this).attr("FechaEmision");
+            window.opener.document.getElementById("CuentaID").value = $(this).attr("CuentaID");
+            window.opener.document.getElementById("Glosa").value = $(this).attr("Glosa");
+            window.opener.document.getElementById("BoletaHonorarioID").value = $(this).attr("BoletaHonorarioID");
+            window.close();
+            return false;
+        });
+    }); 
+</script>
+<div class="top" style="height: 15px;">Boleta de Honorarios&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+<table class="table table-bordered table-hover" cellpadding="5" border="1" align="center">
+    <thead class="fixedHeader">
+    <tr class="info">
+        <th class="controles" style="width: 32px;"></th>
+        <th >Nº Bol.</th>
+        <th style="width: 83px;">Fecha</th>
+        <th style="width: 109px;">Tipo</th>
+        <th style="width: 107px;">Beneficiario</th>
+        <th style="width: 62px;">Bruto $</th>
+        <th style="width: 84px;">Ret. $</th>
+        <th style="width: 62px;">Neto $</th>
+        <th  style="width: 207px;">Concepto</th>
+    </tr>
+        </thead>
+     <tbody class="scrollContent"> 
+@foreach (var item in Model)
+{
+    <tr>
+        <td><a href="./" title="Seleccionar" BoletaHonorarioID="@item.ID" Monto="@item.Neto.ToString()" NumeroDocumento="@item.NroBoleta.ToString()" DocumentoID="3" FechaEmision="@item.Fecha.ToShortDateString()" CuentaID="23" Glosa="@item.Concepto"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a></td>
+        <td>@Html.DisplayFor(modelItem => item.NroBoleta)</td>
+        <td style="width: 80px;">@item.Fecha.ToShortDateString()</td>
+        <td style="width: 102px;">
+           @if (item.Electronica != null)
+            {
+                @Html.Raw("ELECTRÓNICA")
+            }
+            else
+            {
+                @Html.Raw("MANUAL")
+            }
+        </td>
+        <td style="width: 109px;">
+            @try
+            {
+                if (item.Persona != null)
+                {
+                    @item.Persona.NombreLista.ToUpper();
+                }
+                else if (item.Proveedor != null)
+                {
+                    @item.Proveedor.NombreLista.ToUpper();
+                }
+                else
+                { 
+                    @item.Beneficiario.ToUpper();
+                }
+            } 
+            catch (Exception)
+            {}
+        </td>
+        <td style="width: 62px;" align="right">
+            @item.Bruto.ToString("#,###")
+        </td>
+        <td style="width: 84px;" align="right">
+            @item.Retencion.ToString("#,###")
+        </td>
+        <td align="right" style="width: 62px;">
+            @item.Neto.ToString("#,###")
+        </td>
+        <td style="width: 307px;">@item.Concepto.ToUpper()</td>
+    </tr>
+}
+         </tbody>
+</table>
+</div>

@@ -1,0 +1,137 @@
+﻿@model SAG2.Models.BoletaHonorario
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+}
+<div class="top">Ingresar Boleta de Honorarios&nbsp;&nbsp;
+<a href="/SAG_5_desarrollo/BoletasHonorarios/ListadoEgreso/?personalID=@ViewBag.PersonaID">
+    <img src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="vertical-align: middle;" />
+</a>
+&nbsp;&nbsp;
+</div>
+<div >
+    <style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<fieldset>
+        
+@using (Html.BeginForm())
+{
+   
+    <input type="hidden" name="VPorce" id="VPorce" value="@ViewBag.ValorPorcentaje" />
+    
+    <input id="PersonaID" name="PersonaID" type="hidden" value="@ViewBag.PersonalID" />
+    <input id="ProveedorID" name="ProveedorID" type="hidden" value="@ViewBag.ProveedorID" />
+    <input id="Rut" name="Rut" type="hidden" value="@ViewBag.Rut" />
+    <input id="DV" name="DV" type="hidden" value="@ViewBag.DV" />
+    <input id="Beneficiario" name="Beneficiario" type="hidden" value="@ViewBag.Beneficiario" />
+    
+    <div class="panel panel-default">
+  <div class="panel-heading"><h3>Ingresar Boleta de Honorarios</h3></div>
+  <div class="panel-body">
+      <div class="form-group form-inline" style="margin-left: 20px;">
+     <div class="form-group" style="margin-left: 20px;">
+            @Html.Label("Persona")
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            <input type="text" value="@ViewBag.NombreLista" style="width: 350px;" />
+        </div>
+    </div>
+      <div class="form-group form-inline" style="margin-left: 20px;">
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.NroBoleta)
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.EditorFor(model => model.NroBoleta)
+        </div>
+
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Fecha)
+        </div>
+
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.TextBoxFor(model => model.Fecha, new { @Value = DateTime.Now.ToShortDateString(), @class = "calendario" })
+        </div>
+        </div>
+       <div class="form-group form-inline" style="margin-left: 20px;">
+          <div class="form-group">
+           <label>Porcentaje</label>     <br />
+           @Html.DropDownList("PORCENTAJE", null, "-- SELECCIONE % --", new { @class = "form-control"} )      
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Bruto)
+        <br />
+            @Html.EditorFor(model => model.Bruto)
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Retencion)
+        <br />
+            @Html.TextBoxFor(model => model.Retencion, new { @readonly = "readonly", @style="width: 90px;" })
+        </div>
+        
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Neto)
+         <br />
+            @Html.EditorFor(model => model.Neto)
+        </div>
+           </div>
+       <div class="form-group form-inline" style="margin-left: 20px;">
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Concepto)
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.TextAreaFor(model => model.Concepto, new { @cols = "57", @rows = "3" })
+        </div>
+           </div>
+        <div class="form-group form-inline" style="margin-left: 20px;">
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Electronica)
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            <input type="checkbox" name="Electronica" id="Electronica" value="1" />
+        </div>
+
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Nula)
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            <input type="checkbox" name="Nula" id="Nula" value="1" />
+        </div>
+            </div>
+     
+            <input type="submit" value="Guardar" class="btn btn-primary guardar-boleta-pop-up" />
+        
+  </div>
+</div>
+    
+   
+
+        
+}
+</fieldset>
+</div>
+
+<script>
+
+$(document).ready(function () {
+
+    $("#PORCENTAJE").change(function () {
+      
+        var valor = $("#PORCENTAJE").val();
+        $("#VPorce").val(valor);
+        $('#VPorce').val($('#VPorce').val().replace(",", "."));
+        var bruto = new Number($('#Bruto').val());
+        var porce = new Number($('#VPorce').val());
+        var retencion = bruto * porce / 100;
+        var neto = bruto - retencion;
+        $('#Retencion').val(Math.round(retencion));
+        $('#Neto').val(Math.round(neto));
+    });
+
+
+
+});
+</script>

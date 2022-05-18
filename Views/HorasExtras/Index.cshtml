@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SAG2.Models.HorasExtras>
+
+@{
+    ViewBag.Title = "Horas Extras";
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+    
+    }
+
+<div id="contenido_popup">
+     <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+   <table class ="table table-bordered table-hover">
+       <thead class="fixedHeader">
+    <tr class="info">
+        <th style="width: 200px;"> Periodo </th>
+       <th style="width: 200px;"> Mes</th>
+        <th style="width: 200px;">Monto  </th>
+        <th style="width: 33px;" class="controles"></th>
+    </tr>
+</thead>
+       <tbody class="scrollContent">
+
+      
+     @foreach (var item in Model)
+{
+    <tr>
+        <td style="width: 200px;"> @Html.DisplayFor(modelItem => item.Periodo) </td>
+        <td style="width: 200px;"> @Html.DisplayFor(modelItem => item.Mes) </td>
+        <td style="width: 200px;"> @Html.DisplayFor(modelItem => item.MontoHorasExtras ) </td>
+        <td style="width: 33px;">
+            <a href="@Url.Action("Edit", "HorasExtras", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+            </tbody>
+        </table>
+    </div>
+
+
+

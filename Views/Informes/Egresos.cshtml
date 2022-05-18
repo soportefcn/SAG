@@ -1,0 +1,320 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Egresos";
+    var total = 0;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+<div id="SAGBox">
+    <h2>Informe de Egresos</h2>
+    
+    @using (Html.BeginForm())
+    {
+        if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+        {
+            <fieldset>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3>Periodo</h3>
+                        <div class="form-inline form-group">
+                            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                                <label>Desde</label>
+                            </div>
+                            <div class="form-group">
+                                <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" />
+                            </div>
+                            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                                <label>Hasta</label>
+                            </div>
+                            <div class="form-group">
+                                <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" style="margin-right: 20px;" />
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Ver resultados" class="btn btn-primary" />
+                            </div>
+                            <div class="form-group">
+                                <a data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="Egresos" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
+                                    <span class="fa fa-file-excel-o  fa-2x"></span>
+                                </a>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+            </fieldset>
+
+        }
+    }
+
+
+    <table class="table " style="margin-bottom: 0px;">
+        <tr>
+            <th style="width: 50px;">Nº Egreso</th>
+            <th style="width: 81px;">Fecha</th>
+            <th style="width: 70px;">Nº Cheque</th>
+            <th style="width: 136px;">Documento</th>
+            <th style="width: 101px;">Nº Doc.</th>
+            <th style="width: 81px;">Fecha</th>
+            <th style="width: 151px;">Beneficiario</th>
+            <th style="width: 79px;">Monto $</th>
+            <th style="width: 128px;">Cuenta</th>
+            <th>Glosa</th>
+            <th style="width: 90px;">Cta. Cte.</th>
+        </tr>
+    </table>
+    <div style="height: 280px; overflow: scroll;">
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th style="width: 72px;"></th>
+                <th style="width: 81px;"></th>
+                <th style="width: 75px;"></th>
+                <th style="width: 136px;"></th>
+                <th style="width: 101px;"></th>
+                <th style="width: 81px;"></th>
+                <th style="width: 151px;"></th>
+                <th style="width: 79px;"></th>
+                <th style="width: 128px;"></th>
+                <th></th>
+                <th style="width: 73px;"></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                if (item.TipoComprobanteID != 2)
+                {
+                    continue;
+                }
+
+                if (item.Nulo != null && item.Nulo.Equals("S"))
+                {
+            <tr style="text-decoration: line-through;" itemid="@item.ID">
+                <td align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @item.Cheque
+                </td>
+                <td>
+                    @try
+                    {
+                        @Html.Raw(@item.Documento.NombreLista)
+                    }
+                    catch (Exception)
+                    { }
+                </td>
+
+                    @try
+                    {
+                    <td align="center" nowrap="nowrap">
+                        <a  title="Seleccionar" onclick="window.open('../Egresos/IndexBodega?numero='+@item.ID,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                        @item.NDocumento
+                    </td>
+                }
+                catch (Exception)
+                { }
+
+                    <td>
+                        @try
+                        {
+                            @item.FechaCheque.Value.ToShortDateString()
+                        }
+                        catch (Exception)
+                        { }
+                    </td>
+                    <td>
+                        @if (item.Persona != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                        }
+                        else if (item.Proveedor != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Proveedor.Nombre)
+                        }
+                        else
+                        {
+                            @Html.Raw(@item.Beneficiario)
+                        }
+                    </td>
+                    <td align="right">
+                        <strong>
+                            $@item.Monto_Egresos.ToString("#,##0")
+                        </strong>
+                    </td>
+                    <td align="left">
+                        @if (@item.Cuenta != null)
+                        {@Html.Raw(utils.cuentaPadre(@item.Cuenta))}
+                    </td>
+                    <td>
+                        COMPROBANTE NULO
+                    </td>
+                    <td>
+                        @item.CuentaCorriente.Numero
+                    </td>
+                </tr>
+    }
+    else if (item.Documento != null && item.Documento.ID == 100)
+    {
+            <tr style="text-decoration: line-through;" itemid="@item.ID">
+                <td align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @item.Cheque
+                </td>
+                <td>
+                    @try
+                    {
+                  
+                        <a @*href="@Url.Action("IndexBodega", "Egresos", new { numero = movimiento.DetalleEgreso.Egreso.ID })"*@ title="Seleccionar" onclick="window.open('../Egresos/IndexBodega?numero='+@item.ID,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                        @item.NDocumento
+                
+                }
+                catch (Exception)
+                { }
+                    </td>
+                    <td>
+                        @try
+                        {
+                            @Html.Raw(@item.NDocumento.ToString())
+                        }
+                        catch (Exception)
+                        { }
+                    </td>
+                    <td>
+                        @try
+                        {
+                            @item.FechaCheque.Value.ToShortDateString()
+                        }
+                        catch (Exception)
+                        { }
+                    </td>
+                    <td>
+                        @if (item.Persona != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                        }
+                        else if (item.Proveedor != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Proveedor.Nombre)
+                        }
+                        else
+                        {
+                            @Html.Raw(@item.Beneficiario)
+                        }
+                    </td>
+                    <td align="right">
+                        <strong>
+                            $@item.Monto_Egresos.ToString("#,##0")
+                        </strong>
+                    </td>
+                    <td align="left">
+                        @if (@item.Cuenta != null)
+                        {@Html.Raw(utils.cuentaPadre(@item.Cuenta))}
+                    </td>
+                    <td>
+                        COMPROBANTE NULO
+                    </td>
+                    <td>
+                        @item.CuentaCorriente.Numero
+                    </td>
+                </tr>
+}
+else
+{
+SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+foreach (var detalle in detalles)
+{
+    total = total + detalle.Monto;
+            <tr detalleid="@detalle.ID">
+                <td align="center">
+                    <a @*href="@Url.Action("IndexBodega", "Egresos", new { numero = movimiento.DetalleEgreso.Egreso.ID })"*@ title="Seleccionar" onclick="window.open('../Egresos/Edit/'+@item.ID,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @detalle.Egreso.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @detalle.Egreso.Cheque
+                </td>
+                <td>
+                    @if (@detalle.Documento != null)
+                    {
+                        @detalle.Documento.Nombre
+                    }
+                </td>
+                <td>
+
+                    @item.NDocumento
+
+                </td>
+                <td>
+                    @detalle.FechaEmision.ToShortDateString()
+                </td>
+                <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Persona.NombreCompleto)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    {
+                        @Html.Raw(@detalle.Egreso.Beneficiario)
+                    }
+                </td>
+                <td align="right">
+                    <strong>
+                        $@detalle.Monto.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="left">
+                    @if (@detalle.Cuenta != null)
+                    {@Html.Raw(utils.cuentaPadre(@detalle.Cuenta))}
+                </td>
+                <td>
+                    @detalle.Glosa
+                </td>
+                <td>
+                    @detalle.Egreso.CuentaCorriente.Numero
+                </td>
+            </tr>
+}
+}
+}
+        </table>
+    </div>
+
+    <br />
+    <div class="form-group form-inline">
+        @using (Html.BeginForm())
+        {
+
+            <div class="form-group">
+                <a class="btn btn-default imprimirInformePeriodo" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../Imprimir/InformeEgreso?Desde=@Html.Raw(@ViewBag.Desde)&Hasta=@Html.Raw(@ViewBag.Hasta)">
+                    <span class="fa fa-print fa-2x"></span>
+                </a>
+            </div>
+
+            <div class="form-group" style="margin-right:10px">
+                <label>Total Egresos</label>
+            </div>
+            <div class="form-group" style="margin-right:10px">
+                <b><input class="form-control" value="$@total.ToString("#,###")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    ViewBag.Title = "ListarLineas";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/style.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+    <link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+	<!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Ccss/ie.css?" + @DateTime.Now.Ticks)" media="screen" />
+    <![endif]-->
+	<link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.dropdownPlain.js?" + @DateTime.Now.Ticks)"></script>
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/funciones.js?" + @DateTime.Now.Ticks)"></script>
+    <link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Iframe.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+      <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >
+        <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+</head>
+<body >
+@if (Model.Count() > 0)
+{
+    <table class ="table table-bordered table-hover">
+        <thead >
+        <tr class="info">
+            <th>Seleccionar</th>
+            <th nowrap="nowrap">Categoria</th>
+            <th nowrap="nowrap">Articulo</th>
+            <th nowrap="nowrap">Fecha</th>
+            <th nowrap="nowrap">Unidad <br />de Medida</th>
+            <th nowrap="nowrap">Ingreso de Articulo</th>
+            <th style="width: 150px;" nowrap="nowrap">Observaciones</th>   
+        </tr>
+            </thead>
+        @foreach (var movimiento in Model)
+        {
+        <tr class="Entradabodega"  MovimientosBodegaID="@movimiento.ID"   observacion ="@movimiento.Observaciones" CategoriaID="@movimiento.Articulo.CategoriaID" AritculoID="@movimiento.ArticuloID" Cantidad="@movimiento.Salida"   style="cursor: pointer;">
+              <td style="width: 33px;">
+            <a href="@Url.Action("MovientoDonacionEdit", "MovimientosBodega", new { id = movimiento.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+             <td nowrap="nowrap">@movimiento.Articulo.Categoria.nombre</td>
+            <td nowrap="nowrap">@movimiento.Articulo.Nombre</td>
+            <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
+            <td nowrap="nowrap">@movimiento.Articulo.UnidadMedida.Descripcion</td>
+            <td align="center" nowrap="nowrap">@movimiento.Entrada</td>
+           <td style="width: 150px;" align="center" nowrap="nowrap">@movimiento.Observaciones</td>
+            
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+</body>
+</html>
+

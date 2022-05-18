@@ -1,0 +1,87 @@
+﻿@model SAG2.Models.InventarioItem
+@{
+    ViewBag.Title = "Generar Baja";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+}
+<div class="permisos">
+    <div class="ocultoImpresion">
+        <input value="IMPRIMIR" type="button" style="float: right; margin-left: 10px;" id="imprimirDirecto" />
+    </div>
+    <h2>BAJA DE INVENTARIOS</h2>
+    <br />
+@using (Html.BeginForm())
+{
+    <input type="hidden" name="MovimientoID" id="MovimientoID" value="@ViewBag.MovimientoID" />
+    <select name="ItemID" id="ItemID" class="oculto">
+        <option> - Seleccione especie para dar de baja -</option>
+        @foreach (SAG2.Models.InventarioItem item in @ViewBag.Inventario)
+        {
+            int cantidadUsada = 0;
+            try
+            {
+                cantidadUsada = db.InventarioHoja.Where(h => h.ItemID == item.ID).Sum(h => h.Cantidad);
+            }
+            catch (Exception)
+            { }
+            <option value="@item.ID" @if (cantidadUsada == item.Cantidad)
+                                     {@Html.Raw("disabled=\"disabled\"");
+                                     }>@item.Especie.Nombre - @item.Descripcion (@(item.Cantidad - cantidadUsada) disponibles)</option>   
+        }
+    </select>
+    <input value="Agregar" type="submit" class="oculto" />
+}
+@if (@ViewBag.Listado != null)
+{
+<p>&nbsp;</p>
+    <fieldset>
+        <legend>Detalle del Baja</legend>
+        <table cellpadding="5" border="1" align="center">
+    <tr>
+    <th class="controles"></th>
+        <th>
+            Especie
+        </th>
+        <th>
+            Descripción y/o características<br />de la especie
+        </th>
+        <th>
+            Proced.<br />(S); (T); (I)
+        </th>
+        <th>
+            Nº C/E<br />/ Año
+        </th>
+        <th>
+            Cantidad
+        </th>
+        <th>
+            Valor $
+        </th>
+        <th>
+            Observaciones
+        </th>       
+    </tr>
+@foreach (SAG2.Models.InventarioBaja item in @ViewBag.Listado)
+{
+    <tr>
+        <td>
+            <a href="@Url.Action("Baja", "Inventario", new { id = item.Item.ID, movimientoID = item.MovimientoID })" title="Modificar"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td>@item.Item.Especie.Nombre</td>
+        <td>@item.Item.Descripcion</td>
+        <td>@item.Item.Procedencia</td>
+        <td>@item.Item.Egreso.Egreso.NumeroComprobante / @item.Item.Periodo</td>
+        <td>@item.Cantidad</td>
+        <td>@item.Item.Valor.ToString("#,##0")</td>
+        <td>@item.Item.Observaciones</td>
+    </tr>
+}
+    </table>
+    </fieldset>
+}
+
+    <br />
+    <div align="right">
+        <input type="button" value="TERMINAR" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Inventario/ListadoAltas';" />
+    </div>
+</div>
+F-DAF-016

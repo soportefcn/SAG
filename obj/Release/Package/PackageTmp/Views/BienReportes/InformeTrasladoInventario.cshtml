@@ -1,0 +1,126 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    Layout = null;
+    ViewBag.Title = "Informe Traslado Inventario";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.TrasladoBienes.Inventario.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 20px;
+    }
+</style>
+
+<table cellpadding="5" border="1" style="width: 80%;">
+
+    <tr>
+        <th rowspan="4" colspan="3" style="font-size: 12px;"> Fundaci&oacute;n Ciudad del Ni&ntilde;o  <br /> Administracion Central</th>
+        <th rowspan="2" colspan="8" style="font-size: 30px; font-weight: bold;">Formulario</th>
+        <th colspan="3" style="font-weight: bold;">C&oacute;digo:</th>
+        <th colspan="2" style="font-weight: bold;">F-DAF-017</th>
+    </tr>
+    <tr>
+        <td colspan="3">P&aacute;gina:</td>
+        <td colspan="2">1 de 1</td>
+    </tr>
+    <tr>
+        <th rowspan="2" colspan="8" style="font-size: 30px; font-weight: bold;">Traslado De Bienes</th>
+        <td colspan="3">Revisi&oacute;n:</td>
+        <td colspan="2">2</td>
+    </tr>
+    <tr>
+        <td colspan="3">Fecha Rev:</td>
+        <td colspan="2">@FechaSis</td>
+    </tr>
+    <tr></tr>
+
+    <tr>
+        <th colspan="8">Proyecto Actual:</th>
+        <th colspan="8">@Model.Proyecto</th>
+    </tr>
+    <tr></tr>
+    <tr>
+        <th colspan="4">C&oacute;digo SENAME:</th>
+        <td colspan="4">@ViewBag.CodigoSename</td>
+        <th colspan="4">Centro de Costo Fundaci&oacute;n</th>
+        <td colspan="4">@ViewBag.CCosto</td>
+    </tr>
+    <tr>
+
+    </tr>
+    <tr>
+        <th colspan="2" rowspan="2">Especie</th>
+        <th colspan="2" rowspan="2">Descripci&oacute;n y/o caracter&iacute;sticas de la especie</th>
+        <th colspan="1" rowspan="2">Procedencia (S); (T); (I)</th>
+        <th colspan="1" rowspan="2">N&ordm; C/E</th>
+        <th colspan="1" rowspan="2">Factura N&ordm;</th>
+        <th colspan="1" rowspan="2">Acta Traspaso(A)<br />Resoluci&oacute;n Exenta(R)</th>
+        <th colspan="1" rowspan="2">Fecha Egreso o Compra</th>
+        <th colspan="1" rowspan="2">Cantidad</th>
+        <th colspan="2" rowspan="2">Ubicaci&oacute;n</th>
+        <th colspan="1" rowspan="2">Ubicaci&oacute;n Anterior</th>
+        <th colspan="1" rowspan="2">Condici&oacute;n</th>
+        <th colspan="1" rowspan="2">Observaciones</th>
+        <th colspan="1" rowspan="2">Origen / Destino</th>
+    </tr>
+    <tr></tr>
+
+
+    @foreach (var item in Model.lista)
+    {
+    <tr>
+        <td colspan="2">@item.Familia </td>
+        <td colspan="2">@item.DescripcionBien</td>
+        <td colspan="1">@item.Procedencia[0]</td>
+        <td colspan="1">@item.Movimiento.NumeroComprobante</td>
+        @if (item.Egreso != null)
+    {
+        <td colspan="1">@item.Egreso.NDocumento</td>
+}
+else
+{
+    <td colspan="1">@item.Reintegro.NDocumento</td>
+}
+        <td colspan="1"></td>
+
+        @{
+        string fecha = @item.Movimiento.Fecha.ToString();
+        string fechafinal = fecha.Substring(0, Math.Min(fecha.Length, 10));
+
+        <td colspan="1">@fechafinal</td>
+        }
+        <td colspan="1">@item.Cantidad.ToString()</td>
+        <td colspan="2">@item.Ubicacion</td>
+        <td colspan="1">@item.Ubicacion2</td>
+        <td colspan="1">@item.CondicionText</td>
+        <td colspan="1">@item.Detalle</td>
+        <td colspan="1">@item.RutaArchivo</td>
+    </tr>
+
+    }
+
+</table>
+
+<table>
+    <tr></tr>
+    <tr></tr>
+    <tr>
+        <td colspan="8"></td>
+        <td colspan="8">Nombre y firma Director:________________________________</td>
+    </tr>
+
+</table>

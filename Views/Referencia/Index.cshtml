@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SAG2.Models.Referencia>
+
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Referencias";
+}
+
+
+ <div id="contenido_popup">
+<table class ="table table-bordered table-hover">
+    <tr>
+        <th>
+            GRUPO
+        </th>
+        <th>
+            VALOR
+        </th>
+        <th>
+            PERIODO
+        </th>
+        <th>
+            PREDETERMINADO
+        </th>
+        <th>
+            ESTADO
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+   
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.GRUPO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VALOR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PERIODO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PREDETERMINADO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ESTADO)
+        </td>
+   
+             <td>
+            <a href="@Url.Action("Edit", "Referencia", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+
+</table>
+</div>

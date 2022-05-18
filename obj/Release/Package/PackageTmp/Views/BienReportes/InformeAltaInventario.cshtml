@@ -1,0 +1,141 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Altas";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Altas.Inventario.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 20px;
+    }
+</style>
+
+
+<table cellpadding="5" border="1" style="width: 80%;">
+        
+        <tr>
+            <th rowspan="4" colspan="2" style="font-size: 12px;"> Fundaci&oacute;n Ciudad del Ni&ntilde;o  <br /> Administracion Central</th>
+            <th rowspan="2" colspan="5" style="font-size: 30px; font-weight: bold;">Formulario</th>
+            <th colspan="2" style="font-weight: bold;">C&oacute;digo:</th>
+            <th style="font-weight: bold;">F-DAF-016:</th>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="2">P&aacute;gina:</td>
+            <td>1 de 1</td>
+            <td></td>
+
+        </tr>
+        <tr>
+            <th rowspan="2" colspan="5" style="font-size: 30px; font-weight: bold;">Alta de Inventario</th>
+            <td colspan="2">Versi&oacute;n:</td>
+            <td>1</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="2">Fecha Rev:</td>
+            <td>@FechaSis</td>
+            <td ></td>
+        </tr>
+        <tr>
+            <th>Proyecto:</th>
+            <td colspan="2">@Model.Proyecto</td>
+            <th colspan="2">C&oacute;digo SENAME:</th>
+            <td colspan="3">@ViewBag.CodSename</td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <th>Fecha:</th>
+            <td colspan="2">@FechaSis</td>
+            <th colspan="2">C. Costo CODENI:</th>
+            <td colspan="3">@ViewBag.CCosto</td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <th rowspan="2">Especie</th>
+            <th rowspan="2" colspan="2">Descripci&oacute;n y/o caracter&iacute;sticas de la especie</th>
+            <th rowspan="2">Procedencia (S); (T); (I)</th>
+            <th rowspan="2">N&ordm; C/E / A&ntilde;o</th>
+            <th rowspan="2">N&ordm; Documento</th>
+            <th rowspan="2">Cantidad</th>
+            <th rowspan="2" colspan="1">Valor $</th>
+            <th rowspan="2" colspan="3">Observaciones</th>
+        </tr>
+        <tr></tr>
+        @{ 
+            int montoTotal = 0;
+            int cantidadTotal = 0;
+            }
+
+        @foreach (var item in Model.lista)
+        {
+            montoTotal += item.MontoInt;
+            cantidadTotal += item.Cantidad;
+        <tr>
+            <td>@item.Familia - @item.SubFamilia</td>
+            <td colspan="2">@item.DescripcionBien</td>
+            <td>@item.Procedencia[0]</td>
+            <td>@item.Movimiento.NumeroComprobante</td>
+            
+
+            @if (item.Egreso != null)
+            { 
+                <td>@item.Egreso.NDocumento</td>           
+            }
+            else
+            {
+                <td>@item.Reintegro.NDocumento</td>
+            }
+            <td>@item.Cantidad.ToString("#,##0")</td>
+            <td colspan="1">$@item.MontoInt.ToString("#,##0")</td>
+            <td colspan="3"></td>
+        </tr>
+        }
+        <tr>
+            <td colspan="11"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2"></td>
+            <td></td>
+            <td></td>
+            <td><strong>Suma Total</strong></td>
+            <td><strong>@cantidadTotal.ToString("#,##0") </strong></td>
+            <td colspan="1"><strong>$@montoTotal.ToString("#,##0")</strong></td>
+            <td colspan="3"></td>
+        </tr>
+
+
+        
+</table>
+<table>
+    <tr>
+
+    </tr>
+    <tr>
+
+    </tr>
+    <tr>
+        <td colspan="4"></td>
+        <td colspan="7">Nombre y firma Director:________________________________</td>
+    </tr>
+    
+</table>
+
+
+

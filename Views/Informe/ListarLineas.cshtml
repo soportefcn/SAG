@@ -1,0 +1,207 @@
+﻿@model IEnumerable<SAG2.Models.DetalleInformes>
+@{
+    ViewBag.Title = "ListarLineas";
+    //   Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    // int ID = int.Parse(ViewBag.ID);
+    int numCapa = 1;
+    string ncapa;
+    //   var listaModel = Model.ToList();
+    string btndr;
+    int i = 1;
+    int id = (int)Session["InformeID"];
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    SAG2.Models.DetalleInformes model2 = new SAG2.Models.DetalleInformes();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/style.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection" />
+    <!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Ccss/ie.css?" + @DateTime.Now.Ticks)" media="screen" />
+    <![endif]-->
+    <link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.dropdownPlain.js?" + @DateTime.Now.Ticks)"></script>
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/funciones.js?" + @DateTime.Now.Ticks)"></script>
+    <link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Iframe.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet">
+    <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+    <link href="@Url.Content("~/Content/dist/css/bootstrap-submenu.min.css")" rel="stylesheet">
+
+    <script src="@Url.Content("~/Content/dist/js/bootstrap-submenu.min.js")" defer></script>
+</head>
+<body>
+    <script>
+                $(document).ready(function () {
+                    $("#btnNuevo").click(function () {
+                        $("#capaNueva").toggle();
+                    });
+                });
+
+    </script>
+    <input type="submit" id="btnNuevo" value="Nuevo" class="btn-success" />
+    @using (Html.BeginForm("create", "DetalleInformes", FormMethod.Post, new { encType = "multipart/form-data", name = "nueva línea" }))
+    {
+        @Html.AntiForgeryToken()
+
+    <div id="capaNueva" style="display:none;" class="form-horizontal">
+        <h4>Agregar Línea</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Cuenta</label>
+            <div class="col-md-10">
+                @Html.DropDownList("cuentaID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model2.cuentaID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @{model2.informeID = id;
+            model2.tipoCuenta = 0.ToString();}
+        <div class="form-group">
+            <label class="control-label col-md-2">Tipo de Cuenta</label>
+            <div class="col-md-10">
+                @Html.DropDownList(model2.tipoCuenta.ToString(), new List<SelectListItem> { new SelectListItem { Value = "0", Text = "Encabezado" }, new SelectListItem { Value = "1", Text = "Total" }, new SelectListItem { Value = "2", Text = "Total Ingresos" }, new SelectListItem { Value = "3", Text = "Total Egresos" }, new SelectListItem { Value = "4", Text = "Normal" }, new SelectListItem { Value = "5", Text = "Flujo Neto" }, new SelectListItem { Value = "6", Text = "Total Gastos Personal" }, new SelectListItem { Value = "7", Text = "Saldo Antes del Financimiento"}, new SelectListItem { Value = "8", Text = "Financiamiento Encabezado" }, new SelectListItem { Value = "9", Text = "Financiamiento normal" }, new SelectListItem { Value = "10", Text = "Total Financiamiento" }, new SelectListItem { Value = "11", Text = "Total Después Financiamiento" } }, new { @class = "form-control", @Name = "tipoCuenta" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Valor</label>
+            <div class="col-md-10">
+                @Html.DropDownList(model2.valor.ToString(), new List<SelectListItem> { new SelectListItem { Value = "0", Text = "Suma" }, new SelectListItem { Value = "1", Text = "Resta" }, new SelectListItem { Value = "2", Text = "Nada" } }, new { @class = "form-control", @id = "valor", @Name= "valor" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2"> Estado</label>
+            <div class="col-md-10">
+                @Html.DropDownList(model2.estado.ToString(), new List<SelectListItem> { new SelectListItem { Value = "0", Text = "Activo" }, new SelectListItem { Value = "1", Text = "Inactivo" } }, new { @class = "form-control", @Name="estado" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    }
+    <table class="table table-bordered">
+        <tr class="info">
+            <th nowrap="nowrap">#</th>
+            <th nowrap="nowrap">Cuenta</th>
+            <th nowrap="nowrap">Tipo de Cuenta</th>
+            <th nowrap="nowrap">Suma/Resta</th>
+            <th nowrap="nowrap">Activo</th>
+            <th nowrap="nowrap">Acciones</th>
+        </tr>
+
+        @foreach (var detalle in Model)
+        {
+
+            {
+                numCapa = numCapa + 1;
+                ncapa = "ncapa_" + numCapa;
+                btndr = "btnDR_" + numCapa;
+            }
+            <script>
+                $(document).ready(function () {
+                    $("#@btndr").click(function () {
+                        $("#@ncapa").toggle();
+                    });
+                });
+
+            </script>
+
+
+            <tr>
+                <td align="center">@i.ToString()</td>
+
+                <td nowrap="nowrap"> @db.Cuenta.Find(@detalle.cuentaID).Codigo @db.Cuenta.Find(@detalle.cuentaID).Nombre</td>
+                <td nowrap="nowrap">
+                    @try
+                    {
+                        switch (int.Parse(@detalle.tipoCuenta))
+                        {
+                            case 0:
+                                Html.Raw("Encabezado");
+                                break;
+                            case 1:
+                                Html.Raw("Total");
+                                break;
+                            case 2:
+                                Html.Raw("Total Ingresos");
+                                break;
+                            case 3:
+                                Html.Raw("Total Egresos");
+                                break;
+                            case 4:
+                                Html.Raw("Normal");
+                                break;
+                            case 5:
+                                Html.Raw("Flujo Neto");
+                                break;
+
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                </td>
+                <td align="right" nowrap="nowrap">@if (@detalle.valor == 0) { @Html.Raw("+").ToString(); } else { @Html.Raw("-").ToString(); }</td>
+                <td align="center" nowrap="nowrap">@if (@detalle.estado == 0) { @Html.Raw("Sí"); } else { @Html.Raw("No"); }</td>
+                <td><button id="@btndr" class="btn btn-primary">Editar</button></td>
+
+            </tr>
+            {
+                i++;
+            }
+
+
+
+            using (Html.BeginForm("EditarLinea", "Informe", FormMethod.Post, new { encType = "multipart/form-data", name = "myform" }))
+            {
+                <tr id="@ncapa" style="display:none;">
+                    <td>  @Html.TextBox("id", detalle.ID, new { @class = "form-control"  })   </td>
+                    <td align="center">
+                        @Html.DropDownList("cuentaID", null, htmlAttributes: new { @class = "form-control" })
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                @Html.DropDownList(model2.tipoCuenta.ToString(), new List<SelectListItem> { new SelectListItem { Value = "0", Text = "Encabezado" }, new SelectListItem { Value = "1", Text = "Total" }, new SelectListItem { Value = "2", Text = "Total Ingresos" }, new SelectListItem { Value = "3", Text = "Total Egresos" }, new SelectListItem { Value = "4", Text = "Normal" }, new SelectListItem { Value = "5", Text = "Flujo Neto" }, new SelectListItem { Value = "6", Text = "Total Gastos Personal" }, new SelectListItem { Value = "7", Text = "Saldo Antes del Financimiento" }, new SelectListItem { Value = "8", Text = "Financiamiento Encabezado" }, new SelectListItem { Value = "9", Text = "Financiamiento normal" }, new SelectListItem { Value = "10", Text = "Total Financiamiento" }, new SelectListItem { Value = "11", Text = "Total Después Financiamiento" } }, new { @class = "form-control", @Name = "tipoCuenta" })
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                         @Html.DropDownList(detalle.valor.ToString(), new List<SelectListItem> { new SelectListItem { Value = "0", Text = "+" }, new SelectListItem { Value = "1", Text = "-" } }, new { @class = "form-control", @Name="valor" })                      
+                    </td>
+                    <td>
+                        @Html.DropDownList(detalle.estado.ToString(), new List<SelectListItem> { new SelectListItem { Value = "0", Text = "Si" }, new SelectListItem { Value = "1", Text = "No" } }, new { @class = "form-control", @Name="estado" })
+                    </td>
+                    <td>
+                        <input type="submit" name="SaveButton" value="Guardar" class="btn-success" />
+                    </td>
+                </tr>
+
+            }
+
+        }
+
+    </table>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+﻿@{
+    Layout = null;
+   Response.HeaderEncoding = System.Text.Encoding.UTF8;
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "text/csv";
+    Response.Charset = "UTF-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=" + "EERR Proyectos" + DateTime.Now + ".csv");
+    Session["textoCSVLineaPro"] = "";
+}
+Centro de Costos SAG | Número de Cuenta SAG | Monto | Glosa | Mes | Año
+@ViewBag.Texto

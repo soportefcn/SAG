@@ -1,0 +1,67 @@
+﻿@model IEnumerable<SAG2.Models.ProgramaAnualAuditorias>
+@{
+    ViewBag.Title = "Auditorías / Programa Anual";
+}
+<div class="permisos" style="width: 800px;">
+<h2 align="center">Programa Anual de Auditorías Administrativas y Contables</h2>
+<input type="button" value="Programar nueva auditoria" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ProgramaAnualAuditorias/Create';" class="btn btn-primary" />
+<p>Auditor: <strong>@ViewBag.Auditor</strong></p>
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>
+            Proyecto
+        </th>
+        <th>
+            Aud. N°
+        </th>
+        <th>
+            Fecha Estimada
+        </th>
+        <th>
+            Fecha Informe
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Proyecto.Nombre)
+        </td>
+        <td align="center">
+            @try
+            {
+                @Html.Raw(@item.Informe.ID.ToString());
+            }
+            catch(Exception)
+            {}
+        </td>
+        <td align="center">
+            @item.FechaProgramada.ToShortDateString()
+        </td>
+        <td align="center">
+            @if (item.FechaReal != null && item.FechaReal.Value != null)
+            {
+                @item.FechaReal.Value;
+            }
+            else
+            { 
+                @Html.Raw("Informe no realizado.");
+            }
+        </td>
+        <td style="width: 50px;">
+            <input type="button" value="Completar informe" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Auditorias/Informe?Programa=@item.ID';" class="btn btn-info" />
+        </td>
+        <td style="width: 40px;">
+        @if (@item.Informe != null)
+        {
+            <input type="button" value="Ver reporte" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Auditorias/ReporteIndividual?Informe=@item.Informe.ID&Programa=@item.ID';" class="btn btn-default" />
+        }
+        </td>
+    </tr>
+}
+
+</table>
+
+</div>

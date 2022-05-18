@@ -1,0 +1,123 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    var MontoTotal = 0;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Informe de Ingresos</title>
+    <style type="text/css" media="all">
+        body 
+        {
+            font-size: 14pt;
+            font-family: Times New Roman; 
+        }
+        .display-label 
+        {
+            float: left;
+            width: 200px;
+        }
+        
+        .display-field, .display-label 
+        {
+            margin-bottom: 10px;
+        }
+        
+        legend 
+        {
+            text-align: center;
+            font-size: 20pt;
+            letter-spacing: 1px;
+            text-decoration: underline;
+        }
+        
+        .firma
+        {
+            float: right;
+            width: 250px; 
+            text-align: right;
+            margin-top: 10px;
+        }
+        
+        fieldset.parent
+        {
+            border: 0;
+        }
+        
+        .membrete-izq
+        {
+            float: left;
+            text-align: center;
+            clear: left;
+        }
+        
+        .membrete-der 
+        {
+            float: right;
+            text-align: right;
+            clear: right;
+        }
+        
+        table 
+        {
+            font-size: 10pt;    
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="membrete-izq">
+            CODENI
+        </div>
+        <div class="membrete-der">
+            Informe de Ingresos
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <fieldset class="parent">
+            <legend>Informe de Ingresos</legend>
+            <br />
+            <br />
+            <table align="center" width="100%" border="1" cellpadding="2" cellspacing="0">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Nº Comprobante</th>
+                    <th>Cuenta Contable</th>
+                    <th>Descripción</th>
+                    <th>Nº Cheque</th>
+                    <th>Cta. Cte.</th>
+                    <th>Monto $</th>
+                </tr>
+            @foreach (var item in Model)
+            {
+                MontoTotal += @item.Monto_Ingresos;
+                 <tr>
+                    <td align="center">@item.Fecha.Value.ToShortDateString()</td>
+                    <td align="center">@item.NumeroComprobante</td>
+                    <td>@item.PlanDeCuenta.NombreLista</td>
+                    <td>@item.Descripcion</td>
+                    <td align="center">@item.Cheque</td>
+                    <td>@item.CuentaCorriente.Numero</td>
+                    <td align="right">$@item.Monto_Ingresos.ToString("##.#")</td>
+                </tr>
+            }
+            </table>
+            <br />
+            <br />
+            <div class="firma">
+            Total ingresos: <strong>$@MontoTotal</strong>
+            </div>
+        </fieldset>
+    </div>
+    *** Fin Informe ***
+    <script type="text/javascript">
+        print();
+        window.close();
+        self.close();
+    </script>
+</body>
+</html>

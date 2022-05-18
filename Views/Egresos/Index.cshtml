@@ -1,0 +1,90 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Egresos";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+@using (Html.BeginForm())
+{
+    <table>
+     <tr>
+         <td>Periodo</td>
+         <td> <input type="text" class="form-control" placeholder="Busqueda Periodo" id="busqueda" name="busqueda" style="width: 300px;"></td>
+         <td>N° Egreso</td>
+         <td> <input type="text" class="form-control" placeholder="Busqueda N° Egreso" id="bEgreso" name="begreso" style="width: 300px;"></td>
+     </tr>
+        <tr>
+            <td>Beneficiario</td>
+            <td> <input type="text" class="form-control" placeholder="Busqueda Beneficiario" id="bbene" name="bbene" style="width: 300px;"></td>
+
+        </tr>
+        <tr>
+        <td> <input type="submit" value="Buscar" class="btn btn-success" /></td>
+           </tr>
+    
+        </table>
+    
+ <div id="contenido_popup">
+   <table class="table table-bordered table-hover">
+    <thead class="fixedHeader">
+       <tr class="info">
+        <th style="width: 33px;" class="controles"></th>
+        <th style="width: 40px;">Nº</th>
+        <th style="width: 94px;">Fecha</th>
+        <th style="width: 82px;">Cta. Cte.</th>
+        <th style="width: 90px;">Monto $</th>
+        <!--<th>Cuenta</th>-->
+        <th style="width: 92px;">Nº Cheque</th>
+       <th style="width: 92px;">Beneficiario</th>
+        <th style="width: 300px;">Glosa</th>
+    </tr>
+  </thead>
+        <tbody class="scrollContent">  
+@foreach (var item in Model)
+{
+    var style = "";
+    if (item.Nulo != null && item.Nulo.Equals("S"))
+    {
+        style = " style=\"text-decoration: line-through;\"";
+    }
+    
+    <tr@Html.Raw(style)>
+        <td style="width: 33px;">
+            <a href="@Url.Action("Edit", "Egresos", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td style="width: 40px;" align="center">
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td style="width: 94px;">
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td style="width: 82px;">
+                @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+            </td>
+            <td style="width: 90px;"align="right">
+                <strong>
+                $@item.Monto_Egresos.ToString("#,##0")
+                </strong>
+            </td>
+            <!--
+                <td>
+                @Html.DisplayFor(modelItem => item.Cuenta.NombreLista)
+            </td>
+                -->
+            <td style="width: 94px;" align="right">
+                @Html.DisplayFor(modelItem => item.Cheque)
+            </td>
+           <td style="width: 94px;" align="right">
+                @Html.DisplayFor(modelItem => item.Beneficiario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+        
+    </tr>
+}
+            </tbody>
+    </table>
+
+</div>
+}

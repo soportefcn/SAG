@@ -1,0 +1,108 @@
+﻿@model SAG2.Models.BienModInventario
+@{
+    ViewBag.Title = "Detalle Bien ID" + @Model.ID;
+}
+
+<div id="printablediv">
+    <h2>Detalle Bien ID @Model.ID</h2>
+    <table style="width: 100%">
+        <tr>
+            <td>Familia</td>
+            <td>@Html.DropDownListFor(model => model.FamiliaID, new SelectList(ViewBag.listadofamilia, "Value", "Text"), new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Sub Familia</td>
+            <td>@Html.DropDownListFor(model => model.SubFamiliaID, new SelectList(ViewBag.listadosubfamilia, "Value", "Text"), new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Detalle</td>
+            <td> @Html.TextBoxFor(model => model.Detalle, new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Monto</td>
+            <td>@Html.TextBoxFor(model => model.Monto, new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Ubicacion</td>
+            <td>@Html.TextBoxFor(model => model.Ubicacion, new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Proyecto</td>
+            <td>@Html.DropDownListFor(model => model.ProyectoID, new SelectList(ViewBag.listadoproyecto, "Value", "Text"), new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Periodo</td>
+            <td>@Html.TextBoxFor(model => model.Periodo, new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Mes</td>
+            <td>@Html.TextBoxFor(model => model.Mes, new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Egreso</td>
+            <td>@Html.TextBoxFor(model => model.EgresoID, new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Estado</td>
+            <td>@Html.DropDownListFor(model => model.EstadoID, new SelectList(ViewBag.listadoestado, "Value", "Text"), new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Condición</td>
+            <td>@Html.DropDownListFor(model => model.CondicionID, new SelectList(ViewBag.listacondicion, "Value", "Text"), new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Origen</td>
+            <td>@Html.DropDownListFor(model => model.OrigenID, new SelectList(ViewBag.listaorigen, "Value", "Text"), new { @class = "form-control" })</td>
+        </tr>
+        <tr>
+            <td>Autorización</td>
+            <td>
+                @{
+                    switch(@Model.AutorizacionAuditor)
+                    {
+                            case 1:
+                                <input type="text" value="Autorizado" class="form-control" />
+                                break;
+                            case 2:
+                                <input type="text" value="Anulado" class="form-control" />
+                                break;
+                            default:
+                                break;
+                    }
+                }
+            </td>
+        </tr>
+        <tr>
+            <td>Comentario Auditor</td>
+            <td>@Html.TextBoxFor(model => model.ComentarioAuditor, new { @class = "form-control" })</td>
+        </tr>
+    </table>
+</div>
+<div class="form-group">
+    <div class="col-sm-10 text-center">
+        <a href="#" onclick="javascript:printDiv('printablediv')" class="btn btn-default">Imprimir</a>
+            <a href="@Url.Action("Index","BienReportes")" class="btn btn-default">Volver</a>
+    </div>
+</div>
+                
+<script type="text/javascript">
+    function printDiv(divID) {
+        //Get the HTML of div
+        var divElements = document.getElementById(divID).innerHTML;
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML =
+            "<html><head><title></title></head><body>" +
+            divElements + "</body>";
+
+        //Print Page
+        window.print();
+
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;
+
+
+    }
+</script>

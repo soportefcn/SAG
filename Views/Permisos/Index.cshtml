@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Permisos";
+    List<SAG2.Models.Seccion> Secciones_Mantenedores = (List<SAG2.Models.Seccion>)@ViewBag.Secciones_Mantenedores;
+    List<SAG2.Models.Seccion> Secciones_Auditorias = (List<SAG2.Models.Seccion>)@ViewBag.Secciones_Auditorias;
+    List<SAG2.Models.Seccion> Secciones_Rendicion = (List<SAG2.Models.Seccion>)@ViewBag.Secciones_Rendicion;
+    List<SAG2.Models.TipoRol> TiposRol = (List<SAG2.Models.TipoRol>)@ViewBag.TiposRol;
+    SAG2.Controllers.PermisosController Permisos = new SAG2.Controllers.PermisosController();
+}
+<div class="permisos">
+@using (Html.BeginForm())
+{
+<h1>Asignación de permisos</h1>
+<input type="submit" value="Guardar" class="input" />
+<h2>Mantenedores</h2>
+    <table align="center" cellpadding="5" cellspacing="0" style="width: 100%;">
+    <th align="left" style="width: 25%;">Permisos</th>
+    <th style="width: 25%;">@Html.Raw("Usuario")</th>
+    <th style="width: 25%;">@Html.Raw("Supervisor")</th>
+    <th style="width: 25%;">@Html.Raw("Administrador")</th>
+    <tbody>
+    @foreach (SAG2.Models.Seccion Seccion in Secciones_Mantenedores)
+    {
+        <tr>
+            <th align="left">@Html.Raw(Seccion.Nombre)</th>
+            @{
+            bool selected = Permisos.verificarPermiso(Seccion.ID, "U");
+            string identificador = Seccion.ID.ToString() + "_" + "U";
+            <td align="center"><input type="checkbox" name="@identificador" id="@identificador" value="@identificador" @if (selected) { @Html.Raw("checked=\"checked\""); } /></td>
+            }
+            @{
+            selected = Permisos.verificarPermiso(Seccion.ID, "S");
+            identificador = Seccion.ID.ToString() + "_" + "S";
+            <td align="center"><input type="checkbox" name="@identificador" id="@identificador" value="@identificador" @if (selected) { @Html.Raw("checked=\"checked\""); } /></td>
+            }
+            @{
+            selected = Permisos.verificarPermiso(Seccion.ID, "A");
+            identificador = Seccion.ID.ToString() + "_" + "A";
+            <td align="center"><input type="checkbox" name="@identificador" id="@identificador" value="@identificador" @if (selected) { @Html.Raw("checked=\"checked\""); } /></td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<input type="submit" value="Guardar" class="input" />
+}
+</div>

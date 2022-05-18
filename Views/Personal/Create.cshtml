@@ -1,0 +1,248 @@
+﻿@model SAG2.Models.Persona
+@{
+    ViewBag.Title = "Ingresar registro";
+    var comunaID = ViewBag.ComunaID;
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox" style="width: 900px;">
+    <h3>Personal</h3>
+    <div id="controles">
+      
+    </div>
+    <div id="contenido" class="personal" style="float: none; width: auto;">
+@using (Html.BeginForm())
+{
+    @Html.Raw(@ViewBag.Mensaje)
+    <fieldset>
+      
+
+
+   <div class="panel panel-default" style="width: 860px;">
+  <div class="panel-heading"><h3>Dato de personal</h3></div>
+  <div class="panel-body">
+    <div class="bs-example bs-example-tabs">
+    <ul role="tablist" class="nav nav-tabs" id="myTab">
+      <li class="active" role="presentation"><a aria-expanded="true" aria-controls="home" data-toggle="tab" role="tab" id="home-tab" href="#home">Datos Personales</a></li>
+      <li role="presentation" class=""><a aria-controls="profile" data-toggle="tab" id="profile-tab" role="tab" href="#profile" aria-expanded="false">Datos Contacto</a></li>
+       <li role="presentation" class=""><a aria-controls="dlaboral" data-toggle="tab" id="dlaboral-tab" role="tab" href="#dlaboral" aria-expanded="false">Datos Laborales</a></li>
+     
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div aria-labelledby="home-tab" id="home" class="tab-pane fade active in" role="tabpanel">
+          <br />
+          <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 90px; margin-left: 7px;">
+                @Html.LabelFor(model => model.Rut)
+            </div>
+            <div class="form-group">
+               @Html.TextBoxFor(model => model.Rut, new { @class = "form-control", @style="width: 100px;",  @maxlength = "8"})-@Html.TextBox("DVBuscar", null, new { @class = "form-control", @maxlength = "1",  @style="width: 40px;" })
+            </div>
+            </div>
+            <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 60px; margin-left: 7px;">
+                @Html.LabelFor(model => model.Nombres)
+             </div>
+             <div class="form-group">   
+                @Html.TextBoxFor(model => model.Nombres, new { @class = "form-control"})
+            </div></div>
+           <div class ="form-group form-inline">
+                <div class="form-group" style="margin-right: 49px; margin-left: 7px;">
+                    @Html.LabelFor(model => model.ApellidoParterno, "Ap. paterno")
+                </div>
+                <div class="form-group" style="margin-right: 13px;">  
+                    @Html.TextBoxFor(model => model.ApellidoParterno, new {  @class = "form-control" })
+                </div>
+                <div class="form-group" style="margin-right: 13px;">  
+                   @Html.LabelFor(model => model.ApellidoMaterno, "Ap. materno")
+                </div>
+               <div class="form-group" style="margin-right: 13px;">  
+                    @Html.TextBoxFor(model => model.ApellidoMaterno, new {@class = "form-control"})
+                </div>
+               </div>
+          <div class ="form-group form-inline">
+                <div class="form-group" style="margin-right: 13px; margin-left: 7px;">
+                    @Html.LabelFor(model => model.FechaNacimiento, "Fecha nacimiento")
+                   </div>
+                <div class="form-group"> 
+             @Html.TextBoxFor(model => model.FechaNacimiento, new { @class = "calendario form-control"})
+          </div></div>
+                
+            <div class ="form-group form-inline">
+                <div class="form-group" style="margin-right: 50px; margin-left: 7px;">
+                    @Html.LabelFor(model => model.EstadoCivil, "Estado civil")
+                </div>
+                <div class="form-group"> 
+                <select id="EstadoCivil" name="EstadoCivil" class="form-control">
+                <option value="S">Soltero</option>
+                <option value="C">Casado</option>
+                <option value="D">Separado</option>
+                <option value="V">Viudo</option>
+            </select>
+       </div></div> 
+                <div class ="form-group form-inline">
+                <div class="form-group" style="margin-right: 85px; margin-left: 7px;">
+                    @Html.LabelFor(model => model.Sexo)
+                </div>
+                <div class="form-group"> 
+            <select id="Sexo" name="Sexo" class="form-control">
+                <option value="F">Femenino</option>
+                <option value="M">Masculino</option>
+            </select>
+       </div></div>
+      </div>
+      <div aria-labelledby="profile-tab" id="profile" class="tab-pane fade" role="tabpanel">
+        <br />
+             <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 45px; margin-left: 7px;">
+                <label>Calle</label>
+            </div>
+            <div class="form-group" style="margin-right: 50px;">
+                @Html.TextBoxFor(model => model.Direccion.Calle, new { @tabindex = "1", @class = "form-control" })
+            </div>
+           <div class="form-group" style="margin-right: 15px;">
+                <label>Número</label>
+            </div>
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.TextBoxFor(model => model.Direccion.Numero, new { @tabindex = "2", @class = "form-control", @style="width: 80px;" })
+            </div>
+            <div class="form-group" style="margin-right: 15px;">
+            <label>Depto</label>
+                </div>
+            <div class="form-group">
+        @Html.TextBoxFor(model => model.Direccion.Depto, new { @tabindex = "3", @class = "form-control" })
+      </div></div>
+           <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 35px; margin-left: 7px;">
+                @Html.Label("Región")
+            </div>
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.DropDownList("RegionID", null, new { @tabindex = "4", @comuna = comunaID, @class = "form-control" })
+            </div>
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.Label("Comuna")
+            </div>
+            <div class="form-group" >
+            <select name="ComunaID" id="ComunaID" tabindex="5" class="form-control">
+                <option>Seleccione región</option>
+            </select>
+            </div>
+        </div>
+          <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 10px; margin-left: 7px;">
+                @Html.LabelFor(model => model.Celular, "Tél. celular")
+                </div>
+            <div class="form-group" style="margin-right: 50px;">
+                @Html.TextBoxFor(model => model.Celular, new { @tabindex = "6", @class = "form-control" })
+            </div>
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.LabelFor(model => model.Fijo, "Tél. fijo")
+            </div>
+            <div class="form-group" >
+                @Html.TextBoxFor(model => model.Fijo, new { @tabindex = "7", @class = "form-control" })
+          </div>
+              </div>
+        <div class ="form-group form-inline">
+         <div class="form-group" style="margin-right: 35px; margin-left: 7px;">
+                @Html.LabelFor(model => model.CorreoElectronico, "Correo")
+        </div>
+            <div class="form-group" >
+       @Html.TextBoxFor(model => model.CorreoElectronico, new { @tabindex = "8", @class = "form-control"  })
+
+      </div></div>
+       </div>
+       <div aria-labelledby="dlaboral-tab" id="dlaboral" class="tab-pane fade" role="tabpanel">
+       <br />
+           <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 5px; margin-left: 7px;">
+                @Html.LabelFor(model => model.FechaIngresoSistema, "Fec. ing. servicio")
+               </div>
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.FechaIngresoSistema, new { @class = "calendario form-control", @tabindex = "1" })
+            </div></div>
+            <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 23px; margin-left: 7px;">
+                @Html.LabelFor(model => model.TipoPersonalID, "Tipo contrato")
+            </div>
+            <div class="form-group">
+                @Html.DropDownList("TipoPersonalID", null, new {  @class = "form-control", @tabindex = "2" })
+            </div></div>
+             <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 45px; margin-left: 7px;">  
+                @Html.LabelFor(model => model.ProfesionID, "Profesión")
+            </div>
+            <div class="form-group">
+                @Html.DropDownList("ProfesionID", null, new {  @class = "form-control", @tabindex = "3" })
+                </div></div>
+           <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 65px; margin-left: 7px;"> 
+                 @Html.Label("Cargo")</div>
+               <div class="form-group">
+                @Html.DropDownList("CargoID", null, new {  @class = "form-control", @tabindex = "4" })
+                  </div></div>
+           <label>Datos remuneraciones</label>
+            <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 5px; margin-left: 7px;">
+                @Html.LabelFor(model => model.SueldoBase, "Sueldo base")
+             <br />
+             @Html.TextBoxFor(model => model.SueldoBase, new { @class = "form-control",  @tabindex = "5", @style="width: 110px;" })
+            </div>
+          
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.LabelFor(model => model.BonoLocomocion, "Bono locomoción")
+            <br />
+            @Html.TextBoxFor(model => model.BonoLocomocion, new { @class = "form-control",  @tabindex = "6", @style="width: 110px;" })
+            </div>
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.LabelFor(model => model.BonoColacion, "Bono colación")
+                <br />
+                @Html.TextBoxFor(model => model.BonoColacion, new { @class = "form-control",  @tabindex = "7", @style="width: 110px;" })
+          </div>
+            <div class="form-group" style="margin-right: 15px;">      
+                 @Html.LabelFor(model => model.BonoAsignacion, "Bono asignación")
+             <br />
+                @Html.TextBoxFor(model => model.BonoAsignacion, new {  @class = "form-control", @tabindex = "8", @style="width: 110px;" })
+            </div>
+        <div class="form-group" style="margin-right: 15px;"> 
+            @Html.LabelFor(model => model.BonoReemplazo, "Bono reemplazo")<br />
+
+            @Html.TextBoxFor(model => model.BonoReemplazo, new {  @class = "form-control", @tabindex = "9", @style="width: 110px;" })
+              </div>
+        <div class="form-group" style="margin-right: 15px;">  
+        @Html.LabelFor(model => model.Otros)
+            <br />
+        @Html.TextBoxFor(model => model.Otros, new { @class = "form-control",  @tabindex = "10", @style="width: 110px;" })</div></div>
+      
+
+      
+    
+  
+        </div>
+    </div>
+        </div></div>
+  <div class="panel-footer">
+	<div  style ="width: 500px ; display:inline-block">
+          <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Personal/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+           
+        </div>
+         <div style="float :right;display:inline-block">
+	     <input type="submit" value="Guardar" id="submit" class="validarPersona btn btn-primary" />
+	</div>
+
+  </div>
+</div>
+    
+
+ @if (TempData["Message"] != null)
+{
+    @Html.Raw("<script>alert('"+TempData["Message"]+".');</script>");
+}
+    </fieldset>
+}</div>
+</div>

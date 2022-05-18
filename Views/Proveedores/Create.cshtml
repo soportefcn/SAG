@@ -1,0 +1,145 @@
+﻿@model SAG2.Models.Proveedor
+@{
+    ViewBag.Title = "Ingresar registro";
+    var comunaID = ViewBag.ComunaID;
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox">
+    <h3>Proveedores</h3>
+    <div id="controles">
+        
+    </div>
+    <div id="contenido" class="proveedores">
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+
+    <div class="panel panel-default">
+    <div class="panel-heading"><h3><b>Datos del Proveedor</b></h3></div>
+    <div class="panel-body">
+           <div class="form-group form-inline" >
+        <div class="form-group" style="margin-right: 45px;">
+                        @Html.LabelFor(model => model.Rut)
+                    </div>
+                    <div class="form-group" style="margin-right: 145px;">
+                        @Html.TextBox("Rut", null, new { @class="form-control", @maxlength = "8", @style="width: 100px;" })-@Html.TextBox("DVBuscar", null, new { @class="form-control", @style="width: 50px;",  @maxlength = "1" })
+                       
+                    </div>
+        <div class="form-group" style="margin-right: 20px;">
+            @Html.LabelFor(model => model.Nombre)
+        </div>
+                    <div class="form-group">
+                        @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control" })
+                    </div></div>
+
+         <div class="form-group form-inline" >
+                <div class="form-group" style="margin-right: 25px;">
+                        @Html.Label("Dirección")
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBox("N", null, new { @class="form-control", @style = "width: 0; border: 0 solid White;", @disabled = "disabled" }) 
+                    </div>
+             </div>
+
+        <div class="form-group form-inline" >
+            <div class="form-group" style="margin-right: 35px;">
+                    @Html.Label("Calle")
+                    </div>
+                    <div class="form-group" style="margin-right: 50px;">
+                        @Html.TextBoxFor(model => model.Direccion.Calle, new { @class = "form-control" }) 
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Número")
+                    </div>
+                    <div class="form-group" style="margin-right: 5px;">
+                        @Html.TextBoxFor(model => model.Direccion.Numero, new { @class = "form-control", @style="width: 80px;" }) 
+                    </div>
+                    <div class="form-group" style="margin-right: 10px;">
+                        @Html.Label("Departamento")
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBoxFor(model => model.Direccion.Depto, new { @class = "form-control" }) 
+                    </div></div>
+                    
+                    <div class="form-group form-inline" >
+                        <div class="form-group" style="margin-right: 25px;">
+                            @Html.Label("Región")
+                        </div>
+                        <div class="form-group" style="margin-right: 15px;">
+                         @Html.DropDownList("RegionID", null, new { @class="form-control", @comuna = comunaID })
+                        </div>
+                        <div class="form-group">
+                             @Html.Label("Comuna")
+                        </div>
+                    <div class="form-group">
+                        <select name="ComunaID" id="ComunaID" tabindex="10" class="form-control">
+                            <option>Seleccione región</option>
+                        </select>
+                    </div></div>
+              
+                   <div class="form-group form-inline" >
+                        <div class="form-group" style="margin-right: 5px;">
+                        @Html.LabelFor(model => model.Fono)
+                  <br />
+                        @Html.TextBoxFor(model => model.Fono, new { @class = "form-control", @style="width: 100px;" })
+                        @Html.ValidationMessageFor(model => model.Fono)
+                    </div>
+                    <div class="form-group" style="margin-right: 5px;">
+                        @Html.LabelFor(model => model.Fax)
+                    <br />
+                        @Html.TextBoxFor(model => model.Fax, new { @class = "form-control", @style="width: 100px;" })
+                        @Html.ValidationMessageFor(model => model.Fax)
+                    </div>
+                    <div class="form-group" style="margin-right: 5px;">
+                        @Html.LabelFor(model => model.CorreoElectronico, "Correo")
+                   <br />
+                        @Html.TextBoxFor(model => model.CorreoElectronico, new { @class = "form-control", @style="width: 250px;" })
+                        @Html.ValidationMessageFor(model => model.CorreoElectronico)
+                    </div>
+                  
+                    <div class="form-group" style="margin-right: 45px;">
+                        @Html.LabelFor(model => model.PaginaWeb, "Página web")
+                    <br />
+                        @Html.TextBoxFor(model => model.PaginaWeb, new { @class = "form-control", @style="width: 280px;" })
+                    </div></div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PersonaContacto, "Contacto")
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.PersonaContacto, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PersonaContacto)
+                    </div>
+    </div>
+    <div class="panel-footer">
+	    <div  style ="width: 500px ; display:inline-block">
+             <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+           <a class="btn btn-default" href="/SAG_5_desarrollo/Proveedores/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+            
+        </div>
+         <div style="float :right;display:inline-block">
+	       <input class="btn btn-primary" type="submit" value="Guardar" id="submit" />
+	    </div>
+  </div>
+</div>
+       @if (TempData["Message"] != null)
+{
+    @Html.Raw("<script>alert('"+TempData["Message"]+".');</script>");
+}
+
+                  
+        
+     
+        </fieldset>
+}
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Apertura de mes";
+}
+<div id="SAGBox">
+    <h3>@ViewBag.Title</h3>
+    <div id="controles">
+        <p>@Html.ActionLink("APERTURA", "AperturaMes")</p>
+        <p>@Html.ActionLink("CIERRE", "CierreMes")</p>
+    </div>
+    <div id="contenido">
+    @using (Html.BeginForm())
+{
+    <fieldset>
+        Al abrir el siguiente período cerrará automáticamente el período actual.
+        <h4 style="text-align: center;">Periodo a abrir</h4>
+        <table align="center" style="width: 30%;" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td style="width: 50%;" align="right">Período</td>
+                    <td>@Html.Raw(Session["periodo_siguiente"].ToString())</td>
+                </tr>
+                <tr>
+                    <td align="right">Mes</td>
+                    <td>@Html.Raw(Session["mes_siguiente"].ToString())</td>
+                </tr>
+            </tbody>
+        </table>
+        <h4 style="text-align: center; margin-top: 20px;">Periodo que se cerrará automáticamente</h4>
+        <table align="center" style="width: 30%;" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td style="width: 50%;" align="right">Período</td>
+                    <td>@Html.Raw(Session["Periodo"].ToString())</td>
+                </tr>
+                <tr>
+                    <td align="right">Mes</td>
+                    <td>@Html.Raw(Session["Mes"].ToString())</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+        <input type="submit" value="Abrir período" />
+    </p>
+    </fieldset>
+}
+    </div>
+</div>

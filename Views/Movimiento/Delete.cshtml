@@ -1,0 +1,16 @@
+﻿@model SAG2.Models.Movimiento
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2></h2>
+
+<h3>Realmente desea borrar este Movimiento?</h3>
+
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("No", "Index", new { Mostrar = Model.TipoComprobante.Nombre + "s" })
+    </p>
+}

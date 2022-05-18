@@ -1,0 +1,163 @@
+﻿@model IEnumerable<SAG2.Models.IntervencionDetalle>
+@using SAG2.Models;
+@{
+    ViewBag.Title = "Detalle Importación";
+    int p1;
+    int p2 = 0;
+}
+@using (Html.BeginForm("GuardarDetalles", "IntervencionDetalle", FormMethod.Post))
+{
+    @Html.ValidationSummary(true)
+
+    for (int i = 0; i < Model.ToList().Count; i++)
+    {
+        @Html.HiddenFor(model => Model.ToList()[i].ProyectoID)
+        @Html.HiddenFor(model => Model.ToList()[i].Anio)
+        @Html.HiddenFor(model => Model.ToList()[i].Mes)
+        @Html.HiddenFor(model => Model.ToList()[i].CodigoSename)
+        @Html.HiddenFor(model => Model.ToList()[i].ApellidoPaterno)
+        @Html.HiddenFor(model => Model.ToList()[i].ApellidoMaterno)
+        @Html.HiddenFor(model => Model.ToList()[i].Nombre)
+        @Html.HiddenFor(model => Model.ToList()[i].DiasAtencion)
+        @Html.HiddenFor(model => Model.ToList()[i].DiasAusente)
+        @Html.HiddenFor(model => Model.ToList()[i].NumInter)
+        @Html.HiddenFor(model => Model.ToList()[i].NumInterOtro)
+        @Html.HiddenFor(model => Model.ToList()[i].ResumenID)
+        @Html.HiddenFor(model => Model.ToList()[i].Tipo)
+        @Html.HiddenFor(model => Model.ToList()[i].Bis)
+        @Html.HiddenFor(model => Model.ToList()[i].Uss)
+        @Html.HiddenFor(model => Model.ToList()[i].UssQ)
+        @Html.HiddenFor(model => Model.ToList()[i].TotalIntervencionesAPagar)
+        @Html.HiddenFor(model => Model.ToList()[i].TotalPagar)
+        @Html.HiddenFor(model => Model.ToList()[i].TotalPagarBis)
+        @Html.HiddenFor(model => Model.ToList()[i].TotalPagarNoBis)
+        @Html.HiddenFor(model => Model.ToList()[i].FechaIngreso)
+        @Html.HiddenFor(model => Model.ToList()[i].Proyecto)
+    }
+
+
+
+    <div class="panel-heading">
+        <h3>
+            DETALLE IMPORTACIÓN
+            @if (Model.Count() > 0)
+            {
+                IntervencionDetalle inter = Model.First();
+                string text = " - " + inter.Proyecto.Nombre + " - " + Model.Count() + " REGISTROS";
+                @text.ToString()
+            }
+        </h3>
+    </div>
+    <div class="panel-body">
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-bordered table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <th style=" width:auto;">Cód. Sename</th>
+                        <th style=" width:auto;">Nombre Completo</th>
+                        <th style=" width:auto;">Dias Atención</th>
+                        <th style=" width:auto;">Dias Ausente</th>
+                        <th style=" width:auto;">N° Inter.</th>
+                        <th style=" width:auto;">N° Inter. Otros</th>
+                        <th style=" width:auto;">Total a pagar</th>
+                        <th style=" width:auto;">80 Bis</th>
+                        <th style=" width:auto;">Total</th>
+                        <th style=" width:auto;">Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string nombre = String.Format("{0} {1} {2}", item.Nombre, item.ApellidoPaterno, item.ApellidoMaterno);
+                        string tipo = "";
+                        if (item.Tipo == 0)
+                        {
+                            tipo = "Medida de Protección";
+                        }
+                        else if (item.Tipo == 2)
+                        {
+                            tipo = "80 Bis";
+                        }
+                        else
+                        {
+                            tipo = "Ambos";
+                        }
+
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.CodigoSename)</td>
+                        <td>@nombre</td>
+                        <td style="text-align:center;">@Html.DisplayFor(modelItem => item.DiasAtencion)</td>
+                        <td style="text-align:center;">@Html.DisplayFor(modelItem => item.DiasAusente)</td>
+                        <td style="text-align:center;">@Html.DisplayFor(modelItem => item.NumInter)</td>
+                        <td style="text-align:center;">@Html.DisplayFor(modelItem => item.NumInterOtro)</td>
+                        <td style="text-align:center;">@Html.DisplayFor(modelItem => item.TotalIntervencionesAPagar)</td>
+                        <td style="text-align:center;">@Html.DisplayFor(modelItem => item.Bis)</td>
+                        @if (item.Tipo == 2)
+                        {
+                            <td style="text-align:center;">$@item.TotalPagarBis.ToString("#,##0")</td>
+                        }
+                        else
+                        {
+                            <td style="text-align:center;">$@item.TotalPagar.ToString("#,##0")</td>
+                        }
+
+                        <td>@tipo</td>
+
+                    </tr>
+
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="warning">No hay Datos que importar</div>
+        }
+
+
+        <div style="align-content:center;">
+            <table class="table table-bordered table-striped ">
+                <tr>
+                    <th style="align-content:center;" colspan="3"><h3>Resumen Montos</h3></th>
+                </tr>
+                <tr>
+                    <th style="align-content:center;"><strong>Tipo</strong></th>
+                    <th style="align-content:center;"><strong>N° Intervenciones</strong></th>
+                    <th style="align-content:center;"><strong>Total</strong></th>
+                </tr>
+                
+                <tr>
+                    <td><strong>Medida de protección</strong></td>
+                    @{
+                        int totalPagar = Model.Sum(a => a.TotalIntervencionesAPagar);
+                        int totBis = Model.Where(d => d.TotalIntervencionesAPagar == 1).Sum(a => a.Bis);
+                        int totmedida = totalPagar - totBis;
+                    }
+                    <td><strong>@totmedida</strong></td>
+                    <td><strong>$ @((@Model.Sum(a => a.TotalPagar) - Model.Sum(a => a.TotalPagarBis)).ToString("#,##0"))</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>80 - bis</strong></td>
+                    <td><strong>@(Model.Where(d => d.TotalIntervencionesAPagar == 1 ).Sum(a => a.Bis))</strong></td>
+                    <td><strong>$ @Model.Sum(a => a.TotalPagarBis).ToString("#,##0")</strong></td>
+         
+
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="panel-footer" style="height:55px;">
+        <div style="float :right;display:inline-block">
+            <input type="submit" value="Guardar" class="btn btn-primary" />
+        </div>
+    </div>
+
+    if (TempData["Message"] != null)
+    {
+        @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+    }
+}

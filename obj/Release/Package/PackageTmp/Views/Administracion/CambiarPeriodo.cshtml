@@ -1,0 +1,83 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    ViewBag.Title = "Cambiar Períodos";
+    int j = 1;
+    var meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+@using (Html.BeginForm())
+{
+<div class="permisos">
+    <h2>@ViewBag.Title</h2>
+    <p>
+        Seleccione Proyecto: @Html.DropDownList("ProyectoID", String.Empty)
+        <input type="submit" value="Aceptar" />
+    </p>
+    <table align="center" class ="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Proyecto</th>
+                <th>Usuario</th>
+                <th>Tipo</th>
+                <th>N° Comp.</th>
+                <th>Monto $</th>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Fecha Comp.</th>
+                <th>Fecha Creación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var item in Model)
+{
+            <tr>
+                <td align="right">@j.ToString("#,##0")</td>
+                <td title="ProyectoID: @item.ProyectoID">@item.Proyecto.NombreLista</td>
+                <td title="UsuarioID/PersonaID: @item.UsuarioID/@try {@item.Usuario.PersonaID}catch(Exception){}">@try {@item.Usuario.Persona.NombreLista}catch(Exception){}</td>
+                <td>@item.TipoComprobante.Nombre</td>
+                <td title="ComprobanteID: @item.ID" align="center">@item.NumeroComprobante</td>
+                <td align="right">@if(item.Monto_Egresos>0){@item.Monto_Egresos.ToString("#,##0")}else{@item.Monto_Ingresos.ToString("#,##0")}</td>
+                <td>
+                    <select name="Periodo_@{@Html.Raw(@item.ID.ToString())}" id="Periodo_@{@Html.Raw(@item.ID.ToString())}">
+                    @for (var i = DateTime.Now.Year - 1; i <= DateTime.Now.Year + 1; i++)
+                    {
+                        <option value="@Html.Raw((@i).ToString())" @if (@item.Periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                    }
+                    </select>
+                </td>
+                <td>
+                    <select name="Mes_@{@Html.Raw(@item.ID.ToString())}" id="Mes_@{@Html.Raw(@item.ID.ToString())}">
+                    @for (var i = 0; i < 12; i++)
+                    {
+                        <option value="@Html.Raw((@i + 1).ToString())"@if (@item.Mes == (i + 1)) {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@meses[@i])</option>
+                    }
+                    </select>
+                </td>
+                <td align="center">@item.Fecha.Value.ToShortDateString()</td>
+                <td align="center">@item.FechaCreacion</td>
+                <td align="center">
+                    <input type="submit" value="Cambiar Periodo" name="CambiarPeriodo" id="CambiarPeriodo" />
+                </td>
+            </tr>
+    j++;
+}
+        </tbody>
+    </table>   
+</div>
+    <p>&nbsp;</p>
+}

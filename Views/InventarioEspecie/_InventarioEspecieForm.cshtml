@@ -1,0 +1,32 @@
+﻿@model SAG2.Models.InventarioEspecie
+
+@Html.HiddenFor(m => m.InventarioID)
+
+
+<div class ="form-group form-inline">
+    <div class="form-group">
+    @Html.LabelFor(m => m.Especie.Nombre)
+        </div>
+    <div class="form-group">
+     @Html.DropDownList("EspecieID",null, new {  @class = "form-control" })
+        </div>
+ </div>
+  <div class ="form-group form-inline">
+    <div class="form-group">
+      @Html.LabelFor(m => m.Cantidad)
+        </div>
+      <div class="form-group">
+     @Html.EditorFor(m=> m.Cantidad)
+          </div>
+
+ </div>
+<div class ="form-group form-inline">
+    <div class="form-group">
+      @Html.LabelFor(m => m.Observacion)
+        </div>
+      <div class="form-group">
+     @Html.EditorFor(m=> m.Observacion)
+          </div>
+
+ </div>
+  <button type="submit"> Submit Comment</button>

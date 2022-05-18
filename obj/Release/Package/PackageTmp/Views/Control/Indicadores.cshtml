@@ -1,0 +1,1203 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Indicadores de Gestión";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div class="inicio" style="width:inherit;">
+<h2>@ViewBag.Title</h2>
+<br />
+<table class="table table-bordered">
+  <tr>
+    <th width="110" align="left">Proyecto</th>
+    <td>@ViewBag.NombreProyecto</td>
+    <th width="100" align="left">Cod. SEN.</th>
+    <td width="50" align="right">@ViewBag.CodigoSename</td>
+    <th width="100" align="left">Cod. Inst.</th>
+    <td width="50" align="right">@ViewBag.CodigoCodeni</td>
+  </tr>
+  <tr>
+    <th align="left">Ubicación</th>
+    <td colspan="5">@ViewBag.Ubicacion</td>
+  </tr>
+  <tr>
+    <th align="left">Auditor CODENI</th>
+    <td colspan="5">@ViewBag.Auditor</td>
+  </tr>
+  <tr>
+    <th align="left">Año</th>
+    <td colspan="5">
+        <select name="Periodo" id="Periodo" class="PeriodoIndicadores">
+             @for (int i = DateTime.Now.Year - 1; i <= DateTime.Now.Year + 1; i++)
+            {
+                <option @if(@ViewBag.Periodo==i){@Html.Raw("selected=\"selected\"");}>@i</option>    
+            }
+        </select>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table class="table table-bordered">
+  <tr>
+    <th width="103">Factor</th>
+    <th width="210">Variable</th>
+    <th width="109">Indicador</th>
+    <th width="81">Estándar</th>
+    <th width="82">Base de Medición</th>
+    <th width="80">1º Trimestre</th>
+    <th width="80">2º Trimestre</th>
+    <th width="80">1º Semestre</th>
+    <th width="80">3º Trimestre</th>
+    <th width="80">4º Trimestre</th>
+    <th width="80">2º Semestre</th>
+    <th width="80">Anual</th>
+  </tr>
+  <tr title="Se obtiene de los antecedentes del proyecto (Nº Plazas Convenio)">
+    @{
+        int indicador_cobertura = @ViewBag.Indicadores.CapCobertura;
+        int cobertura_1 = @ViewBag.Cobertura_1;
+        int cobertura_2 = @ViewBag.Cobertura_2;
+        int cobertura_3 = @ViewBag.Cobertura_3;
+        int cobertura_4 = @ViewBag.Cobertura_4;
+
+        int cobertura_1sem = cobertura_1 + cobertura_2;
+        int cobertura_2sem = cobertura_3 + cobertura_4;
+
+        int cobertura_año = cobertura_1 + cobertura_2 + cobertura_3 + cobertura_4;
+    }
+    <th rowspan="2" align="left" title="">Capacidad</th>
+    <th align="left">Cobertura</th>
+    <td align="center">Nº Niños/Mes</td>
+    <td align="center">@indicador_cobertura.ToString()</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (cobertura_1 / 3 >= indicador_cobertura)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((cobertura_1 / 3).ToString("#,##0"))</td>
+    <td align="center"@if (cobertura_2 / 3 >= indicador_cobertura)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((cobertura_2 / 3).ToString("#,##0"))</td>
+    <td align="center"@if (cobertura_1sem / 6 >= indicador_cobertura)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((cobertura_1sem / 6).ToString("#,##0"))</td>
+    <td align="center"@if (cobertura_3 / 3 >= indicador_cobertura)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((cobertura_3 / 3).ToString("#,##0"))</td>
+    <td align="center"@if (cobertura_4 / 3 >= indicador_cobertura)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((cobertura_4 / 3).ToString("#,##0"))</td>
+    <td align="center"@if (cobertura_2sem / 6 >= indicador_cobertura)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((cobertura_2sem / 6).ToString("#,##0"))</td>
+    <td align="center"@if (cobertura_año / 12 >= indicador_cobertura)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((cobertura_año / 12).ToString("#,##0"))</td>
+  </tr>
+  <tr title="Se Obtiene del SAG: Intervenciones realizadas Trim. / Cobretura X 3">
+    @{
+        decimal indicador_intervenciones = 0;
+        try
+        {
+            indicador_intervenciones = @ViewBag.Indicadores.CapIntervenciones;
+        }
+        catch (Exception)
+        {}
+        
+        int intervenciones_1 = ViewBag.Intervenciones_1;
+        int intervenciones_2 = ViewBag.Intervenciones_2;
+        int intervenciones_3 = ViewBag.Intervenciones_3;
+        int intervenciones_4 = ViewBag.Intervenciones_4;
+        int intervenciones_1sem = intervenciones_1 + intervenciones_2;
+        int intervenciones_2sem = intervenciones_3 + intervenciones_4;
+        int intervenciones_año = intervenciones_1sem + intervenciones_2sem;
+
+        decimal porcentaje_1 = 100;
+        decimal porcentaje_2 = 100;
+        decimal porcentaje_3 = 100;
+        decimal porcentaje_4 = 100;
+        decimal procentaje_1sem = 100;
+        decimal procentaje_2sem = 100;
+        decimal porcentaje_año = 100;
+
+        if (cobertura_1 > 0)
+        {
+            porcentaje_1 = 100 * intervenciones_1 / cobertura_1;
+        }
+
+        if (cobertura_2 > 0)
+        {
+            porcentaje_2 = 100 * intervenciones_2 / cobertura_2;
+        }
+
+        if (cobertura_3 > 0)
+        {
+            porcentaje_3 = 100 * intervenciones_3 / cobertura_3;
+        }
+
+        if (cobertura_4 > 0)
+        {
+            porcentaje_4 = 100 * intervenciones_4 / cobertura_4;
+        }
+
+        if (cobertura_1sem > 0)
+        {
+            procentaje_1sem = 100 * intervenciones_1sem / cobertura_1sem;
+        }
+
+        if (cobertura_2sem > 0)
+        {
+            procentaje_2sem = 100 * intervenciones_2sem / cobertura_2sem;
+        }
+
+        if (cobertura_año > 0)
+        {
+            porcentaje_año = 100 * intervenciones_año / cobertura_año;
+        }
+        }
+    <th align="left">Intervenciones/Mes</th>
+    <td align="center">% Niños/Mes</td>
+    <td align="center">@indicador_intervenciones.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (porcentaje_1 >= indicador_intervenciones)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@porcentaje_1.ToString("#,##0.0#")%</td>
+    <td align="center"@if (porcentaje_2 >= indicador_intervenciones)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@porcentaje_2.ToString("#,##0.0#")%</td>
+    <td align="center"@if (procentaje_1sem >= indicador_intervenciones)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@procentaje_1sem.ToString("#,##0.0#")%</td>
+    <td align="center"@if (porcentaje_3 >= indicador_intervenciones)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@porcentaje_3.ToString("#,##0.0#")%</td>
+    <td align="center"@if (porcentaje_4 >= indicador_intervenciones)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@porcentaje_4.ToString("#,##0.0#")%</td>
+    <td align="center"@if (procentaje_2sem >= indicador_intervenciones)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@procentaje_2sem.ToString("#,##0.0#")%</td>
+    <td align="center"@if (porcentaje_año >= indicador_intervenciones)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@porcentaje_año.ToString("#,##0.0#")%</td>
+  </tr>
+  <tr title="Se obtiene del SAG: Ingresos subvención / Trim.">
+  @{
+      int ingresos_subvencion_1 = @ViewBag.Ingresos_Subvencion_1;
+      int ingresos_subvencion_2 = @ViewBag.Ingresos_Subvencion_2;
+      int ingresos_subvencion_3 = @ViewBag.Ingresos_Subvencion_3;
+      int ingresos_subvencion_4 = @ViewBag.Ingresos_Subvencion_4;
+      int ingresos_subvencion_1_sem = (ingresos_subvencion_1 + ingresos_subvencion_2) / 6;
+      int ingresos_subvencion_2_sem = (ingresos_subvencion_3 + ingresos_subvencion_4) / 6;
+      int ingresos_subvencion_año = (ingresos_subvencion_1 + ingresos_subvencion_2 + ingresos_subvencion_3 + ingresos_subvencion_4) / 12;
+
+      int ingresos_subvencion_indicador = 0;
+      try
+      {
+          ingresos_subvencion_indicador = @ViewBag.Indicadores.IngSubvencion;
+      }
+      catch (Exception)
+      {}
+    }
+    <th rowspan="2" align="left" title="">Ingresos</th>
+    <th align="left">Subvención SENAME</th>
+    <td align="center">$/Mes</td>
+    <td align="right">$@ingresos_subvencion_indicador.ToString("#,##0")</td>
+    <td align="center">Trimestral</td>
+    <td align="right"@if (ingresos_subvencion_1 / 3 >= ingresos_subvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_subvencion_1 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_subvencion_2 / 3 >= ingresos_subvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_subvencion_2 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_subvencion_1_sem >= ingresos_subvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_subvencion_1_sem).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_subvencion_3 / 3 >= ingresos_subvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_subvencion_3 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_subvencion_4 / 3 >= ingresos_subvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_subvencion_4 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_subvencion_2_sem >= ingresos_subvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_subvencion_2_sem).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_subvencion_año >= ingresos_subvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_subvencion_año).ToString("#,##0"))</td>
+  </tr>
+  <tr>
+  @{
+      int ingresos_otros_1 = @ViewBag.Ingresos_Otros_1;
+      int ingresos_otros_2 = @ViewBag.Ingresos_Otros_2;
+      int ingresos_otros_3 = @ViewBag.Ingresos_Otros_3;
+      int ingresos_otros_4 = @ViewBag.Ingresos_Otros_4;
+      int ingresos_otros_1_sem = (ingresos_otros_1 + ingresos_otros_2) / 6;
+      int ingresos_otros_2_sem = (ingresos_otros_3 + ingresos_otros_4) / 6;
+      int ingresos_otros_año = (ingresos_otros_1 + ingresos_otros_2 + ingresos_otros_3 + ingresos_otros_4) / 12;
+      int ingresos_otros_indicador = 0;
+      try
+      {
+          ingresos_otros_indicador = @ViewBag.Indicadores.IngOtros;
+      }
+      catch (Exception)
+      {}
+    }
+    <th align="left">Otros Ingresos </th>
+    <td align="center">$/Mes</td>
+    <td align="right">$@ingresos_otros_indicador.ToString("#,##0")</td>
+    <td align="center">Trimestral</td>
+    <td align="right"@if (ingresos_otros_1 / 3 >= ingresos_otros_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_otros_1 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_otros_2 / 3 >= ingresos_otros_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_otros_2 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_otros_1_sem >= ingresos_otros_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_otros_1_sem).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_otros_3 / 3 >= ingresos_otros_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_otros_3 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_otros_4 / 3 >= ingresos_otros_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_otros_4 / 3).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_otros_2_sem >= ingresos_otros_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_otros_2_sem).ToString("#,##0"))</td>
+    <td align="right"@if (ingresos_otros_año >= ingresos_otros_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@((ingresos_otros_año).ToString("#,##0"))</td>
+  </tr>
+  <tr title="Se obtiene del SAG: Gastos Persona Trim./Ingresos Trim.">
+  @{
+      int costos_personal_1 = @ViewBag.Costos_Personal_1;
+      int costos_personal_2 = @ViewBag.Costos_Personal_2;
+      int costos_personal_3 = @ViewBag.Costos_Personal_3;
+      int costos_personal_4 = @ViewBag.Costos_Personal_4;
+      decimal ingresos_costos_1 = Decimal.Parse(@ViewBag.Ingresos_Costos_1.ToString());
+      decimal ingresos_costos_2 = Decimal.Parse(@ViewBag.Ingresos_Costos_2.ToString());
+      decimal ingresos_costos_3 = Decimal.Parse(@ViewBag.Ingresos_Costos_3.ToString());
+      decimal ingresos_costos_4 = Decimal.Parse(@ViewBag.Ingresos_Costos_4.ToString());
+      decimal costos_personal_indicador = 0;
+      try
+      {
+          costos_personal_indicador = @ViewBag.Indicadores.CosPersonal;
+      }
+      catch (Exception)
+      { }
+    }
+    <th rowspan="6" align="left">Costos Reales</th>
+    <th align="left">Personal</th>
+    <td align="center">%/Ingresos</td>
+    <td align="center">@costos_personal_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * costos_personal_1 / ingresos_costos_1 <= costos_personal_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_personal_1 / ingresos_costos_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_personal_2 / ingresos_costos_2 <= costos_personal_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_personal_2 / ingresos_costos_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_personal_1 + costos_personal_2) / (ingresos_costos_1 + ingresos_costos_2) <= costos_personal_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_personal_1 + costos_personal_2) / (ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_personal_3 / ingresos_costos_3 <= costos_personal_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_personal_3 / ingresos_costos_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_personal_4 / ingresos_costos_4 <= costos_personal_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_personal_4 / ingresos_costos_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_personal_3 + costos_personal_4) / (ingresos_costos_3 + ingresos_costos_4) <= costos_personal_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_personal_3 + costos_personal_4) / (ingresos_costos_3 + ingresos_costos_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_personal_3 + costos_personal_4 + costos_personal_1 + costos_personal_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2) <= costos_personal_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_personal_3 + costos_personal_4 + costos_personal_1 + costos_personal_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+  @{
+      int costos_funcionamiento_1 = @ViewBag.Costos_Funcionamiento_1;
+      int costos_funcionamiento_2 = @ViewBag.Costos_Funcionamiento_2;
+      int costos_funcionamiento_3 = @ViewBag.Costos_Funcionamiento_3;
+      int costos_funcionamiento_4 = @ViewBag.Costos_Funcionamiento_4;
+      decimal costos_funcionamiento_indicador = 0;
+      try
+      {  
+        costos_funcionamiento_indicador = @ViewBag.Indicadores.CosFuncionamiento;
+      }
+      catch (Exception)
+      {}
+      }
+    <th align="left">Funcionamiento</th>
+    <td align="center">%/Ingresos</td>
+    <td align="center">@costos_funcionamiento_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * costos_funcionamiento_1 / ingresos_costos_1 <= costos_funcionamiento_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_funcionamiento_1 / ingresos_costos_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_funcionamiento_2 / ingresos_costos_2 <= costos_funcionamiento_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_funcionamiento_2 / ingresos_costos_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_funcionamiento_1 + costos_funcionamiento_2) / (ingresos_costos_1 + ingresos_costos_2) <= costos_funcionamiento_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_funcionamiento_1 + costos_funcionamiento_2) / (ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_funcionamiento_3 / ingresos_costos_3 <= costos_funcionamiento_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_funcionamiento_3 / ingresos_costos_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_funcionamiento_4 / ingresos_costos_4 <= costos_funcionamiento_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_funcionamiento_4 / ingresos_costos_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_funcionamiento_3 + costos_funcionamiento_4) / (ingresos_costos_3 + ingresos_costos_4) <= costos_funcionamiento_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_funcionamiento_3 + costos_funcionamiento_4) / (ingresos_costos_3 + ingresos_costos_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_funcionamiento_3 + costos_funcionamiento_4 + costos_funcionamiento_1 + costos_funcionamiento_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2) <= costos_funcionamiento_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_funcionamiento_3 + costos_funcionamiento_4 + costos_funcionamiento_1 + costos_funcionamiento_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+  @{
+      int costos_apoyotecnico_1 = @ViewBag.Costos_ApoyoTecnico_1;
+      int costos_apoyotecnico_2 = @ViewBag.Costos_ApoyoTecnico_2;
+      int costos_apoyotecnico_3 = @ViewBag.Costos_ApoyoTecnico_3;
+      int costos_apoyotecnico_4 = @ViewBag.Costos_ApoyoTecnico_4;
+      decimal costos_apoyotecnico_indicador = 0;
+      try
+      {
+          costos_apoyotecnico_indicador = @ViewBag.Indicadores.CosTecnico;
+      }
+      catch (Exception)
+      { }
+      
+      }
+    <th align="left">Apoyo Técnico</th>
+    <td align="center">%/Ingresos</td>
+    <td align="center">@costos_apoyotecnico_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * costos_apoyotecnico_1 / ingresos_costos_1 <= costos_apoyotecnico_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyotecnico_1 / ingresos_costos_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_apoyotecnico_2 / ingresos_costos_2 <= costos_apoyotecnico_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyotecnico_2 / ingresos_costos_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_apoyotecnico_1 + costos_apoyotecnico_2) / (ingresos_costos_1 + ingresos_costos_2) <= costos_apoyotecnico_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_apoyotecnico_1 + costos_apoyotecnico_2) / (ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_apoyotecnico_3 / ingresos_costos_3 <= costos_apoyotecnico_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyotecnico_3 / ingresos_costos_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_apoyotecnico_4 / ingresos_costos_4 <= costos_apoyotecnico_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyotecnico_4 / ingresos_costos_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_apoyotecnico_3 + costos_apoyotecnico_4) / (ingresos_costos_3 + ingresos_costos_4) <= costos_apoyotecnico_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_apoyotecnico_3 + costos_apoyotecnico_4) / (ingresos_costos_3 + ingresos_costos_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_apoyotecnico_3 + costos_apoyotecnico_4 + costos_apoyotecnico_1 + costos_apoyotecnico_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2) <= costos_apoyotecnico_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_apoyotecnico_3 + costos_apoyotecnico_4 + costos_apoyotecnico_1 + costos_apoyotecnico_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+  @{
+      int costos_apoyobeneficiario_1 = @ViewBag.Costos_ApoyoBeneficiarios_1;
+      int costos_apoyobeneficiario_2 = @ViewBag.Costos_ApoyoBeneficiarios_2;
+      int costos_apoyobeneficiario_3 = @ViewBag.Costos_ApoyoBeneficiarios_3;
+      int costos_apoyobeneficiario_4 = @ViewBag.Costos_ApoyoBeneficiarios_4;
+      decimal costos_apoyobeneficiario_indicador = 0;
+      try
+      {
+          costos_apoyobeneficiario_indicador = @ViewBag.Indicadores.CosBeneficiario;
+      }
+      catch (Exception)
+      { }
+     
+     
+      }
+    <th align="left">Apoyo a Beneficiarios</th>
+    <td align="center">%/Ingresos</td>
+    <td align="center">@costos_apoyobeneficiario_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * costos_apoyobeneficiario_1 / ingresos_costos_1 <= costos_apoyobeneficiario_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyobeneficiario_1 / ingresos_costos_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_apoyobeneficiario_2 / ingresos_costos_2 <= costos_apoyobeneficiario_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyobeneficiario_2 / ingresos_costos_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_apoyobeneficiario_1 + costos_apoyobeneficiario_2) / (ingresos_costos_1 + ingresos_costos_2) <= costos_apoyobeneficiario_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_apoyobeneficiario_1 + costos_apoyobeneficiario_2) / (ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_apoyobeneficiario_3 / ingresos_costos_3 <= costos_apoyobeneficiario_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyobeneficiario_3 / ingresos_costos_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_apoyobeneficiario_4 / ingresos_costos_4 <= costos_apoyobeneficiario_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_apoyobeneficiario_4 / ingresos_costos_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_apoyobeneficiario_3 + costos_apoyobeneficiario_4) / (ingresos_costos_3 + ingresos_costos_4) <= costos_apoyobeneficiario_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_apoyobeneficiario_3 + costos_apoyobeneficiario_4) / (ingresos_costos_3 + ingresos_costos_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_apoyobeneficiario_3 + costos_apoyobeneficiario_4 + costos_apoyobeneficiario_1 + costos_apoyobeneficiario_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2) <= costos_apoyobeneficiario_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_apoyobeneficiario_3 + costos_apoyobeneficiario_4 + costos_apoyobeneficiario_1 + costos_apoyobeneficiario_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+   @{
+       int costos_inversion_1 = @ViewBag.Costos_Inversion_1;
+       int costos_inversion_2 = @ViewBag.Costos_Inversion_2;
+       int costos_inversion_3 = @ViewBag.Costos_Inversion_3;
+       int costos_inversion_4 = @ViewBag.Costos_Inversion_4;
+       decimal costos_inversion_indicador = 0;
+       try
+       {
+           costos_inversion_indicador = @ViewBag.Indicadores.CosInversion;
+       }
+       catch (Exception)
+       { } 
+      }
+    <th align="left">Inversión</th>
+    <td align="center">%/Ingresos</td>
+    <td align="center">@costos_inversion_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * costos_inversion_1 / ingresos_costos_1 <= costos_inversion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_inversion_1 / ingresos_costos_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_inversion_2 / ingresos_costos_2 <= costos_inversion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_inversion_2 / ingresos_costos_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_inversion_1 + costos_inversion_2) / (ingresos_costos_1 + ingresos_costos_2) <= costos_inversion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_inversion_1 + costos_inversion_2) / (ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_inversion_3 / ingresos_costos_3 <= costos_inversion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_inversion_3 / ingresos_costos_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_inversion_4 / ingresos_costos_4 <= costos_inversion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_inversion_4 / ingresos_costos_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_inversion_3 + costos_inversion_4) / (ingresos_costos_3 + ingresos_costos_4) <= costos_inversion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_inversion_3 + costos_inversion_4) / (ingresos_costos_3 + ingresos_costos_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_inversion_3 + costos_inversion_4 + costos_inversion_1 + costos_inversion_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2) <= costos_inversion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_inversion_3 + costos_inversion_4 + costos_inversion_1 + costos_inversion_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+  @{
+      int costos_indemnnizacion_1 = @ViewBag.Costos_Indemnizacion_1;
+      int costos_indemnnizacion_2 = @ViewBag.Costos_Indemnizacion_2;
+      int costos_indemnnizacion_3 = @ViewBag.Costos_Indemnizacion_3;
+      int costos_indemnnizacion_4 = @ViewBag.Costos_Indemnizacion_4;
+      decimal costos_indemnnizacion_indicador = 0;
+      try
+      {
+          costos_indemnnizacion_indicador = @ViewBag.Indicadores.CosFondo;
+      }
+      catch (Exception)
+      { } 
+      }
+    <th align="left">Fondo Indemnizaciones</th>
+    <td align="center">%/Ingresos</td>
+    <td align="center">@costos_indemnnizacion_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * costos_indemnnizacion_1 / ingresos_costos_1 <= costos_indemnnizacion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_indemnnizacion_1 / ingresos_costos_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_indemnnizacion_2 / ingresos_costos_2 <= costos_indemnnizacion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_indemnnizacion_2 / ingresos_costos_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_indemnnizacion_1 + costos_indemnnizacion_2) / (ingresos_costos_1 + ingresos_costos_2) <= costos_indemnnizacion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_indemnnizacion_1 + costos_indemnnizacion_2) / (ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_indemnnizacion_3 / ingresos_costos_3 <= costos_indemnnizacion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_indemnnizacion_3 / ingresos_costos_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * costos_indemnnizacion_4 / ingresos_costos_4 <= costos_indemnnizacion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * costos_indemnnizacion_4 / ingresos_costos_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_indemnnizacion_3 + costos_indemnnizacion_4) / (ingresos_costos_3 + ingresos_costos_4) <= costos_indemnnizacion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_indemnnizacion_3 + costos_indemnnizacion_4) / (ingresos_costos_3 + ingresos_costos_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (costos_indemnnizacion_3 + costos_indemnnizacion_4 + costos_indemnnizacion_1 + costos_indemnnizacion_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2) <= costos_indemnnizacion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (costos_indemnnizacion_3 + costos_indemnnizacion_4 + costos_indemnnizacion_1 + costos_indemnnizacion_2) / (ingresos_costos_3 + ingresos_costos_4 + ingresos_costos_1 + ingresos_costos_2)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+  @{
+      int finan_prestamos_1 = @ViewBag.Finan_Prestamos_1;
+      int finan_prestamos_2 = @ViewBag.Finan_Prestamos_2;
+      int finan_prestamos_3 = @ViewBag.Finan_Prestamos_3;
+      int finan_prestamos_4 = @ViewBag.Finan_Prestamos_4;
+      int finan_prestamos_1_sem = (finan_prestamos_1 + finan_prestamos_2) / 2;
+      int finan_prestamos_2_sem = (finan_prestamos_3 + finan_prestamos_4) / 2;
+      int finan_prestamos_año = (finan_prestamos_1 + finan_prestamos_2 + finan_prestamos_3 + finan_prestamos_4) / 4;
+      int finan_prestamos_indicador = 0;
+      try
+      {
+          finan_prestamos_indicador = @ViewBag.Indicadores.FinPrestamos;
+      }
+      catch (Exception)
+      { }
+      
+    }
+    <th rowspan="3" align="left">Financiamiento</th>
+    <th align="left">Préstamos</th>
+    <td align="center">$/Trim.</td>
+    <td align="right">$@finan_prestamos_indicador.ToString("#,##0")</td>
+    <td align="center">Trimestral</td>
+    <td align="right"@if (finan_prestamos_1 <= finan_prestamos_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_prestamos_1.ToString("#,##0")</td>
+    <td align="right"@if (finan_prestamos_2 <= finan_prestamos_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_prestamos_2.ToString("#,##0")</td>
+    <td align="right"@if (finan_prestamos_1_sem <= finan_prestamos_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_prestamos_1_sem.ToString("#,##0")</td>
+    <td align="right"@if (finan_prestamos_3 <= finan_prestamos_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_prestamos_3.ToString("#,##0")</td>
+    <td align="right"@if (finan_prestamos_4 <= finan_prestamos_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_prestamos_4.ToString("#,##0")</td>
+    <td align="right"@if (finan_prestamos_2_sem <= finan_prestamos_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_prestamos_2_sem.ToString("#,##0")</td>
+    <td align="right"@if (finan_prestamos_año <= finan_prestamos_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_prestamos_año.ToString("#,##0")</td>
+  </tr>
+  <tr>
+  @{
+      int finan_aportes_1 = @ViewBag.Finan_Aportes_1;
+      int finan_aportes_2 = @ViewBag.Finan_Aportes_2;
+      int finan_aportes_3 = @ViewBag.Finan_Aportes_3;
+      int finan_aportes_4 = @ViewBag.Finan_Aportes_4;
+      int finan_aportes_1_sem = (finan_aportes_1 + finan_aportes_2) / 2;
+      int finan_aportes_2_sem = (finan_aportes_3 + finan_aportes_4) / 2;
+      int finan_aportes_año = (finan_aportes_1 + finan_aportes_2 + finan_aportes_3 + finan_aportes_4) / 4;
+      int finan_aportes_indicador = 0;
+      try
+      {
+          finan_aportes_indicador = @ViewBag.Indicadores.FinAportes;
+      }
+      catch (Exception)
+      { }
+    }
+    <th align="left">Aportes de Terceros e Institucionales</th>
+    <td align="center">$/Trim.</td>
+    <td align="right">$@finan_aportes_indicador.ToString("#,##0")</td>
+    <td align="center">Trimestral</td>
+    <td align="right"@if (finan_aportes_1 <= finan_aportes_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_aportes_1.ToString("#,##0")</td>
+    <td align="right"@if (finan_aportes_2 <= finan_aportes_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_aportes_2.ToString("#,##0")</td>
+    <td align="right"@if (finan_aportes_1_sem <= finan_aportes_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_aportes_1_sem.ToString("#,##0")</td>
+    <td align="right"@if (finan_aportes_3 <= finan_aportes_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_aportes_3.ToString("#,##0")</td>
+    <td align="right"@if (finan_aportes_4 <= finan_aportes_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_aportes_4.ToString("#,##0")</td>
+    <td align="right"@if (finan_aportes_2_sem <= finan_aportes_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_aportes_2_sem.ToString("#,##0")</td>
+    <td align="right"@if (finan_aportes_año <= finan_aportes_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_aportes_año.ToString("#,##0")</td>
+  </tr>
+  <tr>
+  @{
+      int finan_proveedor_1 = @ViewBag.Finan_Proveedores_1;
+      int finan_proveedor_2 = @ViewBag.Finan_Proveedores_2;
+      int finan_proveedor_3 = @ViewBag.Finan_Proveedores_3;
+      int finan_proveedor_4 = @ViewBag.Finan_Proveedores_4;
+      int finan_proveedor_1_sem = (finan_proveedor_1 + finan_proveedor_2) / 2;
+      int finan_proveedor_2_sem = (finan_proveedor_3 + finan_proveedor_4) / 2;
+      int finan_proveedor_año = (finan_proveedor_1 + finan_proveedor_2 + finan_proveedor_3 + finan_proveedor_4) / 4;
+      int finan_proveedor_indicador = 0;
+      try
+      {
+          finan_proveedor_indicador = @ViewBag.Indicadores.FinProveedores;
+      }
+      catch (Exception)
+      { }
+    }
+    <th align="left">Proveedores</th>
+    <td align="center">$/Trim.</td>
+    <td align="right">$@finan_proveedor_indicador.ToString("#,##0")</td>
+    <td align="center">Trimestral</td>
+    <td align="right"@if (finan_proveedor_1 <= finan_proveedor_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_proveedor_1.ToString("#,##0")</td>
+    <td align="right"@if (finan_proveedor_2 <= finan_proveedor_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_proveedor_2.ToString("#,##0")</td>
+    <td align="right"@if (finan_proveedor_1_sem <= finan_proveedor_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_proveedor_1_sem.ToString("#,##0")</td>
+    <td align="right"@if (finan_proveedor_3 <= finan_proveedor_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_proveedor_3.ToString("#,##0")</td>
+    <td align="right"@if (finan_proveedor_4 <= finan_proveedor_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_proveedor_4.ToString("#,##0")</td>
+    <td align="right"@if (finan_proveedor_2_sem <= finan_proveedor_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_proveedor_2_sem.ToString("#,##0")</td>
+    <td align="right"@if (finan_proveedor_año <= finan_proveedor_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@finan_proveedor_año.ToString("#,##0")</td>
+  </tr>
+  <tr>
+    <th rowspan="8" align="left">Calidad</th>
+    <th align="left">Gastos Objetados SENAME</th>
+    <td align="center">$/Sem.</td>
+    <td align="right">$@ViewBag.Indicadores.CalObjSename</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+  </tr>
+  <tr>
+    <th align="left">Gastos Rechazados SENAME</th>
+    <td align="center">$/Sem.</td>
+    <td align="right">$@ViewBag.Indicadores.CalRecSename</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+  </tr>
+  <tr>
+    <th align="left">Observaciones SENAME</th>
+    <td align="center">Nº Obs./Sem.</td>
+    <td align="center">@ViewBag.Indicadores.CalObsSename</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center">0</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center">0</td>
+    <td align="center">0</td>
+  </tr>
+  <tr>
+    <th align="left">Gastos Objetados CODENI</th>
+    <td align="center">$/Sem.</td>
+    <td align="right">$@ViewBag.Indicadores.CalObjCodeni</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+  </tr>
+  <tr>
+    <th align="left">Gastos Rechazados CODENI</th>
+    <td align="center">$/Sem.</td>
+    <td align="right">$@ViewBag.Indicadores.CalRecCodeni</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+  </tr>
+  <tr>
+    <th align="left">Observaciones CODENI</th>
+    <td align="center">Nº Obs./Sem.</td>
+    <td align="center">@ViewBag.Indicadores.CalObsCodeni</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center">0</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center">0</td>
+    <td align="center">0</td>
+  </tr>
+  <tr>
+    <th align="left">Retención de Impuestos</th>
+    <td align="center">Nº Obs./Trim.</td>
+    <td align="center">@ViewBag.Indicadores.CalImpuestos</td>
+    <td align="center">Trimestral</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+    <td align="center">0</td>
+  </tr>
+  <tr>
+    <th align="left">Inventario General</th>
+    <td align="center">Nº Obs./Sem.</td>
+    <td align="center">@ViewBag.Indicadores.CalInventario</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center">0</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center">0</td>
+    <td align="center">0</td>
+  </tr>
+  <tr title="Transferencias Adm. Central / Ingresos">
+  @{
+      int prod_aportesubvencion_1 = @ViewBag.AporteSubvencion_1;
+      int prod_aportesubvencion_ing_1 = @ViewBag.AporteSubvencion_Ing_1;
+
+      int prod_aportesubvencion_2 = @ViewBag.AporteSubvencion_2;
+      int prod_aportesubvencion_ing_2 = @ViewBag.AporteSubvencion_Ing_2;
+
+      int prod_aportesubvencion_3 = @ViewBag.AporteSubvencion_3;
+      int prod_aportesubvencion_ing_3 = @ViewBag.AporteSubvencion_Ing_3;
+
+      int prod_aportesubvencion_4 = @ViewBag.AporteSubvencion_4;
+      int prod_aportesubvencion_ing_4 = @ViewBag.AporteSubvencion_Ing_4;
+
+      int prod_aportesubvencion_1_sem = (prod_aportesubvencion_1 + prod_aportesubvencion_2) / 2;
+
+      int prod_aportesubvencion_2_sem = (prod_aportesubvencion_3 + prod_aportesubvencion_4) / 2;
+
+      int prod_aportesubvencion_año = (prod_aportesubvencion_1 + prod_aportesubvencion_2 + prod_aportesubvencion_3 + prod_aportesubvencion_4) / 4;
+
+      decimal prod_aportesubvencion_indicador = 0;
+      try
+      {
+          prod_aportesubvencion_indicador = @ViewBag.Indicadores.ProAporte;
+      }
+      catch (Exception)
+      { }
+      
+    }
+    <th width="103" rowspan="7" align="left">Productividad<br />Eficiencia</th>
+    <th align="left">Aporte Subvención</th>
+    <td align="center">%/Subv. Mes</td>
+    <td align="center">@prod_aportesubvencion_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * prod_aportesubvencion_1 / prod_aportesubvencion_ing_1 >= prod_aportesubvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_aportesubvencion_1 / prod_aportesubvencion_ing_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * prod_aportesubvencion_2 / prod_aportesubvencion_ing_2 >= prod_aportesubvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_aportesubvencion_2 / prod_aportesubvencion_ing_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (prod_aportesubvencion_1 + prod_aportesubvencion_2) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2) >= prod_aportesubvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (prod_aportesubvencion_1 + prod_aportesubvencion_2) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * prod_aportesubvencion_3 / prod_aportesubvencion_ing_3 >= prod_aportesubvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_aportesubvencion_3 / prod_aportesubvencion_ing_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * prod_aportesubvencion_4 / prod_aportesubvencion_ing_4 >= prod_aportesubvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_aportesubvencion_4 / prod_aportesubvencion_ing_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (prod_aportesubvencion_3 + prod_aportesubvencion_4) / (prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4) >= prod_aportesubvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (prod_aportesubvencion_3 + prod_aportesubvencion_4) / (prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (prod_aportesubvencion_1 + prod_aportesubvencion_2 + prod_aportesubvencion_3 + prod_aportesubvencion_4) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 + prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4) >= prod_aportesubvencion_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (prod_aportesubvencion_1 + prod_aportesubvencion_2 + prod_aportesubvencion_3 + prod_aportesubvencion_4) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 + prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+    <th align="left">Horas Extraordinarias</th>
+    <td align="center">$/Trim.</td>
+    <td align="right">$@ViewBag.Indicadores.ProHoras</td>
+    <td align="center">Trimestral</td>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+    <td align="right">$0</td>
+  </tr>
+  <tr>
+  @{
+      int prod_saldobanco_1 = @ViewBag.Prod_SaldoBanco_1;
+      int prod_saldobanco_2 = @ViewBag.Prod_SaldoBanco_2;
+      int prod_saldobanco_3 = @ViewBag.Prod_SaldoBanco_3;
+      int prod_saldobanco_4 = @ViewBag.Prod_SaldoBanco_4;
+      int prod_saldobanco_1_sem = (prod_saldobanco_1 + prod_saldobanco_2) / 2;
+      int prod_saldobanco_2_sem = (prod_saldobanco_3 + prod_saldobanco_4) / 2;
+      int prod_saldobanco_año = (prod_saldobanco_1 + prod_saldobanco_2 + prod_saldobanco_3 + prod_saldobanco_4) / 4;
+      int prod_saldobanco_indicador = 0;
+      try
+      {
+          prod_saldobanco_indicador = @ViewBag.Indicadores.ProSaldo;
+      }
+      catch (Exception)
+      { }
+    }
+    <th align="left">Saldo Banco</th>
+    <td align="center">$/Trim.</td>
+    <td align="right">@prod_saldobanco_indicador.ToString("#,##0")</td>
+    <td align="center">Trimestral</td>
+    <td align="right"@if (prod_saldobanco_1 >= prod_saldobanco_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@prod_saldobanco_1.ToString("#,##0")</td>
+    <td align="right"@if (prod_saldobanco_2 >= prod_saldobanco_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@prod_saldobanco_2.ToString("#,##0")</td>
+    <td align="right"@if (prod_saldobanco_1_sem >= prod_saldobanco_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@prod_saldobanco_1_sem.ToString("#,##0")</td>
+    <td align="right"@if (prod_saldobanco_3 >= prod_saldobanco_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@prod_saldobanco_3.ToString("#,##0")</td>
+    <td align="right"@if (prod_saldobanco_4 >= prod_saldobanco_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@prod_saldobanco_4.ToString("#,##0")</td>
+    <td align="right"@if (prod_saldobanco_2_sem >= prod_saldobanco_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@prod_saldobanco_2_sem.ToString("#,##0")</td>
+    <td align="right"@if (prod_saldobanco_año >= prod_saldobanco_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>$@prod_saldobanco_año.ToString("#,##0")</td>
+  </tr>
+  </tr>
+  <tr>
+    @{
+        decimal prod_resultado_indicador = 0;
+        try
+        {
+            prod_resultado_indicador = @ViewBag.Indicadores.ProResultado;
+        }
+        catch (Exception)
+        { }
+    }
+    <th align="left">Resultado</th>
+    <td align="center">% /Ingresos</td>
+    <td align="center">@prod_resultado_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * (@ViewBag.Prod_Resultado_Ing_1 - @ViewBag.Prod_Resultado_Egr_1) / @ViewBag.Prod_Resultado_Ing_1 >= prod_resultado_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (@ViewBag.Prod_Resultado_Ing_1 - @ViewBag.Prod_Resultado_Egr_1) / @ViewBag.Prod_Resultado_Ing_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (@ViewBag.Prod_Resultado_Ing_2 - @ViewBag.Prod_Resultado_Egr_2) / @ViewBag.Prod_Resultado_Ing_2 >= prod_resultado_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (@ViewBag.Prod_Resultado_Ing_2 - @ViewBag.Prod_Resultado_Egr_2) / @ViewBag.Prod_Resultado_Ing_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (@ViewBag.Prod_Resultado_Ing_1 - @ViewBag.Prod_Resultado_Egr_1 + @ViewBag.Prod_Resultado_Ing_2 - @ViewBag.Prod_Resultado_Egr_2) / (@ViewBag.Prod_Resultado_Ing_1 + @ViewBag.Prod_Resultado_Ing_2) >= prod_resultado_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (@ViewBag.Prod_Resultado_Ing_1 - @ViewBag.Prod_Resultado_Egr_1 + @ViewBag.Prod_Resultado_Ing_2 - @ViewBag.Prod_Resultado_Egr_2) / (@ViewBag.Prod_Resultado_Ing_1 + @ViewBag.Prod_Resultado_Ing_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (@ViewBag.Prod_Resultado_Ing_3 - @ViewBag.Prod_Resultado_Egr_3) / @ViewBag.Prod_Resultado_Ing_3 >= prod_resultado_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (@ViewBag.Prod_Resultado_Ing_3 - @ViewBag.Prod_Resultado_Egr_3) / @ViewBag.Prod_Resultado_Ing_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (@ViewBag.Prod_Resultado_Ing_4 - @ViewBag.Prod_Resultado_Egr_4) / @ViewBag.Prod_Resultado_Ing_4 >= prod_resultado_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (@ViewBag.Prod_Resultado_Ing_4 - @ViewBag.Prod_Resultado_Egr_4) / @ViewBag.Prod_Resultado_Ing_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (@ViewBag.Prod_Resultado_Ing_3 - @ViewBag.Prod_Resultado_Egr_3 + @ViewBag.Prod_Resultado_Ing_4 - @ViewBag.Prod_Resultado_Egr_4) / (@ViewBag.Prod_Resultado_Ing_3 + @ViewBag.Prod_Resultado_Ing_4) >= prod_resultado_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (@ViewBag.Prod_Resultado_Ing_3 - @ViewBag.Prod_Resultado_Egr_3 + @ViewBag.Prod_Resultado_Ing_4 - @ViewBag.Prod_Resultado_Egr_4) / (@ViewBag.Prod_Resultado_Ing_3 + @ViewBag.Prod_Resultado_Ing_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (@ViewBag.Prod_Resultado_Ing_1 - @ViewBag.Prod_Resultado_Egr_1 + @ViewBag.Prod_Resultado_Ing_2 - @ViewBag.Prod_Resultado_Egr_2 + @ViewBag.Prod_Resultado_Ing_3 - @ViewBag.Prod_Resultado_Egr_3 + @ViewBag.Prod_Resultado_Ing_4 - @ViewBag.Prod_Resultado_Egr_4) / (@ViewBag.Prod_Resultado_Ing_1 + @ViewBag.Prod_Resultado_Ing_2 + @ViewBag.Prod_Resultado_Ing_3 + @ViewBag.Prod_Resultado_Ing_4) >= prod_resultado_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (@ViewBag.Prod_Resultado_Ing_1 - @ViewBag.Prod_Resultado_Egr_1 + @ViewBag.Prod_Resultado_Ing_2 - @ViewBag.Prod_Resultado_Egr_2 + @ViewBag.Prod_Resultado_Ing_3 - @ViewBag.Prod_Resultado_Egr_3 + @ViewBag.Prod_Resultado_Ing_4 - @ViewBag.Prod_Resultado_Egr_4) / (@ViewBag.Prod_Resultado_Ing_1 + @ViewBag.Prod_Resultado_Ing_2 + @ViewBag.Prod_Resultado_Ing_3 + @ViewBag.Prod_Resultado_Ing_4)).ToString("#,##0.0#"))%</td>
+  </tr>
+  <tr>
+  @{
+      decimal prod_costoniño_ing_1 = @ViewBag.CostoNiño_1;
+      decimal prod_costoniño_ing_2 = @ViewBag.CostoNiño_2;
+      decimal prod_costoniño_ing_3 = @ViewBag.CostoNiño_3;
+      decimal prod_costoniño_ing_4 = @ViewBag.CostoNiño_4;
+
+      //ViewBag.Presupuesto_Ingresos_1 = 1;
+      //ViewBag.Presupuesto_Ingresos_2 = 1;
+
+      //ViewBag.Presupuesto_Egresos_1 = 0;
+      //ViewBag.Presupuesto_Egresos_2 = 0;
+
+      //prod_aportesubvencion_ing_1
+      //AporteSubvencion_Ing_1
+
+      decimal desviacion_pres_indicador = 0;
+      try
+      {
+          desviacion_pres_indicador = @ViewBag.Indicadores.ProDesviacion;
+      }
+      catch (Exception)
+      { }
+
+      decimal desviacion_pres_indicador_egr = 0;
+      try
+      {
+          desviacion_pres_indicador_egr = @ViewBag.Indicadores.ProDesviacionEgr;
+      }
+      catch (Exception)
+      { }
+
+
+      decimal desv_ing_1sem = 0;
+      decimal desv_ing_2sem = 0;
+      
+      try
+      {
+          desv_ing_1sem = 100 * (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 - ViewBag.Presupuesto_Ingresos_1) / ViewBag.Presupuesto_Ingresos_1;
+      }
+      catch(Exception)
+      {
+          desv_ing_1sem = 100 * (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 - ViewBag.Presupuesto_Ingresos_1);
+      }
+
+      try
+      {
+          desv_ing_1sem = 100 * (prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4 - ViewBag.Presupuesto_Ingresos_2) / ViewBag.Presupuesto_Ingresos_2;
+      }
+      catch (Exception)
+      {
+          desv_ing_1sem = 100 * (prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4 - ViewBag.Presupuesto_Ingresos_2);
+      }
+
+      decimal desv_ing_año = 0;
+      try
+      {
+          desv_ing_año = 100 * (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 + prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4 - ViewBag.Presupuesto_Ingresos_2 - ViewBag.Presupuesto_Ingresos_1) / (ViewBag.Presupuesto_Ingresos_2 + ViewBag.Presupuesto_Ingresos_1);
+      }
+      catch (Exception)
+      {
+          desv_ing_año = 100 * (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 + prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4 - ViewBag.Presupuesto_Ingresos_2 - ViewBag.Presupuesto_Ingresos_1);
+      }
+
+      decimal desv_egr_1sem = 0;
+      try
+      {
+          desv_egr_1sem = 100 * (ViewBag.Presupuesto_Egresos_1 - prod_costoniño_ing_1 - prod_costoniño_ing_2) / ViewBag.Presupuesto_Ingresos_1;
+      }
+      catch (Exception)
+      {
+          desv_egr_1sem = 100 * (ViewBag.Presupuesto_Egresos_1 - prod_costoniño_ing_1 - prod_costoniño_ing_2);
+      }
+
+      decimal desv_egr_2sem = 0;
+      try
+      {
+          desv_egr_2sem = 100 * (ViewBag.Presupuesto_Egresos_2 - prod_costoniño_ing_3 - prod_costoniño_ing_4) / ViewBag.Presupuesto_Ingresos_2;
+      }
+      catch (Exception)
+      {
+          desv_egr_2sem = 100 * (ViewBag.Presupuesto_Egresos_2 - prod_costoniño_ing_3 - prod_costoniño_ing_4);
+      }
+
+      decimal desv_egr_año = 0;
+      try
+      {
+          desv_egr_año = 100 * (0 - prod_costoniño_ing_1 - prod_costoniño_ing_2 - prod_costoniño_ing_3 - prod_costoniño_ing_4 + ViewBag.Presupuesto_Egresos_2 + ViewBag.Presupuesto_Egresos_1) / (ViewBag.Presupuesto_Ingresos_1 + ViewBag.Presupuesto_Ingresos_2);
+      }
+      catch (Exception)
+      {
+          desv_egr_año = 100 * (0 - prod_costoniño_ing_1 - prod_costoniño_ing_2 - prod_costoniño_ing_3 - prod_costoniño_ing_4 + ViewBag.Presupuesto_Egresos_2 + ViewBag.Presupuesto_Egresos_1);
+      }
+  }
+    <th align="left" rowspan="2">Desviación Presupuesto</th>
+    <td align="center">%/Ingresos</td>
+    <td align="center">@desviacion_pres_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center"@if (desv_ing_1sem >= desviacion_pres_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@desv_ing_1sem.ToString("#,##0.0#")%</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center"@if (desv_ing_2sem >= desviacion_pres_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@desv_ing_2sem.ToString("#,##0.0#")%</td>
+    <td align="center"@if (desv_ing_año >= desviacion_pres_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@desv_ing_año.ToString("#,##0.0#")%</td>
+  </tr>
+  <tr>
+    <td align="center">%/Egresos</td>
+    <td align="center">@desviacion_pres_indicador_egr.ToString("#,##0.0#")%</td>
+    <td align="center">Semestral</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center"@if (desv_egr_1sem >= desviacion_pres_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@desv_egr_1sem.ToString("#,##0.0#")%</td>
+    <th align="right">&nbsp;</th>
+    <th align="right">&nbsp;</th>
+    <td align="center"@if (desv_egr_2sem >= desviacion_pres_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@desv_egr_2sem.ToString("#,##0.0#")%</td>
+    <td align="center"@if (desv_egr_año >= desviacion_pres_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@desv_egr_año.ToString("#,##0.0#")%</td>
+  </tr>
+  <tr>
+  @{
+      decimal prod_costoniño_indicador = 1;
+      try
+      {
+          prod_costoniño_indicador = @ViewBag.Indicadores.ProCostoNino;
+      }
+      catch (Exception)
+      { }
+  }
+    <th align="left">Costo Niño/Mes</th>
+    <td align="center">%/Subv. Mes</td>
+    <td align="center">@prod_costoniño_indicador.ToString("#,##0.0#")%</td>
+    <td align="center">Trimestral</td>
+    <td align="center"@if (100 * prod_costoniño_ing_1 / prod_aportesubvencion_ing_1 >= prod_costoniño_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_costoniño_ing_1 / prod_aportesubvencion_ing_1).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * prod_costoniño_ing_2 / prod_aportesubvencion_ing_2 >= prod_costoniño_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_costoniño_ing_2 / prod_aportesubvencion_ing_2).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (prod_costoniño_ing_1 + prod_costoniño_ing_2) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2) >= prod_costoniño_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (prod_costoniño_ing_1 + prod_costoniño_ing_2) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * prod_costoniño_ing_3 / prod_aportesubvencion_ing_3 >= prod_costoniño_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_costoniño_ing_3 / prod_aportesubvencion_ing_3).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * prod_costoniño_ing_4 / prod_aportesubvencion_ing_4 >= prod_costoniño_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * prod_costoniño_ing_4 / prod_aportesubvencion_ing_4).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (prod_costoniño_ing_3 + prod_costoniño_ing_4) / (prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4) >= prod_costoniño_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (prod_costoniño_ing_3 + prod_costoniño_ing_4) / (prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4)).ToString("#,##0.0#"))%</td>
+    <td align="center"@if (100 * (prod_costoniño_ing_1 + prod_costoniño_ing_2 + prod_costoniño_ing_3 + prod_costoniño_ing_4) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 + prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4) >= prod_costoniño_indicador)
+                     {@Html.Raw(" style=\"color: blue;\"")}
+                     else
+                     {@Html.Raw(" style=\"color: red;\"")}>@((100 * (prod_costoniño_ing_1 + prod_costoniño_ing_2 + prod_costoniño_ing_3 + prod_costoniño_ing_4) / (prod_aportesubvencion_ing_1 + prod_aportesubvencion_ing_2 + prod_aportesubvencion_ing_3 + prod_aportesubvencion_ing_4)).ToString("#,##0.0#"))%</td>
+  </tr>
+</table>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

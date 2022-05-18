@@ -1,0 +1,82 @@
+﻿
+@model IEnumerable<SAG2.Models.InventarioEspecie>
+@{
+   
+    ViewBag.Title = "ListarLineas";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+
+<div class="panel panel-default">
+  <div class="panel-heading"><h3><b> Revisar Datos de Alta </b></h3></div>
+  <div class="panel-body">
+
+@if (Model.Count() > 0)
+{
+    <table border ="1">
+        <thead >
+        <tr class="info">
+            <th nowrap="nowrap">Especie</th>
+            <th style="width: 200px;">Descripción</th>
+            <th nowrap="nowrap">Numero Documento</th>
+            <th nowrap="nowrap">Nº Factura</th>
+             <th nowrap="nowrap">Cantidad</th>
+            <th nowrap="nowrap">Valor</th>
+             <th width="100px;">Acciones</th>      
+        </tr>
+            </thead>
+       
+        @foreach (var inventarioespecie in Model)
+        {
+        
+        <tr>
+            <td nowrap="nowrap">@inventarioespecie.Especie.Nombre  </td>
+            <td align="center" style="width: 200px;">@inventarioespecie.Observacion </td>
+            <td nowrap="nowrap">@inventarioespecie.DetalleEgreso.Egreso.NumeroComprobante / @inventarioespecie.DetalleEgreso.Egreso.Periodo </td>
+            <td nowrap="nowrap">@inventarioespecie.DetalleEgreso.NDocumento </td>
+            <td nowrap="nowrap">@inventarioespecie.Cantidad </td>
+            <td align="center" nowrap="nowrap">@inventarioespecie.Valor </td>
+            <td> <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/Bienes/@inventarioespecie.ID" ><span class ="fa fa-check fa-lg"></span></a> <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/Borrar//@inventarioespecie.ID"><span class ="fa fa-times fa-lg"></span></a></td>
+            
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen detalle egreso </th>
+        </tr>
+    </table>
+}
+      </div>
+        <div class="panel-footer">
+      <div  style ="width: 500px ; display:inline-block">
+           <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Nuevo" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/Create"><span class ="fa fa-file-o  fa-lg"></span></a>
+        <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Imprimir" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/ImprimirAlta/@ViewBag.inventarioID" onclick="window.open(this.href, 'Comprobante de Ingreso','width=800,height=600,scrollbars=yes,menubar=no,toolbars=no'); return false;"><span class ="fa fa-print fa-lg"></span></a>
+       <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Revisar" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Ingresos/Create"><span class ="fa fa-undo fa-fw"></span></a>
+        
+            
+        </div>
+        
+       
+        
+            
+     </div>
+      
+
+</div>

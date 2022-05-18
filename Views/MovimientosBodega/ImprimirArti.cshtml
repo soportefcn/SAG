@@ -1,0 +1,249 @@
+﻿
+@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    Layout = null;
+    ViewBag.Title = "ListarLineas";
+    string arti = "";
+    string categoria = "";
+    int saldo_inicial = 0;
+    var entrada = 0;
+    var salida = 0;
+    var saldo = 0;
+    int mes = ViewBag.Mes;
+    int perio = ViewBag.Periodo;
+    int idarti = 0;
+    int idpro = 0;
+    int entmes = 0;
+    int salmes = 0;
+    // list<SAG2.Models.Bodega> ba = new SAG2.Models.Bodega();
+    List<SAG2.Models.Bodega> dp = new List<SAG2.Models.Bodega>();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+
+<html>
+    <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >    
+    <link href="@Url.Content("~/Content/dist/css/bootstrap-submenu.min.css")" rel="stylesheet" >
+    
+
+    <head>
+        <title>Listado de Movimiento   </title>
+            <script language="javascript" type="text/javascript">
+           <!--
+        function printThis() {
+            window.print();
+            setTimeout('window.close()', 10);
+            // self.close();
+        }
+        //-->
+        </script>
+
+	    <style> 
+         @@page
+        {
+            size: landscape;
+     
+              margin-top: 0pt;
+        }
+ 		    body {font-family: Helvetica;
+ 		    font-size: 10pt;
+ 		    }
+ 		    p { margin: 0pt;
+ 		    }
+ 		    #pagina { 
+ 			    width: 100%;
+ 			    float: left;
+ 			    margin: 5%;
+ 			    text-align: justify;
+		    }
+		    #titulo {
+			    text-align: center; 
+			    font-size: 15pt;
+		    }
+ 		    #firma {
+ 			    text-align: left; 
+ 			    width: 50%; 
+ 			    float: right
+ 		    }
+
+ 		    .items{
+ 			    font-size: 9pt; 
+ 			    border-collapse: collapse;
+ 		    }
+	    </style>
+	</head>
+	<body onLoad="printThis();">	
+ 		<head name="myheader">
+ 			<table width="90%"  style="font-size: 7pt;">
+ 				<tr>
+ 					<td width="50%" style="color:#000000;"> <br />
+ 						
+ 						<br /><span align="center" style="font-size: 7pt;">Fundación ciudad del Niño</span>
+ 						<br />@ViewBag.nombreproyecto
+                        <br /> Cod. Sename: @ViewBag.CodSename
+ 					</td>
+ 					<td width="50%" style="text-align: right;"></td>
+ 				</tr>
+ 			</table>
+ 		</head>
+	
+ 		<div>
+		
+			<div id="titulo">Listado de Movimientos Periodo : @ViewBag.Periodo - @ViewBag.Mes</div>
+   	
+              <table class ="table table-bordered">
+                    <thead >
+                        <tr class="info">
+                             <th  style="text-align: center;">Nº Egreso</th>                  
+                            <th style="text-align: center;">Fecha</th>
+                            <th style="text-align: center;" width="150px">Unidad de Medida<br />KILO, LITRO, UNID</th>
+                            <th style="text-align: center;">Factura</th>
+                            <th style="text-align: center;">Ingreso de Artículos</th>
+                            <th style="text-align: center;">Egreso de Artículos</th>
+                            <th style="text-align: center;">Saldo Final</th>
+                            <th style="text-align: center;" >Destino y Observaciones</th>                   
+                        </tr>
+                    </thead>
+                @foreach (var movimiento in Model)
+                {
+                    if (arti != movimiento.Articulo.Nombre)
+                    {
+                        if (arti != "")
+                        {
+                            saldo = (entrada + saldo_inicial) - salida;
+                            <tr>
+                                <td colspan="3">  </td><td>Totales</td><td align="center">@entrada </td><td align="center">@salida </td><td align="center">@saldo</td><td colspan="3">  </td>
+                            </tr>
+                            
+                            // idarti = movimiento.ArticuloID;
+                            saldo_inicial = 0;
+                            foreach (SAG2.Models.Bodega sbodega in ViewBag.bartic)
+                            {
+                                     
+                                if (idarti == sbodega.ArticuloID )
+                                {
+                                    saldo_inicial = sbodega.SaldoInicial;
+                                    entmes = sbodega.Entrada;
+                                    salmes = sbodega.Salida;
+                                    saldo = sbodega.Saldo;
+                                }
+                            }
+                            
+                            idpro = movimiento.ProyectoID;
+                          
+                     
+                            entrada = 0;
+                            salida = 0;
+                        }
+                    }
+
+                    if (categoria != movimiento.Articulo.Categoria.nombre)
+                    {
+                        categoria = movimiento.Articulo.Categoria.nombre;
+                        <tr>
+                            <td colspan="9">Categoría : @movimiento.Articulo.Categoria.nombre</td>
+                        </tr>
+
+                    }
+                    if (arti != movimiento.Articulo.Nombre)
+                    {
+                        //   idarti = movimiento.ArticuloID;
+                        idpro = movimiento.ProyectoID;
+                        // saldo_inicial = dp.Where(d => d.ProyectoID == idpro).Where(d => d.ArticuloID == idarti).Where(d => d.Mes == mes).Where(d => d.Periodo == perio).Sum(d => d.SaldoInicial);
+                        arti = movimiento.Articulo.Nombre;
+                        idarti = movimiento.ArticuloID;
+                        saldo_inicial = 0;
+                        foreach (SAG2.Models.Bodega sbodega in ViewBag.bartic)
+                        {
+                            if (idarti == sbodega.ArticuloID)
+                            {
+                                saldo_inicial = sbodega.SaldoInicial;
+
+                            }
+                        }    
+                        <tr>
+                            <td align="rigth" colspan="3" > @movimiento.Articulo.Nombre </td><td colspan="6">Saldo Inicial : @saldo_inicial </td>
+                        </tr> 
+                    }          
+                        <tr>
+                            @if (movimiento.Tdoc == 0)
+                            {
+                                entrada = entrada + Int32.Parse(movimiento.Entrada.ToString());
+                                salida = salida + int.Parse(movimiento.Salida.ToString());
+                                <td nowrap="nowrap" style="text-align: center;">--</td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.Fecha.ToShortDateString()</td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                                <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
+                            }
+
+                            @if (movimiento.Tdoc == 1)
+                            {
+                                entrada = entrada + Int32.Parse(movimiento.Entrada.ToString());
+                                salida = salida + int.Parse(movimiento.Salida.ToString());
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.DetalleEgreso.Egreso.NumeroComprobante</td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.DetalleEgreso.FechaEmision.ToShortDateString()</td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                                <td align="center" nowrap="nowrap">@movimiento.DetalleEgreso.NDocumento</td>
+                            }
+                            @if (movimiento.Tdoc == 2)
+                            {
+                                salida = salida + int.Parse(movimiento.Salida.ToString());
+                                <td align="center" nowrap="nowrap"></td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.Fecha.ToShortDateString()</td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                                <td nowrap="nowrap"></td>
+                            }
+                            @if (movimiento.Tdoc == 3)
+                            {
+                                entrada = entrada + int.Parse(movimiento.Entrada.ToString());
+                                salida = salida + int.Parse(movimiento.Salida.ToString());
+                                <td align="center" nowrap="nowrap"></td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.Fecha.ToShortDateString()</td>
+                                <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                                <td nowrap="nowrap"></td>
+                            }
+
+                            <td align="center" nowrap="nowrap">
+                                @if (movimiento.Entrada > 0)
+                                {@movimiento.Entrada}
+                        </td>
+                        <td align="center" nowrap="nowrap">
+                            @if (movimiento.Salida > 0)
+                            {@movimiento.Salida}
+                        </td>
+                        <td></td>
+                        <td style="text-align: center;">@movimiento.Observaciones</td>
+                        </tr>
+                }
+                @if (arti != "")
+                {
+
+                // saldo_inicial = dp.Where(d => d.ProyectoID == idpro).Where(d => d.ArticuloID == idarti).Where(d => d.Mes == mes).Where(d => d.Periodo == perio).Sum(d => d.SaldoInicial);
+                    saldo = (entrada + saldo_inicial) - salida;
+                        <tr>
+                            <td colspan="3">  </td><td>Totales</td><td align="center">@entrada </td><td align="center">@salida </td><td align="center">@saldo</td><td colspan="3">  </td>
+                        </tr>
+                    entrada = 0;
+                    salida = 0;
+                }
+
+              </table>
+		</div>
+ 	</body>
+</html>

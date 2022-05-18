@@ -1,0 +1,8 @@
+﻿@{
+    ViewBag.Title = "Rendición de cuentas";
+}
+<div class="inicio">
+    @Html.Raw(@ViewBag.Mensaje)
+    <h2>Rendición de cuentas</h2>
+    <p>La rendición ha sido generada con éxito y el período ha sido cerrado. Para descargar los informes haga <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Rendicion/ListadoRendiciones">click aquí</a>.</p>
+</div>

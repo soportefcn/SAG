@@ -1,0 +1,40 @@
+﻿@model SAG2.Models.Convenio
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Convenio</legend>
+
+    <div class="display-label">ResEx</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ResEx)
+    </div>
+
+    <div class="display-label">FechaInicio</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaInicio)
+    </div>
+
+    <div class="display-label">FechaTermino</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaTermino)
+    </div>
+
+    <div class="display-label">NroPlazas</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NroPlazas)
+    </div>
+
+    <div class="display-label">Comentarios</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Comentarios)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

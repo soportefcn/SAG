@@ -1,0 +1,166 @@
+﻿
+@model IEnumerable<SAG2.Models.DetalleIngreso>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Aportes";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+ 
+    var total = 0;
+    string proyectoAnt = "s";
+    }
+<style type="text/css" media="all">
+body 
+{
+    font-family: Arial;    
+}
+
+th
+{
+    font-weight: bold;    
+}
+
+td, th
+{
+    white-space: nowrap;
+    font-size: 12px;
+}
+</style>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comprobante de Egreso</title>
+</head>
+    <style type="text/css">
+        h2 {
+            text-align: center;
+        }
+        body 
+        {
+            font-family: Arial;    
+        }
+        hr {
+            margin-bottom: 1px;
+            width: 200px;
+        }
+    
+    th, td
+        {
+         font-size: 12px;    
+    }
+    
+    .registros, .registros tr th, registros tr td 
+    {
+        border-left: 0;
+        border-right: 0;    
+        font-size: 12px;
+    }
+    
+        #Firmas 
+        {
+            margin-top: 150px;
+        }
+    </style>
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script language="javascript" type="text/javascript">
+       <!--
+        function printThis() {
+            window.print();
+            setTimeout('window.close()', 10);
+           // self.close();
+        }
+        //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+    <h2>Informe de Comparación Aporte Subvención  </h2>
+
+
+    <table class="table table-bordered" id="example" >
+        <tr>
+
+            <th >Periodo</th>
+            <th >Nº Comp.</th>
+            <th>Fecha</th>
+            <th  >Cta Contable</th>
+            <th >Cod. Proy</th>
+            <th >Proyecto</th>
+            <th >Cta. Cte.</th>
+            <th > Monto Adm Central</th>
+      <th> Monto Proyecto</th>
+
+<th>Diferencia o resta</th>
+            
+        </tr>
+    @foreach (var item in Model)
+    {
+        var mes = item.Ingreso.Mes;
+        var periodo = item.Ingreso.Periodo;
+        SAG2.Models.SAG2DB db2 = new SAG2.Models.SAG2DB();
+        var valor_egresos = 0;
+        if (proyectoAnt != item.Cc)
+        {
+
+            try
+            {
+                valor_egresos = db2.DetalleEgreso.Where(d => d.Egreso.CuentaCorriente.Numero == item.Cta).Where(d => d.CuentaID == 64).Where(d => d.Egreso.Mes == mes).Where(d => d.Egreso.Periodo == periodo).Sum(d => d.Monto);
+            }
+            catch { }
+            if (item.Ingreso.TipoComprobanteID != 1)
+            {
+                continue;
+            }
+        }
+
+        proyectoAnt = item.Cc; 
+        
+        var style = "";
+        if (item.Ingreso.Nulo != null && item.Ingreso.Nulo.Equals("S"))
+        {
+            style = " style=\"text-decoration: line-through;\"";
+        }
+        else
+        { 
+        total = total + item.Traspaso;
+        }
+    
+        <tr@Html.Raw(style)>
+            <td>@Html.DisplayFor(modelItem => item.Ingreso.Periodo)-@Html.DisplayFor(modelItem => item.Ingreso.Mes)</td>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.Ingreso.NumeroComprobante)
+            </td>
+            <td>
+                @item.Ingreso.Fecha.Value.ToShortDateString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ingreso.Cuenta.NombreLista)
+            </td>
+            <td>
+                 @Html.DisplayFor(modelItem => item.Cc)
+
+            </td>
+                                       <td>
+                 @Html.DisplayFor(modelItem => item.Servicio)
+
+            </td>
+               <td>
+                 @Html.DisplayFor(modelItem => item.Cta)
+
+            </td>
+
+            <td align="right">
+                <strong>
+                $@item.Traspaso.ToString("#,##0")
+                </strong>
+            </td>
+      <td>@valor_egresos.ToString("#,##0")</td>
+            <td>
+                @((item.Traspaso - valor_egresos).ToString("#,##0"))
+            </td>
+        </tr>
+    }
+    </table>
+    </body>
+    </html>
+ 
+     
+

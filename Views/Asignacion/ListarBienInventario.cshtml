@@ -1,0 +1,86 @@
+﻿
+@model IEnumerable<SAG2.Models.InventarioBien>
+@{
+    Layout = null;
+    ViewBag.Title = "ListarLineas";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/style.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+    <link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+	<!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Ccss/ie.css?" + @DateTime.Now.Ticks)" media="screen" />
+    <![endif]-->
+	<link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.dropdownPlain.js?" + @DateTime.Now.Ticks)"></script>
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/funciones.js?" + @DateTime.Now.Ticks)"></script>
+    <link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Iframe.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+      <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >
+        <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+</head>
+<body >
+
+@if (Model.Count() > 0)
+{
+    <table class ="table table-bordered table-hover">
+        <thead >
+        <tr class="info">
+            <th nowrap="nowrap">Especie</th>
+            <th nowrap="nowrap">Descripción</th>
+            <th nowrap="nowrap">Procedencia</th>
+            <th nowrap="nowrap">Nº C/E</th>
+             <th nowrap="nowrap">Factura</th>
+            <th nowrap="nowrap">Fecha Compra</th>
+                   
+        </tr>
+            </thead>
+       
+        @foreach (var inventariobien in Model)
+        {
+         <tr   style="cursor: pointer;">
+        
+            <td nowrap="nowrap">@inventariobien.BienInventario.Especie.Nombre  </td>
+            <td align="center" nowrap="nowrap">@inventariobien.BienInventario.Descripcion  </td>
+            <td nowrap="nowrap">@inventariobien.BienInventario.Procedencia </td>
+            <td nowrap="nowrap">@inventariobien.BienInventario.Nce </td>
+            <td nowrap="nowrap">@inventariobien.BienInventario.Factura </td>
+            
+           
+            
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen detalle  </th>
+        </tr>
+    </table>
+}
+</body></html>

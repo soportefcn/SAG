@@ -1,0 +1,38 @@
+﻿@model SAG2.Models.InventarioBien
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>InventarioBien</legend>
+
+    <div class="display-label">Inventario</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Inventario.Numero)
+    </div>
+
+    <div class="display-label">BienInventario</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BienInventario.NumeroInventario)
+    </div>
+
+    <div class="display-label">DependenciaID_Origen</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DependenciaID_Origen)
+    </div>
+
+    <div class="display-label">DependenciaID_Destino</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DependenciaID_Destino)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

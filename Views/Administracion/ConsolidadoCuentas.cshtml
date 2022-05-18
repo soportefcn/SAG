@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Consolidado de Cuentas";
+
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+@using (Html.BeginForm("GenerarConsolidado", "Administracion"))
+{
+<div id="SAGBox">
+    <h2>Consolidado de Cuentas</h2>
+    <table width="0%" border="0" cellspacing="0" cellpadding="5">
+      <tr>
+        <td>Período</td>
+        <td>
+            <select name="MesDesde" id="MesDesde">
+                @for (var i = 0; i < 12; i++)
+                {
+                    <option value="@Html.Raw((@i + 1).ToString())">@Html.Raw(@Meses[@i])</option>
+                }
+            </select>
+            -
+            <select name="PeriodoDesde" id="PeriodoDesde">
+                @for (var i = DateTime.Now.Year; i > DateTime.Now.Year - 6; i--)
+                {
+                    <option value="@Html.Raw((@i).ToString())">@Html.Raw((@i).ToString())</option>
+                }
+            </select>
+            a      
+            <select name="MesHasta" id="MesHasta">
+            @for (var i = 0; i < 12; i++)
+            {
+                <option value="@Html.Raw((@i + 1).ToString())">@Html.Raw(@Meses[@i])</option>
+            }    
+            </select>
+            -
+            <select name="PeriodoHasta" id="PeriodoHasta">
+                @for (var i = DateTime.Now.Year; i > DateTime.Now.Year - 6; i--)
+                {
+                    <option value="@Html.Raw((@i).ToString())">@Html.Raw((@i).ToString())</option>
+                }
+            </select>
+        </td>
+      </tr>
+      <tr>
+        <td><p>Cuentas</p>(Puede seleccionar más de una)</td>
+        <td>
+        <select name="CuentaID" size="5" multiple="multiple" id="CuentaID">
+            @Html.Raw(ViewBag.Arbol)
+        </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Agrupación</td>
+        <td><label for="AgruparProyectos"><input type="radio" name="Agrupar" id="AgruparProyectos" value="Proyectos" /> Proyectos</label>
+          <label for="AgruparLineas"><input type="radio" name="Agrupar" id="AgruparLineas" value="Lineas" /> Líneas</label></td>
+      </tr>
+      <tr>
+        <td>Título informe</td>
+        <td>
+        <input type="text" name="TituloInforme" id="TituloInforme" /></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>
+        <input type="submit" value="Aceptar" /></td>
+      </tr>
+    </table>
+</div>
+}

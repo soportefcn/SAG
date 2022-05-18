@@ -1,0 +1,104 @@
+﻿@model SAG2.Models.HorasExtras
+
+@{
+    ViewBag.Title = "Crea";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+
+
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+
+    <div class="panel panel-default">
+    <div class="panel-heading"><h3>Horas Extras</h3></div>
+    <div class="panel-body">
+      <div class ="form-group form-inline">
+        <div class="form-group" style="margin-right: 23px;">
+            <label>Periodo</label>
+        </div>
+        <div class="form-group">
+               <select name="Periodo" id="Periodo" class="form-control">
+                   @for (var i = DateTime.Now.Year - 3; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+           
+        </div>
+     </div>
+         <div class ="form-group form-inline">
+        <div class="form-group" style="margin-right: 42px;">
+            <label>Mes</label>
+        </div>
+        <div class="form-group">
+           <select name="Mes" id="Mes" class="form-control" style="width: 120px;">
+            @for (var i = 0; i < 12; i++)
+            {
+                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1)) {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+            }
+           </select>       
+        </div>
+     </div>
+      <div class ="form-group form-inline">
+        <div class="form-group" style="margin-right: 30px;">
+            <label>Monto</label>
+        </div>
+        <div class="form-group">
+           
+                 <div class="input-group">
+                  <div class="input-group-addon">$</div>
+                  <input type="text" class="form-control" id="MHorasExtras" name="MHorasExtras" placeholder="Monto Horas Extra">            
+                </div>               
+        </div>
+     </div>
+  </div>
+  <div class="panel-footer">
+	<div  style ="width: 500px ; display:inline-block">
+        	   <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=700,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/HorasExtras/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+         
+        </div>
+         <div style="float :right;display:inline-block">
+   <input class="btn btn-primary" type="submit" value="Guardar" />
+	</div>
+
+  </div>
+</div>
+@if (TempData["Message"] != null)
+{
+    @Html.Raw("<script>alert('"+TempData["Message"]+".');</script>");
+}  
+
+
+    </fieldset>
+}
+		<script type="text/javascript">
+		    $(document).ready(function () {
+
+		        $('#MHorasExtras').number(true);
+
+		    });
+
+		</script>
+<div>
+
+</div>

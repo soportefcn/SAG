@@ -1,0 +1,176 @@
+﻿@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    ViewBag.Title = "Movimientos Mensual";
+    var Meses = new string[12]
+    {
+"Enero",
+"Febrero",
+"Marzo",
+"Abril",
+"Mayo",
+"Junio",
+"Julio",
+"Agosto",
+"Septiembre",
+"Octubre",
+"Noviembre",
+"Diciembre"
+    };
+    long entrada = 0;
+    long salida = 0;
+}
+
+<h3>Consulta de Movimientos</h3>
+
+
+
+<div class="form-group form-inline">
+    <div class="form-group">
+        <label>Mes</label>
+    </div>
+    <div class="form-group">
+        <select name="Mes" id="Mes" class="form-control">
+            @for (var i = 0; i < 12; i++)
+            {
+                <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.Mes == (i + 1)) { @Html.Raw("selected=\"selected\"") }>@Html.Raw(@Meses[@i])</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Año</label>
+    </div>
+    <div class="form-group">
+        <select name="Periodo" id="Periodo" class="form-control">
+            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+            {
+                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) { @Html.Raw("selected=\"selected\"") }>@Html.Raw((@i).ToString())</option>
+            }
+        </select>
+    </div>
+
+
+    <a class="btn btn-default" name="ImprimirListadoFecha" id="ImprimirListadoFecha" data-toggle="tooltip" data-placement="top" title="Imprimir">
+        Imprimir
+    </a>
+    <a class="btn btn-success" name="Excel" id="Excel" data-toggle="tooltip" data-placement="top" title="Excel">
+        Excel
+    </a>
+</div>
+
+<h3>Listado de Movimientos </h3>
+
+@if (Model.Count() > 0)
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="info">
+                <th style="text-align: center;">Fecha</th>
+
+                <th style="text-align: center;">Descripción</th>
+                <th style="text-align: center;">U. Medida</th>
+                <th style="text-align: center;">Ingreso de Artículos</th>
+                <th style="text-align: center;">Egreso de Artículos</th>
+                <th style="text-align: center;">Nº Egreso</th>
+                <th style="text-align: center;">Nº Documento</th>
+
+            </tr>
+        </thead>
+
+        @foreach (var movimiento in Model)
+        {
+
+            <tr class="MovimientoBodega" MovimientosBodegaID="@movimiento.ID" Fecha="@movimiento.Fecha.ToShortDateString()" ArticuloID="@movimiento.ArticuloID" Cantidad="@if (@movimiento.Entrada > 0){ @movimiento.Entrada } else { @movimiento.Salida }" tipo_movimiento="@if (@movimiento.Entrada > 0){ @Html.Raw("E") } else { @Html.Raw("S") }" Observaciones="@movimiento.Observaciones" NroDocumento="@movimiento.NroDocumento" style="cursor: pointer;">
+                <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
+
+                <td nowrap="nowrap">@movimiento.Articulo.Nombre</td>
+                <td nowrap="nowrap">@movimiento.Articulo.UnidadMedida.Descripcion</td>
+                <td align="center" nowrap="nowrap">@if (@movimiento.Entrada > 0)
+                {@movimiento.Entrada}</td>
+                <td align="center" nowrap="nowrap">@if (@movimiento.Salida > 0)
+                {@movimiento.Salida}</td>
+                @if (@movimiento.Tdoc == 1)
+                {
+                    <td align="center" nowrap="nowrap">
+                        @try
+                        {
+                         <a  title="Seleccionar" onclick="window.open('../Egresos/Edit/'+@movimiento.DetalleEgreso.Egreso.ID  ,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                          @movimiento.NroDocumento
+                        }
+                           catch (Exception)
+                        {
+
+                        }
+                    </td>   
+                    <td nowrap="nowrap">
+                        @try
+                        {
+                            @movimiento.DetalleEgreso.NDocumento
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    </td>
+                }
+                else
+                {
+                    <td align="center" nowrap="nowrap"></td>
+                    <td nowrap="nowrap"></td>
+                }
+
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+
+
+        $("#Excel").click(function () {
+            var periodo = $("#Periodo").val();
+            var mes = $("#Mes").val();
+            window.open("/SAG_5/MovimientosBodega/Excel?mes=" + mes + "&periodo=" + periodo);
+        });
+        $("#link2").click(function () {
+            var periodo = $("#Periodo").val();
+            var mes = $("#Mes").val();
+            window.open("/SAG_5/MovimientosBodega/Excel?mes=" + mes + "&periodo=" + periodo);
+        });
+
+        $("#ImprimirListadoFecha").click(function () {
+            var periodo = $("#Periodo").val();
+            var mes = $("#Mes").val();
+     
+                window.open("/SAG_5/MovimientosBodega/ImprimirArtiFecha?mes=" + mes + "&periodo=" + periodo);
+          
+        });
+    });
+    //Listado Movimientos mes Mes Periodo
+    $("#Mes").change(function () {
+        var mes = $(this).val();
+        var periodo = parseInt($("#Periodo").val());
+        window.location = "/SAG_5/MovimientosBodega/listarMovimientosMes?mes=" + mes + "&periodo=" + periodo;
+    });
+    $("#Periodo").change(function () {
+        var periodo = $(this).val();
+        var mes = parseInt($("Mes").val());
+        window.location = "/SAG_5/MovimientosBodega/listarMovimientosMes?mes=" + mes + "&periodo=" + periodo;
+    });
+            function funcion() {
+            var a = $("#mesInicio").val();
+            var b = $("#anioInicio").val();
+            var c = $("#mesHasta").val();
+            var d = $("#anioHasta").val();
+                $("#link").attr("href", '@Url.Action("ListarMovimientosMes", "MovimientosBodega")' + "/?mesInicio=" + a + "&anioInicio=" + b + "&mesHasta=" + c + "&anioHasta=" + d);
+                $("#link2").attr("href", '@Url.Action("Excel", "MovimientosBodega")' + "/?mesInicio=" + a + "&anioInicio=" + b + "&mesHasta=" + c + "&anioHasta=" + d);
+        }
+
+</script>

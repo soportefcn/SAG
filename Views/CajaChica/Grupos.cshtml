@@ -1,0 +1,91 @@
+﻿@model IEnumerable<SAG2.Models.FondoFijoGrupo>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Grupos de Caja Chica";
+    var monto = 0;
+    int periodo = (int)Session["Periodo"];
+}
+<br />
+<div class="top" style="height: 50px;">
+ 
+   <div style="float :right;display:inline-block"><a href="./NuevoGrupo" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="CREAR NUEVA CAJA CHICA" style="margin-right: 10px;" onclick="window.opener.document.location=this.href; window.close(); return false;"><span class ="fa fa-inbox "></span>  Nueva Caja Chica</a></div>
+</div>
+ <div id="contenido_popup">
+    <table class = "table table-hover table-bordered table-condensed">
+        <thead class="fixedHeader">
+    <tr class="info">
+    <th class="controles"  width="33px"></th>
+        <th  width="100px">
+            Año
+        </th>
+        <th  width="425px">
+            Nombre
+        </th>
+        <th  width="100px">
+            Creación
+        </th>
+        <th  width="100px">
+            Modificación
+        </th>
+        <th  width="100px">
+            Monto Total $
+        </th>
+        <th width="108px">
+            Estado
+        </th>
+        
+    </tr>
+            </thead>
+<tbody class="scrollContent"> 
+@foreach (var item in Model)
+{
+    monto = monto + item.Monto;
+    <tr @if (periodo != item.Periodo)
+    { 
+         @Html.Raw("style=\"opacity: 0.5\"");
+    }
+        else if (!item.Activo.Equals("S"))
+    {
+        @Html.Raw("style=\"opacity: 0.7\"");
+    }>
+    <td width="33px">
+            <a href="@Url.Action("Create", "CajaChica", new { Grupo = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close(); return false;"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td width="100px">
+            @item.Periodo
+        </td>
+        <td width="425px">
+            @item.Descripcion
+        </td>
+        <td width="100px">
+            @item.Creacion
+        </td>
+        <td width="100px">
+            @item.Modificacion
+        </td>
+        <td align="right" width="100px">
+            @item.FondosFijos.Sum(f => f.Monto).ToString("#,##0")
+        </td>
+        <td align="center" width="100px">
+            @if (item.Activo.Equals("S"))
+            {
+                <img src="../Content/Images/estado_fondofjo_activo.png" />
+            }
+            else
+            { 
+                <img src="../Content/Images/estado_fondofjo_inactivo.png" />
+            }
+            
+        </td>
+        
+    </tr>
+    }
+    </tbody>
+    <tr>
+        <th align="right" colspan="6" class="alert alert-warning" >
+           Para activar un grupo de Caja chica debe liberar el Egreso asociado.
+        </th>
+        </tr>
+    </table>
+     
+</div>

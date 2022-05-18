@@ -1,0 +1,133 @@
+﻿@model IEnumerable<SAG2.Models.movcuenta>
+@using SAG2.Models
+@{
+    ViewBag.Title = "Cuentas";
+    SAG2DB db = new SAG2DB();
+    var proyectos = db.Proyecto.ToList();
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>
+<div id="SAGBox">
+    <h2>Informe de Cuenta</h2>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+
+                <h3>Periodo</h3>
+                <div class="row">
+                    <div class="col-sm-4">
+                        Cuenta
+                        <select id="CuentaID" name="CuentaID" class="js-autocomplete form-control">
+                            <option></option>
+                            @Html.Raw(ViewBag.Arbol)
+                        </select>
+                        <div class="form-group">
+                            Regiones
+                            <select name="Region" id="Region" class="js-autocomplete form-control">
+                                <option value="-1"> - Seleccione una Región</option>
+                                @foreach (SAG2.Models.Region region in ViewBag.regiones)
+                                {
+                                    <option value="@region.ID">
+                                        @region.Nombre
+                                    </option>
+
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-inline">
+                            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                                <label>Desde</label><br />
+
+                                <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" style="width: 100px;" />
+                            </div>
+                            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                                <label>Hasta</label><br />
+
+                                <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" style="margin-right: 20px;width: 100px;" />
+                            </div>
+                            <div class="form-group">
+                                <br />
+                                <input type="submit" value="Ver resultados!" class="btn btn-primary" />
+                                @Html.ActionLink("Excel", "CuentasRegionExcel", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta, Region = @ViewBag.Region }, new { @class = "btn btn-success" })
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+
+    </div>
+
+    @if (ViewBag.Entrada == 1)
+    {
+
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>Código Sag.</th>
+                <th>Tipo Movimiento</th>
+                <th>N° Comprobante</th>
+                <th>Fecha</th>
+                <th>Cuenta </th>
+                <th>N° Cheque</th>
+                <th>Monto</th>
+                <th>Cta Cte </th>
+                <th> Glosa</th>
+
+
+            </tr>
+            @foreach (var item in Model)
+            {
+
+            <tr>
+                <td>@proyectos.Find(i => i.ID == item.ProyectoID).CodCodeni</td>
+                <td align="center">
+                    @{
+                        if (item.TipoComprobanteID == 1)
+                        {
+                            <a href="@Url.Action("Edit", "Ingresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Ingreso  <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /> </a>
+                        }
+                        if (item.TipoComprobanteID == 2)
+                        {
+                            <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                        }
+                        if (item.TipoComprobanteID == 3)
+                        {
+                            <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                        }
+                        if (item.TipoComprobanteID == 4)
+                        {
+                            <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Gasto Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumeroComprobante)
+                </td>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td>@item.NombreCuenta</td>
+                <td>@item.Cheque</td>
+                <td align="right">
+                    @item.Monto.ToString("###,##")
+                </td>
+                <td>@item.CtaCte</td>
+                <td>@item.Glosa</td>
+            </tr>
+            }
+        </table>
+
+    }
+
+
+</div>

@@ -1,0 +1,1887 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="codeni09Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="codeni09Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="AltasMenores" EntityType="codeni09Model.AltasMenores" />
+    <EntitySet Name="AmarrePlantilla" EntityType="codeni09Model.AmarrePlantilla" />
+    <EntitySet Name="Articulo" EntityType="codeni09Model.Articulo" />
+    <EntitySet Name="Asistencia" EntityType="codeni09Model.Asistencia" />
+    <EntitySet Name="Banco" EntityType="codeni09Model.Banco" />
+    <EntitySet Name="Bodega" EntityType="codeni09Model.Bodega" />
+    <EntitySet Name="CalendarioAnual" EntityType="codeni09Model.CalendarioAnual" />
+    <EntitySet Name="Cuenta" EntityType="codeni09Model.Cuenta" />
+    <EntitySet Name="CuentaCorriente" EntityType="codeni09Model.CuentaCorriente" />
+    <EntitySet Name="DepositoPlazo" EntityType="codeni09Model.DepositoPlazo" />
+    <EntitySet Name="DeudaPendiente" EntityType="codeni09Model.DeudaPendiente" />
+    <EntitySet Name="Direccion" EntityType="codeni09Model.Direccion" />
+    <EntitySet Name="Documento" EntityType="codeni09Model.Documento" />
+    <EntitySet Name="Establecimiento" EntityType="codeni09Model.Establecimiento" />
+    <EntitySet Name="Familia" EntityType="codeni09Model.Familia" />
+    <EntitySet Name="Folios" EntityType="codeni09Model.Folios" />
+    <EntitySet Name="FondoFijo" EntityType="codeni09Model.FondoFijo" />
+    <EntitySet Name="Historico" EntityType="codeni09Model.Historico" />
+    <EntitySet Name="Honorarios" EntityType="codeni09Model.Honorarios" />
+    <EntitySet Name="IndiceGestion" EntityType="codeni09Model.IndiceGestion" />
+    <EntitySet Name="Intervencion" EntityType="codeni09Model.Intervencion" />
+    <EntitySet Name="Inventario" EntityType="codeni09Model.Inventario" />
+    <EntitySet Name="ItemGasto" EntityType="codeni09Model.ItemGasto" />
+    <EntitySet Name="LineaAccion" EntityType="codeni09Model.LineaAccion" />
+    <EntitySet Name="Menores" EntityType="codeni09Model.Menores" />
+    <EntitySet Name="Movimiento" EntityType="codeni09Model.Movimiento" />
+    <EntitySet Name="Persona" EntityType="codeni09Model.Persona" />
+    <EntitySet Name="Plantilla" EntityType="codeni09Model.Plantilla" />
+    <EntitySet Name="PlantillaEjecucion" EntityType="codeni09Model.PlantillaEjecucion" />
+    <EntitySet Name="Programa" EntityType="codeni09Model.Programa" />
+    <EntitySet Name="Proveedor" EntityType="codeni09Model.Proveedor" />
+    <EntitySet Name="Proyecto" EntityType="codeni09Model.Proyecto" />
+    <EntitySet Name="SistemaAsistencial" EntityType="codeni09Model.SistemaAsistencial" />
+    <EntitySet Name="sysdiagrams" EntityType="codeni09Model.sysdiagrams" />
+    <EntitySet Name="TipoComprobante" EntityType="codeni09Model.TipoComprobante" />
+    <EntitySet Name="Usuario" EntityType="codeni09Model.Usuario" />
+    <AssociationSet Name="FK_AltasMenores_Institutions" Association="codeni09Model.FK_AltasMenores_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="AltasMenores" EntitySet="AltasMenores" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AmarrePlantillaSet_EstablecimientoSet" Association="codeni09Model.FK_AmarrePlantillaSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="AmarrePlantilla" EntitySet="AmarrePlantilla" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ArticuloSet_FamiliaSet" Association="codeni09Model.FK_ArticuloSet_FamiliaSet">
+      <End Role="Familia" EntitySet="Familia" />
+      <End Role="Articulo" EntitySet="Articulo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Asistencia_Institutions" Association="codeni09Model.FK_Asistencia_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Asistencia" EntitySet="Asistencia" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Asistencia_ProyectoSet" Association="codeni09Model.FK_Asistencia_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Asistencia" EntitySet="Asistencia" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_BancoSet" Association="codeni09Model.FK_CuentaCorrienteSet_BancoSet">
+      <End Role="Banco" EntitySet="Banco" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Bodega_Institutions" Association="codeni09Model.FK_Bodega_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Bodega_ProyectoSet" Association="codeni09Model.FK_Bodega_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BodegaSet_DocumentoSet" Association="codeni09Model.FK_BodegaSet_DocumentoSet">
+      <End Role="Documento" EntitySet="Documento" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BodegaSet_ProveedorSet" Association="codeni09Model.FK_BodegaSet_ProveedorSet">
+      <End Role="Proveedor" EntitySet="Proveedor" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_CuentaSet" Association="codeni09Model.FK_DeudaPendienteSet_CuentaSet">
+      <End Role="Cuenta" EntitySet="Cuenta" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_CuentaSet" Association="codeni09Model.FK_FondoFijoSet_CuentaSet">
+      <End Role="Cuenta" EntitySet="Cuenta" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_CuentaSet" Association="codeni09Model.FK_MovimientoSet_CuentaSet">
+      <End Role="Cuenta" EntitySet="Cuenta" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_DireccionSet" Association="codeni09Model.FK_CuentaCorrienteSet_DireccionSet">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_EstablecimientoSet" Association="codeni09Model.FK_CuentaCorrienteSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_ProyectoSet" Association="codeni09Model.FK_CuentaCorrienteSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DepositoPlazoSet_CuentaCorrienteSet" Association="codeni09Model.FK_DepositoPlazoSet_CuentaCorrienteSet">
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+      <End Role="DepositoPlazo" EntitySet="DepositoPlazo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Movimiento_CuentaCorriente" Association="codeni09Model.FK_Movimiento_CuentaCorriente">
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DepositoPlazoSet_EstablecimientoSet" Association="codeni09Model.FK_DepositoPlazoSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="DepositoPlazo" EntitySet="DepositoPlazo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DepositoPlazoSet_ProyectoSet" Association="codeni09Model.FK_DepositoPlazoSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="DepositoPlazo" EntitySet="DepositoPlazo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_DocumentoSet" Association="codeni09Model.FK_DeudaPendienteSet_DocumentoSet">
+      <End Role="Documento" EntitySet="Documento" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_EstablecimientoSet" Association="codeni09Model.FK_DeudaPendienteSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_ProyectoSet" Association="codeni09Model.FK_DeudaPendienteSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EstablecimientoSet_DireccionSet" Association="codeni09Model.FK_EstablecimientoSet_DireccionSet">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Persona_Direccion" Association="codeni09Model.FK_Persona_Direccion">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="Persona" EntitySet="Persona" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProveedorSet_DireccionSet" Association="codeni09Model.FK_ProveedorSet_DireccionSet">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="Proveedor" EntitySet="Proveedor" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Historico_DocumentoSet" Association="codeni09Model.FK_Historico_DocumentoSet">
+      <End Role="Documento" EntitySet="Documento" />
+      <End Role="Historico" EntitySet="Historico" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Establecimiento_Persona" Association="codeni09Model.FK_Establecimiento_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EstablecimientoSet_SistemaAsistencialSet" Association="codeni09Model.FK_EstablecimientoSet_SistemaAsistencialSet">
+      <End Role="SistemaAsistencial" EntitySet="SistemaAsistencial" />
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Folios_Institutions" Association="codeni09Model.FK_Folios_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Folios" EntitySet="Folios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_EstablecimientoSet" Association="codeni09Model.FK_FondoFijoSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Historico_Institutions" Association="codeni09Model.FK_Historico_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Historico" EntitySet="Historico" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Honorarios_Institutions" Association="codeni09Model.FK_Honorarios_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Honorarios" EntitySet="Honorarios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IndiGestion_Institutions" Association="codeni09Model.FK_IndiGestion_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="IndiceGestion" EntitySet="IndiceGestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IntervencionSet_EstablecimientoSet" Association="codeni09Model.FK_IntervencionSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Intervencion" EntitySet="Intervencion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Inventories_Institutions" Association="codeni09Model.FK_Inventories_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Inventario" EntitySet="Inventario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_EstablecimientoSet" Association="codeni09Model.FK_MovimientoSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaEjecucionSet_EstablecimientoSet" Association="codeni09Model.FK_PlantillaEjecucionSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="PlantillaEjecucion" EntitySet="PlantillaEjecucion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaSet_EstablecimientoSet" Association="codeni09Model.FK_PlantillaSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Plantilla" EntitySet="Plantilla" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InventarioSet_FamiliaSet" Association="codeni09Model.FK_InventarioSet_FamiliaSet">
+      <End Role="Familia" EntitySet="Familia" />
+      <End Role="Inventario" EntitySet="Inventario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Folios_ProyectoSet" Association="codeni09Model.FK_Folios_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Folios" EntitySet="Folios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_ItemGastoSet" Association="codeni09Model.FK_FondoFijoSet_ItemGastoSet">
+      <End Role="ItemGasto" EntitySet="ItemGasto" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_ProyectoSet" Association="codeni09Model.FK_FondoFijoSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Historico_ItemGastoSet" Association="codeni09Model.FK_Historico_ItemGastoSet">
+      <End Role="ItemGasto" EntitySet="ItemGasto" />
+      <End Role="Historico" EntitySet="Historico" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Honorarios_ProyectoSet" Association="codeni09Model.FK_Honorarios_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Honorarios" EntitySet="Honorarios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IndiceGestionSet_ProyectoSet" Association="codeni09Model.FK_IndiceGestionSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="IndiceGestion" EntitySet="IndiceGestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InventarioSet_ProyectoSet" Association="codeni09Model.FK_InventarioSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Inventario" EntitySet="Inventario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SistemaAsistencial_LineaAccion" Association="codeni09Model.FK_SistemaAsistencial_LineaAccion">
+      <End Role="LineaAccion" EntitySet="LineaAccion" />
+      <End Role="SistemaAsistencial" EntitySet="SistemaAsistencial" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Movimiento_Persona" Association="codeni09Model.FK_Movimiento_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_ProyectoSet" Association="codeni09Model.FK_MovimientoSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_TipoComprobanteSet" Association="codeni09Model.FK_MovimientoSet_TipoComprobanteSet">
+      <End Role="TipoComprobante" EntitySet="TipoComprobante" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Proveedor_Persona" Association="codeni09Model.FK_Proveedor_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Proveedor" EntitySet="Proveedor" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuario_Persona" Association="codeni09Model.FK_Usuario_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Usuario" EntitySet="Usuario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaSet_ProyectoSet" Association="codeni09Model.FK_PlantillaSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Plantilla" EntitySet="Plantilla" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaEjecucionSet_ProyectoSet" Association="codeni09Model.FK_PlantillaEjecucionSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="PlantillaEjecucion" EntitySet="PlantillaEjecucion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProyectoSet_ProgramaSet" Association="codeni09Model.FK_ProyectoSet_ProgramaSet">
+      <End Role="Programa" EntitySet="Programa" />
+      <End Role="Proyecto" EntitySet="Proyecto" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="AltasMenores">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="RUT_NINIO" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Anio" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Mes" Type="Int16" />
+    <Property Name="Fecha" Type="DateTime" />
+    <Property Name="Tipo_Mov" Type="Int16" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_AltasMenores_Institutions" FromRole="AltasMenores" ToRole="Establecimiento" />
+  </EntityType>
+  <EntityType Name="AmarrePlantilla">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+    </Key>
+    <Property Name="Nombre_Plantilla" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="Proyecto" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Naturaleza" Type="Int16" />
+    <Property Name="Tipo_Registro" Type="Int16" />
+    <Property Name="Codigo_Grupo" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Nombre_Grupo" Type="String" MaxLength="35" Unicode="false" FixedLength="true" />
+    <Property Name="Codigo_Concepto" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Nombre_Concepto" Type="String" MaxLength="43" Unicode="false" FixedLength="true" />
+    <Property Name="Codigo_CtaItem" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Nombre_CtaItem" Type="String" MaxLength="35" Unicode="false" FixedLength="true" />
+    <Property Name="Totaliza" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_AmarrePlantillaSet_EstablecimientoSet" FromRole="AmarrePlantilla" ToRole="Establecimiento" />
+  </EntityType>
+  <EntityType Name="Articulo">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FamiliaID" Type="Int32" Nullable="false" />
+    <Property Name="Codigo_Articulo" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Codigo_UMedida" Type="Int16" />
+    <Property Name="Descripcion" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Saldo_Art" Type="Double" />
+    <NavigationProperty Name="Familia" Relationship="codeni09Model.FK_ArticuloSet_FamiliaSet" FromRole="Articulo" ToRole="Familia" />
+  </EntityType>
+  <EntityType Name="Asistencia">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="anio" Type="Int32" />
+    <Property Name="mes" Type="Int16" />
+    <Property Name="mes_palabras" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+    <Property Name="total_mes" Type="Int32" />
+    <Property Name="obs" Type="String" MaxLength="70" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_Asistencia_Institutions" FromRole="Asistencia" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_Asistencia_ProyectoSet" FromRole="Asistencia" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="Banco">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="CuentaCorriente" Relationship="codeni09Model.FK_CuentaCorrienteSet_BancoSet" FromRole="Banco" ToRole="CuentaCorriente" />
+  </EntityType>
+  <EntityType Name="Bodega">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="Anio" Type="Int32" />
+    <Property Name="mes" Type="Int16" />
+    <Property Name="Tipo_mov" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="NroDoc" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="DocumentoID" Type="Int32" Nullable="false" />
+    <Property Name="Nombre_doc" Type="String" MaxLength="30" Unicode="false" FixedLength="true" />
+    <Property Name="Fecha_mov" Type="DateTime" />
+    <Property Name="ProveedorID" Type="Int32" Nullable="false" />
+    <Property Name="Descrip" Type="String" MaxLength="30" Unicode="false" FixedLength="true" />
+    <Property Name="Cod_UM" Type="Int32" />
+    <Property Name="Nom_UM" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+    <Property Name="C_Salida" Type="Double" />
+    <Property Name="C_entrada" Type="Double" />
+    <Property Name="Obs" Type="String" MaxLength="120" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_Bodega_Institutions" FromRole="Bodega" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_Bodega_ProyectoSet" FromRole="Bodega" ToRole="Proyecto" />
+    <NavigationProperty Name="Documento" Relationship="codeni09Model.FK_BodegaSet_DocumentoSet" FromRole="Bodega" ToRole="Documento" />
+    <NavigationProperty Name="Proveedor" Relationship="codeni09Model.FK_BodegaSet_ProveedorSet" FromRole="Bodega" ToRole="Proveedor" />
+  </EntityType>
+  <EntityType Name="CalendarioAnual">
+    <Key>
+      <PropertyRef Name="ID_R" />
+    </Key>
+    <Property Name="ID_R" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="COD_EST" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Anio" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Mes" Type="Int16" />
+    <Property Name="D1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D10" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D11" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D12" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D13" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D14" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D15" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D16" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D17" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D18" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D19" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D20" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D21" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D22" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D23" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D24" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D25" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D26" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D27" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D28" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D29" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D30" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="D31" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="TotalDias" Type="Int16" />
+  </EntityType>
+  <EntityType Name="Cuenta">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="DeudaPendiente" Relationship="codeni09Model.FK_DeudaPendienteSet_CuentaSet" FromRole="Cuenta" ToRole="DeudaPendiente" />
+    <NavigationProperty Name="FondoFijo" Relationship="codeni09Model.FK_FondoFijoSet_CuentaSet" FromRole="Cuenta" ToRole="FondoFijo" />
+    <NavigationProperty Name="Movimiento" Relationship="codeni09Model.FK_MovimientoSet_CuentaSet" FromRole="Cuenta" ToRole="Movimiento" />
+  </EntityType>
+  <EntityType Name="CuentaCorriente">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Numero" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="ProyectoID" Type="Int32" />
+    <Property Name="BancoID" Type="Int32" />
+    <Property Name="Sucursal" Type="String" MaxLength="40" Unicode="false" FixedLength="true" />
+    <Property Name="Saldo_Inicial" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DireccionID" Type="Int32" Nullable="false" />
+    <Property Name="Ejecutivo" Type="String" MaxLength="40" Unicode="false" FixedLength="true" />
+    <Property Name="Fono" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="Fax" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="Movil" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="Email" Type="String" MaxLength="50" Unicode="false" FixedLength="true" />
+    <Property Name="Pweb" Type="String" MaxLength="100" Unicode="false" FixedLength="true" />
+    <Property Name="Obs" Type="String" MaxLength="150" Unicode="false" FixedLength="true" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="LineaCredito" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Desactiva" Type="Int16" />
+    <NavigationProperty Name="Banco" Relationship="codeni09Model.FK_CuentaCorrienteSet_BancoSet" FromRole="CuentaCorriente" ToRole="Banco" />
+    <NavigationProperty Name="Direccion" Relationship="codeni09Model.FK_CuentaCorrienteSet_DireccionSet" FromRole="CuentaCorriente" ToRole="Direccion" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_CuentaCorrienteSet_EstablecimientoSet" FromRole="CuentaCorriente" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_CuentaCorrienteSet_ProyectoSet" FromRole="CuentaCorriente" ToRole="Proyecto" />
+    <NavigationProperty Name="DepositoPlazo" Relationship="codeni09Model.FK_DepositoPlazoSet_CuentaCorrienteSet" FromRole="CuentaCorriente" ToRole="DepositoPlazo" />
+    <NavigationProperty Name="Movimiento" Relationship="codeni09Model.FK_Movimiento_CuentaCorriente" FromRole="CuentaCorriente" ToRole="Movimiento" />
+  </EntityType>
+  <EntityType Name="DepositoPlazo">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="Anio" Type="Int32" />
+    <Property Name="Mes" Type="Int16" />
+    <Property Name="CuentaCorrienteID" Type="Int32" />
+    <Property Name="Banco" Type="String" MaxLength="10" Unicode="false" FixedLength="true" />
+    <Property Name="Monto" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="interes" Type="Double" />
+    <Property Name="intereses" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="apagar" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="comprobante" Type="String" MaxLength="15" Unicode="false" FixedLength="true" />
+    <Property Name="fecha_dep" Type="DateTime" />
+    <Property Name="fecha_ven" Type="DateTime" />
+    <Property Name="obs" Type="String" MaxLength="200" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="CuentaCorriente" Relationship="codeni09Model.FK_DepositoPlazoSet_CuentaCorrienteSet" FromRole="DepositoPlazo" ToRole="CuentaCorriente" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_DepositoPlazoSet_EstablecimientoSet" FromRole="DepositoPlazo" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_DepositoPlazoSet_ProyectoSet" FromRole="DepositoPlazo" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="DeudaPendiente">
+    <Key>
+      <PropertyRef Name="Numero" />
+    </Key>
+    <Property Name="ID" Type="Int32" />
+    <Property Name="Numero" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="Fecha_registro" Type="DateTime" />
+    <Property Name="Tipo_Acreedor" Type="Int16" />
+    <Property Name="Rut" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Dv" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Nombre" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Numero_Doc" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="DocumentoID" Type="Int32" />
+    <Property Name="Fecha_Doc" Type="DateTime" />
+    <Property Name="Fecha_Ven_doc" Type="DateTime" />
+    <Property Name="Monto" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Glosa" Type="String" MaxLength="150" Unicode="false" FixedLength="true" />
+    <Property Name="CuentaID" Type="Int32" />
+    <Property Name="Egreso" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Fecha_Egreso" Type="DateTime" />
+    <Property Name="Pagado" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Cerrado" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Mes_Pro" Type="Int16" />
+    <Property Name="Ano_Pro" Type="Int32" />
+    <Property Name="EstablecimientoID" Type="Int32" />
+    <Property Name="ProyectoID" Type="Int32" />
+    <NavigationProperty Name="Cuenta" Relationship="codeni09Model.FK_DeudaPendienteSet_CuentaSet" FromRole="DeudaPendiente" ToRole="Cuenta" />
+    <NavigationProperty Name="Documento" Relationship="codeni09Model.FK_DeudaPendienteSet_DocumentoSet" FromRole="DeudaPendiente" ToRole="Documento" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_DeudaPendienteSet_EstablecimientoSet" FromRole="DeudaPendiente" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_DeudaPendienteSet_ProyectoSet" FromRole="DeudaPendiente" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="Direccion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Calle" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Numero" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Depto" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="CuentaCorriente" Relationship="codeni09Model.FK_CuentaCorrienteSet_DireccionSet" FromRole="Direccion" ToRole="CuentaCorriente" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_EstablecimientoSet_DireccionSet" FromRole="Direccion" ToRole="Establecimiento" />
+    <NavigationProperty Name="Persona" Relationship="codeni09Model.FK_Persona_Direccion" FromRole="Direccion" ToRole="Persona" />
+    <NavigationProperty Name="Proveedor" Relationship="codeni09Model.FK_ProveedorSet_DireccionSet" FromRole="Direccion" ToRole="Proveedor" />
+  </EntityType>
+  <EntityType Name="Documento">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Bodega" Relationship="codeni09Model.FK_BodegaSet_DocumentoSet" FromRole="Documento" ToRole="Bodega" />
+    <NavigationProperty Name="DeudaPendiente" Relationship="codeni09Model.FK_DeudaPendienteSet_DocumentoSet" FromRole="Documento" ToRole="DeudaPendiente" />
+    <NavigationProperty Name="Historico" Relationship="codeni09Model.FK_Historico_DocumentoSet" FromRole="Documento" ToRole="Historico" />
+  </EntityType>
+  <EntityType Name="Establecimiento">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SistemaAsistencialID" Type="Int32" Nullable="false" />
+    <Property Name="DireccionID" Type="Int32" Nullable="false" />
+    <Property Name="DirectorID" Type="Int32" Nullable="false" />
+    <Property Name="CodCodeni" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="CodSename" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Nombre" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Institucion" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Fono" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="Fax" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="Plazas" Type="Int32" Nullable="false" />
+    <Property Name="PlazasAdicional" Type="Int32" Nullable="false" />
+    <Property Name="EdadMinima" Type="Int32" Nullable="false" />
+    <Property Name="EdadMaxima" Type="Int32" Nullable="false" />
+    <Property Name="ValorSubencion" Type="Int64" Nullable="false" />
+    <Property Name="Sexo" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Flexibilizacion" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="DiasAtencion" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="AltasMenores" Relationship="codeni09Model.FK_AltasMenores_Institutions" FromRole="Establecimiento" ToRole="AltasMenores" />
+    <NavigationProperty Name="AmarrePlantilla" Relationship="codeni09Model.FK_AmarrePlantillaSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="AmarrePlantilla" />
+    <NavigationProperty Name="Asistencia" Relationship="codeni09Model.FK_Asistencia_Institutions" FromRole="Establecimiento" ToRole="Asistencia" />
+    <NavigationProperty Name="Bodega" Relationship="codeni09Model.FK_Bodega_Institutions" FromRole="Establecimiento" ToRole="Bodega" />
+    <NavigationProperty Name="CuentaCorriente" Relationship="codeni09Model.FK_CuentaCorrienteSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="CuentaCorriente" />
+    <NavigationProperty Name="DepositoPlazo" Relationship="codeni09Model.FK_DepositoPlazoSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="DepositoPlazo" />
+    <NavigationProperty Name="DeudaPendiente" Relationship="codeni09Model.FK_DeudaPendienteSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="DeudaPendiente" />
+    <NavigationProperty Name="Direccion" Relationship="codeni09Model.FK_EstablecimientoSet_DireccionSet" FromRole="Establecimiento" ToRole="Direccion" />
+    <NavigationProperty Name="Persona" Relationship="codeni09Model.FK_Establecimiento_Persona" FromRole="Establecimiento" ToRole="Persona" />
+    <NavigationProperty Name="SistemaAsistencial" Relationship="codeni09Model.FK_EstablecimientoSet_SistemaAsistencialSet" FromRole="Establecimiento" ToRole="SistemaAsistencial" />
+    <NavigationProperty Name="Folios" Relationship="codeni09Model.FK_Folios_Institutions" FromRole="Establecimiento" ToRole="Folios" />
+    <NavigationProperty Name="FondoFijo" Relationship="codeni09Model.FK_FondoFijoSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="FondoFijo" />
+    <NavigationProperty Name="Historico" Relationship="codeni09Model.FK_Historico_Institutions" FromRole="Establecimiento" ToRole="Historico" />
+    <NavigationProperty Name="Honorarios" Relationship="codeni09Model.FK_Honorarios_Institutions" FromRole="Establecimiento" ToRole="Honorarios" />
+    <NavigationProperty Name="IndiceGestion" Relationship="codeni09Model.FK_IndiGestion_Institutions" FromRole="Establecimiento" ToRole="IndiceGestion" />
+    <NavigationProperty Name="Intervencion" Relationship="codeni09Model.FK_IntervencionSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="Intervencion" />
+    <NavigationProperty Name="Inventario" Relationship="codeni09Model.FK_Inventories_Institutions" FromRole="Establecimiento" ToRole="Inventario" />
+    <NavigationProperty Name="Movimiento" Relationship="codeni09Model.FK_MovimientoSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="Movimiento" />
+    <NavigationProperty Name="PlantillaEjecucion" Relationship="codeni09Model.FK_PlantillaEjecucionSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="PlantillaEjecucion" />
+    <NavigationProperty Name="Plantilla" Relationship="codeni09Model.FK_PlantillaSet_EstablecimientoSet" FromRole="Establecimiento" ToRole="Plantilla" />
+  </EntityType>
+  <EntityType Name="Familia">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Codigo" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="60" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Articulo" Relationship="codeni09Model.FK_ArticuloSet_FamiliaSet" FromRole="Familia" ToRole="Articulo" />
+    <NavigationProperty Name="Inventario" Relationship="codeni09Model.FK_InventarioSet_FamiliaSet" FromRole="Familia" ToRole="Inventario" />
+  </EntityType>
+  <EntityType Name="Folios">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+    </Key>
+    <Property Name="Numero" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Tipo" Type="Int16" />
+    <Property Name="Nombre_pc" Type="String" MaxLength="30" Unicode="false" FixedLength="true" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_Folios_Institutions" FromRole="Folios" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_Folios_ProyectoSet" FromRole="Folios" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="FondoFijo">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CuentaID" Type="Int32" />
+    <Property Name="EstablecimientoID" Type="Int32" />
+    <Property Name="ProyectoID" Type="Int32" />
+    <Property Name="ItemGastoID" Type="Int32" />
+    <Property Name="Fecha" Type="DateTime" />
+    <Property Name="NroDocumento" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Monto" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Glosa" Type="Binary" MaxLength="50" FixedLength="false" />
+    <Property Name="Ano" Type="Int32" />
+    <Property Name="Mes" Type="Int32" />
+    <Property Name="Cerrado" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Cuenta" Relationship="codeni09Model.FK_FondoFijoSet_CuentaSet" FromRole="FondoFijo" ToRole="Cuenta" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_FondoFijoSet_EstablecimientoSet" FromRole="FondoFijo" ToRole="Establecimiento" />
+    <NavigationProperty Name="ItemGasto" Relationship="codeni09Model.FK_FondoFijoSet_ItemGastoSet" FromRole="FondoFijo" ToRole="ItemGasto" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_FondoFijoSet_ProyectoSet" FromRole="FondoFijo" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="Historico">
+    <Key>
+      <PropertyRef Name="Numero" />
+      <PropertyRef Name="Ctacte" />
+      <PropertyRef Name="Cta_Contable" />
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="Proyecto" />
+      <PropertyRef Name="Rut" />
+      <PropertyRef Name="DocumentoID" />
+      <PropertyRef Name="ItemGastoID" />
+    </Key>
+    <Property Name="Tipo" Type="Int16" />
+    <Property Name="Numero" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="Linea" Type="Int32" />
+    <Property Name="Fecha" Type="DateTime" />
+    <Property Name="Ctacte" Type="String" Nullable="false" MaxLength="15" Unicode="false" FixedLength="true" />
+    <Property Name="Nombre_cta" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Cta_Contable" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="Monto_Ingreso" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Glosa" Type="String" MaxLength="250" Unicode="false" FixedLength="true" />
+    <Property Name="Nro_Cheque" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="Cerrado" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="YearMov" Type="Int32" />
+    <Property Name="MesMov" Type="Int32" />
+    <Property Name="Proyecto" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="Fecha_Cheque" Type="DateTime" />
+    <Property Name="Monto_Cheque" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Tipo_Beneficiario" Type="Int16" />
+    <Property Name="Rut" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="Dv" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Nombre_Beneficiario" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Tipo_Origen" Type="Int16" />
+    <Property Name="Comprobante_DP" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="DocumentoID" Type="Int32" Nullable="false" />
+    <Property Name="Nombre_Doc" Type="String" MaxLength="30" Unicode="false" FixedLength="true" />
+    <Property Name="Numero_Doc" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Monto_Doc" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Fecha_Emision" Type="DateTime" />
+    <Property Name="Fecha_Vencimiento" Type="DateTime" />
+    <Property Name="Monto_Egreso" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Nro_egreso" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Cta_Original" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Nombre_Cta_Original" Type="String" MaxLength="40" Unicode="false" FixedLength="true" />
+    <Property Name="ItemGastoID" Type="Int32" Nullable="false" />
+    <Property Name="Nombre_Item" Type="String" MaxLength="40" Unicode="false" FixedLength="true" />
+    <Property Name="Glosa_Global" Type="String" MaxLength="150" Unicode="false" FixedLength="false" />
+    <Property Name="Uso_Cta" Type="Int16" />
+    <NavigationProperty Name="Documento" Relationship="codeni09Model.FK_Historico_DocumentoSet" FromRole="Historico" ToRole="Documento" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_Historico_Institutions" FromRole="Historico" ToRole="Establecimiento" />
+    <NavigationProperty Name="ItemGasto" Relationship="codeni09Model.FK_Historico_ItemGastoSet" FromRole="Historico" ToRole="ItemGasto" />
+  </EntityType>
+  <EntityType Name="Honorarios">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+    </Key>
+    <Property Name="Boleta" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Fecha" Type="DateTime" />
+    <Property Name="Rut" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Dv" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Nombre" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Neto" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Retencion" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Bruto" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Concepto" Type="String" MaxLength="150" Unicode="false" FixedLength="true" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="Ano" Type="Int32" />
+    <Property Name="Mes" Type="Int16" />
+    <Property Name="Porcentaje" Type="Double" />
+    <Property Name="Tipo" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Egreso" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Fecha_Egreso" Type="DateTime" />
+    <Property Name="Beneficiario" Type="Int16" />
+    <Property Name="Estado" Type="String" MaxLength="2" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_Honorarios_Institutions" FromRole="Honorarios" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_Honorarios_ProyectoSet" FromRole="Honorarios" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="IndiceGestion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Correlativo" Type="Int32" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="Cod_factor" Type="Int16" />
+    <Property Name="Nombre_factor" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Cod_Variable" Type="Int16" />
+    <Property Name="Nombre_Variable" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Nombre_Indicador" Type="String" MaxLength="40" Unicode="false" FixedLength="true" />
+    <Property Name="Indicador" Type="String" MaxLength="5" Unicode="false" FixedLength="true" />
+    <Property Name="Estandar" Type="String" MaxLength="12" Unicode="false" FixedLength="true" />
+    <Property Name="Estandar_Real" Type="Double" />
+    <Property Name="Medicion" Type="Int16" />
+    <Property Name="Nombre_Medicion" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="valor_1" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="valor_2" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="valor_3" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="valor_4" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Cta_Item" Type="String" MaxLength="100" Unicode="false" FixedLength="true" />
+    <Property Name="Cta_2" Type="String" MaxLength="100" Unicode="false" FixedLength="true" />
+    <Property Name="Obs" Type="String" MaxLength="160" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_IndiGestion_Institutions" FromRole="IndiceGestion" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_IndiceGestionSet_ProyectoSet" FromRole="IndiceGestion" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="Intervencion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="COD_MENOR" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="FECHA" Type="DateTime" />
+    <Property Name="COD_INTER" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="Cerrado" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_IntervencionSet_EstablecimientoSet" FromRole="Intervencion" ToRole="Establecimiento" />
+  </EntityType>
+  <EntityType Name="Inventario">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="Anio" Type="Int32" />
+    <Property Name="Descrip" Type="String" MaxLength="120" Unicode="false" FixedLength="true" />
+    <Property Name="Ubicacion" Type="String" MaxLength="100" Unicode="false" FixedLength="true" />
+    <Property Name="Estado" Type="Int16" />
+    <Property Name="Cantidad" Type="Int32" />
+    <Property Name="Valor" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Fecha_Mov" Type="DateTime" />
+    <Property Name="Tipo_Mov" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Cod_Tipo_Mov" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Nom_Tipo_Mov" Type="String" MaxLength="25" Unicode="false" FixedLength="true" />
+    <Property Name="Egreso" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Factura" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Acta" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Fecha_acta" Type="DateTime" />
+    <Property Name="Obs" Type="String" MaxLength="250" Unicode="false" FixedLength="true" />
+    <Property Name="FamiliaID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_Inventories_Institutions" FromRole="Inventario" ToRole="Establecimiento" />
+    <NavigationProperty Name="Familia" Relationship="codeni09Model.FK_InventarioSet_FamiliaSet" FromRole="Inventario" ToRole="Familia" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_InventarioSet_ProyectoSet" FromRole="Inventario" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="ItemGasto">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="FondoFijo" Relationship="codeni09Model.FK_FondoFijoSet_ItemGastoSet" FromRole="ItemGasto" ToRole="FondoFijo" />
+    <NavigationProperty Name="Historico" Relationship="codeni09Model.FK_Historico_ItemGastoSet" FromRole="ItemGasto" ToRole="Historico" />
+  </EntityType>
+  <EntityType Name="LineaAccion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="SistemaAsistencial" Relationship="codeni09Model.FK_SistemaAsistencial_LineaAccion" FromRole="LineaAccion" ToRole="SistemaAsistencial" />
+  </EntityType>
+  <EntityType Name="Menores">
+    <Key>
+      <PropertyRef Name="ID_MENOR" />
+    </Key>
+    <Property Name="ID_MENOR" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Rut" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="DV" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Nombre" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Obs" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="Codigo_est" Type="Single" />
+    <Property Name="Fecha_ing" Type="DateTime" />
+    <Property Name="Fecha_Sal" Type="DateTime" />
+    <Property Name="Estado" Type="Int16" />
+    <Property Name="Sexo" Type="Int16" />
+    <Property Name="Tipo" Type="Int16" />
+    <Property Name="NRO_INTERVEN" Type="Int16" />
+    <Property Name="DIAS_PERMANENCIA" Type="Int16" />
+    <Property Name="DIAS_A_PAGAR" Type="Double" />
+  </EntityType>
+  <EntityType Name="Movimiento">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="Int32" />
+    <Property Name="ProyectoID" Type="Int32" />
+    <Property Name="TipoComprobanteID" Type="Int32" />
+    <Property Name="CuentaID" Type="Int32" />
+    <Property Name="BeneficiarioID" Type="Int32" Nullable="false" />
+    <Property Name="CuentaCorrienteID" Type="Int32" />
+    <Property Name="Nombre" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="NumeroComprobante" Type="Int32" />
+    <Property Name="Periodo" Type="Int32" />
+    <Property Name="Mes" Type="Int32" />
+    <Property Name="Fecha" Type="DateTime" />
+    <Property Name="Cheque" Type="Int32" />
+    <Property Name="Monto_Ingresos" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Monto_Egresos" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Saldo" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Linea" Type="Int32" />
+    <Property Name="Conciliado" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Mes_Anterior" Type="Int32" />
+    <Property Name="Periodo_Anterior" Type="Int32" />
+    <Property Name="Cerrado" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="Saldo_cartola" Type="Int32" />
+    <Property Name="Dep_No_Consignados" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Cheques_No_Cobrados" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Gastos_Bancarios" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Descripcion" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+    <Property Name="Saldo_Libro" Type="Decimal" Precision="19" Scale="4" />
+    <NavigationProperty Name="Cuenta" Relationship="codeni09Model.FK_MovimientoSet_CuentaSet" FromRole="Movimiento" ToRole="Cuenta" />
+    <NavigationProperty Name="CuentaCorriente" Relationship="codeni09Model.FK_Movimiento_CuentaCorriente" FromRole="Movimiento" ToRole="CuentaCorriente" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_MovimientoSet_EstablecimientoSet" FromRole="Movimiento" ToRole="Establecimiento" />
+    <NavigationProperty Name="Persona" Relationship="codeni09Model.FK_Movimiento_Persona" FromRole="Movimiento" ToRole="Persona" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_MovimientoSet_ProyectoSet" FromRole="Movimiento" ToRole="Proyecto" />
+    <NavigationProperty Name="TipoComprobante" Relationship="codeni09Model.FK_MovimientoSet_TipoComprobanteSet" FromRole="Movimiento" ToRole="TipoComprobante" />
+  </EntityType>
+  <EntityType Name="Persona">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DireccionID" Type="Int32" Nullable="false" />
+    <Property Name="Rut" Type="String" Nullable="false" MaxLength="10" Unicode="false" FixedLength="false" />
+    <Property Name="DV" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Nombres" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="ApellidoParterno" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="ApellidoMaterno" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="FechaNacimiento" Type="DateTime" />
+    <Property Name="Sexo" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="EstadoCivil" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="FechaIngreso" Type="DateTime" />
+    <NavigationProperty Name="Direccion" Relationship="codeni09Model.FK_Persona_Direccion" FromRole="Persona" ToRole="Direccion" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_Establecimiento_Persona" FromRole="Persona" ToRole="Establecimiento" />
+    <NavigationProperty Name="Movimiento" Relationship="codeni09Model.FK_Movimiento_Persona" FromRole="Persona" ToRole="Movimiento" />
+    <NavigationProperty Name="Proveedor" Relationship="codeni09Model.FK_Proveedor_Persona" FromRole="Persona" ToRole="Proveedor" />
+    <NavigationProperty Name="Usuario" Relationship="codeni09Model.FK_Usuario_Persona" FromRole="Persona" ToRole="Usuario" />
+  </EntityType>
+  <EntityType Name="Plantilla">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+      <PropertyRef Name="Saldo_Inicial" />
+      <PropertyRef Name="Aporte_Concejo" />
+      <PropertyRef Name="Saldo_Inicial_Real" />
+    </Key>
+    <Property Name="Nombre" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="Saldo_Inicial" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="Aporte_Concejo" Type="Double" Nullable="false" />
+    <Property Name="Saldo_Inicial_Real" Type="Double" Nullable="false" />
+    <Property Name="Mes_Inicio_Proyecto" Type="Int16" />
+    <Property Name="Ano_Inicio_Proyecto" Type="Int16" />
+    <Property Name="Mes1" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes2" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes3" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes4" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes5" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes6" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes7" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes8" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes9" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes10" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes11" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <Property Name="Mes12" Type="String" MaxLength="6" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_PlantillaSet_EstablecimientoSet" FromRole="Plantilla" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_PlantillaSet_ProyectoSet" FromRole="Plantilla" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="PlantillaEjecucion">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+    </Key>
+    <Property Name="ID" Type="Int32" />
+    <Property Name="Nombre_Plantilla" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="EstablecimientoID" Type="Int32" Nullable="false" />
+    <Property Name="ProyectoID" Type="Int32" Nullable="false" />
+    <Property Name="Naturaleza" Type="Int32" />
+    <Property Name="Tipo_Linea" Type="Int16" />
+    <Property Name="Grupo" Type="Int32" />
+    <Property Name="Tipo_Reg" Type="Int32" />
+    <Property Name="Concepto" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Descripcion" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="PptoMes1" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes1" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes1" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes1" Type="Double" />
+    <Property Name="PptoMes2" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes2" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes2" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes2" Type="Double" />
+    <Property Name="PptoMes3" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes3" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes3" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes3" Type="Double" />
+    <Property Name="PptoMes4" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes4" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes4" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes4" Type="Double" />
+    <Property Name="PptoMes5" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes5" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes5" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes5" Type="Double" />
+    <Property Name="PptoMes6" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes6" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes6" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes6" Type="Double" />
+    <Property Name="PptoMes7" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes7" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes7" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes7" Type="Double" />
+    <Property Name="PptoMes8" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes8" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes8" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes8" Type="Double" />
+    <Property Name="PptoMes9" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes9" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes9" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes9" Type="Double" />
+    <Property Name="PptoMes10" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes10" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes10" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes10" Type="Double" />
+    <Property Name="PptoMes11" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes11" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes11" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes11" Type="Double" />
+    <Property Name="PptoMes12" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="RealMes12" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DesvMes12" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PorcenMes12" Type="Double" />
+    <Property Name="Total_Concepto" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="Fila" Type="Int32" />
+    <Property Name="X" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_PlantillaEjecucionSet_EstablecimientoSet" FromRole="PlantillaEjecucion" ToRole="Establecimiento" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_PlantillaEjecucionSet_ProyectoSet" FromRole="PlantillaEjecucion" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="Programa">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Sigla" Type="String" MaxLength="10" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Proyecto" Relationship="codeni09Model.FK_ProyectoSet_ProgramaSet" FromRole="Programa" ToRole="Proyecto" />
+  </EntityType>
+  <EntityType Name="Proveedor">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PersonID" Type="Int32" Nullable="false" />
+    <Property Name="DireccionID" Type="Int32" Nullable="false" />
+    <Property Name="Fono" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="Fax" Type="String" MaxLength="20" Unicode="false" FixedLength="true" />
+    <Property Name="Email" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Contacto" Type="String" MaxLength="60" Unicode="false" FixedLength="true" />
+    <Property Name="Pweb" Type="String" MaxLength="50" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Bodega" Relationship="codeni09Model.FK_BodegaSet_ProveedorSet" FromRole="Proveedor" ToRole="Bodega" />
+    <NavigationProperty Name="Direccion" Relationship="codeni09Model.FK_ProveedorSet_DireccionSet" FromRole="Proveedor" ToRole="Direccion" />
+    <NavigationProperty Name="Persona" Relationship="codeni09Model.FK_Proveedor_Persona" FromRole="Proveedor" ToRole="Persona" />
+  </EntityType>
+  <EntityType Name="Proyecto">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProgramaID" Type="Int32" Nullable="false" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Asistencia" Relationship="codeni09Model.FK_Asistencia_ProyectoSet" FromRole="Proyecto" ToRole="Asistencia" />
+    <NavigationProperty Name="Bodega" Relationship="codeni09Model.FK_Bodega_ProyectoSet" FromRole="Proyecto" ToRole="Bodega" />
+    <NavigationProperty Name="CuentaCorriente" Relationship="codeni09Model.FK_CuentaCorrienteSet_ProyectoSet" FromRole="Proyecto" ToRole="CuentaCorriente" />
+    <NavigationProperty Name="DepositoPlazo" Relationship="codeni09Model.FK_DepositoPlazoSet_ProyectoSet" FromRole="Proyecto" ToRole="DepositoPlazo" />
+    <NavigationProperty Name="DeudaPendiente" Relationship="codeni09Model.FK_DeudaPendienteSet_ProyectoSet" FromRole="Proyecto" ToRole="DeudaPendiente" />
+    <NavigationProperty Name="Folios" Relationship="codeni09Model.FK_Folios_ProyectoSet" FromRole="Proyecto" ToRole="Folios" />
+    <NavigationProperty Name="FondoFijo" Relationship="codeni09Model.FK_FondoFijoSet_ProyectoSet" FromRole="Proyecto" ToRole="FondoFijo" />
+    <NavigationProperty Name="Honorarios" Relationship="codeni09Model.FK_Honorarios_ProyectoSet" FromRole="Proyecto" ToRole="Honorarios" />
+    <NavigationProperty Name="IndiceGestion" Relationship="codeni09Model.FK_IndiceGestionSet_ProyectoSet" FromRole="Proyecto" ToRole="IndiceGestion" />
+    <NavigationProperty Name="Inventario" Relationship="codeni09Model.FK_InventarioSet_ProyectoSet" FromRole="Proyecto" ToRole="Inventario" />
+    <NavigationProperty Name="Movimiento" Relationship="codeni09Model.FK_MovimientoSet_ProyectoSet" FromRole="Proyecto" ToRole="Movimiento" />
+    <NavigationProperty Name="Plantilla" Relationship="codeni09Model.FK_PlantillaSet_ProyectoSet" FromRole="Proyecto" ToRole="Plantilla" />
+    <NavigationProperty Name="PlantillaEjecucion" Relationship="codeni09Model.FK_PlantillaEjecucionSet_ProyectoSet" FromRole="Proyecto" ToRole="PlantillaEjecucion" />
+    <NavigationProperty Name="Programa" Relationship="codeni09Model.FK_ProyectoSet_ProgramaSet" FromRole="Proyecto" ToRole="Programa" />
+  </EntityType>
+  <EntityType Name="SistemaAsistencial">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LineaAccionID" Type="Int32" />
+    <Property Name="Nombre" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+    <Property Name="Abreviatura" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Establecimiento" Relationship="codeni09Model.FK_EstablecimientoSet_SistemaAsistencialSet" FromRole="SistemaAsistencial" ToRole="Establecimiento" />
+    <NavigationProperty Name="LineaAccion" Relationship="codeni09Model.FK_SistemaAsistencial_LineaAccion" FromRole="SistemaAsistencial" ToRole="LineaAccion" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" Unicode="true" FixedLength="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="TipoComprobante">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <NavigationProperty Name="Movimiento" Relationship="codeni09Model.FK_MovimientoSet_TipoComprobanteSet" FromRole="TipoComprobante" ToRole="Movimiento" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PersonaID" Type="Int32" Nullable="false" />
+    <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+    <Property Name="Nivel" Type="Int16" />
+    <Property Name="Estado" Type="String" MaxLength="1" Unicode="false" FixedLength="false" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="33" Unicode="false" FixedLength="false" />
+    <Property Name="Obs" Type="String" MaxLength="120" Unicode="false" FixedLength="true" />
+    <Property Name="M1_1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M1_10" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_10" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_11" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_12" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_13" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_14" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_15" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_16" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_17" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_18" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_19" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_20" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_21" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_22" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_23" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_24" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_25" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_26" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_27" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_28" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_29" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M2_30" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M3_9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_10" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_11" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M4_12" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_10" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_11" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_12" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_13" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_14" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_15" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M5_16" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_10" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M6_11" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_1" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_2" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_3" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_4" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_5" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_6" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_7" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_8" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <Property Name="M7_9" Type="String" MaxLength="1" Unicode="false" FixedLength="true" />
+    <NavigationProperty Name="Persona" Relationship="codeni09Model.FK_Usuario_Persona" FromRole="Usuario" ToRole="Persona" />
+  </EntityType>
+  <Association Name="FK_AltasMenores_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AltasMenores" Type="codeni09Model.AltasMenores" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="AltasMenores">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AmarrePlantillaSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AmarrePlantilla" Type="codeni09Model.AmarrePlantilla" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="AmarrePlantilla">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ArticuloSet_FamiliaSet">
+    <End Role="Familia" Type="codeni09Model.Familia" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Articulo" Type="codeni09Model.Articulo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Familia">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Articulo">
+        <PropertyRef Name="FamiliaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Asistencia_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Asistencia" Type="codeni09Model.Asistencia" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Asistencia">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Asistencia_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Asistencia" Type="codeni09Model.Asistencia" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Asistencia">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_BancoSet">
+    <End Role="Banco" Type="codeni09Model.Banco" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Banco">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="BancoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Bodega_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Bodega_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BodegaSet_DocumentoSet">
+    <End Role="Documento" Type="codeni09Model.Documento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Documento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="DocumentoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BodegaSet_ProveedorSet">
+    <End Role="Proveedor" Type="codeni09Model.Proveedor" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proveedor">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="ProveedorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_CuentaSet">
+    <End Role="Cuenta" Type="codeni09Model.Cuenta" Multiplicity="0..1" />
+    <End Role="DeudaPendiente" Type="codeni09Model.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cuenta">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="CuentaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_CuentaSet">
+    <End Role="Cuenta" Type="codeni09Model.Cuenta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="FondoFijo" Type="codeni09Model.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cuenta">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="CuentaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_CuentaSet">
+    <End Role="Cuenta" Type="codeni09Model.Cuenta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cuenta">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="CuentaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_DireccionSet">
+    <End Role="Direccion" Type="codeni09Model.Direccion" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DepositoPlazoSet_CuentaCorrienteSet">
+    <End Role="CuentaCorriente" Type="codeni09Model.CuentaCorriente" Multiplicity="0..1" />
+    <End Role="DepositoPlazo" Type="codeni09Model.DepositoPlazo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CuentaCorriente">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DepositoPlazo">
+        <PropertyRef Name="CuentaCorrienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Movimiento_CuentaCorriente">
+    <End Role="CuentaCorriente" Type="codeni09Model.CuentaCorriente" Multiplicity="0..1" />
+    <End Role="Movimiento" Type="codeni09Model.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CuentaCorriente">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="CuentaCorrienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DepositoPlazoSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1" />
+    <End Role="DepositoPlazo" Type="codeni09Model.DepositoPlazo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DepositoPlazo">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DepositoPlazoSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DepositoPlazo" Type="codeni09Model.DepositoPlazo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DepositoPlazo">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_DocumentoSet">
+    <End Role="Documento" Type="codeni09Model.Documento" Multiplicity="0..1" />
+    <End Role="DeudaPendiente" Type="codeni09Model.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Documento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="DocumentoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DeudaPendiente" Type="codeni09Model.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DeudaPendiente" Type="codeni09Model.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EstablecimientoSet_DireccionSet">
+    <End Role="Direccion" Type="codeni09Model.Direccion" Multiplicity="1" />
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Establecimiento">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Persona_Direccion">
+    <End Role="Direccion" Type="codeni09Model.Direccion" Multiplicity="1" />
+    <End Role="Persona" Type="codeni09Model.Persona" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Persona">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProveedorSet_DireccionSet">
+    <End Role="Direccion" Type="codeni09Model.Direccion" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Proveedor" Type="codeni09Model.Proveedor" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Proveedor">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Historico_DocumentoSet">
+    <End Role="Documento" Type="codeni09Model.Documento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Historico" Type="codeni09Model.Historico" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Documento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Historico">
+        <PropertyRef Name="DocumentoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Establecimiento_Persona">
+    <End Role="Persona" Type="codeni09Model.Persona" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Establecimiento">
+        <PropertyRef Name="DirectorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EstablecimientoSet_SistemaAsistencialSet">
+    <End Role="SistemaAsistencial" Type="codeni09Model.SistemaAsistencial" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SistemaAsistencial">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Establecimiento">
+        <PropertyRef Name="SistemaAsistencialID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Folios_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Folios" Type="codeni09Model.Folios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Folios">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="FondoFijo" Type="codeni09Model.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Historico_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Historico" Type="codeni09Model.Historico" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Historico">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Honorarios_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Honorarios" Type="codeni09Model.Honorarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Honorarios">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IndiGestion_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="IndiceGestion" Type="codeni09Model.IndiceGestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="IndiceGestion">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IntervencionSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Intervencion" Type="codeni09Model.Intervencion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Intervencion">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Inventories_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Inventario" Type="codeni09Model.Inventario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Inventario">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaEjecucionSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PlantillaEjecucion" Type="codeni09Model.PlantillaEjecucion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PlantillaEjecucion">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Plantilla" Type="codeni09Model.Plantilla" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Plantilla">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InventarioSet_FamiliaSet">
+    <End Role="Familia" Type="codeni09Model.Familia" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Inventario" Type="codeni09Model.Inventario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Familia">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Inventario">
+        <PropertyRef Name="FamiliaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Folios_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Folios" Type="codeni09Model.Folios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Folios">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_ItemGastoSet">
+    <End Role="ItemGasto" Type="codeni09Model.ItemGasto" Multiplicity="0..1" />
+    <End Role="FondoFijo" Type="codeni09Model.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ItemGasto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="ItemGastoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="0..1" />
+    <End Role="FondoFijo" Type="codeni09Model.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Historico_ItemGastoSet">
+    <End Role="ItemGasto" Type="codeni09Model.ItemGasto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Historico" Type="codeni09Model.Historico" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ItemGasto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Historico">
+        <PropertyRef Name="ItemGastoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Honorarios_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Honorarios" Type="codeni09Model.Honorarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Honorarios">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IndiceGestionSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="IndiceGestion" Type="codeni09Model.IndiceGestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="IndiceGestion">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InventarioSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Inventario" Type="codeni09Model.Inventario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Inventario">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SistemaAsistencial_LineaAccion">
+    <End Role="LineaAccion" Type="codeni09Model.LineaAccion" Multiplicity="0..1" />
+    <End Role="SistemaAsistencial" Type="codeni09Model.SistemaAsistencial" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LineaAccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SistemaAsistencial">
+        <PropertyRef Name="LineaAccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Movimiento_Persona">
+    <End Role="Persona" Type="codeni09Model.Persona" Multiplicity="1" />
+    <End Role="Movimiento" Type="codeni09Model.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="BeneficiarioID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_TipoComprobanteSet">
+    <End Role="TipoComprobante" Type="codeni09Model.TipoComprobante" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TipoComprobante">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="TipoComprobanteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Proveedor_Persona">
+    <End Role="Persona" Type="codeni09Model.Persona" Multiplicity="1" />
+    <End Role="Proveedor" Type="codeni09Model.Proveedor" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Proveedor">
+        <PropertyRef Name="PersonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuario_Persona">
+    <End Role="Persona" Type="codeni09Model.Persona" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Usuario" Type="codeni09Model.Usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Usuario">
+        <PropertyRef Name="PersonaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Plantilla" Type="codeni09Model.Plantilla" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Plantilla">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaEjecucionSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PlantillaEjecucion" Type="codeni09Model.PlantillaEjecucion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PlantillaEjecucion">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProyectoSet_ProgramaSet">
+    <End Role="Programa" Type="codeni09Model.Programa" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Proyecto" Type="codeni09Model.Proyecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Programa">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Proyecto">
+        <PropertyRef Name="ProgramaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

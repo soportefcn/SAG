@@ -1,0 +1,40 @@
+﻿@model IEnumerable<SAG2.Models.Seccion>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Bancos";
+}
+
+ <div id="contenido_popup">
+   <table class ="table table-bordered table-hover">
+    <tr>
+        <th style="width: 10%;">
+            Menú
+        </th>
+        <th style="width: 70%;">
+            Nombre
+        </th>
+        <th>
+            URL
+        </th>
+        <th class="controles"></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Menu)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.URL)
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", "Secciones", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+        </table>
+    </div>

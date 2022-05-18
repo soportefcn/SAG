@@ -1,0 +1,69 @@
+﻿@model SAG2.Models.Persona
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Personal";
+    var comunaID = ViewBag.ComunaID;
+    var rut = Request.QueryString["rut"].ToString();
+    var dv = Request.QueryString["dv"].ToString();   
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>class="top" style="height: 18px;">Ingresar Personal&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+<fieldset>
+        <legend>Datos Básicos de Personal</legend><br />
+@using (Html.BeginForm())
+{
+    @Html.Raw(@ViewBag.Mensaje);
+    <table width="90%" border="0" cellspacing="0" cellpadding="3" class="noorange">
+        <tr>
+            <td width="15%" align="right">Rut</td>
+            <td>
+                @Html.TextBox("Rut", @rut, new { @style = "width: 70px;", @readonly = "readonly" })-@Html.TextBox("DV", @dv, new { @style = "width: 20px;", @readonly = "readonly" })
+            </td>
+            <td width="15%" align="right">Ap. Paterno</td>
+            <td width="">@Html.TextBoxFor(model => model.ApellidoParterno, new { @tabindex = "2", @style = "border: 1px solid Blue;" })</td>
+        </tr>
+        <tr>
+            <td align="right">Nombres</td>
+            <td>@Html.TextBoxFor(model => model.Nombres, new { @tabindex = "1", @style = "border: 1px solid Blue;" })</td>
+            <td align="right">Ap. Materno</td>
+            <td>@Html.TextBoxFor(model => model.ApellidoMaterno, new { @tabindex = "3" })</td>
+        </tr>
+        <tr>
+            <td align="right">
+                @Html.Label("Dirección")
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="right">Calle</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Calle, new { @tabindex = "4" })</td>
+            <td align="right">Región</td>
+            <td>@Html.DropDownList("RegionID", null, new { @tabindex = "6", @comuna = comunaID })</td>
+        </tr>
+        <tr>
+            <td align="right">Número</td>
+            <td>@Html.TextBoxFor(model => model.Direccion.Numero, new { @tabindex = "5" })</td>
+            <td align="right">Comuna</td>
+            <td><select name="ComunaID" id="ComunaID" tabindex="7">
+                <option>Seleccione región</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td colspan="4" align="right">
+            <p>
+                <input type="submit" value="Guardar" id="submit" class="ingresar_persona_popup" tabindex="8" />
+            </p>
+        </td>
+        </tr>
+    </table>
+}
+</fieldset>
+</div>

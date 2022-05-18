@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Conceptos";
+}
+<div id="SAGBox">
+    <h3>Mantenedores > Conceptos</h3>
+    <ul>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoImputacion/">Imputación</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoOrigenAdquisicion/">Origen de adquisición</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoAsistenciaPersonal/">Asistencia personal</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoBajaInventario/">Bajas</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoPersonal/">Tipo de personal</a></li>
+        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/LineasAtencion/">Líneas de acción</a></li>
+    </ul>
+</div>

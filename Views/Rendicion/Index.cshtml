@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "Generar rendición";
+    var periodos_anteriores = (List<SAG2.Models.Periodo>)@ViewBag.periodos_anteriores;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div class="inicio">
+<br />
+@Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm("Guardar", "Rendicion"))
+{
+    @Html.Raw(@ViewBag.Mensaje)
+    var Proyecto = (SAG2.Models.Proyecto)Session["Proyecto"];
+    var Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+    <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Generar Rendición de Cuentas</b></h3></div>
+  <div class="panel-body">
+      <fieldset>
+        <input type="hidden" id="nroComprobantes" name="nroComprobantes" value="@ViewBag.nroComprobantes.ToString()" />
+        <input type="hidden" id="nroConciliados" name="nroConciliados" value="@ViewBag.nroConciliados.ToString()" />
+       
+           <div class="alert alert-info" role="alert" style="text-align:center">
+        <strong>Al generar la rendición</strong>
+        el período actual
+    <a class="alert-link" href="#">se cerrará automáticamente</a>
+        <p>Para continuar, debe ingresar las intervenciones realizadas durante el período en el Proyecto</p>
+    </div>
+           
+        <div class="form-group" style="margin-right: 10px;">
+            <strong>@Proyecto.NombreLista</strong>
+        </div>
+           <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 10px;">
+            <label>Intervenciones @Html.Raw(@Meses[((int)Session["Mes"]) - 1]) @Html.Raw(Session["Periodo"].ToString()) </label>
+            </div>
+               <div class="form-group">
+                   <input class="form-control" name="Intervenciones" id="Intervenciones" size="3" maxlength="3" />
+               </div></div>
+           <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 10px;">
+            <label>Provisión por Indemnización</label>
+             </div>
+               <div class="form-group">
+                           @if (@ViewBag.DAP == 0 || true)
+                {
+                    <input type="hidden" id="IndemnizacionReq" name="IndemnizacionReq" value="true" />
+                    <input name="Indemnizacion" id="Indemnizacion" size="7" maxlength="10" value="0" />
+                }
+                else
+                { 
+                    <input type="hidden" id="IndemnizacionReq" name="IndemnizacionReq" value="false" />
+                    <input name="Indemnizacion" id="Indemnizacion" size="7" maxlength="10" value="0" readonly="readonly" style="background-color: #CCC;" />
+                }
+                   </div></div>
+     
+    </fieldset>
+  </div>
+  <div class="panel-footer">
+	<div  style ="width: 250px ; display:inline-block">
+             <fieldset>
+        
+            <input class="btn btn-primary" type="submit" value="Guardar" name="GenerarRendicion" id="GenerarRendicion" />
+      
+    </fieldset>
+        </div>
+ 
+
+  </div>
+</div>
+
+
+}
+</div>

@@ -1,0 +1,143 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=SALDOBANCO.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+
+    ViewBag.Title = "Libro Banco";
+    var Saldo = 0;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    List<SAG2.Models.Saldo> SaldoI = new List<SAG2.Models.Saldo>();
+    SaldoI = (List<SAG2.Models.Saldo>)@ViewBag.Saldos;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Saldo Libro Banco</title>
+    <style type="text/css" media="print">
+    @@page
+    {
+        size: landscape;
+        margin: 2cm;
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+        font-size: 10px;    
+    }
+    
+    th 
+    {
+        font-size: 12px;    
+    }
+    h2 {
+        text-align: center;
+    }
+    
+    .registros td
+    {
+        border: 1px solid black;    
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+    }
+    
+    thead {	display: table-header-group;}
+    tfoot {display: table-footer-group;}
+    
+    tbody {
+        display:table-row-group;
+    }
+    
+    tr  {
+        page-break-inside: avoid;
+    }
+    
+    .registros td {padding: 2px;}
+    </style>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" colspan="8"><strong>Ciudad del Ni&ntilde;o<br />
+    @Html.Raw(@ViewBag.Proyecto)</strong></td>
+    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+  </tr>
+</table>
+    <table>
+    <tr>
+        <td colspan="9" style="text-align: center;">
+            <h2>Saldo Libro Banco</h2>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="9" style="text-align: center;">
+            Per&iacute;odo @Meses[@ViewBag.mes - 1] de @ViewBag.periodo
+        </td>
+    </tr>
+    <tr>
+        </table>
+   <table align="center" style="width: 100%;" id="" cellspacing="3">
+    <thead>
+        <tr>
+            <th>Proyecto</th>
+             <th>Periodo</th>
+            <th>Mes</th>
+            <th>Saldo Inicial</th>
+            <th>Saldo Final</th>
+         </tr>
+        </thead>
+        <tbody>
+
+  @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            {
+               <tr >
+                    <td>@Proyecto.NombreEstado</td>
+                    <td>@ViewBag.periodo</td>
+                   <td>@{ var i  = @ViewBag.Mes -1;
+                       @Meses[i]
+                                 }</td>
+
+                   @{
+                    //int Valor_ingresos = Model.Where(c => c.ProyectoID == Proyecto.ID    
+                int saldo_inicial = SaldoI.Where(c => c.CuentaCorriente.ProyectoID == Proyecto.ID).Where(c => c.Mes == @ViewBag.Mes).Where(c => c.Periodo == @ViewBag.periodo).Sum(c => c.SaldoInicialCartola);   
+                int valor_ingresos = Model.Where(d => d.ProyectoID == Proyecto.ID ).Sum(d => d.Monto_Ingresos);
+                int valor_egresos = Model.Where(d => d.ProyectoID == Proyecto.ID).Sum(d => d.Monto_Egresos);
+                int resul = (saldo_inicial + valor_ingresos) - valor_egresos;
+                   }
+                   <td>@saldo_inicial.ToString("#,##0")</td>
+                   <td>@resul.ToString("#,##0")</td>
+              </tr>
+
+  }
+   
+
+    </table>
+</body>
+</html>

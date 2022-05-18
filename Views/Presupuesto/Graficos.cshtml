@@ -1,0 +1,269 @@
+﻿@using SAG2.Models;
+@{
+    ViewBag.Title = "Graficos";
+    SAG2DB db = new SAG2DB();
+
+    Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+    int Periodo = (int)Session["Periodo"];
+    int Mes = (int)Session["Mes"];
+
+    int ing_transferencias = 0, ing_otros_aportes = 0, ing_distintos = 0, ing_dap = 0, ing_otros = 0;
+    int egr_personal = 0, egr_operacion = 0, egr_inversion = 0, egr_provision = 0, egr_gastos = 0;
+
+    int mes_desde = Mes; 
+    int mes_hasta = Mes;
+
+    int periodo_desde = Periodo;
+    int periodo_hasta = Periodo;
+
+    if (Request.Form["MesDesde"] != null)
+    {
+        mes_desde = Int32.Parse(Request.Form["MesDesde"].ToString());
+        mes_hasta = Int32.Parse(Request.Form["MesHasta"].ToString());
+        periodo_desde = Int32.Parse(Request.Form["PeriodoDesde"].ToString());
+        periodo_hasta = Int32.Parse(Request.Form["PeriodoHasta"].ToString());
+    }
+    
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"    
+	};
+
+    try
+    {
+        ing_transferencias = db.Movimiento.Where(m => m.TipoComprobanteID == 1 && m.Nulo == null && m.Temporal == null && m.Eliminado == null && m.ProyectoID == Proyecto.ID && m.Cuenta.Codigo.StartsWith("1.") && m.Periodo >= periodo_desde && m.Periodo <= periodo_hasta && m.Mes >= mes_desde && m.Mes <= mes_hasta).Sum(m => m.Monto_Ingresos);
+    }
+    catch (Exception)
+    {
+        ing_transferencias = 0;
+    }
+
+    try
+    {
+        ing_otros_aportes = db.Movimiento.Where(m => m.TipoComprobanteID == 1 && m.Nulo == null && m.Temporal == null && m.Eliminado == null && m.ProyectoID == Proyecto.ID && m.Cuenta.Codigo.StartsWith("2.") && m.Periodo >= periodo_desde && m.Periodo <= periodo_hasta && m.Mes >= mes_desde && m.Mes <= mes_hasta).Sum(m => m.Monto_Ingresos);
+    }
+    catch (Exception)
+    {
+        ing_otros_aportes = 0;
+    }
+
+    try
+    {
+        ing_distintos = db.Movimiento.Where(m => m.TipoComprobanteID == 1 && m.Nulo == null && m.Temporal == null && m.Eliminado == null && m.ProyectoID == Proyecto.ID && m.Cuenta.Codigo.StartsWith("3.") && m.Periodo >= periodo_desde && m.Periodo <= periodo_hasta && m.Mes >= mes_desde && m.Mes <= mes_hasta).Sum(m => m.Monto_Ingresos);
+    }
+    catch (Exception)
+    {
+        ing_distintos = 0;
+    }
+
+    try
+    {
+        ing_dap = db.Movimiento.Where(m => m.TipoComprobanteID == 1 && m.Nulo == null && m.Temporal == null && m.Eliminado == null && m.ProyectoID == Proyecto.ID && m.Cuenta.Codigo.StartsWith("4.") && m.Periodo >= periodo_desde && m.Periodo <= periodo_hasta && m.Mes >= mes_desde && m.Mes <= mes_hasta).Sum(m => m.Monto_Ingresos);
+    }
+    catch (Exception)
+    {
+        ing_dap = 0;
+    }
+
+    try
+    {
+        ing_otros = db.Movimiento.Where(m => m.TipoComprobanteID == 1 && m.Nulo == null && m.Temporal == null && m.Eliminado == null && m.ProyectoID == Proyecto.ID && m.Cuenta.Codigo.StartsWith("5.") && m.Periodo >= periodo_desde && m.Periodo <= periodo_hasta && m.Mes >= mes_desde && m.Mes <= mes_hasta).Sum(m => m.Monto_Ingresos);
+    }
+    catch (Exception)
+    {
+        ing_otros = 0;
+    }
+
+    try
+    {
+        egr_personal = db.DetalleEgreso.Where(d => d.Cuenta.Codigo.StartsWith("6.") && d.Egreso.ProyectoID == Proyecto.ID && d.Nulo == null && d.Temporal == null && d.Egreso.Periodo >= periodo_desde && d.Egreso.Periodo <= periodo_hasta && d.Egreso.Mes >= mes_desde && d.Egreso.Mes <= mes_hasta).Sum(d => d.Monto);
+    }
+    catch (Exception)
+    {
+        egr_personal = 0;
+    }
+
+    try
+    {
+        egr_operacion = db.DetalleEgreso.Where(d => d.Cuenta.Codigo.StartsWith("7.") && d.Egreso.ProyectoID == Proyecto.ID && d.Nulo == null && d.Temporal == null && d.Egreso.Periodo >= periodo_desde && d.Egreso.Periodo <= periodo_hasta && d.Egreso.Mes >= mes_desde && d.Egreso.Mes <= mes_hasta).Sum(d => d.Monto);
+    }
+    catch (Exception)
+    {
+        egr_operacion = 0;
+    }
+
+    try
+    {
+        egr_inversion = db.DetalleEgreso.Where(d => d.Cuenta.Codigo.StartsWith("8.") && d.Egreso.ProyectoID == Proyecto.ID && d.Nulo == null && d.Temporal == null && d.Egreso.Periodo >= periodo_desde && d.Egreso.Periodo <= periodo_hasta && d.Egreso.Mes >= mes_desde && d.Egreso.Mes <= mes_hasta).Sum(d => d.Monto);
+    }
+    catch (Exception)
+    {
+        egr_inversion = 0;
+    }
+
+    try
+    {
+        egr_provision = db.DetalleEgreso.Where(d => d.Cuenta.Codigo.StartsWith("9.") && d.Egreso.ProyectoID == Proyecto.ID && d.Nulo == null && d.Temporal == null && d.Egreso.Periodo >= periodo_desde && d.Egreso.Periodo <= periodo_hasta && d.Egreso.Mes >= mes_desde && d.Egreso.Mes <= mes_hasta).Sum(d => d.Monto);
+    }
+    catch (Exception)
+    {
+        egr_provision = 0;
+    }
+
+    try
+    {
+        egr_gastos = db.DetalleEgreso.Where(d => d.Cuenta.Codigo.StartsWith("10.") && d.Egreso.ProyectoID == Proyecto.ID && d.Nulo == null && d.Temporal == null && d.Egreso.Periodo >= periodo_desde && d.Egreso.Periodo <= periodo_hasta && d.Egreso.Mes >= mes_desde && d.Egreso.Mes <= mes_hasta).Sum(d => d.Monto);
+    }
+    catch (Exception)
+    {
+        egr_gastos = 0;
+    }
+}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {'packages':['corechart']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Cuentas');
+        data.addColumn('number', 'Ingresos');
+        data.addRows([
+            ['1 TRANSFERENCIAS', @ing_transferencias],
+            ['2 OTROS APORTES DEL SENAME', @ing_otros_aportes],
+            ['3 INGRESOS DISTINTOS AL SENAME', @ing_distintos],
+            ['4 INGRESOS POR INTERESES Y RESCATES DAP', @ing_dap],
+            ['5 OTROS INGRESOS', @ing_otros]
+        ]);
+
+        var formatter = new google.visualization.NumberFormat(
+         { negativeColor: 'red', negativeParens: true, pattern: '$###,###' });
+        formatter.format(data, 1);
+
+        // Set chart options
+        var options = {'title':'Ingresos acumulados por cuenta $@((ing_dap + ing_distintos + ing_otros + ing_otros_aportes + ing_transferencias).ToString("###,###"))',
+                        'width':600,
+                        'height': 300,
+                        'is3D': true,
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('ingresos_chart'));
+        chart.draw(data, options);
+
+        // Create the data table.
+        var data2 = new google.visualization.DataTable();
+        data2.addColumn('string', 'Cuentas');
+        data2.addColumn('number', 'Egresos');
+        data2.addRows([
+            ['6 PERSONAL', @egr_personal],
+            ['7 OPERACIÓN', @egr_operacion],
+            ['8 INVERSIÓN', @egr_inversion],
+            ['9 PAGO PROVISIÓN POR INDEMNIZACIONES', @egr_provision],
+            ['10 GASTOS DE INVERSIÓN DAP', @egr_gastos]
+        ]);
+
+        var formatter = new google.visualization.NumberFormat(
+         { negativeColor: 'red', negativeParens: true, pattern: '$###,###' });
+        formatter.format(data2, 1);
+
+        // Set chart options
+        var options2 = {
+            'title': 'Egresos acumulados por cuenta $@((egr_gastos + egr_inversion + egr_operacion + egr_personal + egr_provision).ToString("###,###"))',
+            'width': 600,
+            'height': 300,
+            'is3D': true,
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart2 = new google.visualization.PieChart(document.getElementById('egresos_chart'));
+        chart2.draw(data2, options2);
+
+
+    }
+</script>
+<div class="permisos" style="width: 850px;">
+@using (Html.BeginForm())
+{
+    <h2>Presupuesto » Gráficos</h2>
+    <table border="0" class="sin-hover">
+        <tr>
+            <td>
+                <fieldset style="width:300px;">
+                    <legend>Filtro por Período</legend>
+                    <table class="sin-hover" align="center" cellspacing="0" cellpadding="5">
+                        <tr>
+                        <td>
+                            Desde
+                        </td>
+                        <td>
+                            <select name="MesDesde" id="MesDesde">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (mes_desde == (i + 1))
+                                                                              {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+                            <select name="PeriodoDesde" id="PeriodoDesde">
+                            @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (periodo_desde == i)
+                                                                           {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                        </td>
+                        <td rowspan="2">
+                            <input type="submit" value="Ver resultados" style="height:100%" class="boton" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Hasta 
+                        </td>
+                        <td>
+                            <select name="MesHasta" id="MesHasta">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (mes_hasta == (i + 1))
+                                                                              {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+                            <select name="PeriodoHasta" id="PeriodoHasta">
+                            @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (periodo_hasta == i)
+                                                                           {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                    * Información no incluye reintegros
+                </fieldset>
+            </td>
+        </tr>
+    </table>
+    <div id="ingresos_chart"></div>
+    <div id="egresos_chart"></div>
+}
+</div>

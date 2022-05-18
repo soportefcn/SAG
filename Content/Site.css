@@ -1,0 +1,174 @@
+
+.expandido 
+{
+    width: 100px !important;
+}
+
+.expandidox2
+{
+    width: 150px !important;
+}
+
+.subitem
+{
+    color: #999999;    
+}
+
+.form-group 
+{
+    margin:1em 0 0 60px;
+    clear: right;
+}
+
+.form-group input
+{
+    
+}
+
+.indicacion 
+{
+    font-size: .9em;
+    color: Gray;
+}
+
+fieldset p input 
+{
+    float: right;
+    padding: 5px;    
+}
+
+.login fieldset
+{
+    margin-top:10px;
+    padding-top: 20px;    
+}
+
+.login .form-group input
+{
+    width: 200px;
+}
+
+.login .editor-label
+{
+    margin: 1.2em 0 0 0;
+    float: left;
+    width: 45%;
+    clear: left;
+    text-align: right;
+    padding-right: 5px;
+}
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error
+{
+    color: #ff0000;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+
+.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors
+{
+   padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+div.validation-summary-errors ul li 
+{
+    color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+
+.validation-summary-valid
+{
+    display: none;
+}
+
+/* Menu */
+
+
+
+div.MenuInforme
+{
+    width: 100%;
+    height: 20px;
+    clear: right;
+}
+
+div.MenuInforme .MenuItem
+{
+    float: left;
+    border: 1px solid black;
+    padding: 5px;
+    margin-right: 2px;  
+    width:86px;
+    text-align: center;
+    cursor: pointer;
+}
+
+div.MenuInforme .MenuItem:hover 
+{
+    background-color: #E5E5E5;
+    color: #333333;
+}
+
+/* Menu de informes escondidos */
+.Informe_Objetivos, .Informe_Alcance, .Informe_Metodologia, .Informe_Seguimiento, .Informe_Resultados, .Informe_Conclusiones, .Informe_Plazo
+{
+    display: none;    
+}
+
+.soloImpresion
+{
+    display: none;    
+}
+
+.DatosPresupuesto
+{
+    height: 100%; min-height: 100%; overflow: scroll;
+}
+
+input.boton
+{
+    background-color: #ddd;
+    font-weight: bold;
+    padding: 5px;
+    /*opacity: 0.9;*/
+    color: #666;
+}
+
+input.boton:hover
+{
+    color: Black;
+    box-shadow: 3px 3px 0px 0px #F0F0F0;
+    /*opacity: 1;*/
+}
+
+/* Conversion a mayusculas */
+
+
+
+table.tabla_comprobante {
+    margin-top: 10px;
+}
+
+table.tabla_comprobante, table.tabla_comprobante tr, table.tabla_comprobante tr td {
+    border: 0px !important;
+}
+
+tr.row_comprobante:hover 
+{
+    background-color: #F0F0F0 !imporant;
+}

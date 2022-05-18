@@ -1,0 +1,107 @@
+﻿@model SAG2.Models.Proveedor
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Proveedor";
+    var comunaID = ViewBag.ComunaID;
+    var rut = Request.QueryString["rut"].ToString();
+    var dv = Request.QueryString["dv"].ToString();    
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div class="top" style="height: 18px;">Ingresar Proveedor&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+<fieldset>
+        <legend>Datos Básicos de Proveedores</legend><br />
+@using (Html.BeginForm())
+{
+    @Html.Raw(@ViewBag.Mensaje);
+    <table width="90%" border="0" cellspacing="0" cellpadding="3" class="noorange">
+        <tr>
+                <td valign="top" style="width: 50%;">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Rut)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBox("Rut", @rut, new { @style = "width: 70px;", @readonly = "readonly", @maxlength = "8" })-@Html.TextBox("DVBuscar", @dv, new { @style = "width: 20px;", @readonly = "readonly", @maxlength = "1" })
+                    </div>
+        
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Nombre)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.Nombre, new { @tabindex = "1" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Dirección")
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBox("N", null, new { @style = "width: 0; border: 0 solid White;", @disabled = "disabled" }) 
+                    </div>
+                    <div class="form-group subitem">
+                        @Html.Label("Calle")
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.Direccion.Calle, new { @tabindex = "4" }) 
+                    </div>
+                    <div class="form-group subitem">
+                        @Html.Label("Número")
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.Direccion.Numero, new { @tabindex = "5" }) 
+                    </div>
+                    
+                </td>
+                <td valign="top">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Fono)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.Fono, new { @tabindex = "2" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PersonaContacto, "Contacto")
+                    </div>
+                   
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.PersonaContacto, new { @tabindex = "3" })
+                    </div>
+                      <div class="form-group">
+                        @Html.Label(" ")
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBox("N", null, new { @style = "width: 0; border: 0 solid White;", @disabled = "disabled" }) 
+                    </div>
+                    <div class="form-group subitem">
+                        @Html.Label("Región")
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownList("RegionID", null, new { @comuna = comunaID, @tabindex = "6" })
+                    </div>
+                    <div class="form-group subitem">
+                        @Html.Label("Comuna")
+                    </div>
+                    <div class="editor-field">
+                        <select name="ComunaID" id="ComunaID" tabindex="7">
+                            <option>Seleccione región</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        <tr>
+            <td colspan="4" align="right">
+            <p>
+                <input type="submit" value="Guardar" id="submit" tabindex="8" />
+            </p>
+        </td>
+        </tr>
+    </table>
+}
+</fieldset>
+</div>

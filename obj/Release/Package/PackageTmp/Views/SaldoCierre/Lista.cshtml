@@ -1,0 +1,49 @@
+﻿@model IEnumerable<SAG2.Models.CInformeCierre >
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Lista";
+    List<SAG2.Models.GinformeCierre> Categorias = new List<SAG2.Models.GinformeCierre>();
+    List<SAG2.Models.Cuenta> Cuentas = new List<SAG2.Models.Cuenta>();
+
+    Categorias = (List<SAG2.Models.GinformeCierre>)@ViewBag.Ginforme;
+    Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.cuentas;
+    
+}
+
+ <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+ <div id="contenido_popup">
+    <table class ="table table-bordered table-hover">
+    <thead class="fixedHeader">
+    <tr class="info">
+        <th class="codigo">Cód.</th>
+        <th style="width: 650px;">Descripción</th>
+        <th class="controles" style="width: 35px;"></th>
+    </tr>
+</thead>
+ <tbody class="scrollContent">  
+   
+@foreach (var item in Model)
+{
+    var NombreCuenta = Cuentas.Where(d => d.ID    == item.CuentaID ).FirstOrDefault().NombreLista;
+    var NombreCategoria = Categorias.Where(d => d.ID == item.GinformeID).FirstOrDefault().Descripcion;           
+    <tr>
+        <td  style="width: 49px;">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+         <td style="width: 650px;">
+             @NombreCategoria
+        </td>
+
+        <td style="width: 650px;">
+             @NombreCuenta
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", "SaldoCierre", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+</tbody>
+</table>
+     </div> 

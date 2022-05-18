@@ -1,0 +1,42 @@
+﻿@model SAG2.Models.TipoInforme
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>TipoInforme</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+               <label>Nombre</label>
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Nombre)
+            </dd>
+    
+            <dt>
+               <label>Estado</label>
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Eliminado)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Editar", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Listado", "Index")
+    </p>
+</body>
+</html>

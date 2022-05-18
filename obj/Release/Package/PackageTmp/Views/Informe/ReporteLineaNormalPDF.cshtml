@@ -1,0 +1,982 @@
+﻿@model SAG2.Models.Informe
+@{
+
+    ViewBag.Title = "ReportePrograma";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+
+    Layout = null;
+    ViewBag.Title = "Reporte por linea";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    string FechaSis = DateTime.Now.ToShortDateString();
+
+}
+
+@if (ViewBag.IdLinea != null)
+{
+    try
+    {
+
+        int mesSeleccion = ViewBag.Mes;
+
+
+
+        var Meses = ViewBag.GrupoMeses;
+
+        var NombreMeses = new string[12]
+        {
+"Ene.",
+"Feb.",
+"Mar.",
+"Abr.",
+"May.",
+"Jun.",
+"Jul.",
+"Ago.",
+"Sep.",
+"Oct.",
+"Nov.",
+"Dic."
+        };
+
+        //List<SAG2.Models.Cuenta> cuentas = new List<SAG2.Models.Cuenta>();
+        List<SAG2.Models.DetalleInformes> listaCuentas = ViewBag.listaCuentas;
+        int id = ViewBag.IdLinea;
+        int periodo = ViewBag.Periodo;
+        //var presupuestoID = db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Periodo == periodo).First().ID;
+        var presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
+        //  int mes = 1;
+        var ingresos = db.Movimiento.Where(m => m.Proyecto.TipoProyecto.LineaAtencion.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null).ToList();
+        var egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.TipoProyecto.LineaAtencion.ID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
+        var reintegros = db.DetalleReintegro.Where(r => r.Reintegro.Proyecto.TipoProyecto.LineaAtencion.ID == id && r.Reintegro.Proyecto.Cerrado == null && r.Reintegro.Eliminado == null && r.Reintegro.Periodo == periodo && r.Reintegro.Temporal == null).ToList();
+        var totalEgreso = new double[13];
+        var totalPresupuestoE = new double[13];
+        var totalIngresosEgreso = new double[13];
+        var totalesIngresos = new double[13];
+        var totalesEgresos = new double[13];
+        var totalPresupuesto = new double[13];
+        var totalesPresupuestosIngresos = new double[13];
+        var totalesPresupuestosEgresos = new double[13];
+        var pruebacuentas = db.Cuenta.ToList();
+        double[] presupuestoInicial = new double[13];
+        double[] saldoInicial = new double[13];
+
+        int presupuestoCabecera = 0;
+        <br />
+        <br />
+        <div class="col-md-12" style="overflow-y: hidden;" id="prueba ocultoImpresion">
+            <table border="1" class="table table-bordered table-hover">
+                <tr rowspan="2">
+                    <tH>Estado de Resultado</tH>
+                    <tH>@db.LineasAtencion.Find(id).Nombre</tH>
+                </tr>
+                <tr>
+
+                    <th rowspan="2">Cuenta</th>
+                    @foreach (var mes in Meses)
+                    {
+                        <th colspan="1"> @NombreMeses[mes - 1]</th>
+                    }
+                </tr>
+                <tr>
+                    @foreach (var mes in Meses)
+                    {
+                        @*<th style="width:80px !important;">Pres. $</th>*@
+                        <th style="width:80px !important;">Real $</th>
+                        @*<th style="width:80px !important;"> Desv. $</th>
+                            <th style="width:80px !important;"> Desv. %</th>*@
+
+                    }
+                </tr>
+
+
+                @foreach (var cuentas in listaCuentas.Where(e => e.estado == 0).OrderBy(c => c.ID))
+                {
+                    SAG2.Models.Cuenta cuenta = new SAG2.Models.Cuenta();
+
+                    try
+                    {
+                        cuenta = db.Cuenta.Find(cuentas.cuentaID);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+
+                    switch (int.Parse(cuentas.tipoCuenta))
+                    {
+                        case 0:
+                            <tr>
+                                <th style="background-color: silver; text-align: left">@cuenta.NombreLista.ToString()</th>
+                            </tr>
+                            break;
+
+                        case 1:
+
+                            <tr style="background-color: silver; text-align: left">
+
+                                <th>Totales @cuenta.NombreLista</th>
+                                @foreach (var mesTotal in Meses)
+                                {
+
+                                    if (cuenta.Tipo == "I" || cuenta.Tipo == null)
+                                    {
+                                        double diffTotal = (totalIngresosEgreso[mesTotal] - totalPresupuesto[mesTotal]);
+                                        double diffTotalPor = (diffTotal / totalPresupuesto[mesTotal]) * 100;
+                                        @*<th>
+                                                @if (totalPresupuesto[mesTotal] != 0)
+                                                {
+                                                    @totalPresupuesto[mesTotal].ToString("$#,###")
+                                                }
+                                                else
+                                                { @Html.Raw("$0")}
+                                            </th>*@
+                                        <th>
+                                            @if (totalIngresosEgreso[mesTotal] != 0)
+                                            {
+                                                @totalIngresosEgreso[mesTotal].ToString("$#,###")
+                                            }
+                                            else
+                                            {@Html.Raw("$0")}
+                                        </th>
+                                        @*<th>
+                                                @if (diffTotal != 0)
+                                                {
+                                                    @(diffTotal.ToString("$#,###"))
+                                                }
+                                                else
+                                                {@Html.Raw("$0")}
+                                            </th>
+                                            <th>
+                                                @if (diffTotalPor != 0 && Double.IsInfinity(diffTotalPor) == false && Double.IsNaN(diffTotalPor) == false)
+                                                {@Html.Raw(string.Format("{0:N2}%", diffTotalPor))}
+                                            else
+                                            {@Html.Raw("0%")}
+                                            </th>*@
+                                    }
+                                    else if (cuenta.Tipo == "E")
+                                    {
+                                        double diffTotal = (totalEgreso[mesTotal] - totalPresupuestoE[mesTotal]);
+                                        double diffTotalPor = ((diffTotal) / (totalPresupuestoE[mesTotal])) * 100;
+                                        @*<th style="background-color: silver; text-align: left">
+                                                @if (totalPresupuestoE[mesTotal] != 0)
+                                                {
+                                                    @totalPresupuestoE[mesTotal].ToString("$#,###")
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw("$0")
+                                                }
+                                            </th>*@
+                                        <th>
+                                            @if (totalEgreso[mesTotal] != 0)
+                                            {
+                                                @totalEgreso[mesTotal].ToString("$#,###")
+                                            }
+                                            else
+                                            {@Html.Raw("$0")}
+
+                                        </th>
+                                        @*<th>
+                                                @if (diffTotal != 0)
+                                                {
+                                                    @(diffTotal.ToString("$#,###"))
+                                                }
+                                                else
+                                                { @Html.Raw("$0")}
+                                            </th>
+                                            <th>
+                                                @if (diffTotalPor != 0 && Double.IsInfinity(diffTotalPor) == false && Double.IsNaN(diffTotalPor) == false)
+                                                {@Html.Raw(string.Format("{0:N2}%", diffTotalPor))}
+                                            else { Html.Raw("0%"); }
+                                            </th>*@
+
+                                    }
+                                    // arreglar aquí
+                                    totalEgreso[mesTotal] = 0;
+                                    totalPresupuestoE[mesTotal] = 0;
+                                    totalIngresosEgreso[mesTotal] = 0;
+                                    totalPresupuesto[mesTotal] = 0;
+                                }
+
+                            </tr>
+
+
+                            break;
+                        case 2:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>INGRESOS</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(p => p.Mes == mes && (p.CuentaID == 3 || p.CuentaID == 4 || p.CuentaID == 5 || p.CuentaID == 8 || p.CuentaID == 12)).Sum(m => m.Monto).ToString());
+                                    double valorDif = valorIngresos - valorPresupuesto;
+                                    double valorDifPor = (valorDif) / (valorPresupuesto) * 100;
+                                    @*<td>
+                                            @if (valorPresupuesto != 0)
+                                            {@valorPresupuesto.ToString("$#,##")
+                                            { totalPresupuesto[mes] += valorPresupuesto; }
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+
+                                    <td>
+                                        @if (valorIngresos != 0)
+                                        {@valorIngresos.ToString("$#,###")
+                                        {
+                                            //   totalIngresosEgreso[mes] += valorIngresos;
+                                            totalesIngresos[mes] += valorIngresos;
+                                            totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td>
+                                            @if (valorDif != 0)
+                                            {@valorDif.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td>
+                                            @if (valorDifPor != 0 && Double.IsInfinity(valorDifPor) == false && Double.IsNaN(valorDifPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+
+                                }
+                            </tr>
+                            break;
+                        case 3:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>Total Egresos</th>
+                                @foreach (var mes in Meses)
+                                {   //valorIngresos
+                                    double valorIngresos = double.Parse(ingresos.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79) && e.Temporal == null && e.Mes == mes && e.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(e => e.Mes == mes && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+
+                                    //valorEgresos
+                                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+
+                                    double valorDif = valorEgresos - valorPresupuesto;
+                                    double valorDifPor = (valorDif) / (valorPresupuesto) * 100;
+                                    @*<td>
+                                            @if (valorPresupuesto - valorPresupuestoE != 0)
+                                            {@((valorPresupuesto.ToString("#,###")))
+                                            { totalPresupuesto[mes] += valorPresupuesto; }
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+
+                                    <td>
+                                        @if (valorEgresos != 0)
+                                        {@valorEgresos.ToString("$#,###")
+                                        {
+                                            //   totalIngresosEgreso[mes] += valorIngresos;
+                                            totalesIngresos[mes] += valorIngresos;
+                                            totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td>
+                                            @if (valorDif != 0 && Double.IsNaN(valorDif) == false && Double.IsInfinity(valorDif) == false)
+                                            {@valorDif.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td>
+                                            @if (valorDifPor != 0 && Double.IsNaN(valorDifPor) == false && Double.IsInfinity(valorDifPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+                                        else { Html.Raw("0%"); }
+                                        </td>*@
+                                }
+                            </tr>
+
+                            break;
+
+                        case 4:
+                            <tr>
+                                <th style="background-color: silver; text-align: left">@cuenta.NombreLista.ToString()</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorIngresos = double.Parse(ingresos.Where(m => m.CuentaID == cuenta.ID && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(p => p.Mes == mes && p.CuentaID == cuenta.ID).Sum(m => m.Monto).ToString());
+                                    double valorDif = valorIngresos - valorPresupuesto;
+                                    double valorDifPor = (valorDif) / (valorPresupuesto) * 100;
+                                    @*<td>
+                                            @if (valorPresupuesto != 0)
+                                            {@valorPresupuesto.ToString("$#,##")
+                                            { totalPresupuesto[mes] += valorPresupuesto; }
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+                                    if (cuenta.Tipo == "I" || cuenta.Tipo == null)
+                                    {
+                                        <td>
+                                            @if (valorIngresos != 0)
+                                            {@valorIngresos.ToString("$#,###")
+                                            {
+                                                totalIngresosEgreso[mes] += valorIngresos;
+                                                totalesIngresos[mes] += valorIngresos;
+                                                totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                            }
+                                        }
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        @*<td>
+                                                @if (valorDif != 0)
+                                                {@valorDif.ToString("$#,###")}
+                                            else
+                                            {@Html.Raw("$0")}
+                                            </td>
+                                            <td>
+                                                @if (valorDifPor != 0 && Double.IsInfinity(valorDifPor) == false && Double.IsNaN(valorDifPor) == false)
+                                                {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+                                            else
+                                            {@Html.Raw("0%")}
+                                            </td>*@
+                                    }
+                                    else if (cuenta.Tipo == "E" || cuenta.Tipo == null)
+                                    {
+                                        double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && e.CuentaID == cuenta.ID).Sum(m => m.Monto).ToString());
+                                        double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(p => p.Mes == mes && p.Periodo == periodo && p.CuentaID == cuenta.ID).Sum(m => m.Monto).ToString());
+                                        double DifEgresos = valorEgresos - valorPresupuestoE;
+                                        double DifEgresosPor = (DifEgresos) / (valorPresupuestoE) * 100;
+                                        <td>
+                                            @if (valorEgresos != 0)
+                                            {@valorEgresos.ToString("$#,###")
+                                            {
+                                                totalEgreso[mes] += valorEgresos;
+                                                totalPresupuestoE[mes] += valorPresupuestoE;
+                                            }
+                                        }
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        @*<td>
+                                                @if (DifEgresos != 0)
+                                                {@DifEgresos.ToString("$#,###")}
+                                            else
+                                            {@Html.Raw("$0")}
+                                            </td>
+                                            <td>
+                                                @if (DifEgresosPor != 0 && Double.IsNaN(DifEgresosPor) == false && Double.IsInfinity(DifEgresosPor) == false)
+                                                {@Html.Raw(string.Format("{0:N2}%", DifEgresosPor))}
+                                            else
+                                            {@Html.Raw("0%")}
+                                            </td>*@
+                                    }
+
+                                }
+                            </tr>
+
+                            break;
+
+                        case 5:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>Flujo Neto Efectivo</th>
+                                @foreach (var mes in Meses)
+                                {   //valorIngresos
+                                    double valorIngresos = double.Parse(ingresos.Where(e => (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12) && e.Temporal == null && e.Mes == mes && e.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(e => e.Mes == mes && (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12)).Sum(m => m.Monto).ToString());
+
+                                    //valorEgresos
+                                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+
+                                    double valorDif = (valorIngresos - valorEgresos) - (valorPresupuesto - valorPresupuestoE);
+                                    double valorDifPor = (valorDif) / (valorPresupuesto - valorPresupuestoE) * 100;
+                                    @*<td>
+                                            @if (valorPresupuesto - valorPresupuestoE != 0)
+                                            {@((valorPresupuesto - valorPresupuestoE).ToString("#,###"))
+                                            { totalPresupuesto[mes] += valorPresupuesto; }
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+
+                                    <td>
+                                        @if (valorIngresos - valorEgresos != 0)
+                                        {@((valorIngresos - valorEgresos).ToString("$#,###"))
+                                        {
+                                            //   totalIngresosEgreso[mes] += valorIngresos;
+                                            totalesIngresos[mes] += valorIngresos;
+                                            totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td>
+                                            @if (valorDif != 0)
+                                            {@valorDif.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td>
+                                            @if (valorDifPor != 0 && Double.IsInfinity(valorDifPor) == false && Double.IsNaN(valorDifPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+                                    {
+                                        totalEgreso[mes] = 0;
+                                        totalPresupuestoE[mes] = 0;
+                                        totalIngresosEgreso[mes] = 0;
+                                        totalPresupuesto[mes] = 0;
+                                    }
+
+                                    totalEgreso[mes] = 0;
+                                    totalPresupuestoE[mes] = 0;
+                                    totalIngresosEgreso[mes] = 0;
+                                    totalPresupuesto[mes] = 0;
+                                }
+                            </tr>
+
+                            break;
+                        case 6:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>PERSONAL</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+                                    double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+                                    @*<td>
+                                            @if (valorPresupuestoE != 0)
+                                            {@valorPresupuestoE.ToString("$#,##")
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+                                    <td>
+                                        @if (valorEgresos != 0)
+                                        {@valorEgresos.ToString("$#,###")
+                                        {
+                                            totalIngresosEgreso[mes] += valorEgresos;
+                                            totalPresupuestoE[mes] += valorPresupuestoE;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td>
+                                            @if (DifEgresos != 0)
+                                            {@DifEgresos.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td>
+                                            @if (DifEgresosPor != 0 && Double.IsNaN(DifEgresosPor) == false && Double.IsInfinity(DifEgresosPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", DifEgresosPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+
+                                }
+
+                            </tr>
+                            break;
+                        case 7:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>Saldo Antes Del Financiamiento</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    saldoInicial[mes] = 0;
+                                    presupuestoInicial[mes] = 0;
+                                    //valorIngresos
+                                    double valorIngresos = double.Parse(ingresos.Where(e => (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12) && e.Temporal == null && e.Mes == mes && e.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(e => e.Mes == mes && (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12)).Sum(m => m.Monto).ToString());
+
+                                    //valorEgresos
+                                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+
+                                    double valorDif = (valorIngresos - valorEgresos) - (valorPresupuesto - valorPresupuestoE);
+                                    double valorDifPor = (valorDif) / (valorPresupuesto - valorPresupuestoE) * 100;
+
+
+                                    @*<td>
+                                            @if (valorPresupuesto - valorPresupuestoE != 0 && mes == 1)
+                                            {
+                                                {
+                                                    presupuestoInicial[mes] = double.Parse((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Proyecto.Cerrado == null && p.Proyecto.Eliminado == null && p.Periodo == periodo).Sum(s => s.SaldoInicial)).ToString());
+                                                    totalPresupuesto[mes] += valorPresupuesto;
+                                                }
+
+                                                @( (presupuestoInicial[mes] + (valorPresupuesto - valorPresupuestoE)).ToString("#,###"))
+                                                { presupuestoInicial[mes] = double.Parse(((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Proyecto.Cerrado == null && p.Proyecto.Eliminado == null && p.Periodo == periodo).Sum(s => s.SaldoInicial)) + Convert.ToInt32(valorPresupuesto - valorPresupuestoE)).ToString()); }
+                                            }
+                                            else
+                                            {
+                                                @((presupuestoInicial[mes - 1] + (valorPresupuesto - valorPresupuestoE)).ToString("#,###"))
+                                                {
+                                                    totalPresupuesto[mes] += valorPresupuesto;
+                                                    presupuestoInicial[mes] += double.Parse((presupuestoInicial[mes - 1] + (((Convert.ToInt64(valorPresupuesto)) - Convert.ToInt64(valorPresupuestoE)))).ToString());
+                                                }
+                                            }
+                                        </td>*@
+                                    <td>
+                                        @if (valorIngresos - valorEgresos != 0 && mes == 1)
+                                        {
+                                            saldoInicial[mes] = double.Parse((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Proyecto.Cerrado == null && p.Proyecto.Eliminado == null && p.Periodo == periodo).Sum(s => s.SaldoInicial)).ToString());
+                                            @((saldoInicial[mes] + (valorIngresos - valorEgresos)).ToString("$#,###"))
+                                            { saldoInicial[mes] = double.Parse((saldoInicial[mes] + (valorIngresos - valorEgresos)).ToString()); }
+                                            {
+                                                totalesIngresos[mes] += valorIngresos;
+                                                totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @((saldoInicial[mes - 1] + (valorIngresos - valorEgresos)).ToString("$#,###"))
+                                            { saldoInicial[mes] = double.Parse(((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Proyecto.Cerrado == null && p.Proyecto.Eliminado == null && p.Periodo == periodo).Sum(s => s.SaldoInicial)) + Convert.ToInt64(valorIngresos - valorEgresos)).ToString()); }
+                                        }
+                                    </td>
+                                    @*<td>
+                                            @if (valorDif != 0 && mes == 1)
+                                            {
+                                                valorDif = (saldoInicial[mes] - presupuestoInicial[mes]);
+                                                @( (valorDif).ToString("$#,###"))
+
+                                            }
+                                            else
+                                            {
+                                                valorDif = saldoInicial[mes - 1] - presupuestoInicial[mes - 1];
+                                                @( (valorDif).ToString("$#,###"))
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (valorDifPor != 0 && Double.IsNaN(valorDifPor) == false && Double.IsInfinity(valorDifPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+                                    {
+                                        valorIngresos = 0; valorEgresos = 0;
+                                        totalEgreso[mes] = 0;
+                                        totalPresupuestoE[mes] = 0;
+                                        totalIngresosEgreso[mes] = 0;
+                                        totalPresupuesto[mes] = 0;
+                                    }
+
+                                    totalEgreso[mes] = 0;
+                                    totalPresupuestoE[mes] = 0;
+                                    totalIngresosEgreso[mes] = 0;
+                                    totalPresupuesto[mes] = 0;
+                                }
+
+
+
+                            </tr>
+                            break;
+                        case 8:
+                            <tr>
+                                <th style="background-color: silver; text-align: left">FINANCIMIENTO</th>
+                            </tr>
+                            <tr>
+                                <th style="background-color: silver; text-align: left">
+                                    2 OTROS APORTES DEL SENAME
+                                </th>
+                            </tr>
+                            break;
+                        case 9:
+                            <tr>
+                                <th style="background-color: silver; text-align: left">@cuenta.NombreLista.ToString()</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorIngresos = double.Parse(ingresos.Where(m => m.CuentaID == cuenta.ID && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(p => p.Mes == mes && p.CuentaID == cuenta.ID).Sum(m => m.Monto).ToString());
+                                    double valorDif = valorIngresos - valorPresupuesto;
+                                    double valorDifPor = (valorDif) / (valorPresupuesto) * 100;
+                                    @*<td>
+                                            @if (valorPresupuesto != 0)
+                                            {@valorPresupuesto.ToString("$#,##")
+                                            { totalPresupuesto[mes] += valorPresupuesto; }
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+                                    if (cuenta.Tipo == "I" || cuenta.Tipo == null)
+                                    {
+                                        <td>
+                                            @if (valorIngresos != 0)
+                                            {@valorIngresos.ToString("$#,###")
+                                            {
+                                                totalIngresosEgreso[mes] += valorIngresos;
+                                                totalesIngresos[mes] += valorIngresos;
+                                                totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                            }
+                                        }
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        @*<td>
+                                                @if (valorDif != 0)
+                                                {@valorDif.ToString("$#,###")}
+                                            else
+                                            {@Html.Raw("$0")}
+                                            </td>
+                                            <td>
+                                                @if (valorDifPor != 0 && Double.IsNaN(valorDifPor) == false && Double.IsInfinity(valorDifPor) == false)
+                                                {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+                                            else
+                                            {@Html.Raw("0%")}
+                                            </td>*@
+                                    }
+                                    else if (cuenta.Tipo == "E" || cuenta.Tipo == null)
+                                    {
+                                        double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && e.CuentaID == cuenta.ID).Sum(m => m.Monto).ToString());
+                                        double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(p => p.Mes == mes && p.Periodo == periodo && p.CuentaID == cuenta.ID).Sum(m => m.Monto).ToString());
+                                        double DifEgresos = valorEgresos - valorPresupuestoE;
+                                        double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+                                        <td>
+                                            @if (valorEgresos != 0)
+                                            {@valorEgresos.ToString("$#,###")
+                                            {
+                                                totalIngresosEgreso[mes] += valorEgresos;
+                                                totalPresupuestoE[mes] += valorPresupuestoE;
+                                            }
+                                        }
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        @*<td>
+                                                @if (DifEgresos != 0)
+                                                {@DifEgresos.ToString("$#,###")}
+                                            else
+                                            {@Html.Raw("$0")}
+                                            </td>
+                                            <td>
+                                                @if (DifEgresosPor != 0 && Double.IsNaN(DifEgresosPor) == false && Double.IsInfinity(DifEgresosPor) == false)
+                                                {@Html.Raw(string.Format("{0:N2}%", DifEgresosPor))}
+                                            else
+                                            {@Html.Raw("0%")}
+                                            </td>*@
+                                    }
+
+                                }
+                            </tr>
+                            break;
+                        case 10:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>TOTAL FINANCIAMIENTO</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 10 || m.CuentaID == 14 || m.CuentaID == 16 || m.CuentaID == 17 || m.CuentaID == 17 || m.CuentaID == 158 || m.CuentaID == 20) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    valorIngresos -= double.Parse(ingresos.Where(m => (m.CuentaID == 40 || m.CuentaID == 63 || m.CuentaID == 155 || m.CuentaID == 156 || m.CuentaID == 157) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(p => p.Mes == mes && (p.CuentaID == 10 || p.CuentaID == 14 || p.CuentaID == 16 || p.CuentaID == 17 || p.CuentaID == 17 || p.CuentaID == 158 || p.CuentaID == 20)).Sum(m => m.Monto).ToString());
+                                    valorPresupuesto -= double.Parse(@presupuestoDetalle.Where(p => p.Mes == mes && (p.CuentaID == 40 || p.CuentaID == 63 || p.CuentaID == 155 || p.CuentaID == 156 || p.CuentaID == 157)).Sum(m => m.Monto).ToString());
+                                    double valorDif = valorIngresos - valorPresupuesto;
+                                    double valorDifPor = (valorDif) / (valorPresupuesto) * 100;
+                                    @*<td>
+                                            @if (valorPresupuesto != 0)
+                                            {@valorPresupuesto.ToString("$#,##")
+                                            { totalPresupuesto[mes] += valorPresupuesto; }
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+
+                                    <td>
+                                        @if (valorIngresos != 0)
+                                        {@valorIngresos.ToString("$#,###")
+                                        {
+                                            //   totalIngresosEgreso[mes] += valorIngresos;
+                                            totalesIngresos[mes] += valorIngresos;
+                                            totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td>
+                                            @if (valorDif != 0)
+                                            {@valorDif.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td>
+                                            @if (valorDifPor != 0 && Double.IsInfinity(valorDifPor) == false && Double.IsNaN(valorDifPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+                                }
+                            </tr>
+                            break;
+                        case 11:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>SALDO DESPUÉS DEL FINANCIAMIENTO</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    saldoInicial[mes] = 0;
+                                    presupuestoInicial[mes] = 0;
+                                    //valorIngresos
+                                    double valorIngresos = double.Parse(ingresos.Where(e => (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12) && e.Temporal == null && e.Mes == mes && e.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    double valorPresupuesto = double.Parse(@presupuestoDetalle.Where(e => e.Mes == mes && (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12)).Sum(m => m.Monto).ToString());
+                                    valorIngresos += double.Parse(ingresos.Where(m => (m.CuentaID == 10 || m.CuentaID == 14 || m.CuentaID == 16 || m.CuentaID == 17 || m.CuentaID == 17 || m.CuentaID == 158 || m.CuentaID == 20) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    valorIngresos -= double.Parse(ingresos.Where(m => (m.CuentaID == 40 || m.CuentaID == 63 || m.CuentaID == 155 || m.CuentaID == 156 || m.CuentaID == 157) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos).ToString());
+                                    valorPresupuesto += double.Parse(@presupuestoDetalle.Where(p => p.Mes == mes && (p.CuentaID == 10 || p.CuentaID == 14 || p.CuentaID == 16 || p.CuentaID == 17 || p.CuentaID == 17 || p.CuentaID == 158 || p.CuentaID == 20)).Sum(m => m.Monto).ToString());
+                                    valorPresupuesto -= double.Parse(@presupuestoDetalle.Where(p => p.Mes == mes && (p.CuentaID == 40 || p.CuentaID == 63 || p.CuentaID == 155 || p.CuentaID == 156 || p.CuentaID == 157)).Sum(m => m.Monto).ToString());
+
+                                    //valorEgresos
+                                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+
+                                    double valorDif = (valorIngresos - valorEgresos) - (valorPresupuesto - valorPresupuestoE);
+                                    double valorDifPor = (valorDif) / (valorPresupuesto - valorPresupuestoE) * 100;
+
+
+                                    @*<td>
+                                            @if (valorPresupuesto - valorPresupuestoE != 0 && mes == 1)
+                                            {
+                                                {
+                                                    presupuestoInicial[mes] = double.Parse((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Periodo == periodo).Sum(s => s.SaldoInicial)).ToString());
+                                                    totalPresupuesto[mes] += valorPresupuesto;
+                                                }
+
+                                                @( (presupuestoInicial[mes] + (valorPresupuesto - valorPresupuestoE)).ToString("#,###"))
+                                                { presupuestoInicial[mes] = double.Parse(((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Periodo == periodo).Sum(s => s.SaldoInicial)) + Convert.ToInt32(valorPresupuesto - valorPresupuestoE)).ToString()); }
+                                            }
+                                            else
+                                            {
+                                                @((presupuestoInicial[mes - 1] + (valorPresupuesto - valorPresupuestoE)).ToString("#,###"))
+                                                {
+                                                    totalPresupuesto[mes] += valorPresupuesto;
+                                                    presupuestoInicial[mes] += double.Parse((presupuestoInicial[mes - 1] + (((Convert.ToInt32(valorPresupuesto)) - Convert.ToInt32(valorPresupuestoE)))).ToString());
+                                                }
+                                            }
+                                        </td>*@
+                                    <td>
+                                        @if (valorIngresos - valorEgresos != 0 && mes == 1)
+                                        {
+                                            saldoInicial[mes] = double.Parse((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Periodo == periodo).Sum(s => s.SaldoInicial)).ToString());
+                                            @((saldoInicial[mes] + (valorIngresos - valorEgresos)).ToString("$#,###"))
+                                            { saldoInicial[mes] = double.Parse(((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Periodo == periodo).Sum(s => s.SaldoInicial)) + Convert.ToInt32(valorIngresos - valorEgresos)).ToString()); }
+                                            {
+                                                totalesIngresos[mes] += valorIngresos;
+                                                totalesPresupuestosIngresos[mes] += valorPresupuesto;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @((saldoInicial[mes - 1] + (valorIngresos - valorEgresos)).ToString("$#,###"))
+                                            { saldoInicial[mes] = double.Parse(((@db.Presupuesto.Where(p => p.Proyecto.TipoProyecto.LineaAtencion.ID == id && p.Periodo == periodo).Sum(s => s.SaldoInicial)) + Convert.ToInt32(valorIngresos - valorEgresos)).ToString()); }
+                                        }
+                                    </td>
+                                    @*<td>
+                                            @if (valorDif != 0 && mes == 1)
+                                            {
+                                                valorDif = (saldoInicial[mes] - presupuestoInicial[mes]);
+                                                @( (valorDif).ToString("$#,###"))
+
+                                            }
+                                            else
+                                            {
+                                                valorDif = saldoInicial[mes - 1] - presupuestoInicial[mes - 1];
+                                                @( (valorDif).ToString("$#,###"))
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (valorDifPor != 0 && Double.IsNaN(valorDifPor) == false && Double.IsInfinity(valorDifPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", valorDifPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+                                    { valorIngresos = 0; valorEgresos = 0; }
+                                }
+
+
+
+                            </tr>
+                            break;
+                        case 12:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>OPERACIÓN</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+                                    @*<td>
+                                            @if (valorPresupuestoE != 0)
+                                            {@valorPresupuestoE.ToString("$#,##")
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+                                    <td>
+                                        @if (valorEgresos != 0)
+                                        {@valorEgresos.ToString("$#,###")
+                                        {
+                                            totalIngresosEgreso[mes] += valorEgresos;
+                                            totalPresupuestoE[mes] += valorPresupuestoE;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td>
+                                            @if (DifEgresos != 0)
+                                            {@DifEgresos.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td>
+                                            @if (DifEgresosPor != 0 && Double.IsNaN(DifEgresosPor) == false && Double.IsInfinity(DifEgresosPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", DifEgresosPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+
+                                    totalEgreso[mes] = 0;
+                                    totalPresupuestoE[mes] = 0;
+                                    totalIngresosEgreso[mes] = 0;
+                                    totalPresupuesto[mes] = 0;
+                                }
+                            </tr>
+                            break;
+                        case 13:
+                            <tr style="background-color: silver; text-align: left;  ">
+                                <th>7.1 FUNCIONAMIENTO</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 50 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 63 || e.CuentaID == 64 || e.CuentaID == 145)).Sum(m => m.Monto).ToString());
+                                    double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 50 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 63 || e.CuentaID == 64 || e.CuentaID == 145)).Sum(m => m.Monto).ToString());
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+                                    @*<td >
+                                            @if (valorPresupuestoE != 0)
+                                            {@valorPresupuestoE.ToString("$#,##")
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+                                    <td>
+                                        @if (valorEgresos != 0)
+                                        {@valorEgresos.ToString("$#,###")
+                                        {
+                                            totalIngresosEgreso[mes] += valorEgresos;
+                                            totalPresupuestoE[mes] += valorPresupuestoE;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td >
+                                            @if (DifEgresos != 0)
+                                            {@DifEgresos.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td >
+                                            @if (DifEgresosPor != 0 && Double.IsNaN(DifEgresosPor) == false && Double.IsInfinity(DifEgresosPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", DifEgresosPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+                                    totalEgreso[mes] = 0;
+                                    totalPresupuestoE[mes] = 0;
+                                    totalIngresosEgreso[mes] = 0;
+                                    totalPresupuesto[mes] = 0;
+                                }
+                            </tr>
+                            break;
+                        case 14:
+                            <tr style="background-color: silver; text-align: left">
+                                <th>INVERSIÓN</th>
+                                @foreach (var mes in Meses)
+                                {
+                                    double valorEgresos = 0;
+                                    double valorPresupuestoE = 0;
+                                    foreach (var meses in Meses)
+                                    {
+                                        valorEgresos += double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+                                        valorPresupuestoE += double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+                                    }
+
+
+
+                                    double DifEgresos = valorEgresos - valorPresupuestoE;
+                                    double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
+                                    @*<td>
+                                            @if (valorPresupuestoE != 0)
+                                            {@valorPresupuestoE.ToString("$#,##")
+                                        }
+                                        else
+                                        { @Html.Raw("$0")}
+                                        </td>*@
+                                    <td>
+                                        @if (valorEgresos != 0)
+                                        {@valorEgresos.ToString("$#,###")
+                                        {
+                                            totalIngresosEgreso[mes] += valorEgresos;
+                                            totalPresupuestoE[mes] += valorPresupuestoE;
+                                        }
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                    </td>
+                                    @*<td>
+                                            @if (DifEgresos != 0)
+                                            {@DifEgresos.ToString("$#,###")}
+                                        else
+                                        {@Html.Raw("$0")}
+                                        </td>
+                                        <td>
+                                            @if (DifEgresosPor != 0 && Double.IsNaN(DifEgresosPor) == false && Double.IsInfinity(DifEgresosPor) == false)
+                                            {@Html.Raw(string.Format("{0:N2}%", DifEgresosPor))}
+                                        else
+                                        {@Html.Raw("0%")}
+                                        </td>*@
+
+                                    totalEgreso[mes] = 0;
+                                    totalPresupuestoE[mes] = 0;
+                                    totalIngresosEgreso[mes] = 0;
+                                    totalPresupuesto[mes] = 0;
+                                }
+                            </tr>
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+
+            </table>
+        </div>
+    }
+    catch (Exception)
+    {
+        <script>
+            $(document).ready(function () {
+                $("#prueba").html('</br><diV class="alert alert-warning"> No existe información</div>');
+            });
+        </script>
+    }
+}
+else
+{
+    @Html.Raw("No hay presupuesto para el proyecto");
+}

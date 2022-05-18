@@ -1,0 +1,118 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "InformeTraslado";
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+
+<style>
+    .container {
+        width: 1350px !important;
+    }
+
+    .col-sm-9 {
+        width: 1350px !important;
+    }
+
+    .blog-sidebar {
+        visibility: hidden !important;
+    }
+</style>
+
+<div id="SAGBox">
+    <br />
+
+    <div class="ocultoImpresion">
+        <input type="button" value="Imprimir reporte" class="imprimirDirecto boton btn" />
+        <a class="btn btn-info" href="@Url.Action("InformeTrasladoInventario", "BienReportes", new { id = Model.ProyectoID, hasta = Model.Hasta, desde = Model.Desde })">Descargar Excel</a>
+    </div>
+    <br />
+
+    <div class="soloImpresion">
+        <table class="table table-bordered table-responsive">
+
+            <tr>
+                <th colspan="4" style="font-weight: bold; text-align:center; font-size:14pt">Informe Traslados</th>
+            </tr>
+            <tr>
+                <th colspan="1">Revisi&oacute;n:</th>
+                <td colspan="1">2</td>
+                <th colspan="1">Fecha Actualizaci&oacute;n:</th>
+                <td colspan="1">@FechaSis</td>
+            </tr>
+            <tr>
+                <th colspan="1">Nombre Proyecto:</th>
+                <td colspan="1">@Model.Proyecto</td>
+                <th colspan="1">C&oacute;digo SENAME:</th>
+                <td colspan="1">@ViewBag.CodigoSename</td>
+            </tr>
+            <tr>
+                <th colspan="2"></th>
+                <th colspan="1">Centro de Costo Fundaci&oacute;n</th>
+                <td colspan="1">@ViewBag.CCosto</td>
+            </tr>
+            <tr></tr>
+        </table>
+
+        <table class="table table-bordered table-responsive" ">
+            <tr>
+                <th colspan="1">Especie</th>
+                <th colspan="1">Descripci&oacute;n del bien</th>
+                <th colspan="1">Procedencia</th>
+                <th colspan="1">N&ordm; C/E</th>
+                <th colspan="1">Factura N&ordm;</th>
+                <th colspan="1">A.Traspaso(A)<br />R. Exenta(R)</th>
+                <th colspan="1">Fecha Egreso </th>
+                <th colspan="1">Cantidad</th>
+                <th colspan="1">Ubicaci&oacute;n</th>
+                <th colspan="1">Ubicaci&oacute;n Anterior</th>
+                <th colspan="1">Condici&oacute;n</th>
+                <th colspan="1">Observaciones</th>
+               
+            </tr>
+            <tr></tr>
+
+            @foreach (var item in Model.lista)
+            {
+
+                <tr>
+                    <td colspan="1">@item.Familia </td>
+                    <td colspan="1">@item.DescripcionBien</td>
+                    <td colspan="1">@item.Procedencia[0]</td>
+                    <td colspan="1">@item.Movimiento.NumeroComprobante</td>
+                    @if (item.Egreso != null)
+                    {
+                        <td colspan="1">@item.Egreso.NDocumento</td>
+                    }
+                    else
+                    {
+                        <td colspan="1">@item.Reintegro.NDocumento</td>
+                    }
+                        <td colspan="1">
+                            @{var nombre = System.IO.Path.GetFileNameWithoutExtension(item.RutaArchivo.ToString());
+                                nombre = nombre.Replace("Traslado-" + item.Movimiento.Fecha.ToString().Substring(0, Math.Min(item.Movimiento.Fecha.ToString().Length, 10)) + " 00000-", "");
+                            }
+                            @nombre
+                        </td>
+                    @{
+                        string fecha = @item.Movimiento.Fecha.ToString();
+                        string fechafinal = fecha.Substring(0, Math.Min(fecha.Length, 10));
+                    }
+                        <td colspan="1">@fechafinal</td>
+                    
+                    <td colspan="1">@item.Cantidad.ToString()</td>
+                    <td colspan="1">@item.Ubicacion2</td>
+                    <td colspan="1">@item.Ubicacion </td>
+                    <td colspan="1">@item.CondicionText</td>
+                    <td colspan="1">@item.Detalle</td>
+                
+                </tr>
+                            }
+                        
+        </table>
+    </div>
+</div>
+
+
+
+
+

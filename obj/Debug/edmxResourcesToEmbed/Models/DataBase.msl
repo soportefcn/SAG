@@ -1,0 +1,777 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="codeni09ModelStoreContainer" CdmEntityContainer="codeni09Entities">
+    <EntitySetMapping Name="AltasMenores">
+      <EntityTypeMapping TypeName="codeni09Model.AltasMenores">
+        <MappingFragment StoreEntitySet="AltasMenores">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="RUT_NINIO" ColumnName="RUT_NINIO" />
+          <ScalarProperty Name="Anio" ColumnName="Anio" />
+          <ScalarProperty Name="Mes" ColumnName="Mes" />
+          <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+          <ScalarProperty Name="Tipo_Mov" ColumnName="Tipo_Mov" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AmarrePlantilla">
+      <EntityTypeMapping TypeName="codeni09Model.AmarrePlantilla">
+        <MappingFragment StoreEntitySet="AmarrePlantilla">
+          <ScalarProperty Name="Nombre_Plantilla" ColumnName="Nombre_Plantilla" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="Proyecto" ColumnName="Proyecto" />
+          <ScalarProperty Name="Naturaleza" ColumnName="Naturaleza" />
+          <ScalarProperty Name="Tipo_Registro" ColumnName="Tipo_Registro" />
+          <ScalarProperty Name="Codigo_Grupo" ColumnName="Codigo_Grupo" />
+          <ScalarProperty Name="Nombre_Grupo" ColumnName="Nombre_Grupo" />
+          <ScalarProperty Name="Codigo_Concepto" ColumnName="Codigo_Concepto" />
+          <ScalarProperty Name="Nombre_Concepto" ColumnName="Nombre_Concepto" />
+          <ScalarProperty Name="Codigo_CtaItem" ColumnName="Codigo_CtaItem" />
+          <ScalarProperty Name="Nombre_CtaItem" ColumnName="Nombre_CtaItem" />
+          <ScalarProperty Name="Totaliza" ColumnName="Totaliza" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Articulo">
+      <EntityTypeMapping TypeName="codeni09Model.Articulo">
+        <MappingFragment StoreEntitySet="Articulo">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="FamiliaID" ColumnName="FamiliaID" />
+          <ScalarProperty Name="Codigo_Articulo" ColumnName="Codigo_Articulo" />
+          <ScalarProperty Name="Codigo_UMedida" ColumnName="Codigo_UMedida" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Saldo_Art" ColumnName="Saldo_Art" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Asistencia">
+      <EntityTypeMapping TypeName="codeni09Model.Asistencia">
+        <MappingFragment StoreEntitySet="Asistencia">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="anio" ColumnName="anio" />
+          <ScalarProperty Name="mes" ColumnName="mes" />
+          <ScalarProperty Name="mes_palabras" ColumnName="mes_palabras" />
+          <ScalarProperty Name="total_mes" ColumnName="total_mes" />
+          <ScalarProperty Name="obs" ColumnName="obs" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Banco">
+      <EntityTypeMapping TypeName="codeni09Model.Banco">
+        <MappingFragment StoreEntitySet="Banco">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Bodega">
+      <EntityTypeMapping TypeName="codeni09Model.Bodega">
+        <MappingFragment StoreEntitySet="Bodega">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="Anio" ColumnName="Anio" />
+          <ScalarProperty Name="mes" ColumnName="mes" />
+          <ScalarProperty Name="Tipo_mov" ColumnName="Tipo_mov" />
+          <ScalarProperty Name="NroDoc" ColumnName="NroDoc" />
+          <ScalarProperty Name="DocumentoID" ColumnName="DocumentoID" />
+          <ScalarProperty Name="Nombre_doc" ColumnName="Nombre_doc" />
+          <ScalarProperty Name="Fecha_mov" ColumnName="Fecha_mov" />
+          <ScalarProperty Name="ProveedorID" ColumnName="ProveedorID" />
+          <ScalarProperty Name="Descrip" ColumnName="Descrip" />
+          <ScalarProperty Name="Cod_UM" ColumnName="Cod_UM" />
+          <ScalarProperty Name="Nom_UM" ColumnName="Nom_UM" />
+          <ScalarProperty Name="C_Salida" ColumnName="C_Salida" />
+          <ScalarProperty Name="C_entrada" ColumnName="C_entrada" />
+          <ScalarProperty Name="Obs" ColumnName="Obs" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CalendarioAnual">
+      <EntityTypeMapping TypeName="codeni09Model.CalendarioAnual">
+        <MappingFragment StoreEntitySet="CalendarioAnual">
+          <ScalarProperty Name="ID_R" ColumnName="ID_R" />
+          <ScalarProperty Name="COD_EST" ColumnName="COD_EST" />
+          <ScalarProperty Name="Anio" ColumnName="Anio" />
+          <ScalarProperty Name="Mes" ColumnName="Mes" />
+          <ScalarProperty Name="D1" ColumnName="D1" />
+          <ScalarProperty Name="D2" ColumnName="D2" />
+          <ScalarProperty Name="D3" ColumnName="D3" />
+          <ScalarProperty Name="D4" ColumnName="D4" />
+          <ScalarProperty Name="D5" ColumnName="D5" />
+          <ScalarProperty Name="D6" ColumnName="D6" />
+          <ScalarProperty Name="D7" ColumnName="D7" />
+          <ScalarProperty Name="D8" ColumnName="D8" />
+          <ScalarProperty Name="D9" ColumnName="D9" />
+          <ScalarProperty Name="D10" ColumnName="D10" />
+          <ScalarProperty Name="D11" ColumnName="D11" />
+          <ScalarProperty Name="D12" ColumnName="D12" />
+          <ScalarProperty Name="D13" ColumnName="D13" />
+          <ScalarProperty Name="D14" ColumnName="D14" />
+          <ScalarProperty Name="D15" ColumnName="D15" />
+          <ScalarProperty Name="D16" ColumnName="D16" />
+          <ScalarProperty Name="D17" ColumnName="D17" />
+          <ScalarProperty Name="D18" ColumnName="D18" />
+          <ScalarProperty Name="D19" ColumnName="D19" />
+          <ScalarProperty Name="D20" ColumnName="D20" />
+          <ScalarProperty Name="D21" ColumnName="D21" />
+          <ScalarProperty Name="D22" ColumnName="D22" />
+          <ScalarProperty Name="D23" ColumnName="D23" />
+          <ScalarProperty Name="D24" ColumnName="D24" />
+          <ScalarProperty Name="D25" ColumnName="D25" />
+          <ScalarProperty Name="D26" ColumnName="D26" />
+          <ScalarProperty Name="D27" ColumnName="D27" />
+          <ScalarProperty Name="D28" ColumnName="D28" />
+          <ScalarProperty Name="D29" ColumnName="D29" />
+          <ScalarProperty Name="D30" ColumnName="D30" />
+          <ScalarProperty Name="D31" ColumnName="D31" />
+          <ScalarProperty Name="TotalDias" ColumnName="TotalDias" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Cuenta">
+      <EntityTypeMapping TypeName="codeni09Model.Cuenta">
+        <MappingFragment StoreEntitySet="Cuenta">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CuentaCorriente">
+      <EntityTypeMapping TypeName="codeni09Model.CuentaCorriente">
+        <MappingFragment StoreEntitySet="CuentaCorriente">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Numero" ColumnName="Numero" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="BancoID" ColumnName="BancoID" />
+          <ScalarProperty Name="Sucursal" ColumnName="Sucursal" />
+          <ScalarProperty Name="Saldo_Inicial" ColumnName="Saldo_Inicial" />
+          <ScalarProperty Name="DireccionID" ColumnName="DireccionID" />
+          <ScalarProperty Name="Ejecutivo" ColumnName="Ejecutivo" />
+          <ScalarProperty Name="Fono" ColumnName="Fono" />
+          <ScalarProperty Name="Fax" ColumnName="Fax" />
+          <ScalarProperty Name="Movil" ColumnName="Movil" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Pweb" ColumnName="Pweb" />
+          <ScalarProperty Name="Obs" ColumnName="Obs" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="LineaCredito" ColumnName="LineaCredito" />
+          <ScalarProperty Name="Desactiva" ColumnName="Desactiva" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DepositoPlazo">
+      <EntityTypeMapping TypeName="codeni09Model.DepositoPlazo">
+        <MappingFragment StoreEntitySet="DepositoPlazo">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="Anio" ColumnName="Anio" />
+          <ScalarProperty Name="Mes" ColumnName="Mes" />
+          <ScalarProperty Name="CuentaCorrienteID" ColumnName="CuentaCorrienteID" />
+          <ScalarProperty Name="Banco" ColumnName="Banco" />
+          <ScalarProperty Name="Monto" ColumnName="Monto" />
+          <ScalarProperty Name="interes" ColumnName="interes" />
+          <ScalarProperty Name="intereses" ColumnName="intereses" />
+          <ScalarProperty Name="apagar" ColumnName="apagar" />
+          <ScalarProperty Name="comprobante" ColumnName="comprobante" />
+          <ScalarProperty Name="fecha_dep" ColumnName="fecha_dep" />
+          <ScalarProperty Name="fecha_ven" ColumnName="fecha_ven" />
+          <ScalarProperty Name="obs" ColumnName="obs" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DeudaPendiente">
+      <EntityTypeMapping TypeName="codeni09Model.DeudaPendiente">
+        <MappingFragment StoreEntitySet="DeudaPendiente">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Numero" ColumnName="Numero" />
+          <ScalarProperty Name="Fecha_registro" ColumnName="Fecha_registro" />
+          <ScalarProperty Name="Tipo_Acreedor" ColumnName="Tipo_Acreedor" />
+          <ScalarProperty Name="Rut" ColumnName="Rut" />
+          <ScalarProperty Name="Dv" ColumnName="Dv" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Numero_Doc" ColumnName="Numero_Doc" />
+          <ScalarProperty Name="DocumentoID" ColumnName="DocumentoID" />
+          <ScalarProperty Name="Fecha_Doc" ColumnName="Fecha_Doc" />
+          <ScalarProperty Name="Fecha_Ven_doc" ColumnName="Fecha_Ven_doc" />
+          <ScalarProperty Name="Monto" ColumnName="Monto" />
+          <ScalarProperty Name="Glosa" ColumnName="Glosa" />
+          <ScalarProperty Name="CuentaID" ColumnName="CuentaID" />
+          <ScalarProperty Name="Egreso" ColumnName="Egreso" />
+          <ScalarProperty Name="Fecha_Egreso" ColumnName="Fecha_Egreso" />
+          <ScalarProperty Name="Pagado" ColumnName="Pagado" />
+          <ScalarProperty Name="Cerrado" ColumnName="Cerrado" />
+          <ScalarProperty Name="Mes_Pro" ColumnName="Mes_Pro" />
+          <ScalarProperty Name="Ano_Pro" ColumnName="Ano_Pro" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Direccion">
+      <EntityTypeMapping TypeName="codeni09Model.Direccion">
+        <MappingFragment StoreEntitySet="Direccion">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Calle" ColumnName="Calle" />
+          <ScalarProperty Name="Numero" ColumnName="Numero" />
+          <ScalarProperty Name="Depto" ColumnName="Depto" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Documento">
+      <EntityTypeMapping TypeName="codeni09Model.Documento">
+        <MappingFragment StoreEntitySet="Documento">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Establecimiento">
+      <EntityTypeMapping TypeName="codeni09Model.Establecimiento">
+        <MappingFragment StoreEntitySet="Establecimiento">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="SistemaAsistencialID" ColumnName="SistemaAsistencialID" />
+          <ScalarProperty Name="DireccionID" ColumnName="DireccionID" />
+          <ScalarProperty Name="DirectorID" ColumnName="DirectorID" />
+          <ScalarProperty Name="CodCodeni" ColumnName="CodCodeni" />
+          <ScalarProperty Name="CodSename" ColumnName="CodSename" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Institucion" ColumnName="Institucion" />
+          <ScalarProperty Name="Fono" ColumnName="Fono" />
+          <ScalarProperty Name="Fax" ColumnName="Fax" />
+          <ScalarProperty Name="Plazas" ColumnName="Plazas" />
+          <ScalarProperty Name="PlazasAdicional" ColumnName="PlazasAdicional" />
+          <ScalarProperty Name="EdadMinima" ColumnName="EdadMinima" />
+          <ScalarProperty Name="EdadMaxima" ColumnName="EdadMaxima" />
+          <ScalarProperty Name="ValorSubencion" ColumnName="ValorSubencion" />
+          <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+          <ScalarProperty Name="Flexibilizacion" ColumnName="Flexibilizacion" />
+          <ScalarProperty Name="DiasAtencion" ColumnName="DiasAtencion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Familia">
+      <EntityTypeMapping TypeName="codeni09Model.Familia">
+        <MappingFragment StoreEntitySet="Familia">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Folios">
+      <EntityTypeMapping TypeName="codeni09Model.Folios">
+        <MappingFragment StoreEntitySet="Folios">
+          <ScalarProperty Name="Numero" ColumnName="Numero" />
+          <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+          <ScalarProperty Name="Nombre_pc" ColumnName="Nombre_pc" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FondoFijo">
+      <EntityTypeMapping TypeName="codeni09Model.FondoFijo">
+        <MappingFragment StoreEntitySet="FondoFijo">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="CuentaID" ColumnName="CuentaID" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="ItemGastoID" ColumnName="ItemGastoID" />
+          <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+          <ScalarProperty Name="NroDocumento" ColumnName="NroDocumento" />
+          <ScalarProperty Name="Monto" ColumnName="Monto" />
+          <ScalarProperty Name="Glosa" ColumnName="Glosa" />
+          <ScalarProperty Name="Ano" ColumnName="Ano" />
+          <ScalarProperty Name="Mes" ColumnName="Mes" />
+          <ScalarProperty Name="Cerrado" ColumnName="Cerrado" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Historico">
+      <EntityTypeMapping TypeName="codeni09Model.Historico">
+        <MappingFragment StoreEntitySet="Historico">
+          <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+          <ScalarProperty Name="Numero" ColumnName="Numero" />
+          <ScalarProperty Name="Linea" ColumnName="Linea" />
+          <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+          <ScalarProperty Name="Ctacte" ColumnName="Ctacte" />
+          <ScalarProperty Name="Nombre_cta" ColumnName="Nombre_cta" />
+          <ScalarProperty Name="Cta_Contable" ColumnName="Cta_Contable" />
+          <ScalarProperty Name="Monto_Ingreso" ColumnName="Monto_Ingreso" />
+          <ScalarProperty Name="Glosa" ColumnName="Glosa" />
+          <ScalarProperty Name="Nro_Cheque" ColumnName="Nro_Cheque" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="Cerrado" ColumnName="Cerrado" />
+          <ScalarProperty Name="YearMov" ColumnName="YearMov" />
+          <ScalarProperty Name="MesMov" ColumnName="MesMov" />
+          <ScalarProperty Name="Proyecto" ColumnName="Proyecto" />
+          <ScalarProperty Name="Fecha_Cheque" ColumnName="Fecha_Cheque" />
+          <ScalarProperty Name="Monto_Cheque" ColumnName="Monto_Cheque" />
+          <ScalarProperty Name="Tipo_Beneficiario" ColumnName="Tipo_Beneficiario" />
+          <ScalarProperty Name="Rut" ColumnName="Rut" />
+          <ScalarProperty Name="Dv" ColumnName="Dv" />
+          <ScalarProperty Name="Nombre_Beneficiario" ColumnName="Nombre_Beneficiario" />
+          <ScalarProperty Name="Tipo_Origen" ColumnName="Tipo_Origen" />
+          <ScalarProperty Name="Comprobante_DP" ColumnName="Comprobante_DP" />
+          <ScalarProperty Name="DocumentoID" ColumnName="DocumentoID" />
+          <ScalarProperty Name="Nombre_Doc" ColumnName="Nombre_Doc" />
+          <ScalarProperty Name="Numero_Doc" ColumnName="Numero_Doc" />
+          <ScalarProperty Name="Monto_Doc" ColumnName="Monto_Doc" />
+          <ScalarProperty Name="Fecha_Emision" ColumnName="Fecha_Emision" />
+          <ScalarProperty Name="Fecha_Vencimiento" ColumnName="Fecha_Vencimiento" />
+          <ScalarProperty Name="Monto_Egreso" ColumnName="Monto_Egreso" />
+          <ScalarProperty Name="Nro_egreso" ColumnName="Nro_egreso" />
+          <ScalarProperty Name="Cta_Original" ColumnName="Cta_Original" />
+          <ScalarProperty Name="Nombre_Cta_Original" ColumnName="Nombre_Cta_Original" />
+          <ScalarProperty Name="ItemGastoID" ColumnName="ItemGastoID" />
+          <ScalarProperty Name="Nombre_Item" ColumnName="Nombre_Item" />
+          <ScalarProperty Name="Glosa_Global" ColumnName="Glosa_Global" />
+          <ScalarProperty Name="Uso_Cta" ColumnName="Uso_Cta" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Honorarios">
+      <EntityTypeMapping TypeName="codeni09Model.Honorarios">
+        <MappingFragment StoreEntitySet="Honorarios">
+          <ScalarProperty Name="Boleta" ColumnName="Boleta" />
+          <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+          <ScalarProperty Name="Rut" ColumnName="Rut" />
+          <ScalarProperty Name="Dv" ColumnName="Dv" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Neto" ColumnName="Neto" />
+          <ScalarProperty Name="Retencion" ColumnName="Retencion" />
+          <ScalarProperty Name="Bruto" ColumnName="Bruto" />
+          <ScalarProperty Name="Concepto" ColumnName="Concepto" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="Ano" ColumnName="Ano" />
+          <ScalarProperty Name="Mes" ColumnName="Mes" />
+          <ScalarProperty Name="Porcentaje" ColumnName="Porcentaje" />
+          <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+          <ScalarProperty Name="Egreso" ColumnName="Egreso" />
+          <ScalarProperty Name="Fecha_Egreso" ColumnName="Fecha_Egreso" />
+          <ScalarProperty Name="Beneficiario" ColumnName="Beneficiario" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="IndiceGestion">
+      <EntityTypeMapping TypeName="codeni09Model.IndiceGestion">
+        <MappingFragment StoreEntitySet="IndiceGestion">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Correlativo" ColumnName="Correlativo" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="Cod_factor" ColumnName="Cod_factor" />
+          <ScalarProperty Name="Nombre_factor" ColumnName="Nombre_factor" />
+          <ScalarProperty Name="Cod_Variable" ColumnName="Cod_Variable" />
+          <ScalarProperty Name="Nombre_Variable" ColumnName="Nombre_Variable" />
+          <ScalarProperty Name="Nombre_Indicador" ColumnName="Nombre_Indicador" />
+          <ScalarProperty Name="Indicador" ColumnName="Indicador" />
+          <ScalarProperty Name="Estandar" ColumnName="Estandar" />
+          <ScalarProperty Name="Estandar_Real" ColumnName="Estandar_Real" />
+          <ScalarProperty Name="Medicion" ColumnName="Medicion" />
+          <ScalarProperty Name="Nombre_Medicion" ColumnName="Nombre_Medicion" />
+          <ScalarProperty Name="valor_1" ColumnName="valor_1" />
+          <ScalarProperty Name="valor_2" ColumnName="valor_2" />
+          <ScalarProperty Name="valor_3" ColumnName="valor_3" />
+          <ScalarProperty Name="valor_4" ColumnName="valor_4" />
+          <ScalarProperty Name="Cta_Item" ColumnName="Cta_Item" />
+          <ScalarProperty Name="Cta_2" ColumnName="Cta_2" />
+          <ScalarProperty Name="Obs" ColumnName="Obs" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Intervencion">
+      <EntityTypeMapping TypeName="codeni09Model.Intervencion">
+        <MappingFragment StoreEntitySet="Intervencion">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="COD_MENOR" ColumnName="COD_MENOR" />
+          <ScalarProperty Name="FECHA" ColumnName="FECHA" />
+          <ScalarProperty Name="COD_INTER" ColumnName="COD_INTER" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="Cerrado" ColumnName="Cerrado" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Inventario">
+      <EntityTypeMapping TypeName="codeni09Model.Inventario">
+        <MappingFragment StoreEntitySet="Inventario">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="Anio" ColumnName="Anio" />
+          <ScalarProperty Name="Descrip" ColumnName="Descrip" />
+          <ScalarProperty Name="Ubicacion" ColumnName="Ubicacion" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+          <ScalarProperty Name="Valor" ColumnName="Valor" />
+          <ScalarProperty Name="Fecha_Mov" ColumnName="Fecha_Mov" />
+          <ScalarProperty Name="Tipo_Mov" ColumnName="Tipo_Mov" />
+          <ScalarProperty Name="Cod_Tipo_Mov" ColumnName="Cod_Tipo_Mov" />
+          <ScalarProperty Name="Nom_Tipo_Mov" ColumnName="Nom_Tipo_Mov" />
+          <ScalarProperty Name="Egreso" ColumnName="Egreso" />
+          <ScalarProperty Name="Factura" ColumnName="Factura" />
+          <ScalarProperty Name="Acta" ColumnName="Acta" />
+          <ScalarProperty Name="Fecha_acta" ColumnName="Fecha_acta" />
+          <ScalarProperty Name="Obs" ColumnName="Obs" />
+          <ScalarProperty Name="FamiliaID" ColumnName="FamiliaID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ItemGasto">
+      <EntityTypeMapping TypeName="codeni09Model.ItemGasto">
+        <MappingFragment StoreEntitySet="ItemGasto">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LineaAccion">
+      <EntityTypeMapping TypeName="codeni09Model.LineaAccion">
+        <MappingFragment StoreEntitySet="LineaAccion">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Menores">
+      <EntityTypeMapping TypeName="codeni09Model.Menores">
+        <MappingFragment StoreEntitySet="Menores">
+          <ScalarProperty Name="ID_MENOR" ColumnName="ID_MENOR" />
+          <ScalarProperty Name="Rut" ColumnName="Rut" />
+          <ScalarProperty Name="DV" ColumnName="DV" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Obs" ColumnName="Obs" />
+          <ScalarProperty Name="Codigo_est" ColumnName="Codigo_est" />
+          <ScalarProperty Name="Fecha_ing" ColumnName="Fecha_ing" />
+          <ScalarProperty Name="Fecha_Sal" ColumnName="Fecha_Sal" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+          <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+          <ScalarProperty Name="NRO_INTERVEN" ColumnName="NRO_INTERVEN" />
+          <ScalarProperty Name="DIAS_PERMANENCIA" ColumnName="DIAS_PERMANENCIA" />
+          <ScalarProperty Name="DIAS_A_PAGAR" ColumnName="DIAS_A_PAGAR" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Movimiento">
+      <EntityTypeMapping TypeName="codeni09Model.Movimiento">
+        <MappingFragment StoreEntitySet="Movimiento">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="TipoComprobanteID" ColumnName="TipoComprobanteID" />
+          <ScalarProperty Name="CuentaID" ColumnName="CuentaID" />
+          <ScalarProperty Name="BeneficiarioID" ColumnName="BeneficiarioID" />
+          <ScalarProperty Name="CuentaCorrienteID" ColumnName="CuentaCorrienteID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="NumeroComprobante" ColumnName="NumeroComprobante" />
+          <ScalarProperty Name="Periodo" ColumnName="Periodo" />
+          <ScalarProperty Name="Mes" ColumnName="Mes" />
+          <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+          <ScalarProperty Name="Cheque" ColumnName="Cheque" />
+          <ScalarProperty Name="Monto_Ingresos" ColumnName="Monto_Ingresos" />
+          <ScalarProperty Name="Monto_Egresos" ColumnName="Monto_Egresos" />
+          <ScalarProperty Name="Saldo" ColumnName="Saldo" />
+          <ScalarProperty Name="Linea" ColumnName="Linea" />
+          <ScalarProperty Name="Conciliado" ColumnName="Conciliado" />
+          <ScalarProperty Name="Mes_Anterior" ColumnName="Mes_Anterior" />
+          <ScalarProperty Name="Periodo_Anterior" ColumnName="Periodo_Anterior" />
+          <ScalarProperty Name="Cerrado" ColumnName="Cerrado" />
+          <ScalarProperty Name="Saldo_cartola" ColumnName="Saldo_cartola" />
+          <ScalarProperty Name="Dep_No_Consignados" ColumnName="Dep_No_Consignados" />
+          <ScalarProperty Name="Cheques_No_Cobrados" ColumnName="Cheques_No_Cobrados" />
+          <ScalarProperty Name="Gastos_Bancarios" ColumnName="Gastos_Bancarios" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Saldo_Libro" ColumnName="Saldo_Libro" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Persona">
+      <EntityTypeMapping TypeName="codeni09Model.Persona">
+        <MappingFragment StoreEntitySet="Persona">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="DireccionID" ColumnName="DireccionID" />
+          <ScalarProperty Name="Rut" ColumnName="Rut" />
+          <ScalarProperty Name="DV" ColumnName="DV" />
+          <ScalarProperty Name="Nombres" ColumnName="Nombres" />
+          <ScalarProperty Name="ApellidoParterno" ColumnName="ApellidoParterno" />
+          <ScalarProperty Name="ApellidoMaterno" ColumnName="ApellidoMaterno" />
+          <ScalarProperty Name="FechaNacimiento" ColumnName="FechaNacimiento" />
+          <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+          <ScalarProperty Name="EstadoCivil" ColumnName="EstadoCivil" />
+          <ScalarProperty Name="FechaIngreso" ColumnName="FechaIngreso" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Plantilla">
+      <EntityTypeMapping TypeName="codeni09Model.Plantilla">
+        <MappingFragment StoreEntitySet="Plantilla">
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="Saldo_Inicial" ColumnName="Saldo_Inicial" />
+          <ScalarProperty Name="Aporte_Concejo" ColumnName="Aporte_Concejo" />
+          <ScalarProperty Name="Saldo_Inicial_Real" ColumnName="Saldo_Inicial_Real" />
+          <ScalarProperty Name="Mes_Inicio_Proyecto" ColumnName="Mes_Inicio_Proyecto" />
+          <ScalarProperty Name="Ano_Inicio_Proyecto" ColumnName="Ano_Inicio_Proyecto" />
+          <ScalarProperty Name="Mes1" ColumnName="Mes1" />
+          <ScalarProperty Name="Mes2" ColumnName="Mes2" />
+          <ScalarProperty Name="Mes3" ColumnName="Mes3" />
+          <ScalarProperty Name="Mes4" ColumnName="Mes4" />
+          <ScalarProperty Name="Mes5" ColumnName="Mes5" />
+          <ScalarProperty Name="Mes6" ColumnName="Mes6" />
+          <ScalarProperty Name="Mes7" ColumnName="Mes7" />
+          <ScalarProperty Name="Mes8" ColumnName="Mes8" />
+          <ScalarProperty Name="Mes9" ColumnName="Mes9" />
+          <ScalarProperty Name="Mes10" ColumnName="Mes10" />
+          <ScalarProperty Name="Mes11" ColumnName="Mes11" />
+          <ScalarProperty Name="Mes12" ColumnName="Mes12" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PlantillaEjecucion">
+      <EntityTypeMapping TypeName="codeni09Model.PlantillaEjecucion">
+        <MappingFragment StoreEntitySet="PlantillaEjecucion">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre_Plantilla" ColumnName="Nombre_Plantilla" />
+          <ScalarProperty Name="EstablecimientoID" ColumnName="EstablecimientoID" />
+          <ScalarProperty Name="ProyectoID" ColumnName="ProyectoID" />
+          <ScalarProperty Name="Naturaleza" ColumnName="Naturaleza" />
+          <ScalarProperty Name="Tipo_Linea" ColumnName="Tipo_Linea" />
+          <ScalarProperty Name="Grupo" ColumnName="Grupo" />
+          <ScalarProperty Name="Tipo_Reg" ColumnName="Tipo_Reg" />
+          <ScalarProperty Name="Concepto" ColumnName="Concepto" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="PptoMes1" ColumnName="PptoMes1" />
+          <ScalarProperty Name="RealMes1" ColumnName="RealMes1" />
+          <ScalarProperty Name="DesvMes1" ColumnName="DesvMes1" />
+          <ScalarProperty Name="PorcenMes1" ColumnName="PorcenMes1" />
+          <ScalarProperty Name="PptoMes2" ColumnName="PptoMes2" />
+          <ScalarProperty Name="RealMes2" ColumnName="RealMes2" />
+          <ScalarProperty Name="DesvMes2" ColumnName="DesvMes2" />
+          <ScalarProperty Name="PorcenMes2" ColumnName="PorcenMes2" />
+          <ScalarProperty Name="PptoMes3" ColumnName="PptoMes3" />
+          <ScalarProperty Name="RealMes3" ColumnName="RealMes3" />
+          <ScalarProperty Name="DesvMes3" ColumnName="DesvMes3" />
+          <ScalarProperty Name="PorcenMes3" ColumnName="PorcenMes3" />
+          <ScalarProperty Name="PptoMes4" ColumnName="PptoMes4" />
+          <ScalarProperty Name="RealMes4" ColumnName="RealMes4" />
+          <ScalarProperty Name="DesvMes4" ColumnName="DesvMes4" />
+          <ScalarProperty Name="PorcenMes4" ColumnName="PorcenMes4" />
+          <ScalarProperty Name="PptoMes5" ColumnName="PptoMes5" />
+          <ScalarProperty Name="RealMes5" ColumnName="RealMes5" />
+          <ScalarProperty Name="DesvMes5" ColumnName="DesvMes5" />
+          <ScalarProperty Name="PorcenMes5" ColumnName="PorcenMes5" />
+          <ScalarProperty Name="PptoMes6" ColumnName="PptoMes6" />
+          <ScalarProperty Name="RealMes6" ColumnName="RealMes6" />
+          <ScalarProperty Name="DesvMes6" ColumnName="DesvMes6" />
+          <ScalarProperty Name="PorcenMes6" ColumnName="PorcenMes6" />
+          <ScalarProperty Name="PptoMes7" ColumnName="PptoMes7" />
+          <ScalarProperty Name="RealMes7" ColumnName="RealMes7" />
+          <ScalarProperty Name="DesvMes7" ColumnName="DesvMes7" />
+          <ScalarProperty Name="PorcenMes7" ColumnName="PorcenMes7" />
+          <ScalarProperty Name="PptoMes8" ColumnName="PptoMes8" />
+          <ScalarProperty Name="RealMes8" ColumnName="RealMes8" />
+          <ScalarProperty Name="DesvMes8" ColumnName="DesvMes8" />
+          <ScalarProperty Name="PorcenMes8" ColumnName="PorcenMes8" />
+          <ScalarProperty Name="PptoMes9" ColumnName="PptoMes9" />
+          <ScalarProperty Name="RealMes9" ColumnName="RealMes9" />
+          <ScalarProperty Name="DesvMes9" ColumnName="DesvMes9" />
+          <ScalarProperty Name="PorcenMes9" ColumnName="PorcenMes9" />
+          <ScalarProperty Name="PptoMes10" ColumnName="PptoMes10" />
+          <ScalarProperty Name="RealMes10" ColumnName="RealMes10" />
+          <ScalarProperty Name="DesvMes10" ColumnName="DesvMes10" />
+          <ScalarProperty Name="PorcenMes10" ColumnName="PorcenMes10" />
+          <ScalarProperty Name="PptoMes11" ColumnName="PptoMes11" />
+          <ScalarProperty Name="RealMes11" ColumnName="RealMes11" />
+          <ScalarProperty Name="DesvMes11" ColumnName="DesvMes11" />
+          <ScalarProperty Name="PorcenMes11" ColumnName="PorcenMes11" />
+          <ScalarProperty Name="PptoMes12" ColumnName="PptoMes12" />
+          <ScalarProperty Name="RealMes12" ColumnName="RealMes12" />
+          <ScalarProperty Name="DesvMes12" ColumnName="DesvMes12" />
+          <ScalarProperty Name="PorcenMes12" ColumnName="PorcenMes12" />
+          <ScalarProperty Name="Total_Concepto" ColumnName="Total_Concepto" />
+          <ScalarProperty Name="Fila" ColumnName="Fila" />
+          <ScalarProperty Name="X" ColumnName="X" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Programa">
+      <EntityTypeMapping TypeName="codeni09Model.Programa">
+        <MappingFragment StoreEntitySet="Programa">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Sigla" ColumnName="Sigla" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Proveedor">
+      <EntityTypeMapping TypeName="codeni09Model.Proveedor">
+        <MappingFragment StoreEntitySet="Proveedor">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="PersonID" ColumnName="PersonID" />
+          <ScalarProperty Name="DireccionID" ColumnName="DireccionID" />
+          <ScalarProperty Name="Fono" ColumnName="Fono" />
+          <ScalarProperty Name="Fax" ColumnName="Fax" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Contacto" ColumnName="Contacto" />
+          <ScalarProperty Name="Pweb" ColumnName="Pweb" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Proyecto">
+      <EntityTypeMapping TypeName="codeni09Model.Proyecto">
+        <MappingFragment StoreEntitySet="Proyecto">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ProgramaID" ColumnName="ProgramaID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SistemaAsistencial">
+      <EntityTypeMapping TypeName="codeni09Model.SistemaAsistencial">
+        <MappingFragment StoreEntitySet="SistemaAsistencial">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="LineaAccionID" ColumnName="LineaAccionID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Abreviatura" ColumnName="Abreviatura" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="codeni09Model.sysdiagrams">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TipoComprobante">
+      <EntityTypeMapping TypeName="codeni09Model.TipoComprobante">
+        <MappingFragment StoreEntitySet="TipoComprobante">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Usuario">
+      <EntityTypeMapping TypeName="codeni09Model.Usuario">
+        <MappingFragment StoreEntitySet="Usuario">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="PersonaID" ColumnName="PersonaID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Nivel" ColumnName="Nivel" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Obs" ColumnName="Obs" />
+          <ScalarProperty Name="M1_1" ColumnName="M1_1" />
+          <ScalarProperty Name="M1_2" ColumnName="M1_2" />
+          <ScalarProperty Name="M1_3" ColumnName="M1_3" />
+          <ScalarProperty Name="M1_4" ColumnName="M1_4" />
+          <ScalarProperty Name="M1_5" ColumnName="M1_5" />
+          <ScalarProperty Name="M1_6" ColumnName="M1_6" />
+          <ScalarProperty Name="M1_7" ColumnName="M1_7" />
+          <ScalarProperty Name="M1_8" ColumnName="M1_8" />
+          <ScalarProperty Name="M1_9" ColumnName="M1_9" />
+          <ScalarProperty Name="M1_10" ColumnName="M1_10" />
+          <ScalarProperty Name="M2_1" ColumnName="M2_1" />
+          <ScalarProperty Name="M2_2" ColumnName="M2_2" />
+          <ScalarProperty Name="M2_3" ColumnName="M2_3" />
+          <ScalarProperty Name="M2_4" ColumnName="M2_4" />
+          <ScalarProperty Name="M2_5" ColumnName="M2_5" />
+          <ScalarProperty Name="M2_6" ColumnName="M2_6" />
+          <ScalarProperty Name="M2_7" ColumnName="M2_7" />
+          <ScalarProperty Name="M2_8" ColumnName="M2_8" />
+          <ScalarProperty Name="M2_9" ColumnName="M2_9" />
+          <ScalarProperty Name="M2_10" ColumnName="M2_10" />
+          <ScalarProperty Name="M2_11" ColumnName="M2_11" />
+          <ScalarProperty Name="M2_12" ColumnName="M2_12" />
+          <ScalarProperty Name="M2_13" ColumnName="M2_13" />
+          <ScalarProperty Name="M2_14" ColumnName="M2_14" />
+          <ScalarProperty Name="M2_15" ColumnName="M2_15" />
+          <ScalarProperty Name="M2_16" ColumnName="M2_16" />
+          <ScalarProperty Name="M2_17" ColumnName="M2_17" />
+          <ScalarProperty Name="M2_18" ColumnName="M2_18" />
+          <ScalarProperty Name="M2_19" ColumnName="M2_19" />
+          <ScalarProperty Name="M2_20" ColumnName="M2_20" />
+          <ScalarProperty Name="M2_21" ColumnName="M2_21" />
+          <ScalarProperty Name="M2_22" ColumnName="M2_22" />
+          <ScalarProperty Name="M2_23" ColumnName="M2_23" />
+          <ScalarProperty Name="M2_24" ColumnName="M2_24" />
+          <ScalarProperty Name="M2_25" ColumnName="M2_25" />
+          <ScalarProperty Name="M2_26" ColumnName="M2_26" />
+          <ScalarProperty Name="M2_27" ColumnName="M2_27" />
+          <ScalarProperty Name="M2_28" ColumnName="M2_28" />
+          <ScalarProperty Name="M2_29" ColumnName="M2_29" />
+          <ScalarProperty Name="M2_30" ColumnName="M2_30" />
+          <ScalarProperty Name="M3_1" ColumnName="M3_1" />
+          <ScalarProperty Name="M3_2" ColumnName="M3_2" />
+          <ScalarProperty Name="M3_3" ColumnName="M3_3" />
+          <ScalarProperty Name="M3_4" ColumnName="M3_4" />
+          <ScalarProperty Name="M3_5" ColumnName="M3_5" />
+          <ScalarProperty Name="M3_6" ColumnName="M3_6" />
+          <ScalarProperty Name="M3_7" ColumnName="M3_7" />
+          <ScalarProperty Name="M3_8" ColumnName="M3_8" />
+          <ScalarProperty Name="M3_9" ColumnName="M3_9" />
+          <ScalarProperty Name="M4_1" ColumnName="M4_1" />
+          <ScalarProperty Name="M4_2" ColumnName="M4_2" />
+          <ScalarProperty Name="M4_3" ColumnName="M4_3" />
+          <ScalarProperty Name="M4_4" ColumnName="M4_4" />
+          <ScalarProperty Name="M4_5" ColumnName="M4_5" />
+          <ScalarProperty Name="M4_6" ColumnName="M4_6" />
+          <ScalarProperty Name="M4_7" ColumnName="M4_7" />
+          <ScalarProperty Name="M4_8" ColumnName="M4_8" />
+          <ScalarProperty Name="M4_9" ColumnName="M4_9" />
+          <ScalarProperty Name="M4_10" ColumnName="M4_10" />
+          <ScalarProperty Name="M4_11" ColumnName="M4_11" />
+          <ScalarProperty Name="M4_12" ColumnName="M4_12" />
+          <ScalarProperty Name="M5_1" ColumnName="M5_1" />
+          <ScalarProperty Name="M5_2" ColumnName="M5_2" />
+          <ScalarProperty Name="M5_3" ColumnName="M5_3" />
+          <ScalarProperty Name="M5_4" ColumnName="M5_4" />
+          <ScalarProperty Name="M5_5" ColumnName="M5_5" />
+          <ScalarProperty Name="M5_6" ColumnName="M5_6" />
+          <ScalarProperty Name="M5_7" ColumnName="M5_7" />
+          <ScalarProperty Name="M5_8" ColumnName="M5_8" />
+          <ScalarProperty Name="M5_9" ColumnName="M5_9" />
+          <ScalarProperty Name="M5_10" ColumnName="M5_10" />
+          <ScalarProperty Name="M5_11" ColumnName="M5_11" />
+          <ScalarProperty Name="M5_12" ColumnName="M5_12" />
+          <ScalarProperty Name="M5_13" ColumnName="M5_13" />
+          <ScalarProperty Name="M5_14" ColumnName="M5_14" />
+          <ScalarProperty Name="M5_15" ColumnName="M5_15" />
+          <ScalarProperty Name="M5_16" ColumnName="M5_16" />
+          <ScalarProperty Name="M6_1" ColumnName="M6_1" />
+          <ScalarProperty Name="M6_2" ColumnName="M6_2" />
+          <ScalarProperty Name="M6_3" ColumnName="M6_3" />
+          <ScalarProperty Name="M6_4" ColumnName="M6_4" />
+          <ScalarProperty Name="M6_5" ColumnName="M6_5" />
+          <ScalarProperty Name="M6_6" ColumnName="M6_6" />
+          <ScalarProperty Name="M6_7" ColumnName="M6_7" />
+          <ScalarProperty Name="M6_8" ColumnName="M6_8" />
+          <ScalarProperty Name="M6_9" ColumnName="M6_9" />
+          <ScalarProperty Name="M6_10" ColumnName="M6_10" />
+          <ScalarProperty Name="M6_11" ColumnName="M6_11" />
+          <ScalarProperty Name="M7_1" ColumnName="M7_1" />
+          <ScalarProperty Name="M7_2" ColumnName="M7_2" />
+          <ScalarProperty Name="M7_3" ColumnName="M7_3" />
+          <ScalarProperty Name="M7_4" ColumnName="M7_4" />
+          <ScalarProperty Name="M7_5" ColumnName="M7_5" />
+          <ScalarProperty Name="M7_6" ColumnName="M7_6" />
+          <ScalarProperty Name="M7_7" ColumnName="M7_7" />
+          <ScalarProperty Name="M7_8" ColumnName="M7_8" />
+          <ScalarProperty Name="M7_9" ColumnName="M7_9" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

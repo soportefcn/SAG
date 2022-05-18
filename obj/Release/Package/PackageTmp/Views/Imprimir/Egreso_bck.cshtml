@@ -1,0 +1,188 @@
+﻿@model SAG2.Models.Movimiento
+@using SAG2.Models;
+@{
+    Layout = null;
+    List<SAG2.Models.DetalleEgreso> Detalles = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Detalles;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    int fondo_fijo = Detalles.Where(d => d.FondoFijoID != null).Count();
+    Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+    SAG2DB db = new SAG2DB();
+
+
+}
+
+@{ 
+    try
+    {
+        Rol Rol = db.Rol.Where(r => r.ProyectoID == Proyecto.ID && r.TipoRolID == 5).Single();
+        ViewBag.Ejecutor = Rol.Persona.NombreCompleto;
+    }
+    catch (Exception)
+    {
+        ViewBag.Ejecutor = "DEBE ASIGNAR SECRETARIA";
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comprobante de Egreso</title>
+</head>
+    <style type="text/css">
+        h2 {
+            text-align: center;
+        }
+        body 
+        {
+            font-family: Arial;    
+        }
+        hr {
+            margin-bottom: 1px;
+            width: 200px;
+        }
+    
+    th, td
+        {
+         font-size: 12px;    
+    }
+    
+    .registros, .registros tr th, registros tr td 
+    {
+        border-left: 0;
+        border-right: 0;    
+        font-size: 12px;
+    }
+    
+        #Firmas 
+        {
+            margin-top: 150px;
+        }
+    </style>
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script language="javascript" type="text/javascript">
+       <!--
+        function printThis() {
+            window.print();
+            setTimeout('window.close()', 10);
+           // self.close();
+        }
+        //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Fundación Ciudad del Niño<br />
+    @Html.Raw(Model.Proyecto.NombreLista)</strong></td>
+    <td align="right" valign="top">Número de Comprobante: <strong>@Html.Raw(Model.NumeroComprobante.ToString())</strong><br />Fecha: <strong>@Html.Raw(Model.Fecha.Value.ToShortDateString())</strong></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2>Comprobante de Egreso</h2>
+<p>Glosa</p>
+<table width="100%" border="1" cellspacing="0" cellpadding="5">
+  <tr>
+    <td height="70" valign="top">
+        @if (Model.Nulo == null || Model.Nulo.Equals("N"))
+    {
+        @Html.Raw(Model.Descripcion)
+    }
+    else
+    {
+        @Html.Raw("COMPROBANTE NULO")
+    }
+
+    </td>
+  </tr>
+</table>
+<br />
+<table width="100%" border="1" cellspacing="0" cellpadding="5" class="registros">
+  <tr>
+    <th width="150px">Documento</th>
+    <th width="50px">Número</th>
+    <th width="70px">Monto $</th>
+    <th width="100px">Cuenta</th>
+    <th width="250px">Detalle</th>
+  </tr>
+@if ((Model.FondoFijo != null && Model.FondoFijo.Equals("S")) || fondo_fijo > 0)
+{
+    var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
+    foreach (var detalle in detalles)
+    {
+      <tr>
+        <td align="left" style="border-left: 0; border-right: 0;white-space: nowrap;"></td>
+        <td align="right" style="border-left: 0; border-right: 0;"></td>
+        <td align="right" style="border-left: 0; border-right: 0;">$@Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto).ToString("#,##0")</td>
+        <td align="left" style="border-left: 0; border-right: 0;white-space: nowrap;">@if (@detalle.Cuenta != null)
+                                                                                      { @Html.Raw(utils.cuentaPadre(@detalle.Cuenta)) }</td>
+        <td align="left" style="border-left: 0; border-right: 0;">
+            <div style="white-space: nowrap; overflow: hidden; width: 250px;">
+                @detalle.Cuenta.NombreLista
+            </div>
+        </td>
+      </tr>
+    }
+}
+else
+{
+    foreach (var detalle in Detalles)
+    {
+      <tr>
+        <td align="left" style="border-left: 0; border-right: 0;white-space: nowrap;">@if (@detalle.Documento != null)
+                                                                                      { @Html.Raw(@detalle.Documento.NombreLista) }</td>
+        <td align="right" style="border-left: 0; border-right: 0;">@detalle.NDocumento</td>
+        <td align="right" style="border-left: 0; border-right: 0;">$@detalle.Monto.ToString("#,###")</td>
+        <td align="left" style="border-left: 0; border-right: 0;white-space: nowrap;">@if (@detalle.Cuenta != null)
+                                                                                      { @Html.Raw(utils.cuentaPadre(@detalle.Cuenta)) }</td>
+        <td align="left" style="border-left: 0; border-right: 0;">
+            <div style="white-space: nowrap; overflow: hidden; width: 250px;">
+                @detalle.Glosa
+            </div>
+        </td>
+      </tr>
+    }
+}
+</table>
+<br />
+<table width="100%" border="1" cellspacing="0" cellpadding="5">
+  <tr>
+    <td>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <th width="16,6%">Monto Total:</th>
+            <th width="16,6%">$@Html.Raw(Model.Monto_Egresos.ToString("#,###"))***</th>
+            <th width="16,6%">Cheque:</th>
+            <th width="16,6%">@Html.Raw(Model.Cheque.ToString())</th>
+            <th width="16,6%">Cta. Cte.</th>
+            <th width="16,6%">@Html.Raw(Model.CuentaCorriente.NumeroLista)</th>
+          </tr>
+        </table>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="200px" align="center" valign="top">
+    <hr noshade="noshade" size="1" />BENEFICIARIO</td>
+    <td>&nbsp;</td>
+    <td width="200px" align="center" valign="top">
+    <hr noshade="noshade" size="1" />
+    <strong>@Html.Raw(@ViewBag.Director)</strong><br />
+    FIRMA GERENCIA ADM Y FINANZAS</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33%" align="center" valign="top">
+    <hr noshade="noshade" size="1" align="left" />TESORERO(A)</td>
+    <td>&nbsp;</td>
+     <td width="200px" align="center" valign="top">
+    <hr noshade="noshade" size="1" />FIRMA CONTADOR(A)</td>
+  </tr>
+</table>
+</body>
+</html>

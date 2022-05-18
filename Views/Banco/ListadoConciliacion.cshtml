@@ -1,0 +1,82 @@
+﻿@model IEnumerable<SAG2.Models.Conciliacion>
+
+@{
+   
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Listado Conciliacion</title>
+</head>
+<body>
+    <h2>Listado Conciliación</h2>
+    <br />
+    <table class="table table-bordered">
+        <tr>
+   
+            <th>
+                Persona Responsable
+            </th>
+            <th>
+                Periodo
+            </th>
+            <th>
+                Mes
+            </th>
+            <th>
+                Fecha Conciliacion
+            </th>
+            <th>
+                Fecha Cartola
+            </th>
+            <th>
+                Saldo Cartola
+            </th>
+            <th>
+                Depositos
+            </th>
+            <th>
+                Gastos
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+  
+            <td>
+                @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Periodo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mes)
+            </td>
+            <td>
+               @Html.DisplayFor(modelItem => item.FechaConciliacion.Day) / @Html.DisplayFor(modelItem => item.FechaConciliacion.Month)/ @Html.DisplayFor(modelItem => item.FechaConciliacion.Year)
+            </td>
+            <td>
+                 @Html.DisplayFor(modelItem => item.FechaCartola.Day) / @Html.DisplayFor(modelItem => item.FechaCartola.Month)/ @Html.DisplayFor(modelItem => item.FechaCartola.Year)
+                
+            </td>
+            <td>
+                @item.SaldoCartola.ToString("#,##0")
+            </td>
+            <td>
+                @item.Depositos.ToString("#,##0")
+            </td>
+            <td>
+                @item.Gastos.ToString("#,##0")
+            </td>
+            <td>
+    
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

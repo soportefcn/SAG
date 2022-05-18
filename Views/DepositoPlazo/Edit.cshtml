@@ -1,0 +1,125 @@
+﻿@model SAG2.Models.DepositoPlazo
+@{
+    ViewBag.Title = "Modificar";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox">
+    <h3>Depósitos a plazo</h3>
+    <div id="controles">
+     
+    </div>
+    <div id="contenido" class="cuentacorriente">
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.ProyectoID)
+    @Html.HiddenFor(model => model.CuentaCorrienteID)
+    @Html.HiddenFor(model => model.Periodo)
+    @Html.HiddenFor(model => model.Mes)
+    <fieldset>
+        <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Modificación de Depósito a Plazo</b></h3></div>
+  <div class="panel-body">
+    <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 15px;">
+            @Html.LabelFor(model => model.ProyectoID)
+         </div>
+         <div class="form-group" style="margin-right: 100px;">
+          @Html.TextBox("ProyectoNombre", (string)((SAG2.Models.Proyecto)Session["Proyecto"]).NombreLista, new { @class="form-control", @style="width: 300px;", @readonly = "readonly" })
+                </div>
+                <div class="form-group" style="margin-right: 15px;">
+                    @Html.LabelFor(model => model.CuentaCorrienteID)
+                </div>
+                <div class="form-group">
+                    @Html.TextBox("CuentaCorrienteNumero", (string)((SAG2.Models.CuentaCorriente)Session["CuentaCorriente"]).NumeroLista, new { @class="form-control", @readonly = "readonly" })
+                </div>
+            </div>
+
+      <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 15px;">
+                    @Html.LabelFor(model => model.Monto)
+         </div>
+                <div class="form-group" style="margin-right: 100px;">
+                    @Html.EditorFor(model => model.Monto)
+                </div>
+           <div class="form-group" style="margin-right: 15px;">
+                        @Html.LabelFor(model => model.NumeroComprobante)
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(model => model.NumeroComprobante)
+                    </div>
+          </div>
+      <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 15px;">
+            @Html.LabelFor(model => model.Interes)
+                </div>
+                <div class="form-group" style="margin-right: 100px;">
+                    @Html.TextBoxFor(model => model.Interes, new { @value = @ViewBag.interes})
+                </div>
+           <div class="form-group" style="margin-right: 15px;">
+                        @Html.LabelFor(model => model.FechaDeposito)
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBox("FechaDeposito", Model.FechaDeposito.ToShortDateString(), new { @class = "calendario", @readonly = "readonly" })
+                    </div> </div>
+
+      <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 15px;">
+             @Html.LabelFor(model => model.Intereses)
+                </div>
+                <div class="form-group" style="margin-right: 100px;">
+                    @Html.TextBoxFor(model => model.Intereses, new { @readonly = "readonly" })
+                </div>
+          <div class="form-group" style="margin-right: 15px;">
+                        @Html.LabelFor(model => model.FechaVencimiento)
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBox("FechaVencimiento", Model.FechaVencimiento.ToShortDateString(), new { @class = "calendario", @readonly = "readonly" })
+                    </div>
+        
+      </div>
+      
+      <div class="form-group form-inline">
+        <div class="form-group" style="margin-right: 15px;">
+            @Html.LabelFor(model => model.MontoFinal)
+         </div>
+         <div class="form-group">
+             @Html.TextBoxFor(model => model.MontoFinal, new { @readonly = "readonly" })
+          </div>
+       </div>
+       <div class="form-group">
+                        @Html.LabelFor(model => model.Comentario)
+                    </div>
+                    <div class="form-group">
+                        @Html.TextAreaFor(model => model.Comentario, new { @class="form-control" })
+                    </div>
+      
+  </div>
+  <div class="panel-footer">
+	<div  style ="width: 400px ; display:inline-block">
+                <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Buscar" href="../Index" onclick="window.open(this.href, 'Buscar','width=1000,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-lg"></span></a>
+            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Nuevo" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/DepositoPlazo/Create"><span class ="fa fa-file-o  fa-lg"></span></a>
+        <!--<p><a href="./Index" id="Guardar">GUARDAR</a></p>-->
+        <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar"  href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-fw"></span></a>
+        <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Cancelar" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/DepositoPlazo/Create"><span class ="fa fa-undo fa-fw"></span></a> 
+           
+        </div>
+         <div style="float :right;width:150px;display:inline-block">
+	<input class="btn btn-primary" type="submit" value="Guardar" tabindex="27" id="botonGuardar" /> 
+	</div>
+
+  </div>
+</div>
+      
+
+    </fieldset>
+}
+    </div>
+</div>

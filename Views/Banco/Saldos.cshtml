@@ -1,0 +1,115 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    ViewBag.Title = "Libro Banco";    
+    var Saldo = 0;
+   
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    List<SAG2.Models.Saldo> SaldoI = new List<SAG2.Models.Saldo>();
+    SaldoI = (List<SAG2.Models.Saldo>)@ViewBag.Saldos;
+}
+@{ 
+    var Meses = new string[12]
+    {
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
+}
+ <div id="SAGBox">
+<h2>Saldos Mensuales</h2>
+@using (Html.BeginForm())
+{
+ <table class="table table-bordered">
+    <tr>
+        <td>
+            <fieldset>
+                <h3>Período</h3>
+                <div class="form-group form-inline">
+                <div class="form-group" style="margin-left: 20px; margin-right: 30px;">Mes</div>
+                <div class="form-group">   <select name="Mes" id="Mes" class="form-control">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1))
+                                                                                {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+
+                </div> </div>   
+                
+                   <div class="form-group form-inline">
+                       <div class ="form-group" style="margin-left: 20px; margin-right: 30px;"> Año</div>
+                       <div class ="form-group">   <select name="Periodo" id="Periodo" class="form-control">
+                            @for (var i = DateTime.Now.Year - 3; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                            {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select></div>
+                       <div class="form-group" style="margin-left: 100px;">
+                       <input type="submit" value="Ver resultados" style="height:100%" class="btn btn-primary"/>            
+                            <input type="button" name="Imprimir" id="Excelsaldo" value="Excel" class="btn btn-success" />
+                           </div>
+             
+            </fieldset>
+        </td>
+       
+    </tr>
+</table>
+}
+<br />
+
+
+<div style="height: 300px; overflow: scroll">
+    <table class="table table-bordered table-hover">
+    <thead>
+        <tr class="info">
+            <th>Proyecto</th>
+             <th>Periodo</th>
+            <th>Mes</th>
+            <th>Saldo Inicial</th>
+            <th>Saldo Final</th>
+         </tr>
+        </thead>
+        <tbody>
+
+  @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+  {
+               <tr >
+                    <td>@Proyecto.NombreEstado</td>
+                    <td>@ViewBag.periodo</td>
+                   <td>@{ 
+                            var i = @ViewBag.Mes - 1;
+                        }
+                        @{ 
+                            @Meses[i];
+                        }
+                   </td>
+
+                   @{
+                        //int Valor_ingresos = Model.Where(c => c.ProyectoID == Proyecto.ID;    
+                        int saldo_inicial = SaldoI.Where(c => c.CuentaCorriente.ProyectoID == Proyecto.ID).Where(c => c.Mes == @ViewBag.Mes).Where(c => c.Periodo == @ViewBag.periodo).Sum(c => c.SaldoInicialCartola);   
+                        int valor_ingresos = Model.Where(d => d.ProyectoID == Proyecto.ID ).Sum(d => d.Monto_Ingresos);
+                        int valor_egresos = Model.Where(d => d.ProyectoID == Proyecto.ID).Sum(d => d.Monto_Egresos);
+                        int resul = (saldo_inicial + valor_ingresos) - valor_egresos;
+                   }
+                   <td>@saldo_inicial.ToString("#,##0")</td>
+                   <td>@resul.ToString("#,##0")</td>
+              </tr>
+
+  }
+   
+
+    </table>
+    
+
+</div></div>

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SAG2.Models.ProgramaQ>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Mantenedor Programa Q";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+
+<div id="contenido_popup">
+    <table class="table table-bordered table-hover">
+        <thead class="fixedHeader">
+            <tr class="info">
+                <th style="width: 33px;" class="controles"></th>
+                <th style="width: 49px;">N° </th>
+                <th style="width: 300px;">Proyecto </th>
+                <th style="width: 150px;">Código </th>
+                <th style="width: 150px;">Código Sename </th>
+                <th style="width: 150px;">Valor</th>
+                <th style="width: 150px;">Fecha Ingreso</th>
+                <th style="width: 33px;">Eliminar </th>
+            </tr>
+        </thead>
+        <tbody class="scrollContent">
+
+            @foreach (var item in Model.Where(e => e.Estado != 1))
+            {
+                var style = "";
+                
+
+            <tr @Html.Raw(style)>
+                <td style="width: 33px;">
+                    <a href="@Url.Action("Edit", "ProgramaQ", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                </td>
+                <td style="width: 49px;" align="center">
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td style="width: 300px;">
+                    @item.Proyecto.NombreEstado
+                </td>
+                <td style="width: 150px;">
+                    @item.Codigo
+                </td>
+                <td style="width: 150px;">
+                    @item.CodigoSename
+                </td>
+                <td style="width: 150px;">
+                    $@item.Valor.ToString("#,##0")
+                </td>
+                <td style="width: 150px;">
+                    @item.FechaIngreso.ToShortDateString().Substring(0, 10)
+                </td>
+                <td style="width: 63px;">
+                    <a href="@Url.Action("Delete", "ProgramaQ", new { id = item.ID })" title="Eliminar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Delete.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

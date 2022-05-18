@@ -1,0 +1,166 @@
+﻿@model SAG2.Models.Inventario
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+<fieldset>
+   
+<div class="panel panel-default">
+      <div class="panel-heading"><h3><b> Datos del Alta Nº   @Html.DisplayFor(model => model.Numero)</b></h3></div>
+  <div class="panel-body">
+      <div class="form-inline">
+        <div class="form-group"  style="margin-right: 50px;">
+            <label>Nº Egreso</label>
+        </div>
+        <div class="form-group" style="margin-right: 50px;">
+             @Html.TextBoxFor(model => model.Movimiento.NumeroComprobante, new { @class="form-control", @readonly="readonly", style="width: 90px;"})
+        </div>
+           
+         @Html.Hidden("MovimientoID")
+          @Html.Hidden("ID")
+         
+        <div class="form-group" style="margin-right: 30px;">
+             <label>Fecha Egreso</label>
+         </div>
+          <div class="form-group" style="margin-right: 30px;">
+              <label class="form-control"> @Model.Movimiento.Fecha.Value.ToShortDateString()</label>
+            </div>  
+            <div class="form-group" style="margin-right: 30px;">
+             <label>Monto</label>
+         </div>
+          <div class="form-group" style="margin-right: 30px;">
+              <label class="form-control">@Model.Movimiento.Monto_Egresos.ToString("#,##0")</label>
+            </div>      
+        </div>
+        <div class="form-group" > 
+           <label> Nombre, descripción y/o características de la especie</label>
+           <br />
+            
+              <textarea class="form-control" readonly="readonly">@Html.DisplayFor(model => model.Movimiento.Descripcion)</textarea>           
+       </div>
+           <h3>Documento de Respaldo</h3>
+      <div class="form-inline">
+          <div class="form-group">
+           <label>Buscar Detalle Egreso</label>
+        </div>
+       <div class="form-group">     
+            <img id="BuscarEgresoID" src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="cursor: pointer; vertical-align: middle;margin-right: 5px;" />               
+            
+       </div>
+       <div class="form-group" style="margin-right:5px;">      
+           <input id="DetalleEgresoID" type="hidden" value="" name="DetalleEgresoID" >  
+            <input id="CuentaID"   type="hidden" value="" name="CuentaID" >            
+          </div>
+        <div class ="form-group">
+          <label>Nº Doc</label>
+          <input type="text" name="ndoc" id="ndoc" readonly="readonly" style="width: 60px;" value="" /></div>
+      <div class ="form-group">
+          <label>Cuenta</label>
+          <input type="text" name="cuentad" id="cuentad" readonly="readonly" style="width:330px;" value="" /></div>
+             
+             <div class ="form-group">
+          <label>Valor Doc</label>
+          <input type="text" name="vdoc" id="vdoc" readonly="readonly" style="width: 60px;" value="" /></div>
+
+      </div>
+      <br />
+          <div class="form-group form-inline">
+          <div class="form-group">
+           <label>Especie</label>
+        </div>
+            <div class="form-group" style="margin-right: 10px;">
+            <select name="EspecieID" id="EspecieID" tabindex="5" class="form-control">
+                <option>Seleccione Documento de Respaldo</option>
+            </select>
+            </div>
+
+          <div class="form-group">
+           <label>Cantidad</label>
+        </div>
+          <div class="form-group"><input type="text" name="Cantidad" id="Cantidad" class="form-control"/></div> 
+              <div class="form-group">
+           <label>Valor</label>
+        </div>
+          <div class="form-group"><input type="text" name="Valor" id="Valor" class="form-control"/></div> 
+  </div>
+        <label>Observaciones </label>
+       <input class="form-control" type="text" name="Observaciones" id="Observaciones" style="width: 610px;" />
+  </div>
+  <div class="panel-footer">
+      
+        <div  style ="width: 500px ; display:inline-block">
+           
+            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Nuevo" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/Create"><span class ="fa fa-file-o  fa-lg"></span></a>
+        <!-- if (Model.Nulo == null || Model.Nulo.Equals("N"))
+        {
+         <a href="./Index" id="Guardar">GUARDAR</a>fa-print 
+        }-->
+        <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Imprimir" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/ImprimirAlta/@Html.Raw(Model.ID.ToString())" onclick="window.open(this.href, 'Comprobante de Ingreso','width=800,height=600,scrollbars=yes,menubar=no,toolbars=no'); return false;"><span class ="fa fa-print fa-lg"></span></a>
+       
+           
+       
+       <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Revisar" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/RevisarAltaInventario/?inventarioID=@Html.Raw(Model.ID.ToString())"><span class ="fa fa-undo fa-fw"></span></a>
+        
+            
+        </div>
+        
+       
+         <div style="float :right;display:inline-block">
+        
+	     <input type="submit" value="Guardar" id="botonGuardar" class="btn btn-primary validarCuenta" />
+     
+	        </div>
+            
+     </div>
+</div>
+  
+   
+</fieldset>
+}
+
+  <iframe name="miOtraPagina" id="miOtraPagina" src="#"   width="850px" height="200px"  frameborder="0" scrolling="auto" style="margin-top: 3px; margin-left: 3px;"></iframe>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+
+
+        $('#Grabar').click(function () {
+            document.getElementById('miOtraPagina').src = "@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/ListarInventarioEspecie/'?InventarioID=" + $('#ID').val();
+        });
+
+
+
+        $("#BuscarEgresoID").click(function () {
+            window.open("@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/ListadoDetalleEgreso/'?MovimientoID=" + $('#MovimientoID').val(), 'AltaInventario', 'width=800,height=400');
+            return false;
+        
+        });
+
+        $(document).focus(function () {
+            document.getElementById('miOtraPagina').src = "@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/ListarInventarioEspecie/'?inventarioID=" + $('#ID').val();
+            if ($('#CuentaID').val() != "") {
+                $.get('@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/AltaInventario/Especies/' + $('#CuentaID').val(), function (response) {
+                    var especies = $.parseJSON(response);
+                    var ddlEspecies = $('#EspecieID');
+                    $('#EspecieID > option').remove();
+                    if (especies.length == 0) {
+                        ddlEspecies.append($("<option />").val("").text("Sin información"));
+                    } else {
+                        ddlEspecies.append($("<option />").val("").text("Seleccione Especie"));
+                        for (i = 0; i < especies.length; i++) {
+                            ddlEspecies.append($("<option />").val(especies[i].Value).text(especies[i].Text));
+                        }
+                    }
+                });
+            }
+        });
+
+    }); 
+</script>

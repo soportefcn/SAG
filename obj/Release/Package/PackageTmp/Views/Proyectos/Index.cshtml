@@ -1,0 +1,115 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Proyectos";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    int proyectoID = 0;
+    List<SAG2.Models.Proyecto> pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
+
+}
+<head>
+  	<script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+   <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+   <script src="@Url.Content("~/Scripts/jquery.number.js")" type="text/javascript"></script>
+         <script src="@Url.Content("~/Scripts/select2.min.js")" type="text/javascript" language="javascript"></script>
+     <link href="@Url.Content("~/Content/select2.min.css")" rel="stylesheet">
+</head>
+
+<script>
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    $("#Proyecto").change(function () {
+        var q = $(this).val();
+        window.location = "/SAG_5/Proyectos/Index?q=" + q;
+        });
+    });
+</script>
+<div id="contenido_popup">
+    @using (Html.BeginForm())
+    {
+        <fieldset>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <select name="Proyecto" id="Proyecto" class="js-autocomplete"  onchange="funcion()">
+                        <option value="-1"> - Seleccione proyecto</option>
+                        @foreach (SAG2.Models.Proyecto Proyecto in pro)
+                        {
+                            if (proyectoID == Proyecto.ID)
+                            {
+                                <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                            }
+                            else
+                            {
+                                <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                            }
+                        }
+                    </select>
+                    <br />
+                    <div class="ocultoImpresion">
+                        <br />
+                        <a class="btn btn-info" href="@Url.Action("Index", "Proyectos", new { id = proyectoID })" id="link">Buscar
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+        </fieldset>
+
+    }
+    <table class="table table-hover table-bordered">
+        <thead class="fixedHeader">
+            <tr class="info">
+                <th style="width:33px;" class="controles"></th>
+                <th style="width:320px;">
+                    Nombre
+                </th>
+                <th style="width:108px;">
+                    Cód. Codeni
+                </th>
+                <th style="width:108px;">
+                    Cód. Sename
+                </th>
+                <!--<th>
+                    Institución
+                </th>
+                    -->
+            </tr>
+        </thead>
+
+        <tbody class="scrollContent">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="width:33px;">
+                        <a href="@Url.Action("Edit", "Proyectos", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    </td>
+                    <td style="width:320px;">
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td style="width:108px;">
+                        @Html.DisplayFor(modelItem => item.CodCodeni)
+                    </td>
+                    <td style="width:108px;">
+                        @Html.DisplayFor(modelItem => item.CodSename)
+                    </td>
+                    <!--
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Institucion)
+                    </td>
+                    -->
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+      
+    });
+</script>

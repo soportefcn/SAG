@@ -1,0 +1,189 @@
+﻿
+@model SAG2.Models.BienModInventarioVM
+@{
+    Layout = null;
+    ViewBag.Title = "Informe General";
+    string FechaSis = DateTime.Now.ToShortDateString();
+    int proyectoID = Model.ProyectoID;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    int total = 0;
+    int totalBajas = 0;
+    int totalTraslados = 0;
+    var listaTraslados = Model.lista.ToList();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Gral.Inventario.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    
+}
+
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 20px;
+    }
+</style>
+
+<table cellpadding="5" border="1" style="width: 80%;">
+
+    <tr>
+        <th rowspan="4" colspan="3" style="font-size: 12px;"> Fundaci&oacute;n Ciudad del Ni&ntilde;o  <br /> Administracion Central</th>
+        <th rowspan="2" colspan="8" style="font-size: 30px; font-weight: bold;">Formulario</th>
+        <th colspan="3" style="font-weight: bold;">C&oacute;digo:</th>
+        <th colspan="2" style="font-weight: bold;">F-DAF-014</th>
+    </tr>
+    <tr>
+        <td colspan="3">P&aacute;gina:</td>
+        <td colspan="2">1 de 1</td>
+    </tr>
+    <tr>
+        <th rowspan="2" colspan="8" style="font-size: 30px; font-weight: bold;">Inventario General</th>
+        <td colspan="3">Revisi&oacute;n:</td>
+        <td colspan="2">2</td>
+    </tr>
+    <tr>
+        <td colspan="3">Fecha Rev:</td>
+        <td colspan="2">@FechaSis</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <th colspan="3">Nombre Proyecto:</th>
+        <td colspan="8">@Model.Proyecto</td>
+        <th colspan="3">C&oacute;digo SENAME:</th>
+        <td colspan="2">@ViewBag.CodigoSename</td>
+    </tr>
+    <tr>
+        <th colspan="3">Instituci&oacute;n:</th>
+        <td colspan="4">@ViewBag.Institucion</td>
+        <th colspan="2">C&oacute;digo:</th>
+        <td colspan="2">@ViewBag.CodigoCodeni</td>
+        <td colspan="3">Fecha Actualizaci&oacute;n:</td>
+        <td colspan="2">@ViewBag.FechaActualizacion.ToShortDateString()</td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <th colspan="2" rowspan="2">Especie</th>
+        <th colspan="2" rowspan="2">Descripci&oacute;n especie</th>
+        <th colspan="1" rowspan="2">Procedencia</th>
+        <th colspan="2" rowspan="2">N&ordm; C/E</th>
+        <th colspan="1" rowspan="2">Factura N&ordm;</th>
+        <th colspan="2" rowspan="2">Acta Traspaso(A)<br />Resoluci&oacute;n Exenta(R)</th>
+        <th colspan="1" rowspan="2">Fecha Egreso o Compra</th>
+        <th colspan="1" rowspan="2">Cantidad</th>
+        <th colspan="1" rowspan="2">Valor $</th>
+       <th colspan="1" rowspan="2">Ubicaci&oacute;n</th>
+            <th colspan="1" rowspan="2">Condici&oacute;n</th>
+        @*     <th colspan="1" rowspan="2">Tipo Mov.</th>*@
+        <th colspan="1" rowspan="2">N&ordm; Acta Baja \ año</th>
+        <th colspan="1" rowspan="2"> Bajas \ Traslados</th>
+        @*<th colspan="1" rowspan="2">Observaciones</th>*@
+
+    </tr>
+    <tr></tr>
+
+
+    @foreach (var item in Model.lista.Where(x => x.Estado == "ALTA"))
+    {
+        
+        total = 0;
+        totalBajas = 0;
+        totalTraslados = 0;
+        var proID = db.Dependencia.Where(x => x.Nombre == item.Ubicacion);
+
+        total = Model.lista.Where(z => (z.Familia == item.Familia && z.Estado != "BAJA") && (item.ProyectoID == z.ProyectoID && item.ID == z.ID) /*|| (item.ProyectoAnteriorID == z.ProyectoAnteriorID)*/).Sum(x => x.Cantidad);
+        var menos = Model.lista.Where(z => z.Familia == item.Familia && z.Estado == "BAJA" && item.ProyectoID == z.ProyectoID && item.ID == z.ID).Sum(x => x.Cantidad);
+        total = total - menos;
+
+        if ((item.ProyectoID == proyectoID && total > 0) && (listaTraslados.Contains(item)))
+        {
+            
+            <tr>
+                <td colspan="2">@item.Familia</td>
+                <td colspan="2">@item.DescripcionBien</td>
+                <td colspan="1">@item.Procedencia[0]</td>
+                <td colspan="2">@item.Movimiento.NumeroComprobante</td>
+
+                @if (item.Egreso != null)
+                {
+                    <td>@item.Egreso.NDocumento</td>
+                }
+                else
+                {
+                    <td>@item.Reintegro.NDocumento</td>
+                }
+               
+
+                <td colspan="2"></td>
+
+                @{
+                    string fecha = @item.Movimiento.Fecha.ToString();
+                    string fechafinal = fecha.Substring(0, Math.Min(fecha.Length, 10));
+
+                    <td colspan="1">@fechafinal</td>
+                    total = Model.lista.Where(z => z.Familia == item.Familia && z.Estado != "BAJA").Sum(x => x.Cantidad);}
+                <td colspan="1">@item.Cantidad</td>
+                
+                
+                <td colspan="1">$@item.MontoInt.ToString("#,##0")</td>
+
+               <td colspan="1">@item.Ubicacion</td>
+                    <td colspan="1">@item.CondicionText</td>
+                @*     <td colspan="1">@item.Estado</td>*@
+                <td>
+                    @foreach (var item2 in Model.lista.Where(z => z.Familia == item.Familia && z.Estado != item.Estado))
+                    {
+
+                        <li>
+                            @fechafinal @item2.Estado
+                        </li>
+                        if (@item2.Estado == "TRASLADO")
+                        {
+                            totalTraslados += item2.Cantidad;
+                        }
+                        else if (item2.Estado == "BAJA") { totalBajas += @item.Cantidad; }
+
+                    }
+                </td>
+                @*@if (item.Estado != "ALTA")
+                    {
+                        <td colspan="1">@fechafinal</td>
+                    }
+                    else
+                    {
+                        <td colspan="1"></td>
+                    }
+                    @if (item.Estado != "ALTA")
+                    {
+                        <td colspan="1">@item.Cantidad</td>
+                    }
+                    else
+                    {
+                        <td colspan="1"></td>
+                    }*@
+                <td colspan="2">@totalBajas.ToString() \ @totalTraslados.ToString()</td>
+
+
+
+            </tr>
+        }
+    }
+
+</table>
+
+<table>
+    <tr></tr>
+    <tr></tr>
+    <tr>
+        <td colspan="8"></td>
+        <td colspan="8">Nombre y firma Director:________________________________</td>
+    </tr>
+
+</table>

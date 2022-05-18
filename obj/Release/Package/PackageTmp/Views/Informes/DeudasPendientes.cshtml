@@ -1,0 +1,163 @@
+﻿@model IEnumerable<SAG2.Models.DeudaPendiente>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Deudas pendientes";
+    var total = 0;
+}
+<div id="SAGBox">
+    <h2>Informe de Deudas Pendientes</h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+    <div class="panel panel-default">
+    <div class="panel-body">
+        
+        
+         <div class="form-inline">
+             <div class="form-group" style="margin-right: 20px;">
+                 <fieldset>
+                   <h3>Período</h3>
+                 <div class="form-inline form-group">
+                    <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                        <label>Desde</label>
+                    </div>
+                    <div class ="form-group">
+                        <input name="Desde" id="Desde" class="calendario form-control" readonly="readonly" value="@Html.Raw(@ViewBag.Desde)" />
+                    </div>
+                  </div>
+                   <div class="form-inline form-group">
+                    <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                        <label>Hasta</label>
+                    </div>
+                    <div class ="form-group">
+                         <input name="Hasta" id="Hasta" class="calendario form-control" readonly="readonly" value="@Html.Raw(@ViewBag.Hasta)" />
+                    </div>
+                   </div>
+                  </fieldset>
+                </div>
+             <div class="form-group">
+                <fieldset>
+                    <h3>Clasificación</h3>
+                      <div class="form-inline form-group">
+                          <div class="form-group">
+                              <label><input name="Clasificacion" id="ClasificacionCancelados" type="radio" value="Cancelados" @if(@ViewBag.Clasificacion.Equals("Cancelados")){@Html.Raw("checked=\"checked\"")} /> Documentos cancelados</label>
+                          </div>
+                            <div class="form-group">
+                                 <label><input name="Clasificacion" id="ClasificacionNoCancelados" type="radio" value="NoCancelados" @if(@ViewBag.Clasificacion.Equals("NoCancelados")){@Html.Raw("checked=\"checked\"")} /> Documentos no cancelados</label>
+                            </div>
+                           <div class="form-group">
+                                <label><input name="Clasificacion" id="ClasificacionTodos" type="radio" value="Todos" @if(@ViewBag.Clasificacion.Equals("Todos")){@Html.Raw("checked=\"checked\"")} /> Todos los documentos</label>
+                               </div>
+                              <div class="form-group" style="margin-left: 10px;">
+                        <input class="btn btn-primary" type="submit" value="Ver resultados!" style="height: 100%;" class="boton" />
+                     </div>
+                          </div>
+                 
+                
+                           
+                    <input type="hidden" id="TipoClasificacion" value="@ViewBag.Clasificacion" />
+                </fieldset>
+                 </div>
+             </div>
+        </div></div>
+          
+    }
+}
+  <table class="table " style="margin-bottom: 0px;">
+        <tr>
+            <th style="width: 83px;">Estado</th>
+            <th style="width: 93px;">Nº Comprobante</th>
+            <th style="width: 77px;">Fecha</th>
+            <th style="width: 91px;">Documento</th>
+            <th style="width: 56px;">Nº Doc.</th>
+            <th style="width: 64px;">Emisión</th>
+            <th style="width: 70px;">Vencimiento</th>
+            <th style="width: 55px;">Monto $</th>
+            <th style="width: 149px;">Cuenta</th>
+            <th style="width: 115px;">Proveedor</th>
+            <th style="width: 134px;">Glosa</th>
+        </tr>
+      </table>
+    <div style="height: 300px; overflow: scroll;">
+    <table class="table table-striped table-bordered">
+        <tr>
+             <th style="width: 81px;"></th>
+            <th style="width: 121px;"></th>
+            <th style="width: 62px;"></th>
+            <th style="width: 90px;"></th>
+            <th style="width: 56px;"></th>
+            <th style="width: 64px;"></th>
+            <th style="width: 80px;"></th>
+            <th style="width: 55px;"></th>
+            <th style="width: 149px;"></th>
+            <th style="width: 115px;"></th>
+            <th style="width: 134px;"></th>
+        </tr>
+@foreach (var item in Model)
+{
+    total = total + item.Monto;
+        <tr>
+            <td >
+            @if (item.EgresoID != null)
+            { <span class="label label-succes">Cancelado</span> }
+            else
+            { <span class="label label-danger">No Cancelado</span> }
+            </td>
+            <td>@item.NumeroComprobante.ToString()</td>
+            <td>@item.Fecha.ToShortDateString()</td>
+            <td>@item.Documento.Nombre</td>
+            <td>@item.NumeroDocumento</td>
+            <td>@item.FechaEmision.ToShortDateString()</td>
+            <td>@item.FechaVencimiento.ToShortDateString()</td>
+            <td>@item.Monto.ToString("#,##0")</td>
+            <td>@item.Cuenta.NombreLista</td>
+            <td>
+            @if (item.Persona != null)
+            {
+                @Html.DisplayFor(modelItem => item.Persona.NombreLista)
+            }
+            else if (item.Proveedor != null)
+            {
+                @Html.DisplayFor(modelItem => item.Proveedor.NombreLista)
+            }
+            else
+            { 
+                @Html.Raw(@item.Rut + "-" + @item.DV + " " + @item.Beneficiario)
+            }
+            </td>
+            <td>@item.Glosa</td>
+        </tr>
+}
+</table>
+</div>
+
+
+    <div class="form-group form-inline" style="margin-top: 10px;">
+         @using (Html.BeginForm())
+        {
+          
+             if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+            {
+         <div class="form-group" style="margin-right: 20px;">
+             <a  data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="DeudasPendientes" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
+                  <span class ="fa fa-file-excel-o  fa-2x"></span>
+             </a>
+         </div>
+           }
+             <div class="form-group" style="margin-right: 20px;">
+                   <a class="btn btn-default imprimirInformePeriodo" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../Imprimir/InformeDeuda?Desde=@Html.Raw(@ViewBag.Desde)&Hasta=@Html.Raw(@ViewBag.Hasta)">
+                    <span class ="fa fa-print fa-2x"></span> 
+                </a>
+          
+              </div>
+              <div class="form-group"  style="margin-right: 20px;">
+                  Total Deudas Pendientes 
+              </div>
+             <div class="form-group">
+                 <b><input class="form-control" value="$@total.ToString("#,###")" readonly="readonly" style="text-align: right;" /></b>
+             </div>
+         }
+     </div>
+
+</div>

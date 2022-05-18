@@ -1,0 +1,129 @@
+﻿@model IEnumerable<SAG2.Models.Bodega>
+@{
+    Layout = null;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=SALDO.BODEGA.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Saldos de Bodega</title>
+</head>
+<body>
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Fundaci&oacute;n Ciudad del Ni&ntilde;o<br />
+    @Html.Raw(@ViewBag.NombreProyecto)</strong><br />
+        <strong>Cod. Sename: @Html.Raw(@ViewBag.CodSename)</strong>
+    </td>
+  </tr>
+</table>
+    <h3 align="center">Saldos de Bodega @Html.Raw(@Meses[@ViewBag.Mes - 1]) @Html.Raw(@ViewBag.Periodo.ToString())</h3>
+    <div>
+
+    <table cellpadding="5" cellspacing="0" border="1" align="center" style="width: 100%;">
+        <tr>
+            <th>Codigo Producto</th>
+            <th>Descripci&oacute;n</th>
+            <th>Saldo Inicial</th>
+            <th>Total Entrada</th>
+            <th>Total Salida</th>
+            <th>Saldo Final</th>
+        </tr>
+                         @{
+             int? Tentrada = 0;
+             int? Tsalida = 0;
+             int? Tsaldo = 0;
+             int Tsaldoinicial = 0;
+             }
+        @foreach (var saldosbodega in Model)
+        {
+            int? entrada = 0;
+            int? salida = 0;
+            int? saldo = 0;
+            int periodo = @ViewBag.periodo;
+            int mes = @ViewBag.mes;
+            int saldoinicial = 0;
+            saldoinicial = saldosbodega.SaldoInicial;
+            entrada = saldosbodega.Entrada;
+            salida = saldosbodega.Salida;
+            saldo = saldosbodega.Saldo;
+            Tentrada += entrada;
+            Tsalida += salida;
+            Tsaldoinicial += saldoinicial;
+            Tsaldo += saldo;
+       
+        <tr @if (saldo == 0)
+            { @Html.Raw("style=\"background-color: #f0f0f0;\"");
+            }
+            else
+            { @Html.Raw("style=\"font-weight: bold;\"");
+            }>
+            
+            <td style="width:450px;" >@saldosbodega.Articulo.Categoria.nombre a / @saldosbodega.Articulo.Nombre</td>
+            <td style="width: 56px;text-align: center;" >@saldosbodega.Articulo.UnidadMedida.Unidad</td>
+            <td style="width: 87px;text-align: center;" >@saldoinicial.ToString()</td>
+            <td style="width: 87px;text-align: center;" >@entrada.ToString()</td>
+            <td style="width: 87px;text-align: center;" >@salida.ToString()</td>
+            <td style="width: 87px;text-align: center;" @{
+            if (saldo == 1)
+            {
+                    @Html.Raw(" style=\"color: Yellow;\"");
+            }
+            else if (saldo > 1)
+            {
+                    @Html.Raw(" style=\"color: Blue;\"");
+            }
+            else if (saldo < 1)
+            {
+                    @Html.Raw(" style=\"color: Red;\"");
+            }
+                } align="center">
+                @saldo.ToString()
+           
+        </tr>
+        }
+        
+    </table>
+         <table>
+                 <tr class="info">
+            <td style="text-align: right;width:432px;">Totales</td>
+            <td  style="text-align: center;width: 51px;"></td>
+         <th style="text-align: center;width: 87px;">Saldo Inicial</th>
+             <th style="text-align: center;width: 87px;">Total Entradas</th>
+            <th style="text-align: center;width: 87px;">Total Salida</th>
+            <th style="text-align: center;width: 87px;">Saldo Final</th>
+           
+        </tr>
+  <tr class="info">
+            <td style="text-align: right;width:432px;"></td>
+            <td  style="text-align: center;width: 51px;"></td>
+            <td style="text-align: center;width: 87px;">@Tsaldoinicial </td>
+             <td style="text-align: center;width: 87px;">@Tentrada</td>
+            <td style="text-align: center;width: 87px;">@Tsalida</td>
+            <td style="text-align: center;width: 87px;">@Tsaldo</td>
+           
+        </tr>
+        </table>
+    </div>
+    <p align="right" style="font-size: 10px;">Generado el @DateTime.Today.ToShortDateString() a las @DateTime.Now.ToShortTimeString()</p>
+</body>
+</html>

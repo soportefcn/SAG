@@ -1,0 +1,131 @@
+﻿
+@model SAG2.Models.Cuenta
+@{
+    ViewBag.Title = "Modificar";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox">
+    <h3>Cuentas</h3>
+    <div id="controles">
+     
+    </div>
+    <div id="contenido" class="cuentacorriente">
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        
+
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.Orden)
+        @Html.HiddenFor(model => model.SenameObjetivo)
+          @Html.HiddenFor(model => model.SenameUso)
+        
+        <div class="panel panel-default">
+        <div class="panel-heading"><h3>Dato de cuenta</h3></div>
+        <div class="panel-body">
+     
+           <div class="form-group form-inline">
+                <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.Padre)
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("CuentaID", null, "-- SELECCIONE UN PADRE --", new { @class = "form-control"} )
+        </div>
+               </div>
+
+            <div class="form-group form-inline">
+                <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.Nombre)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", style = "width=400px;" })
+        </div>
+                </div>
+
+            <div class="form-group form-inline">
+                <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.Codigo, "Código")
+        </div>
+        <div class="form-group" style="margin-right: 10px;">
+            @Html.EditorFor(model => model.Codigo)
+        </div>
+
+
+        <div class="form-group" style="margin-right: 5px;">
+            @Html.LabelFor(model => model.CodigoTranstecnia, "Cód. Transtecnia")
+        </div>
+        <div class="form-group" style="margin-right: 15px;">
+            @Html.EditorFor(model => model.CodigoTranstecnia)
+        </div>
+               <div class="form-group" style="margin-right: 5px;">
+            <label>Sename Uso</label>
+            </div>
+            <div class="form-group"></div>
+
+                </div>
+             <div class="form-group form-inline">
+                <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.resumen, "Resumen")
+        </div>
+        <div class="form-group" style="margin-right: 10px;">
+            @Html.EditorFor(model => model.resumen)
+        </div>
+    <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.indicador, "Indicador Cuenta")
+        </div>
+        <div class="form-group" style="margin-right: 10px;">
+            @Html.EditorFor(model => model.indicador)
+        </div>
+
+             </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, "Descripción")
+        </div>
+        <div class="form-group">
+            @Html.TextAreaFor(model => model.Descripcion, new { @class = "form-control" })
+       
+        </div>
+            <div class="form-group form-inline">
+                <div class="form-group"><label>Estado</label></div>
+                 <select class="form-control" name="Estado" id="Estado">
+                <option value="1"@if (Model.Estado == 1)
+                                 {@Html.Raw(" selected=\"selected\"")} >Vigente</option>
+                <option value="0"@if (Model.Estado == 0)
+                                 {@Html.Raw(" selected=\"selected\"")}>No Vigente</option>
+                
+            </select>
+            </div>
+
+        </div>
+        <div class="panel-footer">
+	        <div  style ="width: 500px ; display:inline-block">
+                       <a class="btn btn-success" href="../Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+                <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Cuentas/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+                <a  class="btn btn-danger" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-fw"></span>ELIMINAR</a>
+                <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Cuentas/Create"><span class ="fa fa-undo fa-fw"></span>CANCELAR</a>
+            
+            </div>
+            <div style="float :right;display:inline-block">
+	      <input class="btn btn-primary" type="submit" value="Guardar" />
+	        </div>
+
+  </div>
+</div>
+        
+      
+        <p>
+           
+        </p>
+    </fieldset>
+}
+    </div>
+</div>

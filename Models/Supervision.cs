@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.ComponentModel.DataAnnotations;
+
+namespace SAG2.Models
+{
+    public class Supervision
+    {
+        [ScaffoldColumn(false)]
+        public int ID { get; set; }
+        public int RolID { get; set; }
+        public DateTime Fecha { get; set; }
+        public string Respuesta { get; set; }
+        public string ObsPendientes { get; set; }
+        public string Seguimiento { get; set; }
+
+        public virtual Rol Rol { get; set; }
+    }
+}

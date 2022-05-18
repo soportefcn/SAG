@@ -1,0 +1,82 @@
+﻿@model IEnumerable<SAG2.Models.IndicadorCalidad>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/PopUp.cshtml";
+}
+
+ <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+ <div id="contenido_popup">
+        <table class ="table table-bordered table-hover">
+            <thead class="fixedHeader">
+            <tr class="info">
+                 <th  style="width: 100px;">
+                    Tipo
+                </th>
+                <th  style="width: 100px;">
+                    NumeroInforme
+                </th>
+                    <th  style="width: 100px;">
+                    Gastos Objetados
+                </th>
+                 <th  style="width: 100px;">
+                    Gastos Rechazados
+                </th>
+                 <th  style="width: 100px;">
+                   Cantidad Observaciones
+                </th>
+                <th style="width: 33px;" class="controles"></th>
+            </tr>
+            </thead>
+ <tbody class="scrollContent">  
+@foreach (var item in Model)
+{
+            <tr>
+                <td  style="width: 106px;">
+                    @{
+                var tipo = "";
+                     if (item.Tipo == 1)
+                        {
+                            tipo = "Sename";
+                        }
+                     if (item.Tipo == 2)
+                     {
+                         tipo = "Codeni";
+                     }
+                     if (item.Tipo == 3)
+                     {
+                         tipo = "Retención de Impuestos";
+                     }
+                     if (item.Tipo == 4)
+                     {
+                         tipo = "Inventario General";
+                     }
+                    }
+                    @Html.DisplayFor(modelItem => item.Tipo) @tipo 
+                </td>
+                <td  style="width: 106px;">
+                    @Html.DisplayFor(modelItem => item.NumeroInforme)
+                </td>
+                 <td  style="width: 119px;">
+                    @Html.DisplayFor(modelItem => item.GastoObjetado)
+                </td>
+                 <td  style="width: 128px;">
+                    @Html.DisplayFor(modelItem => item.GastoRechazado)
+                </td>
+                 <td  style="width: 157px;">
+                    @Html.DisplayFor(modelItem => item.CantidadObservaciones)
+                </td>
+                <td style="width: 33px;">
+            <a href="@Url.Action("Edit", "IndicadorCalidad", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" /></a> 
+        </td>
+            </tr>
+        }
+     </tbody>
+        </table>
+    </div>
+
+
+
+

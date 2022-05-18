@@ -1,0 +1,101 @@
+﻿@model SAG2.Models.Usuario
+@{
+    ViewBag.Title = "Modificar";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox">
+    <h3>Usuarios</h3>
+    <div id="controles">
+     
+    </div>
+    <div id="contenido">
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Modificar usuario</b></h3></div>
+  <div class="panel-body">
+      <div class="from-group form-inline " style="margin-bottom: 10px;">
+        <div class="form-group" style="margin-right:10px">
+            @Html.LabelFor(model => model.PersonaID, "Persona")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("PersonaID", null, new { @class="form-control", @readonly = "readonly", @style = "background-color: Silver; color: Black;", @disabled = "disabled" })
+        </div>
+          </div>
+        <div class="from-group form-inline " style="margin-bottom: 10px;">
+        <div class="form-group" style="margin-right:10px">
+            @Html.LabelFor(model => model.Nombre, "Usuario")
+        </div>
+        <div class="form-group">
+            @Html.TextBox("Nombre", Model.Nombre, new { @class="form-control", @readonly = "readonly", @style = "background-color: Silver;" })
+        </div></div>
+
+         <div class="form-inline from-group" style="margin-bottom: 10px;">
+        <div class="form-group" style="margin-right:10px">
+            @Html.LabelFor(model => model.Estado, "Habilitado?")
+        </div>
+        <div class="form-group">
+            <input type="checkbox" name="Estado" value="A" @if ("A".Equals(Model.Estado))
+                                                           {@Html.Raw("checked=\"checked\"")} />
+        </div></div>
+
+         <div class="form-inline from-group" style="margin-bottom: 10px;">
+        <div class="form-group" style="margin-right:10px">
+            <label>Tipo Usuario</label>
+        </div>
+        <div class="form-group">
+            <label><input type="radio" name="tipoUsuario" value="N" @if (!"S".Equals(Model.Administrador) && !"S".Equals(Model.Supervisor))
+                                                                    {@Html.Raw("checked=\"checked\"")} /> Normal</label>
+            <label><input type="radio" name="tipoUsuario" value="S" @if ("S".Equals(Model.Supervisor))
+                                                                    {@Html.Raw("checked=\"checked\"")} /> Supervisor</label>
+            <label><input type="radio" name="tipoUsuario" value="A" @if ("S".Equals(Model.Administrador))
+                                                                    {@Html.Raw("checked=\"checked\"")} /> Administrador</label>
+        </div>
+
+      <div class="form-inline from-group" style="margin-bottom: 10px;">
+        <div class="form-group" style="margin-right:10px">
+            Nuevo Password
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="NewPassword" id="NewPassword" />
+        </div></div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comentarios)
+        <br />
+            @Html.TextAreaFor(model => model.Comentarios, new { @class = "form-control" })
+        </div>
+  </div>
+  <div class="panel-footer">
+	<div  style ="width: 250px ; display:inline-block">
+             <input class="btn btn-primary" type="submit" value="Guardar" />
+        </div>
+         <div style="float :right;width:500px;display:inline-block">
+	    <a class="btn btn-success" href="../Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"> </span>BUSCAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Usuarios/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+        <a class="btn btn-danger" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-fw"></span>ELIMINAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Usuarios/Create"><span class ="fa fa-undo fa-fw"></span>CANCELAR</a>
+
+  </div>
+</div>
+        
+
+        <p>
+           
+        </p>
+    </fieldset>
+}
+    </div>
+</div>

@@ -1,0 +1,105 @@
+﻿@model IEnumerable<SAG2.Models.BienInventario>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            DependenciaID
+        </th>
+        <th>
+            EspecieID
+        </th>
+        <th>
+            NumeroInventario
+        </th>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Descripcion
+        </th>
+        <th>
+            Procedencia
+        </th>
+        <th>
+            Nce
+        </th>
+        <th>
+            Periodo
+        </th>
+        <th>
+            Factura
+        </th>
+        <th>
+            Fechacompra
+        </th>
+        <th>
+            Estado
+        </th>
+        <th>
+            Observacion
+        </th>
+        <th>
+            ProyectoID
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DependenciaID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EspecieID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumeroInventario)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fecha)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Procedencia)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nce)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Periodo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Factura)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fechacompra)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estado)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Observacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProyectoID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

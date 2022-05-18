@@ -1,0 +1,64 @@
+﻿@model IEnumerable<SAG2.Models.DetalleEgreso>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Detalles de Egresos";
+    int p1;
+    int p2 = 0;
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("a").click(function () {
+            window.opener.document.getElementById("EgresoID").value = $(this).attr("DetalleEgresoID"); 
+            window.opener.document.getElementById("NumeroAuxiliar").value = $(this).attr("ComprobanteEgreso");
+            window.opener.document.getElementById("MovimientoID").value = $(this).attr("MovimientoID");
+            window.opener.document.getElementById("Detalle").value = $(this).attr("Glosa");
+            window.opener.document.getElementById("Fecha").value = $(this).attr("Fecha");
+            window.opener.document.getElementById("MontoEgreso").value = $(this).attr("Monto");
+            window.opener.document.getElementById("NumeroDocumento").value = $(this).attr("NumeroDocumento");
+            window.close();
+
+            return false;
+        });
+
+    });
+</script>
+<div class="top" style="height: 15px;">EGRESOS&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="fixedHeader">
+                <tr>
+                    <th style=" width:36px;" class="controles"></th>
+                    <th style=" width:40px;">Nº</th>
+                    <th style=" width:180px;">Cuenta</th>
+                    <th style=" width:80px;">Nº Doc</th>
+                    <th style=" width:80px;">Valor</th>
+                    <th style=" width:450px;">Glosa</th>
+                </tr>
+            </thead>
+            <tbody class="scrollContent">
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+
+                        <td style=" width:36px;"><a href="./" title="Seleccionar" MovimientoID="@item.Egreso.ID" NumeroDocumento="@item.NDocumento" Monto ="@item.Monto.ToString()" ComprobanteEgreso="@item.Egreso.NumeroComprobante" DetalleEgresoID="@item.ID" Fecha="@item.FechaEmision.ToShortDateString()"cuentaid="@item.CuentaID" cuenta="@item.Cuenta.Nombre" NDocumento="@item.NDocumento" ValorDoc="@item.Monto" Glosa="@item.Glosa"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a></td>
+                        <td style=" width:38px;" align="center">@Html.DisplayFor(modelItem => item.Egreso.NumeroComprobante)</td>
+                        <td style=" width:180px;">@item.Cuenta.Nombre</td>
+                        <td style=" width:80px;">@item.NDocumento </td>
+                        <td style=" width:80px;">@item.Monto.ToString("#,##0")</td>
+                        <td style=" width:480px;">@Html.DisplayFor(modelItem => item.Glosa)</td>
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="warning">No hay Egresos en la cuenta 8 (inversiones) disponibles para este Proyecto</div>
+    }
+</div>
+

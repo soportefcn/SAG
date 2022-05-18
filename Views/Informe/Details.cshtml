@@ -1,0 +1,66 @@
+﻿@model SAG2.Models.Informe
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Informe</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.tipo.Nombre)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.tipo.Nombre)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.nombreInforme)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.nombreInforme)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.estado)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.estado)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.descripcion)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.descripcion)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.fecha)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.fecha)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

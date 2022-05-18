@@ -1,0 +1,259 @@
+﻿@model SAG2.Models.IndicadoresGestion
+@{
+    ViewBag.Title = "Estándares Indicadores de Gestión";
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div class="inicio" style="width:inherit;">
+<h2>@ViewBag.Title</h2>
+<br />
+<table class="table table-bordered table-hover">
+  <tr>
+    <th width="110" align="left">Proyecto</th>
+    <td>@ViewBag.NombreProyecto</td>
+    <th width="100" align="left">Cod. SEN.</th>
+    <td width="50" align="right">@ViewBag.CodigoSename</td>
+    <th width="100" align="left">Cod. Inst.</th>
+    <td width="50" align="right">@ViewBag.CodigoCodeni</td>
+  </tr>
+  <tr>
+    <th align="left">Ubicación</th>
+    <td colspan="5">@ViewBag.Ubicacion</td>
+  </tr>
+  <tr>
+    <th align="left">Auditor CODENI</th>
+    <td colspan="5">@ViewBag.Auditor</td>
+  </tr>
+  <tr>
+    <th align="left">Año</th>
+    <td colspan="5">
+        <select name="Periodo" id="Periodo" class="PeriodoConfiguracionIndicadores">
+            @for (int i = DateTime.Now.Year - 1; i <= DateTime.Now.Year + 1; i++)
+            {
+                <option @if(@ViewBag.Periodo==i){@Html.Raw("selected=\"selected\"");}>@i</option>    
+            }
+        </select>
+    </td>
+  </tr>
+</table>
+
+
+<p>&nbsp;</p>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.ProyectoID)
+    @Html.HiddenFor(model => model.Periodo)
+<table class="table table-bordered table-hover">
+  <tr>
+    <th width="103" align="left">Factor</th>
+    <th width="210" align="left">Variable</th>
+    <th width="109" align="left">Indicador</th>
+    <th width="130" align="left">Estándar</th>
+    <th width="82" align="left">Base de Medición</th>
+  </tr>
+  <tr title="Se obtiene de los antecedentes del proyecto (Nº Plazas Convenio)">
+    <th rowspan="2" align="left" title="">Capacidad</th>
+    <th align="left">Cobertura</th>
+    <td align="center">Nº Niños / Mes</td>
+    <td align="right">@Html.TextBoxFor(model => model.CapCobertura, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr title="Se Obtiene del SAG: Intervenciones realizadas Trim. / Cobretura X 3">
+    <th align="left">Intervenciones/Mes</th>
+    <td align="center">% Niños / Mes</td>
+    <td align="right">@Html.TextBoxFor(model => model.CapIntervenciones, new {  @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr title="Se obtiene del SAG: Ingresos subvención / Trim.">
+    <th rowspan="2" align="left" title="">Ingresos</th>
+    <th align="left">Subvención SENAME</th>
+    <td align="center">$ / Mes</td>
+    <td align="right">$@Html.TextBoxFor(model => model.IngSubvencion, new {  @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Otros Ingresos </th>
+    <td align="center">$ / Mes</td>
+    <td align="right">$@Html.TextBoxFor(model => model.IngOtros, new {  @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr title="Se obtiene del SAG: Gastos Persona Trim./Ingresos Trim.">
+    <th rowspan="6" align="left">Costos Reales</th>
+    <th align="left">Personal</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.CosPersonal, new {  @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Funcionamiento</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.CosFuncionamiento, new {  @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Apoyo Técnico</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.CosTecnico, new {  @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Apoyo a Beneficiarios</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.CosBeneficiario, new {  @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Inversión</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.CosInversion, new {  @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Fondo Indemnizaciones</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.CosFondo, new {  @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th rowspan="6" align="left">Financiamiento</th>
+    <th align="left">Préstamos Institucionales</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.FinPrestamos, new {@class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Préstamos Otros Proyectos</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.FinPrestamosOtros, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Aportes Institucionales</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.FinAportes, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+   <tr>
+    <th align="left">Aportes de Excedentes Otros Proyectos</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.FinAportesExcendentes, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+   <tr>
+    <th align="left">Aportes de Terceros</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.FinAportesTerceros, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Proveedores</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.FinProveedores, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th rowspan="8" align="left">Calidad</th>
+    <th align="left">Gastos Objetados SENAME</th>
+    <td align="center">$ / Sem.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.CalObjSename, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Gastos Rechazados SENAME</th>
+    <td align="center">$ / Sem.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.CalRecSename, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Observaciones SENAME</th>
+    <td align="center">Nº Obs. / Sem.</td>
+    <td align="right">@Html.TextBoxFor(model => model.CalObsSename, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Gastos Objetados CODENI</th>
+    <td align="center">$ / Sem.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.CalObjCodeni, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Gastos Rechazados CODENI</th>
+    <td align="center">$ / Sem.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.CalRecCodeni, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Observaciones CODENI</th>
+    <td align="center">Nº Obs. / Sem.</td>
+    <td align="right">@Html.TextBoxFor(model => model.CalObsCodeni, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Retención de Impuestos</th>
+    <td align="center">Nº Obs. / Trim.</td>
+    <td align="right">@Html.TextBoxFor(model => model.CalImpuestos, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Inventario General</th>
+    <td align="center">Nº Obs. / Sem.</td>
+    <td align="right">@Html.TextBoxFor(model => model.CalInventario, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th width="103" rowspan="7" align="left">Productividad<br />Eficiencia</th>
+    <th align="left">Aporte Subvención</th>
+    <td align="center">% / Subv. Mes</td>
+    <td align="right">@Html.TextBoxFor(model => model.ProAporte, new { @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Horas Extraordinarias</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.ProHoras, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Saldo Banco</th>
+    <td align="center">$ / Trim.</td>
+    <td align="right">$@Html.TextBoxFor(model => model.ProSaldo, new { @class="form-control", @style = "text-align: right;" })</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Resultado</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.ProResultado, new { @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+  <tr>
+    <th align="left">Desviación Presupuesto</th>
+    <td align="center">% / Ingresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.ProDesviacion, new {@class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Desviación Presupuesto</th>
+    <td align="center">% / Egresos</td>
+    <td align="right">@Html.TextBoxFor(model => model.ProDesviacionEgr, new { @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Semestral</td>
+  </tr>
+  <tr>
+    <th align="left">Costo Niño/Mes</th>
+    <td align="center">% / Subv. Mes</td>
+    <td align="right">@Html.TextBoxFor(model => model.ProCostoNino, new { @class="form-control", @style = "text-align: right;" })%</td>
+    <td align="center">Trimestral</td>
+  </tr>
+</table>
+<p align="right">
+    <input class="btn btn-primary" type="submit" value="Guardar" />
+</p>
+}
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

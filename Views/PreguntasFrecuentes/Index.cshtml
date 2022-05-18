@@ -1,0 +1,33 @@
+﻿@model IEnumerable<SAG2.Models.PreguntaFrecuente>
+@{
+    ViewBag.Title = "Preguntas Frecuentes";
+    SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+}
+<div class="inicio">
+<h2>Preguntas Frecuentes</h2>
+@Html.Raw(@ViewBag.Mensaje)
+@foreach (var item in Model)
+{
+    if ((item.Activo.Equals("N") && Usuario.esAdministrador) || item.Activo.Equals("S"))
+    {
+        <h3>@Html.DisplayFor(modelItem => item.Pregunta)</h3>
+        <pre style="font-size: 12px;">@Html.DisplayFor(modelItem => item.Respuesta)</pre>
+        if (Usuario.esAdministrador)
+        {
+            <p>Enviada el @item.PreguntaFecha.ToShortDateString() por @item.Persona.NombreCompleto @if (@item.RespondeFecha != null) {@Html.Raw("Respondida el " + @item.RespondeFecha.Value.ToShortDateString()); }</p>
+            @Html.ActionLink("Responder", "Edit", new { id = item.ID });
+            <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/PreguntasFrecuentes/Delete/@Html.Raw(item.ID.ToString())" onclick="return confirm('Realmente desea eliminar esta pregunta?');">Eliminar</a>
+        }
+        <hr style="width: 99%;" align="center" />
+    }
+}
+<p>&nbsp;</p>
+<p>No encuentras lo que buscas, pregunta ac&aacute;:</p>
+@using (Html.BeginForm("Create", "PreguntasFrecuentes"))
+{
+    <textarea id="Pregunta" name="Pregunta" style="width: 99%; heigth: 30px;"></textarea>
+    <p>
+        <input type="submit" value="Solicitar respuesta" />
+    </p>
+}
+</div>

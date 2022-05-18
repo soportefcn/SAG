@@ -1,0 +1,365 @@
+﻿@model SAG2.Models.Proyecto
+@{
+    ViewBag.Title = "Crear Proyecto";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $(".js-autocomplete").select2();
+        });
+    </script>
+
+    <div>
+        <h3>Programa</h3>
+
+        <div id="contenido" class="proyectos">
+            @using (Html.BeginForm())
+            {
+                @Html.Raw(@ViewBag.Mensaje)
+                @Html.ValidationSummary(true)
+
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3><b>Datos del Programa</b></h3></div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <h2>Antecedentes del Programa</h2>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 30px;">
+                                    @Html.LabelFor(model => model.Institucion, "Institución")
+                                </div>
+                                <div class="form-group" style="margin-right: 20px;">
+                                    @Html.TextBoxFor(model => model.Institucion, new { @class = "form-control", @style = "width: 250px;" })
+                                    <script>
+                                        $(document).ready(function () {
+                                            $("#Institucion").value("CONSEJO DE DEFENSA DEL NIÑO");
+                                        });
+                                    </script>
+                                </div>
+
+                                <div class="form-group" style="margin-right: 66px;">
+                                    @Html.LabelFor(model => model.Nombre, "Programa")
+                                </div>
+                                <div class="form-group" style="margin-right: 10px;">
+                                    @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @style = "width: 250px;" })
+                                </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 10px;">
+                                    @Html.LabelFor(model => model.TipoProyectoID, "Tipo de programa")
+                                </div>
+                                <div class="form-group" style="margin-right: 25px;">
+                                    @Html.DropDownList("TipoProyectoID", null, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group" style="margin-right: 10px; disabled">
+                                    @Html.LabelFor(model => model.TipoProyecto.LineaAtencion.NombreLista, "Linea de atención")
+                                </div>
+                                <div class="form-group">
+                                    <select id="LineaDeAtencion" name="LineaDeAtencion" class="form-control" disabled>
+                                        <option>Seleccione tipo de proyecto</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 16px;">
+                                    @Html.LabelFor(model => model.CodCodeni, "Cód. CODENI")
+                                </div>
+                                <div class="form-group" style="margin-right: 168px;">
+                                    @Html.TextBoxFor(model => model.CodCodeni, new { @class = "form-control", @style = "width: 100px;" })
+                                </div>
+                                <div class="form-group" style="margin-right: 45px;">
+                                    @Html.LabelFor(model => model.CodSename, "Cód. SENAME")
+                                </div>
+                                <div class="form-group" style="margin-right: 10px;">
+                                    @Html.TextBoxFor(model => model.CodSename, new { @class = "form-control", @style = "width: 100px;" })
+                                </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 33px;">
+                                    @Html.LabelFor(model => model.DireccionID, "Dirección")
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.Direccion.Calle, new { @class = "form-control", @placeholder = "Calle" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.Direccion.Numero, new { @class = "form-control", @placeholder = "Numero", @style = "width: 100px;" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(model => model.Direccion.Depto, new { @class = "form-control", @placeholder = "Departamento", @style = "width: 130px;" })
+                                </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 47px;">
+                                    @Html.Label("Región")
+                                </div>
+                                <div class="form-group" style="margin-right: 60px;">
+                                    @Html.DropDownList("RegionID", null, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group" style="margin-right: 10px;">
+                                    @Html.Label("Comuna")
+                                </div>
+                                <div class="form-group">
+                                    <select name="ComunaID" id="ComunaID" class="form-control">
+                                        <option>Seleccione región</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 12px;">
+                                    @Html.LabelFor(model => model.Fono, "Tél. contacto")
+                                </div>
+                                <div class="form-group" style="margin-right: 10px;">
+                                    @Html.TextBoxFor(model => model.Fono, new { @class = "form-control" })
+                                </div>
+
+                                <div class="form-group" style="margin-right: 12px;">@Html.LabelFor(model => model.Fax)</div>
+                                <div class="form-group">@Html.TextBoxFor(model => model.Fax, new { @class = "form-control" })</div>
+                            </div>
+
+
+                            <h2>Antecedentes del Convenio</h2>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 40px;">
+                                    @Html.LabelFor(model => model.Convenio.ResEx, "Res. Ex.")
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.TextBoxFor(model => model.Convenio.ResEx, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.LabelFor(model => model.Convenio.NroPlazas, "Nº Plazas")
+
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.TextBoxFor(model => model.Convenio.NroPlazas, new { @class = "form-control" })
+
+                                </div>
+
+                            </div>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 49px;">
+                                    <label>Desde</label>
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.TextBoxFor(model => model.Convenio.FechaInicio, new { @readonly = "readonly", @class = "calendario form-control" })
+                                </div>
+                                <div class="form-group" style="margin-right: 40px;">
+                                    <label>Hasta</label>
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.TextBoxFor(model => model.Convenio.FechaTermino, new { @readonly = "readonly", @class = "calendario form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.LabelFor(model => model.EdadMinima, "Edad mínima")
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.TextBoxFor(model => model.EdadMinima, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">@Html.LabelFor(model => model.EdadMaxima, "Edad máxima")</div>
+                                <div class="form-group" style="margin-right: 15px;">@Html.TextBoxFor(model => model.EdadMaxima, new { @class = "form-control" })</div>
+                                <div class="form-group" style="margin-right: 15px;">   @Html.LabelFor(model => model.Sexo) </div>
+                                <div class="form-group">
+                                    <select id="Sexo" name="Sexo" class="form-control">
+                                        <option value="F">Femenino</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="A">Mixto</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                <label>Comentario</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 15px;">
+                                @Html.TextAreaFor(model => model.Convenio.Comentarios, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.LabelFor(model => model.Flexibilizacion)
+                                    <input class="form-control" type="checkbox" name="Flexibilizacion" value="S" tabindex="21" />
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.LabelFor(model => model.ValorSubvencion, "Subvención diaria")
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.TextBoxFor(model => model.ValorSubvencion, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.LabelFor(model => model.DiasAtencion, "Dias atención")
+
+                                </div>
+                                <div class="form-group" style="margin-right: 15px;">
+                                    @Html.TextBoxFor(model => model.DiasAtencion, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <h3>Opciones</h3>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 12px;">
+                                    @Html.Label("Período inicio Programa")
+                                </div>
+                                <div class="form-group" style="margin-right: 12px;">
+                                    <select class="form-control" name="PeriodoInicio" id="PeriodoInicio">
+                                        @for (var i = DateTime.Now.Year; i <= DateTime.Now.Year + 1; i++)
+                                        {
+                                            <option value="@Html.Raw((@i).ToString())" @if (@i == DateTime.Now.Year) { @Html.Raw("selected=\"selected\"") }>
+                                                @Html.Raw((@i).ToString())
+                                        </option>
+                                    }
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-right: 12px;">
+                                    @Html.Label("Mes inicio Programa")
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control" name="MesInicio" id="MesInicio">
+                                        @for (var i = 0; i < 12; i++)
+                                        {
+                                            <option value="@Html.Raw((@i + 1).ToString())" @if (DateTime.Now.Month == i + 1) { @Html.Raw("selected=\"selected\"") }>
+                                                @Html.Raw(@Meses[@i])
+                                        </option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <h3>Supervisor</h3>
+                            <div class="form-group form-inline">
+                                <div class="form-group" style="margin-right: 12px;">
+                                    @Html.Label("Supervisor")
+                                </div>
+                                <div class="form-group" style="margin-right: 12px;">
+                                    @Html.DropDownList("PersonaID", null, new { @class = "form-control js-autocomplete" })
+
+
+                                </div>
+                            </div>
+                            @if (TempData["Message"] != null)
+                            {
+                                @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+                            }
+                        </fieldset>
+                        <fieldset>
+                            <h3>Cuenta Corriente</h3>
+                            <div class="form-group form-inline">
+                                <div class="form-group">
+
+                                </div>
+                            </div>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td style="width: 120px;">@Html.Label("Banco"):</td>
+                                    <td>@Html.DropDownList("BancoID", null, new { @class = "form-control", @style = "width:70%;" })</td>
+                                    <td style="width: 120px;">@Html.Label("Número"):</td>
+                                    <td>@Html.TextBox("Numero", null, new { @class = "form-control" })</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="width: 120px;">@Html.Label("Saldo inicial"):</td>
+                                    <td>@Html.TextBox("SaldoInicial", null, new { @class = "form-control" })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </div>
+                    <div class="panel-footer">
+                        <div style="width: 500px ; display:inline-block">
+                            <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=600,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class="fa fa-search fa-fw"></span>BUSCAR</a>
+                            <a class="btn btn-default" href="/SAG_5_desarrollo/Proyectos/Create"><span class="fa fa-file-o  fa-fw"></span>NUEVO</a>
+
+                        </div>
+                        <div style="float :right;display:inline-block">
+                            <fieldset>
+
+                                <input class="btn btn-primary" type="submit" value="Guardar" id="crearProyecto" />
+                            </fieldset>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+            }
+        </div>
+
+    </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+          $("#TipoProyectoID").change(function () {
+                $("#LineaDeAtencion").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetLinea")', // we are calling json method
+                    dataType: 'json',
+                    data: { id: $("#TipoProyectoID").val() },
+                    // here we are get value of selected country and passing same value
+                    //as inputto json method GetStates.
+                    success: function (linea) {
+                        // states contains the JSON formatted list
+                        // of states passed from the controller
+                        $.each(linea, function (i, linea) {
+                            $("#LineaDeAtencion").append('<option selected="selected" value="' + linea.Value + '">' +
+                                linea.Text + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Error Al Cargar las dependencias' + ex);
+                    }
+                });
+                return false;
+            });
+        $("#RegionID").change(function () {
+            $("#ComunaID").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetSubComuna")', // we are calling json method
+                dataType: 'json',
+                data: { id: $("#RegionID").val() },
+                // here we are get value of selected country and passing same value
+                //as inputto json method GetStates.
+                success: function (subfamilia) {
+                    // states contains the JSON formatted list
+                    // of states passed from the controller
+                    $.each(subfamilia, function (i, subfamilia) {
+                        $("#ComunaID").append('<option value="' + subfamilia.Value + '">' +
+                            subfamilia.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Error Al Cargar Las comunas' + ex);
+                }
+            });
+                    return false;
+                })
+    });
+  
+    </script>

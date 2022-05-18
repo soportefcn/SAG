@@ -1,0 +1,19 @@
+﻿@model IEnumerable<SAG2.Models.InventarioEspecie>
+
+<div id="seccionespecies">
+   
+    
+   @* @using (Html.BeginForm("_Submit", "InventarioEspecie", FormMethod.Post))*@
+    @using(Ajax.BeginForm("_Submit","InventarioEspecie", new AjaxOptions() { UpdateTargetId ="seccionespecies" })){
+    
+        @Html.Action("_InventarioEspecieForm", new { InventarioID = ViewBag.inventarioID})
+    }
+
+  <ul>
+        @foreach (var inventarioEspecie in ViewBag.especi)
+        {
+            <li> @inventarioEspecie.Especie.Nombre </li>
+        }
+    </ul>
+
+</div> 

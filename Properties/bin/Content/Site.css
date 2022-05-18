@@ -1,0 +1,819 @@
+body
+{
+    font-size: .9em;
+    font-family: Verdana, Helvetica, Sans-Serif, "Trebuchet MS";
+    color: #232323;
+    background-color: #909090;
+    margin: 0;
+    padding: 0;
+    /*
+        background: url('/SAG_5/Content/Images/SAGbg.jpgaaa') right top no-repeat;
+    */
+}
+
+td, input, textarea, select {
+    /*text-transform: uppercase;*/
+}
+
+* 
+{
+    /*font-size: 100%;*/
+}
+
+header,
+footer,
+nav,
+section {
+    display: block;
+}
+
+a 
+{
+    color: #05A703;    
+    padding: 2px;
+}
+
+td a 
+{
+    padding: 0;
+}
+
+a:hover
+{
+    color: White;
+}
+
+/* Styles for basic forms
+-----------------------------------------------------------*/
+
+fieldset 
+{
+    border:1px solid #999999;
+    padding: 5px;
+    margin:0 0 1.5em 0;
+    width: 660px;
+    margin: auto;
+    background-color: #F0F0F0;
+}
+
+legend 
+{
+    font-size: 1.1em;
+    font-weight: normal;
+    background-color: #FFFFFF;
+    padding: 3px;
+    border: 1px solid Black;
+}
+
+textarea 
+{
+    min-height: 75px;
+}
+
+.editor-label 
+{
+    margin: 1em 0 0 0;
+    float: left;
+    width: 50px;
+    clear: left;
+    text-align: right;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-top: 5px;
+}
+
+.expandido 
+{
+    width: 100px !important;
+}
+
+.expandidox2
+{
+    width: 150px !important;
+}
+
+.subitem
+{
+    color: #999999;    
+}
+
+.editor-field 
+{
+    margin:1em 0 0 60px;
+    clear: right;
+}
+
+.editor-field input
+{
+    
+}
+
+.indicacion 
+{
+    font-size: .9em;
+    color: Gray;
+}
+
+fieldset p input 
+{
+    float: right;
+    padding: 5px;    
+}
+
+.login fieldset
+{
+    margin-top:10px;
+    padding-top: 20px;    
+}
+
+.login .editor-field input
+{
+    width: 200px;
+}
+
+.login .editor-label
+{
+    margin: 1.2em 0 0 0;
+    float: left;
+    width: 45%;
+    clear: left;
+    text-align: right;
+    padding-right: 5px;
+}
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error
+{
+    color: #ff0000;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+
+.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors
+{
+    font-weight: bold;
+    color: #ff0000;
+    font-family: Verdana;
+}
+
+div.validation-summary-errors ul li 
+{
+    font-size: 11px !important;
+}
+
+.validation-summary-valid
+{
+    display: none;
+}
+
+/* Menu */
+div.menu 
+{
+    /*width: 100%;*/
+    width: 2000px;
+    background-color: #05A703;
+    margin: 0;
+    padding: 0;
+    height: 25px;
+    position: fixed;
+    top: 3px;
+    z-index: 100;
+}
+
+ul.menu 
+{
+    font-size: 11px;
+}
+
+ul.menu, li {
+	margin: 0;
+	padding: 0;
+	text-indent: 0;
+	z-index: 100px;
+}
+ 
+/* Style */
+ul.menu, ul.menu li, ul.menu li ul, ul.menu li ul li {
+	margin: 0;
+	padding: 0;
+	text-indent: 0;
+}
+ 
+/* Style */
+ul.menu, ul.menu li, ul.menu li ul, ul.menu li ul li  {
+	list-style: url(none) none;
+	color: White;
+}
+ul.sub_menu li
+{
+    background-color: #05A703;
+}
+ul.menu li {
+	display: inline;
+	float: left;
+	position: relative;
+	background-color: #05A703;
+	width: 160px;
+	margin: 0;
+	z-index: 1000;
+}
+ul.menu li a {
+	color: #fff;
+	text-decoration: none;
+	background-color: #05A703;
+	display: block;
+	width: 150px;
+	padding: 5px;
+}
+ul.menu li a:hover, ul li a:active {
+	background-color: Orange;
+}
+ul.menu li ul, ul.menu li ul {
+	position: absolute;
+	display: none;
+}
+ul.menu li ul li {
+	display: list-item;
+	float: none;
+	margin: 0;
+}
+
+ul.menu li ul li a:hover {
+	background-color: Orange;
+}
+
+ul.menu li ul li:hover  
+{
+}
+
+td {
+    font-size: .7em;    
+    white-space: nowrap;
+}
+
+th {
+    font-size: .7em;   
+    white-space: nowrap;
+}
+
+h2 {
+    font-size: 1.3em;    
+}
+
+hr {
+   width: 150px;
+   clear: both;
+}
+
+th, td, tr {
+    border: 1px solid Gray;
+    padding: 3px;
+    margin: 0;  
+}
+
+th {
+    background-color: #C0C0C0;
+    color: Black;
+}
+
+tr:hover 
+{
+    background-color: Orange;
+}
+
+div.contenedor
+{
+    width: 100%;
+    margin: 0 auto;
+}
+        
+div.body
+{
+    padding: 0 5px;
+    margin-bottom: 50px;
+    margin-top: 65px;
+}
+        
+hr
+{
+    width: 840px;    
+}
+        
+div.pie
+{
+    background-color: Black;
+    position:  fixed;
+    bottom: 0;
+    padding: 7px 0;
+    width: 100%;
+    text-align: right;
+    color: White;
+    letter-spacing: 1px;
+    z-index:3;
+}
+div.top
+{
+    background-color: Black;
+    padding: 8px 0;
+    width: 100%;
+    text-align: right;
+    color: White;
+    letter-spacing: 1px;
+    clear: both;
+    position: fixed;
+    top: 0;
+    height: 13px;
+}
+
+div.alertas 
+{
+    float: left;
+    color: Red;
+    font-weight: bold;    
+}
+
+div.alertas a 
+{
+    color: Red;    
+}
+
+div.alertas a:hover
+{
+    color: White;    
+    background-color: Red;
+}      
+
+div.aviso 
+{
+    position: fixed;
+    bottom: 25px; right: 20px;
+    padding: 10px;
+    width: 200px;
+    font-weight: bold;
+    text-align: center;
+    color: #9F6000;
+    background-color: #FEEFB3;z-index:1;border: 1px solid;
+    letter-spacing: 1px;
+}
+
+div.aviso_left
+{
+    position: fixed;
+    bottom: 25px; left: 20px;
+    padding: 10px;
+    width: 300px;
+    font-weight: bold;
+    text-align: center;
+    color: #9F6000;
+    background-color: #FEEFB3;z-index:1;border: 1px solid;
+    letter-spacing: 1px;  
+}
+
+div.aviso hr
+{
+    width: 160px;    
+    text-align: center;
+}
+ 
+ div.aviso a, div.aviso a:hover, div.aviso a:visited, div.aviso a:active 
+ {
+    background-color: transparent;    
+    color: inherit;
+ }
+
+body, a, th, td, div, label, span
+{
+    font-size: 11px;   
+}
+
+a 
+{
+    text-decoration: none;
+}
+
+a:hover 
+{
+    background-color: Orange;    
+}
+
+div.error
+{
+    width: 90%;
+    border: 1px solid;
+    margin: 10px auto;
+    padding: 20px;
+    color: #D8000C;
+    background-color: #FFBABA;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+div.success
+{
+    width: 90%;
+    border: 1px solid;
+    margin: 10px auto;
+    padding: 20px;
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+div.warning 
+{
+    width: 90%;
+    border: 1px solid;
+    margin: 10px auto;
+    padding: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+
+div.info 
+{
+    width: 90%;
+    border: 1px solid;
+    margin: 10px auto;
+    padding: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+
+div#SAGBox 
+{
+    margin: 0 auto;
+    width: 800px;
+    /*width: 95%;*/
+    border: 1px solid Black;
+    padding: 5px;
+    min-height: 400px;
+    overflow: auto;
+    background-color: Window;
+    
+    border: 3px outset #333;
+    box-shadow: 2px 3px 3px 1px #333;
+}
+
+div#SAGBox h3
+{
+    margin-top: 3px;
+    margin-left: 9px;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+    clear: both;
+    font-variant: small-caps;
+}
+
+div#SAGBox #controles 
+{
+    float: left;
+    width: 100px;
+    clear: left;
+    text-align: center;
+    margin-top: 6px;
+}
+
+div#SAGBox #controles p a 
+{
+    display: block;
+    border: 1px solid Black;
+    padding: 5px;
+    width: 70px;
+}
+
+div#SAGBox #controles p input
+{
+    padding: 5px;
+    width: 82px;
+}
+
+div#SAGBox #controles p input:hover
+{
+    background-color: orange;
+}
+
+div#SAGBox #controles p
+{
+    margin: 10px;
+    margin-top: 0;
+}
+
+div#SAGBox #contenido
+{
+    float: right;
+    width: 700px;
+    clear: right;
+}
+
+div#SAGBox #contenido table
+{
+    width: 100%;
+    border:1px solid #ddd;
+}
+
+table tbody tr th.controles 
+{
+    text-align: center;
+    width: 17px;
+}
+
+table tbody tr th.codigo, table tbody tr td.codigo
+{
+    text-align: center;
+    width: 30px;
+}
+
+div.inicio 
+{
+    margin: 0 auto;
+    width: 800px;
+    border: 1px solid Black;
+    padding: 5px;
+    background-color: Window;
+    border: 3px outset #333;
+    box-shadow: 2px 3px 3px 1px #333;
+}
+
+#SAGBox ul li 
+{
+    margin: 5px;    
+    font-size: 15px;
+}
+
+#SAGBox ul li a
+{
+    font-size: 15px;
+}
+
+/* Celdas sin bordes para mantendor de personal sin bordes */
+div.personal 
+{
+    height: auto !important;
+    overflow: auto !important;
+    padding-bottom: 15px;
+}
+
+div.proveedores 
+{
+    height: auto !important;
+    overflow: auto !important;
+    padding-bottom: 15px;
+}
+
+div.cuentacorriente
+{
+    height: auto !important;
+    overflow: auto !important;
+    padding-bottom: 15px;
+}
+
+div.proyectos table, div.proyectos table tbody, div.proyectos table tr, div.proyectos table tr td, div.proyectos table tr:hover, div.proveedores table, div.proveedores table tbody, div.proveedores table tr, div.proveedores table tr td, div.proveedores table tr:hover, div.cuentacorriente table, div.cuentacorriente table tbody, div.cuentacorriente table tr, div.cuentacorriente table tr td, div.cuentacorriente table tr:hover, div.personal table, div.personal table tbody, div.personal table tr, div.personal table tr td, div.personal table tr:hover, table.noorange tr:hover, table.noorange tr, table.noorange td
+{
+    background-color: inherit !important; 
+    border: 0 !important;
+}
+
+div.proyectos
+{
+    height: auto !important;
+    overflow: auto !important;
+    padding-bottom: 15px;
+}
+
+div.ingresos
+{
+    height: auto !important;
+    overflow: auto !important;
+    padding-bottom: 15px;   
+}
+
+div.auditorias
+{
+    height: 390px !important;
+    overflow: auto !important;  
+}
+
+div.auditorias textarea
+{
+    width: 545px;    
+}
+
+div.permisos
+{
+    padding: 10px; 
+    width: 90%; 
+    margin: 0 auto; 
+    background-color: White; 
+    border: 1px solid Black;    
+    border: 3px outset #333;
+    box-shadow: 2px 3px 3px 1px #333;
+}
+
+div.permisos th 
+{
+    font-size: 90%;
+}
+
+div.permisos .input
+{
+    float: right;
+    padding: 5px;
+}
+
+.personal form fieldset table, .personal form fieldset table tbody tr td, .personal form fieldset table tbody tr, .proyectos form fieldset table, .proyectos form fieldset table tbody tr td, .proyectos form fieldset table tbody tr 
+{
+    border: 0 !important;
+    border-color: White !important;
+}
+
+div#contenido_popup 
+{
+    width: 90%;
+    margin: 55px auto;
+    margin-bottom: 25px;
+    background-color: White;
+    padding: 10px;
+    overflow: auto;
+}
+
+div#contenido_popup table 
+{
+    width: 100%;    
+}
+
+a img  
+{
+    border: 0 !important;    
+}
+
+td.rendicion a 
+{
+    display: block;
+    height: 44px;
+    text-align: center;
+    font-size: 1.3em;
+    padding-top: 22px;
+}
+
+td.rendicion:hover, tr.rendicion:hover
+{
+    background-color: White;    
+}
+
+.inicio h2 
+{
+    /*margin: 0;
+    padding: 0;    */
+}
+
+.control_bodega fieldset
+{
+    width: 100%;
+    float: none;    
+    padding: 0;
+    padding-bottom: 5px;
+}
+
+.control_bodega legend
+{
+    margin-left: 5px;    
+}
+
+.control_bodega table, .control_bodega tr, .control_bodega td 
+{
+    border: 0;
+}
+
+.control_bodega table:hover, .control_bodega tr:hover, .control_bodega td:hover
+{
+    background-color: transparent;    
+}
+
+.sin-hover table, .sin-hover tr, .sin-hover td, .sin-hover th
+{
+    border: 0;
+}
+
+.sin-hover table:hover, .sin-hover tr:hover, .sin-hover td:hover, .sin-hover a
+{
+    background-color: transparent;
+}
+
+.naranja 
+{
+    background-color: #FFA500;
+}
+
+#linkGeneral, #linkDetalle 
+{
+   background-color: #F0F0F0;
+}
+
+#linkGeneral:hover, #linkDetalle:hover
+{
+   background-color: #FFA500;
+}
+
+table.info-hover, table.info-hover tr, table.info-hover tr td
+{
+    border: 1px solid grey;    
+}
+
+table.tabla_supervision, table.tabla_supervision tr, table.tabla_supervision tr td
+{
+    border: 0px solid grey !important;
+    border-bottom: 1px solid #c0c0c0 !important; 
+}
+
+
+
+div.MenuInforme
+{
+    width: 100%;
+    height: 20px;
+    clear: right;
+}
+
+div.MenuInforme .MenuItem
+{
+    float: left;
+    border: 1px solid black;
+    padding: 5px;
+    margin-right: 2px;  
+    width:86px;
+    text-align: center;
+    cursor: pointer;
+}
+
+div.MenuInforme .MenuItem:hover 
+{
+    background-color: #FFA500;
+    color: White;
+}
+
+/* Menu de informes escondidos */
+.Informe_Objetivos, .Informe_Alcance, .Informe_Metodologia, .Informe_Seguimiento, .Informe_Resultados, .Informe_Conclusiones, .Informe_Plazo
+{
+    display: none;    
+}
+
+.soloImpresion
+{
+    display: none;    
+}
+
+.DatosPresupuesto
+{
+    height: 100%; min-height: 100%; overflow: scroll;
+}
+
+input.boton
+{
+    background-color: #ddd;
+    font-weight: bold;
+    padding: 5px;
+    /*opacity: 0.9;*/
+    color: #666;
+}
+
+input.boton:hover
+{
+    color: Black;
+    box-shadow: 3px 3px 0px 0px #F0F0F0;
+    /*opacity: 1;*/
+}
+
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+
+
+table.tabla_comprobante {
+    margin-top: 10px;
+}
+
+table.tabla_comprobante, table.tabla_comprobante tr, table.tabla_comprobante tr td {
+    border: 0px !important;
+}
+
+tr.row_comprobante:hover 
+{
+    background-color: #F0F0F0 !imporant;
+}

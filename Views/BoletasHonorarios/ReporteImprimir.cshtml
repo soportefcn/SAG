@@ -1,0 +1,164 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@{
+    Layout = null;
+    ViewBag.Title = "Reporte de Honorarios";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+
+    int Periodo = @ViewBag.Periodo;
+    int Mes = @ViewBag.Mes;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <style type="text/css" media="all">
+        @@page
+        {
+        size: landscape;
+        margin: 2cm;
+        }
+        td 
+        {
+        font-size: 11px;    
+        }
+    
+        th 
+        {
+        font-size: 12px;    
+        }
+        h2 {
+            text-align: center;
+        }
+        .registros td
+        {
+            border: 0;
+        }
+        th 
+        {
+            border-bottom: 1px solid black;
+            border-top: 1px solid black;
+        }
+    </style>
+    <script language="javascript" type="text/javascript">
+        <!--
+        function printThis() {
+            window.print();
+            setTimeout('window.close()', 10);
+        }
+        //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td valign="top"><strong>Consejo de Defensa del Niño</strong> <br />
+    Programa :     @Html.Raw(@ViewBag.Proyecto)              <br />
+    Cod. Sename: @Html.Raw(@ViewBag.CodSename)
+        </td>
+
+        <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+      </tr>
+    </table>
+    <p>&nbsp;</p>
+    <h2>@ViewBag.Title</h2>
+    <div align="right">Período @Html.Raw(Meses[@ViewBag.Mes - 1].ToString()) de @Html.Raw(@ViewBag.Periodo.ToString())</div>
+        <table cellpadding="5" border="0" style="width: 100%;" cellspacing="0">
+            <tr>
+                <th style="border-left: 1px solid black;">Período</th>
+                <th>Fecha</th>
+                <th>Proyecto</th>
+                <th nowrap>Nº Boleta</th>
+                <th>Egreso</th>
+                <th>Nombre</th>
+                <th>Glosa</th>
+                <th>Rut</th>
+                <th>DV</th>
+                <th nowrap>Monto $</th>
+                <th style="border-right: 1px solid black;" nowrap>Retención $</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+            int totalProyecto = 0;
+            bool tieneBoletas = false;
+            SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.BoletaHonorario> boletas = db.BoletaHonorario.Where(d => d.ProyectoID == item.ID).Where(d => d.Periodo == Periodo).Where(d => d.Mes == Mes).Where(d => d.EgresoID != null).OrderBy(d => d.NroBoleta).ToList();
+            foreach (var detalle in boletas)
+            {
+            tieneBoletas = true;
+            <tr class="registros">
+                <td>@detalle.Periodo @detalle.Mes</td>
+                <td nowrap>@detalle.Fecha.ToShortDateString()</td>
+                <td align="right">@item.CodCodeni</td>
+                <td align="right">@detalle.NroBoleta</td>
+                <td align="center">@detalle.Egreso.NumeroComprobante</td>
+                <td>
+                    @if (detalle.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Persona.NombreCompleto)
+                    }
+                    else if (detalle.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Proveedor.Nombre)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@detalle.Beneficiario)
+                    }
+                </td>
+                <td>@detalle.Concepto</td>
+                <td align="right">@if (detalle.Persona != null)
+                                  {
+                        @detalle.Persona.Rut
+                                  }
+                                  else if (detalle.Proveedor != null)
+                                  {
+                        @detalle.Proveedor.Rut
+                                  }
+                                  else
+                                  { 
+                        @Html.Raw(@detalle.Rut)
+                                  }</td>
+                <td align="center">@if (detalle.Persona != null)
+                                   {
+                        @Html.DisplayFor(modelItem => detalle.Persona.DV)
+                                   }
+                                   else if (detalle.Proveedor != null)
+                                   {
+                        @Html.DisplayFor(modelItem => detalle.Proveedor.DV)
+                                   }
+                                   else
+                                   { 
+                        @Html.Raw(@detalle.DV)
+                                   }</td>
+                <td align="right">@detalle.Bruto.ToString("#,##0")</td>
+                <td align="right">@detalle.Retencion.ToString("#,##0")</td>
+            </tr>
+            totalProyecto = totalProyecto + @detalle.Bruto;
+        }
+        if (tieneBoletas)
+        {
+        <tr style="border-bottom: 1px solid black;">
+            <td align="right" colspan="9">Total</td>
+            <td align="right">@totalProyecto.ToString("#,##0")</td>
+            <td align="right"></td>
+        </tr>
+        }
+    }
+    </table>
+    *** Fin del Reporte ***
+</body>
+</html>

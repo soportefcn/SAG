@@ -1,0 +1,83 @@
+﻿@model IEnumerable<SAG2.Models.DepositoPlazo>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Depósitos a plazo";
+}
+ <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+ <div id="contenido_popup">
+       <table class="table table-bordered table-hover">
+    <thead class="fixedHeader">
+    <tr>
+    <th style="width: 33px;" class="controles"></th>
+        <th style="width:80px;">
+            F. Depósito
+        </th>
+        <th style="width: 97px;">
+            F. Vencimiento
+        </th>
+        <th style="width: 73px;">
+            Cta. Cte.
+        </th>
+        <th>
+            Banco
+        </th>
+        <th style="width:75px;">
+            Monto $
+        </th>
+        <th>
+            Interés % 
+        </th>
+        <th>
+            Intereses $
+        </th>
+        <th>
+            Monto a pagar $
+        </th>
+        <th>
+            Nº Depósito
+        </th>
+        
+    </tr>
+</thead>
+ <tbody class="scrollContent">
+@foreach (var item in Model)
+{
+    <tr>
+    <td style="width: 33px;">
+            <a href="@Url.Action("Edit", "DepositoPlazo", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td style="width: 80px;">
+            @item.FechaDeposito.ToShortDateString()
+        </td>
+        <td style="width: 97px;">
+            @item.FechaVencimiento.ToShortDateString()
+        </td>
+        <td style="width: 73px;">
+            @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CuentaCorriente.Banco.NombreLista)
+        </td>
+        <td align="right">
+            @Html.DisplayFor(modelItem => item.Monto)
+        </td>
+        <td style="width:70px;">
+            @item.Interes.Value
+        </td>
+        <td style="width:79px;">
+            @Html.DisplayFor(modelItem => item.Intereses)
+        </td>
+        <td  style="width:110px;" align="right">
+            @Html.DisplayFor(modelItem => item.MontoFinal)
+        </td>
+        <td style="width:84px;">
+            @Html.DisplayFor(modelItem => item.NumeroComprobante)
+        </td>
+        
+    </tr>
+    }
+     </tbody>
+    </table>
+</div>

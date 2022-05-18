@@ -1,0 +1,45 @@
+﻿@model SAG2.Models.RespuestaAuditoria
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>RespuestaAuditoria</legend>
+
+    <div class="display-label">IndicadorCalidadID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IndicadorCalidadID)
+    </div>
+
+    <div class="display-label">FechaRespuestA</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaRespuestA)
+    </div>
+
+    <div class="display-label">Observacion</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Observacion)
+    </div>
+
+    <div class="display-label">AdjuntarInforme</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AdjuntarInforme)
+    </div>
+
+    <div class="display-label">FechaSistema</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaSistema)
+    </div>
+
+    <div class="display-label">UsuarioID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UsuarioID)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

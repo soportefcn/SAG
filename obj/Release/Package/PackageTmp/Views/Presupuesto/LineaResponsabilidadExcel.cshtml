@@ -1,0 +1,523 @@
+﻿@model IEnumerable<SAG2.Models.Cuenta>
+@{
+    ViewBag.Title = "Balance Acumulado por Líneas de Responsabilidad";
+    Layout = null;
+    List<SAG2.Models.DetallePresupuesto> dp = new List<SAG2.Models.DetallePresupuesto>();
+    List<SAG2.Models.Movimiento> ingresos = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleEgreso> egresos = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Movimiento> reintegros = new List<SAG2.Models.Movimiento>();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+
+    List<int> Ingresos = (List<int>)@ViewBag.MovIngresos;
+    List<int> Egresos = (List<int>)@ViewBag.MovEgresos;
+    List<int> Reintegros = (List<int>)ViewBag.MovReintegros;
+    List<int> PreIngresos = (List<int>)ViewBag.PreIngresos;
+    List<int> PreEgresos = (List<int>)ViewBag.PreEgresos;
+
+    SAG2.Models.Cuenta cuentaAnterior = new SAG2.Models.Cuenta();
+    string Proyecto = ((SAG2.Models.Proyecto)Session["Proyecto"]).NombreLista;
+    int mes_inicio = 0, periodo_inicio = 0;
+    int lineaAtencion = Int32.Parse(@ViewBag.LineaAtencion);
+    //bool subtotales = false;
+    try
+    {
+        dp = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.Detalle;
+        ingresos = (List<SAG2.Models.Movimiento>)@ViewBag.Ingresos;
+        egresos = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Egresos;
+        reintegros = (List<SAG2.Models.Movimiento>)@ViewBag.Reintegros;
+        mes_inicio = 1;
+        ViewBag.Mes_Inicio = "1";
+        periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+    }
+    catch (Exception)
+    { }
+
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    //Response.Charset = "utf-8";
+    System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+    System.Web.HttpContext.Current.Response.Charset = "";
+    Response.AddHeader("Content-Disposition", "attachment;filename=BALANCE.LINEA." + @ViewBag.Periodo_Inicio + "-ANUAL-" + DateTime.Now.ToShortDateString() + ".xls");
+
+    int j = 0;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Control Presupuestario</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+            /*mso-number-format:"\#\,\#\#0\.000";*/
+            /*mso-number-format: "[Azul][>0]#.##0";*/
+            /*mso-number-format:"0";*/
+        }
+    </style>
+</head>
+<body>
+
+    <table cellspacing="0" cellpadding="3" border="1">
+        <tr>
+            <td style="width: 500px; text-align: center;" width="500px" align="center">
+                <strong>
+            @switch (lineaAtencion)
+            {
+                case 6:
+                    @Html.Raw("PROYECTOS PLE " + @ViewBag.Periodo_Inicio);
+                break;
+                case 7:
+                    @Html.Raw("PROYECTOS PLA " + @ViewBag.Periodo_Inicio);
+                break;
+                case 8:
+                    @Html.Raw("PROYECTOS SBC " + @ViewBag.Periodo_Inicio);
+                break;
+                case 9:
+                    @Html.Raw("PROYECTOS PMC " + @ViewBag.Periodo_Inicio);
+                break;
+                case 10:
+                    @Html.Raw("PROYECTOS PSA " + @ViewBag.Periodo_Inicio);
+                break;
+                default:
+                    @Html.Raw("PROYECTOS " + @ViewBag.Periodo_Inicio);
+                break;
+            }
+                </strong>
+            </td>
+            @for (int i = mes_inicio; i < 12 + mes_inicio; i++)
+            {
+                <td style="width: 100px; text-align: center;" align="center"><strong>@Html.Raw(Meses[i - 1])</strong></td>
+            }
+            @{
+            j = 0;
+            }
+        </tr>
+        @foreach (var cuenta in Model)
+        {
+            var periodo_actual = periodo_inicio;
+            if (!cuenta.Codigo.Contains(".") && cuenta.Hijos.Count() > 0)
+            {
+                @Html.Raw("<tr class=\"cuenta_" + @cuenta.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\"><strong>" + Html.Encode(@cuenta.NombreLista) + "</strong></td></tr>");
+                List<SAG2.Models.Cuenta> nivel1 = cuenta.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).Where(c => !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden).ToList();
+                foreach (var cuenta1 in nivel1)
+                {
+                    if (@cuenta1.Hijos.Count() == 0)
+                    {
+                        @Html.Raw("<tr class=\"cuenta_" + @cuenta1.Tipo + "\"><td style=\"background-color: Silver;\">&nbsp;" + "&nbsp;" + Html.Encode(@cuenta1.NombreLista) + "</td>");
+                        // Se imprimen valores mensuales
+                        try
+                        {
+                            mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                            periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                        }
+                        catch (Exception)
+                        { }
+                        periodo_actual = periodo_inicio;
+                        for (int i = 0; i < 12; i++)
+                        { 
+                            if (mes_inicio > 12)
+                            {
+                                mes_inicio = 1;
+                                periodo_actual = periodo_inicio + 1;
+                            }
+
+                            int valor_presupuesto = 0;// dp.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto);
+                            double valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => (double)d.Monto_Ingresos);
+                            int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                            
+                            if (cuenta1.Tipo.Equals("I"))
+                            {
+                                <td style="text-align: right;" class="@Html.Raw("Periodo" + mes_inicio)">@valor_ingresos.ToString("#,##0")</td>
+                            }
+                            else
+                            {
+                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_egresos.ToString("#,##0")</td>
+                            }
+                            mes_inicio++;
+                        }
+                        @Html.Raw("</tr>");
+                    }
+                    else
+                    {
+                        @Html.Raw("<tr class=\"cuenta_" + @cuenta1.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\"><strong>&nbsp;" + "&nbsp;" + Html.Encode(@cuenta1.NombreLista) + "</strong></td></tr>");
+                        List<SAG2.Models.Cuenta> nivel2 = cuenta1.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).Where(c => !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden).ToList();
+                        foreach (var cuenta2 in nivel2)
+                        {
+                            if (@cuenta2.Hijos.Count() == 0)
+                            {
+                                @Html.Raw("<tr class=\"cuenta_" + @cuenta2.Tipo + "\"><td style=\"background-color: Silver;\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta2.NombreLista) + "</td>");
+                                // Hijos tercer nivel
+                                // X.Y.Z
+                                try
+                                {
+                                    mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                                    periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                                }
+                                catch (Exception)
+                                { }
+                                periodo_actual = periodo_inicio;
+                                for (int i = 0; i < 12; i++)
+                                { 
+                                    if (mes_inicio > 12)
+                                    {
+                                        mes_inicio = 1;
+                                        periodo_actual = periodo_inicio + 1;
+                                    }
+
+                                    int valor_presupuesto = 0;// dp.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto);
+                                    int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                    int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                            
+                                    if (cuenta1.Tipo.Equals("I"))
+                                    {
+                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">@valor_ingresos.ToString("#,##0")</td>
+                                        
+                                    }
+                                    else
+                                    {
+                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_egresos.ToString("#,##0")</td>
+                                        
+                                    }
+                                    mes_inicio++;
+                                }
+                                @Html.Raw("</tr>");
+                            }
+                            else
+                            {
+                                @Html.Raw("<tr class=\"cuenta_" + @cuenta2.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\"><strong>&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta2.NombreLista) + "</strong></td></tr>");
+                                List<SAG2.Models.Cuenta> nivel3 = cuenta2.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).Where(c => !c.Codigo.Equals("7.3.9")).ToList();
+                                foreach (var cuenta3 in nivel3)
+                                {
+                                    if (@cuenta3.Hijos.Count() == 0)
+                                    {
+                                        @Html.Raw("<tr class=\"cuenta_" + @cuenta3.Tipo + "\"><td style=\"background-color: Silver;\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta3.NombreLista) + "</td>");
+                                        // Hijos cuarto nivel
+                                        // X.Y.Z.1
+                                        try
+                                        {
+                                            mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                                            periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                                        }
+                                        catch (Exception)
+                                        { }
+                                        periodo_actual = periodo_inicio;
+                                        for (int i = 0; i < 12; i++)
+                                        { 
+                                            if (mes_inicio > 12)
+                                            {
+                                                mes_inicio = 1;
+                                                periodo_actual = periodo_inicio + 1;
+                                            }
+
+                                            int valor_presupuesto = 0;// dp.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto);
+                                            int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                            int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                            
+                                            if (cuenta1.Tipo.Equals("I"))
+                                            {
+                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_ingresos.ToString("#,##0")</td>
+                                                
+                                            }
+                                            else
+                                            {
+                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_egresos.ToString("#,##0")</td>
+                                                
+                                            }
+                                            mes_inicio++;
+                                        }
+                                        @Html.Raw("</tr>");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("<tr class=\"cuenta_" + @cuenta3.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta3.NombreLista) + "</strong></td></tr>");
+                                        //List<SAG2.Models.Cuenta> nivel2 = cuenta1.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).ToList();
+                                        @Html.Raw("<tr class=\"cuenta_" + @cuenta3.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "TOTAL " + Html.Encode(@cuenta3.NombreLista) + "</strong></td></tr>");
+                                    }
+                                }
+                                @Html.Raw("<tr class=\"cuenta_" + @cuenta2.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "TOTAL " + Html.Encode(@cuenta2.NombreLista) + "</strong></td>");
+                                // Totales de cuentas padres
+                                try
+                                {
+                                    mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                                    periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                                }
+                                catch (Exception)
+                                { }
+                                periodo_actual = periodo_inicio;
+                                for (int i = 0; i < 12; i++)
+                                { 
+                                    if (mes_inicio > 12)
+                                    {
+                                        mes_inicio = 1;
+                                        periodo_actual = periodo_inicio + 1;
+                                    }
+
+                                    int valor_presupuesto = 0; // dp.Where(d => d.Cuenta.Codigo.StartsWith(cuenta2.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto);
+                                    int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta2.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                    int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta2.Codigo + ".") && d.Egreso.Mes == mes_inicio && d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                            
+                                    if (cuenta.Tipo.Equals("I"))
+                                    {
+                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_ingresos.ToString("#,##0")</td>
+                                        
+                                    }
+                                    else
+                                    {
+                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_egresos.ToString("#,##0")</td>
+                                        
+                                    }
+                                    mes_inicio++;
+                                }
+                                @Html.Raw("</tr>");
+                            }
+                        }
+                        @Html.Raw("<tr class=\"cuenta_" + @cuenta1.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\"><strong>&nbsp;" + "&nbsp;" + "TOTAL " + Html.Encode(@cuenta1.NombreLista) + "</strong></td>");
+                        // Totales de cuentas padres
+                        try
+                        {
+                            mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                            periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                        }
+                        catch (Exception)
+                        { }
+                        periodo_actual = periodo_inicio;
+                        for (int i = 0; i < 12; i++)
+                        { 
+                            if (mes_inicio > 12)
+                            {
+                                mes_inicio = 1;
+                                periodo_actual = periodo_inicio + 1;
+                            }
+
+                            int valor_presupuesto = 0;// dp.Where(d => d.Cuenta.Codigo.StartsWith(cuenta1.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto);
+                            int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta1.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                            int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta1.Codigo + ".") && d.Egreso.Mes == mes_inicio && d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                            
+                            if (cuenta.Tipo.Equals("I"))
+                            {
+                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_ingresos.ToString("#,##0")</td>
+                                
+                            }
+                            else
+                            {
+                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_egresos.ToString("#,##0")</td>
+                                
+                            }
+                            mes_inicio++;
+                        }
+                        @Html.Raw("</tr>");
+                    }
+                }
+                @Html.Raw("<tr class=\"cuenta_" + @cuenta.Tipo + "\" style=\"text-align: left;\"><td style=\"background-color: Silver;\"><strong>TOTAL " + Html.Encode(@cuenta.NombreLista) + "</strong></td>");
+                // Totales de cuentas padres
+                try
+                {
+                    mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                    periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                }
+                catch (Exception)
+                { }
+                periodo_actual = periodo_inicio;
+                for (int i = 0; i < 12; i++)
+                { 
+                    if (mes_inicio > 12)
+                    {
+                        mes_inicio = 1;
+                        periodo_actual = periodo_inicio + 1;
+                    }
+
+                    int valor_presupuesto = 0;// dp.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto);
+                    double valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => (double)d.Monto_Ingresos);
+                    int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Egreso.Mes == mes_inicio && d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                            
+                    if (cuenta.Tipo.Equals("I"))
+                    {
+                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_ingresos.ToString("#,##0")</td>
+                        
+                    }
+                    else
+                    {
+                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valor_egresos.ToString("#,##0")</td>
+                        
+                    }
+                    mes_inicio++;
+                }
+                @Html.Raw("</tr>");
+                @Html.Raw("<tr class=\"cuenta_" + @cuenta.Tipo + "\"><td>&nbsp;</td></tr>");
+            }
+        }<!--
+        <tr>
+            <td align="left">SALDO INICIAL</strong></td>
+            @{
+        int saldoInicial = 0;// Int32.Parse(ViewBag.SaldoInicial.ToString());
+        int saldoInicialPre = 0;// Int32.Parse(ViewBag.SaldoInicial.ToString());
+                try
+                {
+                    mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                    periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                }
+                catch (Exception)
+                { }
+                for (int i = 0; i < 12; i++)
+                {
+                    if (mes_inicio > 12)
+                    {
+                        mes_inicio = 1;
+                    }
+                    var estilo = "";
+                    if (saldoInicial > 0)
+                    {
+                        estilo = " style=\"color: blue;\"";
+                    }
+                    else if (saldoInicial > 0)
+                    {
+                        estilo = " style=\"color: red;\"";
+                    }
+                            <td class="@Html.Raw("Periodo" + mes_inicio)" align="right"@Html.Raw(estilo)>@((saldoInicial).ToString("#,##0"))</td>
+                          
+                                  mes_inicio++;
+                                  saldoInicial = saldoInicial - Egresos[i] + Reintegros[i] + Ingresos[i];
+                                  saldoInicialPre = 0;// saldoInicialPre + PreIngresos[i] - PreEgresos[i];
+                }
+            }
+        </tr>-->
+        <tr>
+            <td align="left">TOTAL INGRESOS</strong></td>
+            @{
+        mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+        for (int i = 0; i < 12; i++)
+        {
+            if (mes_inicio > 12)
+            {
+                mes_inicio = 1;
+            }
+            var estilo = "";
+            /*if (Ingresos[i] > PreIngresos[i])
+            {
+                estilo = " style=\"color: blue;\"";
+            }
+            else if (Ingresos[i] < PreIngresos[i])
+            {
+                estilo = " style=\"color: red;\"";
+            }*/
+                    <td class="@Html.Raw("Periodo" + mes_inicio)" align="right">@(ingresos.Where(m => m.Mes == mes_inicio && m.Periodo == periodo_inicio).Sum(m => (double)m.Monto_Ingresos).ToString("#,##0"))</td>
+                          mes_inicio++;
+        }
+            }
+        </tr>
+        <tr>
+            <td align="left">TOTAL EGRESOS</strong></td>
+            @{
+        mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+        for (int i = 0; i < 12; i++)
+        {
+            if (mes_inicio > 12)
+            {
+                mes_inicio = 1;
+            }
+            var estilo = "";
+           /* if (Egresos[i] - Reintegros[i] > PreEgresos[i])
+            {
+                estilo = " style=\"color: red;\"";
+            }
+            else if (Egresos[i] - Reintegros[i] < PreEgresos[i])
+            {
+                estilo = " style=\"color: blue;\"";
+            }*/
+            double m_egresos = egresos.Where(m => m.Egreso.Mes == mes_inicio && m.Egreso.Periodo == periodo_inicio).Sum(m => m.Monto);
+            try
+            {
+                m_egresos = m_egresos - reintegros.Where(m => m.Mes == mes_inicio && m.Periodo == periodo_inicio).Sum(m => (double)m.Monto_Ingresos);
+            }
+            catch (Exception)
+            { }
+                
+                    <td class="@Html.Raw("Periodo" + mes_inicio)" align="right">@m_egresos.ToString("#,##0")</td>
+                          mes_inicio++;
+        }
+            }
+        </tr>
+        <tr>
+            <td align="left">TOTALES</strong></td>
+            @{
+                mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                for (int i = 0; i < 12; i++)
+                {
+                    if (mes_inicio > 12)
+                    {
+                        mes_inicio = 1;
+                    }
+                    var estilo = "";
+
+                    double m_total = ingresos.Where(m => m.Mes == mes_inicio && m.Periodo == periodo_inicio).Sum(m => (double)m.Monto_Ingresos);
+                    m_total = m_total - egresos.Where(m => m.Egreso.Mes == mes_inicio && m.Egreso.Periodo == periodo_inicio).Sum(m => m.Monto);
+                    m_total = m_total + reintegros.Where(m => m.Mes == mes_inicio && m.Periodo == periodo_inicio).Sum(m => (double)m.Monto_Ingresos);
+            
+                    <td class="@Html.Raw("Periodo" + mes_inicio)" align="right">@m_total.ToString("#,##0")</td>
+                    
+                    mes_inicio++;
+                }
+            }
+        </tr><!--
+        <tr>
+            <td align="left">SALDO FINAL</strong></td>
+            @{
+        saldoInicial = 0;// Int32.Parse(ViewBag.SaldoInicial.ToString());
+        saldoInicialPre = 0;// Int32.Parse(ViewBag.SaldoInicial.ToString());
+        for (int i = 0; i < 12; i++)
+        {
+            saldoInicial = saldoInicial - Egresos[i] + Reintegros[i] + Ingresos[i];
+            saldoInicialPre = 0;// saldoInicialPre + PreIngresos[i] - PreEgresos[i];
+
+            if (mes_inicio > 12)
+            {
+                mes_inicio = 1;
+            }
+            var estilo = "";
+            if (saldoInicial > 0)
+            {
+                estilo = " style=\"color: blue;\"";
+            }
+            else if (saldoInicial > 0)
+            {
+                estilo = " style=\"color: red;\"";
+            }
+                    <td class="@Html.Raw("Periodo" + mes_inicio)" align="right"@Html.Raw(estilo)>@((saldoInicial).ToString("#,##0"))</td>
+                    
+                          mes_inicio++;
+        }
+            }
+        </tr>-->
+        </table>

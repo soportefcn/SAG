@@ -1,0 +1,133 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Detalle alta";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+    /* Conversion a mayusculas */
+    input[type="text"], textarea {
+        text-transform: uppercase;
+    }
+</style>
+<div id="SAGBox">
+
+    <h3>Control de Inventario</h3>
+    <label>  </label>
+    <div id="controles">
+
+    </div>
+    <div id="contenido">
+        <fieldset>
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3><b>Detalle Alta</b></h3></div>
+                <div class="panel-body">
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 110px;">
+                            <label>Fecha:</label>
+                        </div>
+                        <div class="form-group" style="margin-right: 110px;">
+                            @Html.TextBoxFor(model => model.Fecha, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+                        <div class="form-group" style="margin-right: 27px;">
+                            <label>Condición:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.CondicionText, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 50px;">
+                            <label><strong>Categoría del bien</strong></label>
+                        </div>
+                        <div class="form-group" style="margin-right: 25px;">
+                            <label>Familia:</label>
+                        </div>
+                        <div class="form-group" style="margin-right: 40px;">
+                            @Html.TextBoxFor(model => model.Familia, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group" style="margin-right: 25px;">
+                            <label>Subfamilia:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.SubFamilia, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 113px;">
+                            <label>Detalle:</label>
+                        </div>
+                        <div class="form-group" style="margin-right: 40px;">
+                            @Html.TextBoxFor(model => model.DescripcionBien, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+
+                        @if (Model.Egreso != null)
+                        {
+                            <div class="form-group" style="margin-right: 10px;">
+                                <label>Egreso</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                @Html.TextBoxFor(model => model.Egreso.Egreso.NumeroComprobante, new { @style = "width: 100px;", @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group" style="margin-right: 10px;">
+                                <label>Reintegro</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                @Html.TextBoxFor(model => model.Reintegro.Reintegro.NumeroComprobante, new { @style = "width: 100px;", @class = "form-control", @readonly = "readonly" })
+                            </div>
+
+
+                        }
+                    </div>
+                    
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 96px;">
+                            <label>Ubicación:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.Ubicacion, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 40px;">
+                            <label>Mostrar archivo Adjunto:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.ActionLink("Click Para Descargar Archivo", "Download", new { ImageName = Model.RutaArchivo.ToString() }, new { @class = "btn btn-info" })
+
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="panel-footer">
+                        <div style="width: 400px ; display:inline-block">
+                            <a class="btn btn-success" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class="fa fa-search fa-fw"></span>VER TODOS</a>
+                            <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Create"><span class="fa fa-file-o  fa-fw"></span>NUEVO</a>
+                            <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Create"><span class="fa fa-undo fa-fw"></span> CANCELAR</a>
+                        </div>
+                    </div>
+                </div>
+                @if (TempData["Message"] != null)
+                {
+                    @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+                }
+            </div>
+
+        </fieldset>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>

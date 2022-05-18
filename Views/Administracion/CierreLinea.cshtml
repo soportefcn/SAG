@@ -1,0 +1,210 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@using SAG2.Models;
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Cierres";
+    SAG2DB db = new SAG2DB();
+    int periodo = @ViewBag.periodo;
+}
+<div class="permisos">
+    <h2 align="center">REGISTRO CIERRES PERÍODO @periodo</h2>
+    @using (Html.BeginForm())
+    { 
+        <div class="form-inline form-group">
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+        @Html.Raw("Período:") 
+            </div>
+<div class="form-group" style="margin-right: 10px">
+        <select class="form-control" name="periodo" id="periodo">
+        @for (var i = DateTime.Now.Year; i > DateTime.Now.Year - 5; i--)
+        {
+            <option value="@Html.Raw((@i).ToString())" @if (i == periodo) {@Html.Raw("selected=\"selected\"");}>@Html.Raw((@i).ToString())</option>
+        }
+        </select>
+    </div>
+                    <div class="form-group">
+           @Html.DropDownList("LineaAtencionID", null, "-- SELECCIONE UNA Linea de Atencion --", new { @class = "form-control"} )
+         
+        </div>
+             <div class="form-group"><input class="btn btn-primary" type="submit" value="Aceptar" /></div>
+            </div>
+       
+        
+    }
+    <br />
+     <table  class ="table" style="margin-bottom: 0px;">
+      <tr>
+        <td style="width: 180px;"></td>
+          <td style="width: 180px;"></td>
+          
+        <td style="width: 75px; text-align: center; font-weight: bold;">Enero</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Febrero</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Marzo</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Abril</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Mayo</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Junio</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Julio</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Agosto</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Septiembre</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Octubre</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Noviembre</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;">Diciembre</td>
+      </tr>
+    </table>
+    <div style="height: 400px; overflow: scroll;">
+    <table  class ="table table-hover table-bordered">
+      <tr>
+        <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+        <td style="width: 75px; text-align: center; font-weight: bold;"></td>
+      </tr>
+    @foreach (var Proyecto in Model)
+    {
+        int proyectoID = Proyecto.ID;
+
+        int rvigente = 1;
+        DateTime fecha = DateTime.Now;
+        try
+        {
+            DateTime fecha2 = db.Resolucion.Where(p => p.ProyectoID == Proyecto.ID && p.Estado == 1).Single().FechaProrroga;
+
+            if (fecha > fecha2)
+            {
+                rvigente = 0;
+            }
+
+        }
+        catch (Exception)
+        {
+            rvigente = 0;
+        }
+        if (rvigente == 1)
+        {
+        
+        
+        
+      <tr>
+          <td>@Proyecto.TipoProyecto.NombreLista</td>
+          <td>@Proyecto.TipoProyecto.LineaAtencion.NombreLista</td>
+          
+        <td>@Proyecto.NombreLista</td>
+        
+          @for (int i = 1; i < 13; i++)
+          {
+              try
+              {
+                  Periodo pe = db.Periodo.Where(p => p.ProyectoID == proyectoID && p.Mes == i & p.Ano == periodo).Single();
+                  DateTime d1 = pe.Fecha.Value;
+                  DateTime d2;
+                  if (i == 12)
+                  {
+                      d2 = Convert.ToDateTime("7/1/" + (periodo + 1)); ;
+                  }
+                  else
+                  {
+                      d2 = Convert.ToDateTime("7/" + (i + 1) + "/" + periodo); ;
+                  }
+                  TimeSpan t1 = d2.Subtract(d1);
+                  if (t1.Days < 0)
+                  {
+                    @Html.Raw("<td align=\"center\" style=\"color: white; background-color: red;\">");
+                    @Html.Raw(@pe.Fecha.Value.ToShortDateString());
+                  }
+                  else
+                  {
+                    @Html.Raw("<td align=\"center\">");
+                    @Html.Raw(@pe.Fecha.Value.ToShortDateString());
+                  }
+                @Html.Raw("</td>");
+              }
+              catch
+              { 
+                @Html.Raw("<td align=\"center\"></td>");
+              }
+          }
+          </tr>
+        }
+    }
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>Mínimo</td>
+        <td>
+            @try
+            {
+                
+            }
+            catch
+            { 
+                @Html.Raw("-");
+            }
+        </td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>Máximo</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>Promedio</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+        </div>
+</div>

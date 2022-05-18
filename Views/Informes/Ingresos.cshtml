@@ -1,0 +1,140 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    ViewBag.Title = "Ingresos";
+    var total = 0;
+}
+<div id="SAGBox">
+    <h2>Informe de Ingresos </h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+        <fieldset>
+    <div class="panel panel-default">
+  <div class="panel-body">
+     <h3>Periodo</h3> 
+     <div class="form-inline form-group">
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Desde</label>
+            </div>
+         <div class ="form-group">
+             <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" />
+         </div>
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Hasta</label>
+           </div>
+          <div class ="form-group">
+              <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" style="margin-right: 20px;" />
+</div>
+         <div class ="form-group"><input type="submit" value="Ver resultados!" class="btn btn-primary"  /></div>
+         
+           
+                 <div class="form-group" style="margin-right:10px" >
+            <a  value="Excel"  data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="Ingresos" class="excelBotonPeriodo btn btn-success" style="height: 100%;" >
+                      <span class ="fa fa-file-excel-o  fa-2x"></span>
+                     </a>
+                     </div>
+            
+           
+       
+     </div>
+  </div>
+
+</div>
+
+                </fieldset>
+ 
+    }
+}
+    
+    <table class ="table " style="margin-bottom: 0px;">
+        <tr>
+            <th style="width: 77px;">Nº Comp.</th>
+            <th style="width: 93px;">Fecha</th>
+            <th style="width: 132px;" >Cuenta</th>
+            <th style="width: 86px;">Nº Cheque</th>
+            <th style="width: 99px;">Monto $</th>
+            <th>Cta. Cte.</th>
+            <th style="width: 276px;">Glosa</th>
+        </tr>
+        </table>
+    <div style="height: 280px; overflow: scroll;">
+    <table class ="table table-striped table-bordered">
+        <tr>
+        <th nowrap="nowrap" style="width: 77px;"></th>
+        <th nowrap="nowrap" style="width: 93px;"></th>
+        <th nowrap="nowrap" style="width: 132px;"></th>
+        <th nowrap="nowrap" style="width: 86px;"></th>
+        <th nowrap="nowrap" style="width: 99px;"></th>
+<th nowrap="nowrap"></th>
+<th nowrap="nowrap" style="width: 260px;"></th>
+            
+        </tr>
+    @foreach (var item in Model)
+    {
+        if (item.TipoComprobanteID != 1)
+        {
+            continue;
+        }
+        
+        var style = "";
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            style = " style=\"text-decoration: line-through;\"";
+        }
+        else
+        { 
+        total = total + item.Monto_Ingresos;
+        }
+    
+        <tr @Html.Raw(style)>
+            <td align="center">
+                <a @*href="@Url.Action("IndexBodega", "Egresos", new { numero = movimiento.DetalleEgreso.Egreso.ID })"*@ title="Seleccionar" onclick="window.open('../Ingresos/Edit/'+@item.ID,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                @item.NDocumento
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td>
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cuenta.NombreLista)
+            </td>
+            <td align="right">
+                @Html.DisplayFor(modelItem => item.Cheque)
+            </td>
+            <td align="right">
+                <strong>
+                $@item.Monto_Ingresos.ToString("#,##0")
+                </strong>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+        </tr>
+    }
+    </table>
+    </div>
+    <br />
+     
+    <div class="form-group form-inline">
+         @using (Html.BeginForm())
+        {
+           <div class="form-group" style="margin-right:10px" >
+              <a class="btn btn-default imprimirInformePeriodo" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../Imprimir/InformeIngreso?Desde=@Html.Raw(@ViewBag.Desde)&Hasta=@Html.Raw(@ViewBag.Hasta)" >
+                    <span class ="fa fa-print fa-2x"></span>  
+                </a>
+        </div>
+        <div class="form-group" style="margin-right:10px" >
+            <label>Total Ingresos</label>
+        </div>
+        <div class="form-group">
+            <b><input class="form-control" value="$@total.ToString("#,##0")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+        </div>
+         }
+    </div>
+        
+   
+</div>

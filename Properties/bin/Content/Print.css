@@ -1,0 +1,15 @@
+﻿div#SAGBox, div.inicio, div.permisos
+{
+    box-shadow: 0px 0px 0px 0px #F0F0F0;
+    border: 0;
+}
+
+.oculto, .ocultoImpresion, .menu, .pie
+{
+    display: none;    
+}
+
+.firma, .firma tr, .firma tr td, .firma tr th
+{
+    border: 0;    
+}

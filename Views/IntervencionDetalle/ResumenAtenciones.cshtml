@@ -1,0 +1,151 @@
+﻿@model IEnumerable<SAG2.Models.IntervencionResumen>
+@{
+    ViewBag.Title = "Estado de Pago de Atenciones";
+}
+
+<div class="panel-heading">
+    <h3>Estado de Pago de Atenciones</h3>
+</div>
+
+@using (Html.BeginForm("ResumenAtenciones", "IntervencionDetalle", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="panel-body">
+
+        <div class="form-inline">
+            <div class="form-group" style="margin-right: 30px;">
+                @Html.Label("Proyecto:")
+            </div>
+            <div class="form-group" style="margin-right: 50px;">
+                @Html.DropDownList("ProyectoID", new SelectList(ViewBag.listadoproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete", required = "required" })
+            </div>
+
+
+            <div class="form-group" style="margin-right: 20px;">
+                <input type="submit" value="Listar" class="btn btn-primary" />
+            </div>
+
+        </div>
+
+        <br /><br />
+
+        <table id="tabla" class="table table-hover table-bordered">
+            <tr>
+                <th style=" width:auto;" onclick="sortTable(0)">Mes</th>
+                <th style=" width:auto;" onclick="sortTable(1)">Año</th>
+                <th style=" width:auto;" onclick="sortTable(2)">Estado</th>
+                <th style=" width:auto;" onclick="sortTable(4)">Tipo</th>
+                <th style=" width:auto;" onclick="sortTable(5)">Total</th>
+                <th style=" width:auto;" onclick="sortTable(6)">Monto Pagado</th>
+                <th style=" width:auto;" onclick="sortTable(7)">Acción</th>
+            </tr>
+            @if (Model != null)
+            {
+
+
+
+                foreach (var item in Model)
+                {
+                    string estado = "";
+                    if(item.EstadoID == 1)
+                    {
+                        estado = "Pagado";
+                    }else
+                    {
+                        estado = "Pendiente";
+                    }
+                    
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Mes)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Anio)</td>
+                        <td>@estado</td>
+                        <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                        <td>$@item.Valor.ToString("#,##0")</td>
+                        <td>$@item.Monto.ToString("#,##0")</td>
+                        <td>
+
+                            @if(item.EstadoID == 1)
+                            {
+                               <a disabled class="btn btn-info" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/IntervencionDetalle/IngresarMonto/@item.ID">Realizar Ingreso</a>
+                            }
+                            else
+                            {
+                                <a  class="btn btn-info" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/IntervencionDetalle/IngresarMonto/@item.ID">Realizar Ingreso</a>
+
+                            }
+                        </td>
+                    </tr>
+                }
+
+            }
+        </table>
+    </div>
+}
+
+@if (TempData["Message"] != null)
+{
+    @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+
+
+    });
+</script>
+
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("tabla");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+            /* Loop through all table rows (except the
+            first, which contains table headers): */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /* Check if the two rows should switch place,
+                based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch
+                and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase this count by 1:
+                switchcount++;
+            } else {
+                /* If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>

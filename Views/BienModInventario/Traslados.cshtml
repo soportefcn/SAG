@@ -1,0 +1,49 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Lista Traslados";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+
+<div id="contenido_popup">
+    <table class="table table-bordered table-hover">
+        <thead class="fixedHeader">
+            <tr class="info">
+                <th style="width: 33px;" class="controles"></th>
+                <th style="width: 49px;">Cód </th>
+                <th style="width: 200px;">Familia </th>
+                <th style="width: 300px;">Descripción Bien </th>
+                <th style="width: 100px;">Monto </th>
+                <th style="width: 100px;">Cantidad </th>
+                <th style="width: 100px;">Ubicación Actual </th>
+                <th style="width: 250px;">Proyecto </th>
+                <th style="width: 200px;">Usuario </th>
+
+            </tr>
+        </thead>
+        <tbody class="scrollContent">
+
+            @foreach (var item in Model.lista)
+            {
+                var style = "";
+
+                <tr @Html.Raw(style)>
+                    <td style="width: 33px; max-width:33px;">
+                        <a href="@Url.Action("DetailTraslado", "BienModInventario", new { id = item.MovimientoBienID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    </td>
+
+
+                    <td style="width: 49px; max-width:49px;" align="center">@item.ID.ToString()</td>
+                    <td style="width: 200px; max-width:200px;">@item.Familia.ToString()</td>
+                    <td style="width: 300px; max-width:300px;">@item.DescripcionBien.ToString()</td>
+                    <td style="width: 100px; max-width:100px;">@item.Monto.ToString()</td>
+                    <td style="width: 100px; max-width:100px;"> @item.Cantidad.ToString()</td>
+                    <td style="width: 100px; max-width:100px;">@item.Ubicacion.ToString()</td>
+                    <td style="width: 250px; max-width:250px;">@item.Proyecto.ToString()</td>
+                    <td style="width: 200px; max-width:200px;">@item.Usuario.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

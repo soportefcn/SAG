@@ -1,0 +1,109 @@
+﻿@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    Layout = null;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movimientos de Bodega</title>
+    <script language="javascript" type="text/javascript">
+       <!--
+        function printThis() {
+            window.print();
+            setTimeout('window.close()', 10);
+            // self.close();
+        }
+        //-->
+    </script>
+    <style type="text/css">
+        body 
+        {
+            font-family: Arial; 
+            font-size: 12px;       
+        }
+        h3 {
+            text-align: center;
+            font-size: 14px;
+        }
+        th, td
+            {
+             font-size: 12px;    
+        }
+        hr {
+            margin-bottom: 1px;
+            width: 200px;
+        }
+        </style>
+</head>
+<body onLoad="printThis();">
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Consejo de Defensa del Niño<br />
+    @Html.Raw(@ViewBag.NombreProyecto)</strong></td>
+  </tr>
+</table>
+    <h3 align="center">Movimientos de Bodega @Html.Raw(@Meses[@ViewBag.Mes - 1]) @Html.Raw(@ViewBag.Periodo.ToString())</h3>
+    <div>
+        @if (Model.Count() > 0)
+{
+    <table cellspacing="0" cellpadding="5" style="width: 100%;" border="1">
+        <tr>
+            <th nowrap="nowrap">Fecha</th>
+            <th nowrap="nowrap">Descripción</th>
+            <th nowrap="nowrap">Entrada</th>
+            <th nowrap="nowrap">Salida</th>
+            <th nowrap="nowrap">Nº Doc.</th>
+            <th nowrap="nowrap">Documento</th>
+            <th nowrap="nowrap">Observación</th>
+        </tr>
+        @foreach (var movimiento in Model)
+        {
+        <tr>
+            <td nowrap="nowrap" align="center">@movimiento.Fecha.ToShortDateString()</td>
+            <td nowrap="nowrap">@movimiento.Articulo.Nombre.ToUpper() (@movimiento.Articulo.UnidadMedida.Descripcion)</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Entrada > 0){ @movimiento.Entrada }</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Salida > 0){ @movimiento.Salida }</td>
+            @if (@movimiento.Entrada > 0)
+            {
+            <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
+            <td nowrap="nowrap">" "</td>
+            }
+            else
+            {
+            <td align="center" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            }
+            <td nowrap="nowrap">@movimiento.Observaciones.ToUpper()</td>
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+    </div>
+    <br />
+    <hr noshade="noshade" size="1" align="right" />
+    <p align="right" style="font-size: 10px;">Impreso el @DateTime.Today.ToShortDateString() a las @DateTime.Now.ToShortTimeString()</p>
+</body>
+</html>

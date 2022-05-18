@@ -1,0 +1,177 @@
+﻿@model IEnumerable<SAG2.Models.Bodega>
+@{
+    ViewBag.Title = "Traspaso bodega";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+    int proyectoid = ViewBag.proyectoID;
+}
+<div id="SAGBox">
+<h2>Saldos a Traspasar</h2>
+  
+
+
+
+    <div class="form-inline">
+    <div class="form-group">
+       <label>Proyecto</label> 
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".js-autocomplete").select2();
+        });
+    </script>
+      @using (Html.BeginForm())
+        {
+             <select name="Proyectos2" id="Proyectos2" class="js-autocomplete" >
+            <option value="-1"> - Seleccione proyecto</option>
+            @foreach (SAG2.Models.Proyecto Proyectos2 in ViewBag.Proyectos)
+            {
+                if (proyectoid == Proyectos2.ID)
+                {
+                    <option selected="selected" value="@Proyectos2.ID">@Proyectos2.NombreEstado</option>
+                }
+                else
+                {
+                    <option value="@Proyectos2.ID">@Proyectos2.NombreEstado</option>
+                }
+            }
+        </select>
+   <br /><br />
+         <input class="btn btn-primary" type="submit" value="Procesar" />
+}
+          
+        </div>
+
+      
+    <p>&nbsp;</p>
+    <div  id="tableContainer" class="tableContainer">
+    <table class="table table-bordered scrollTable" id="table">
+        <thead class="fixedHeader">
+        <tr class="info">
+            <th style="text-align: center;width:450px;">Descripción</th>
+            <th  style="text-align: center;width: 51px;">Unidad</th>
+            <th style="text-align: center;width: 87px;">Saldo Final</th>
+             <th style="text-align: center;width: 42px;">Mov./Art</th>
+        </tr>
+            </thead>
+        <tbody class="scrollContent">
+        @foreach (var saldosbodega in Model)
+        {
+            int? entrada = 0;
+            int? salida = 0;
+            int? saldo = 0;
+            int periodo = @ViewBag.periodo;
+            int mes = @ViewBag.mes;
+            int saldoinicial = 0;
+            saldoinicial = saldosbodega.SaldoInicial;
+            entrada = saldosbodega.Entrada;
+            salida = saldosbodega.Salida;
+            saldo = saldosbodega.Saldo;
+            if (saldo > 0)
+            {
+       
+        <tr @if (saldo == 0)
+            { @Html.Raw("style=\"background-color: #f0f0f0;\"");
+            }
+            else
+            { @Html.Raw("style=\"font-weight: bold;\"");
+            }>
+            
+            <td style="width:450px;" >@saldosbodega.Articulo.Categoria.nombre a / @saldosbodega.Articulo.Nombre</td>
+            <td style="width: 56px;text-align: center;" >@saldosbodega.Articulo.UnidadMedida.Unidad</td>
+   
+            <td style="width: 87px;text-align: center;" @{
+            if (saldo == 1)
+            {
+                    @Html.Raw(" style=\"color: Yellow;\"");
+            }
+            else if (saldo > 1)
+            {
+                    @Html.Raw(" style=\"color: Blue;\"");
+            }
+            else if (saldo < 1)
+            {
+                    @Html.Raw(" style=\"color: Red;\"");
+            }
+                } align="center">
+                @saldo.ToString()
+            </td>
+              <td style="width: 68px;">
+            <a href="@Url.Action("MovimientosArticulos", "MovimientosBodega", new { articuloId = @saldosbodega.Articulo.ID })" title="Seleccionar" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        </tr>
+            }
+        }
+        
+            </tbody>
+    </table>
+    </div>
+</div></div>
+<script>
+    $(document).ready(function () {
+
+        if ($.browser.msie) //si es IE
+
+        {
+
+            if ($.browser.version == '7.0') {
+
+                $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'scroll', 'height': '250px' });
+
+                $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
+
+                $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block' });
+
+            };//if browser IE7
+
+
+            if ($.browser.version == '8.0') {
+
+                $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden', 'height': '250px' });
+
+                $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
+
+                $('.fixedHeader').css({ 'float': 'left', 'width': '98%' });
+
+                $('.scrollContent').css({ 'float': 'left', 'height': '250px', 'overflow': 'scroll', 'width': '100%', 'clear': 'left' });
+
+                $('.scrollTable th').css({ 'border': 'auto', 'width': '200px' });
+
+                $('.scrollTable td').css({ 'border': 'auto', 'width': '200px' });
+
+            };//if browser IE8
+
+        }
+
+        else // si es FF o Chrome
+
+        {
+
+            $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden' });
+
+            $('.tableContainer table').css({ 'float': 'left', 'width': '100%' });
+
+            $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block', 'width': '98%' });
+
+            $('.scrollContent').css({ 'display': 'block', 'height': '250px', 'overflow': 'auto', 'width': '100%' });
+
+        }//if browser
+
+
+    }) //ready
+
+
+</script>

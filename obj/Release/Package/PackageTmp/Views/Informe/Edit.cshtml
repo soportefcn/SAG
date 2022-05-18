@@ -1,0 +1,67 @@
+﻿@model SAG2.Models.Informe
+
+@{
+  //  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        
+        <div class="form-horizontal">
+            <h4>Informe</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+               <label>Nombre Informe</label>
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.nombreInforme, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.nombreInforme, "", new { @class = "text-danger" })
+                </div>
+            </div>
+    
+            <div class="form-group">
+                <label>Tipo Informe</label>
+                <div class="col-md-6">
+                    @Html.DropDownList("tipoInformeID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.tipoInformeID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+    
+            <div class="form-group">
+
+               <label>Estado</label>
+                <div class="col-md-6">
+                    @Html.DropDownListFor(model => model.estado, new List<SelectListItem> { new SelectListItem { Value = "0", Text = "Activo" }, new SelectListItem { Value = "1", Text = "Inactivo" } }, new { @class = "form-control" })
+                </div>
+            </div>
+
+                <div class="form-group">
+                   <label>Descripción</label>
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <input type="submit" value="Guardar" class="btn btn-success" />
+                    </div>
+                </div>
+            </div>
+    }
+        <iframe src='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/ListarLineas/@Model.ID' width="100%" height="2000px" id="iframeDetalleInforme" frameborder="0" scrolling="auto"></iframe>
+    <div>
+        @Html.ActionLink("Listado", "Index")
+    </div>
+</body>
+</html>

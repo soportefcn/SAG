@@ -1,0 +1,46 @@
+﻿@model IEnumerable<SAG2.Models.Region>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Regiones";
+}
+
+ <div id="contenido_popup">
+      <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+        <table class ="table table-bordered table-hover">
+            <thead class="fixedHeader">
+    <tr class ="info">
+        <th style="width:300px;">
+            País
+        </th>
+        <th style="width:250px;">
+            Región
+        </th>
+        <th style="width:150px;">
+            Comunas
+        </th>
+        <th style="width:40px;" class="controles"></th>
+    </tr>
+</thead>
+<tbody class="scrollContent">
+@foreach (var item in Model)
+{
+    <tr>
+        <td style="width:300px;">
+            @Html.DisplayFor(modelItem => item.Pais.Nombre)
+        </td>
+        <td style="width:250px;">
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td style="width:150px;" align="center">
+            @Html.Raw(item.Comunas.Count.ToString())
+        </td>
+        <td style="width:40px;"> 
+			<a href="@Url.Action("Edit", "Region", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+    </tbody>
+        </table>
+    </div>

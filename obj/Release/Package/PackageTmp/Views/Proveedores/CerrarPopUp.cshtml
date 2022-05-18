@@ -1,0 +1,22 @@
+﻿@model SAG2.Models.Proveedor
+@{
+    Layout = null;
+    var ID = Model.ID;
+    var NombreCompleto = Model.Nombre;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CerrarPopUp</title>
+    <script type="text/javascript" language="javascript">
+        window.opener.document.getElementById("tipoBeneficiario").value = "2";
+        window.opener.document.getElementById("ProveedorID").value = "@{ @Html.Raw(ID.ToString()); }";
+        window.opener.document.getElementById("Beneficiario").value = "@{ @Html.Raw(NombreCompleto); }";
+        window.close();
+    </script>
+</head>
+<body>
+    <div> 
+    </div>
+</body>
+</html>

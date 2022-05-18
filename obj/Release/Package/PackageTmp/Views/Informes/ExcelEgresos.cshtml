@@ -1,0 +1,181 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Egresos";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Egresos.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    var total = 0;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    var cuentas = db.Cuenta.ToList();
+}
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 12px;
+    }
+</style>
+<table>
+    <tr>
+        <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.Proyecto </td>
+    </tr>
+    <tr>
+        <td>Cod. Sename: @ViewBag.CodSename </td>
+    </tr>
+</table>
+<h2>@ViewBag.Title</h2>
+Entre Fechas Desde :  @ViewBag.Desde Hasta :@ViewBag.Hasta<br>
+<!--Cta. Cte: @*Model.First().CuentaCorriente.Numero*@ -->
+<table cellpadding="5" border="1" style="width: 100%;">
+    <tr>
+        <th>@System.Web.HttpUtility.UrlDecode("N° Egreso")</th>
+        <th>Fecha</th>
+        <th>@System.Web.HttpUtility.UrlDecode("N° Medio de Pago")</th>
+        <th>Documento</th>
+        <th>@System.Web.HttpUtility.UrlDecode("N° Doc.")</th>
+        <th>Fecha</th>
+        <th>Beneficiario</th>
+        <th>Monto $</th>
+        <th>Cuenta</th>
+        <th>Subcuenta</th>
+        <th>Glosa</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            <tr style="text-decoration: line-through;">
+                <td align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @item.Cheque
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    @try
+                    {
+                        @item.FechaCheque.Value.ToShortDateString()
+                    }
+                    catch (Exception)
+                    { }
+                </td>
+                <td>
+                    @if (item.Persona != null)
+                    {
+                        @System.Web.HttpUtility.UrlDecode(item.Persona.NombreCompleto)
+                    }
+                    else if (item.Proveedor != null)
+                    {
+                        @System.Web.HttpUtility.UrlDecode(item.Proveedor.Nombre)
+                    }
+                    else
+                    {
+                        @System.Web.HttpUtility.UrlDecode(item.Beneficiario)
+                    }
+                </td>
+                <td align="right">
+                    <strong>
+                        $@item.Monto_Egresos.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="left">
+                    @if (@item.Cuenta != null)
+                    {@System.Web.HttpUtility.UrlDecode(utils.cuentaPadre(@item.Cuenta))}
+            </td>
+            <td align="left">
+                @if (@item.Cuenta != null)
+                {
+                    @item.Cuenta.NombreLista }
+                else
+                {
+                    @Html.Raw(cuentas.Where(c => c.CuentaID == item.CuentaID).First().NombreLista)}
+            </td>
+            <td>
+                @System.Web.HttpUtility.UrlDecode(item.Descripcion)
+            </td>
+        </tr>
+    }
+    else if (item.Eliminado == null)
+    {
+
+        List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+        foreach (var detalle in detalles)
+        {
+            total = total + detalle.Monto;
+            <tr>
+                <td align="center">
+                    @detalle.Egreso.NumeroComprobante
+                </td>
+                <td>
+                    @detalle.Egreso.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @detalle.Egreso.Cheque
+                </td>
+                <td>
+                    @if (@detalle.Documento != null)
+                    {
+                        @System.Web.HttpUtility.UrlDecode(detalle.Documento.Nombre)
+                    }
+                </td>
+                <td>
+                    @detalle.NDocumento
+                </td>
+                <td>
+                    @detalle.FechaEmision.ToShortDateString()
+                </td>
+                <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @System.Web.HttpUtility.UrlDecode(detalle.Egreso.Persona.NombreCompleto)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @System.Web.HttpUtility.UrlDecode(detalle.Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    {
+                        @System.Web.HttpUtility.UrlDecode(detalle.Egreso.Beneficiario)
+                    }
+                </td>
+                <td align="right">
+                    <strong>
+                        $@detalle.Monto.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="left">
+                    @if (@detalle.Cuenta != null)
+                    {@System.Web.HttpUtility.UrlDecode(utils.cuentaPadre(@detalle.Cuenta))}
+                </td>
+                <td align="left">
+                    @if (detalle.Cuenta != null)
+                    {@Html.Raw(@detalle.Cuenta.NombreLista)}
+                </td>
+                <td>
+                    @System.Web.HttpUtility.UrlDecode(detalle.Glosa)
+                </td>
+            </tr>
+        }
+    }
+}
+    <tr></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Total</td><td>$@total.ToString("#,##0")</td></tr>
+</table>

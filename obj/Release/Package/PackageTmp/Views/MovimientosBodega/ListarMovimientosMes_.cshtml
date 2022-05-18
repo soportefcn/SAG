@@ -1,0 +1,135 @@
+﻿@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    ViewBag.Title = "ListarLineas";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+
+<h3>Consulta de Movimientos</h3>
+
+
+       <div class="form-group form-inline" >
+                    <div class="form-group">
+                        <label>Mes</label>
+                    </div>
+                    <div class="form-group">
+                            <select name="Mes" id="Mes" class="form-control">
+                            @for (var i = 0; i < 12; i++)
+                            {
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1)) {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                            }
+                            </select>
+                    </div>
+                    <div class="form-group"> 
+                        <label>Año</label>
+                    </div>
+                        <div class="form-group"> 
+                         <select name="Periodo" id="Periodo" class="form-control">
+                            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                    </div>
+    
+                     <a class="btn btn-default"  name="ImprimirListado" id="ImprimirListado"  data-toggle="tooltip" data-placement="top" title="Imprimir" >
+                    Por Categoria  
+                </a>
+                      <a class="btn btn-default"  name="ImprimirListadoFecha" id="ImprimirListadoFecha"  data-toggle="tooltip" data-placement="top" title="Imprimir" >
+                    Por Fecha  
+                </a>
+                     </div>
+<h3>Listado de Movimientos </h3>
+
+@if (Model.Count() > 0)
+{
+    <table class ="table table-bordered table-hover">
+        <thead >
+        <tr class="info">
+            <th style="text-align: center;">Fecha</th>
+            
+            <th style="text-align: center;">Descripción</th>
+            <th style="text-align: center;">U. Medida</th>
+            <th style="text-align: center;">Entrada</th>
+            <th style="text-align: center;">Salida</th>
+            <th style="text-align: center;">Nº Egreso</th>
+            <th style="text-align: center;">Nº Documento</th>
+            
+        </tr>
+            </thead>
+       
+        @foreach (var movimiento in Model)
+        {
+        
+        <tr class="MovimientoBodega" MovimientosBodegaID="@movimiento.ID" Fecha="@movimiento.Fecha.ToShortDateString()" ArticuloID="@movimiento.ArticuloID" Cantidad="@if (@movimiento.Entrada > 0){ @movimiento.Entrada } else { @movimiento.Salida }" tipo_movimiento="@if (@movimiento.Entrada > 0){ @Html.Raw("E") } else { @Html.Raw("S") }" Observaciones="@movimiento.Observaciones" NroDocumento="@movimiento.NroDocumento" style="cursor: pointer;">
+            <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
+           
+            <td nowrap="nowrap">@movimiento.Articulo.Nombre</td>
+            <td nowrap="nowrap">@movimiento.Articulo.UnidadMedida.Descripcion</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Entrada > 0){ @movimiento.Entrada }</td>
+            <td align="center" nowrap="nowrap">@if (@movimiento.Salida > 0){ @movimiento.Salida }</td>
+            @if (@movimiento.Tdoc == 1)
+            {
+            <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
+            <td nowrap="nowrap">@movimiento.DetalleEgreso.NDocumento</td>
+            }
+            else
+            {
+            <td align="center" nowrap="nowrap"></td>
+            <td nowrap="nowrap"></td>
+            }
+            
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+
+   $("#ImprimirListado").click(function () {
+        var periodo = $("#Periodo").val();
+        var mes = $("#Mes").val();
+        window.open("@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/MovimientosBodega/ImprimirArti?mes=" + mes + "&periodo=" + periodo);
+    });
+   
+
+    $("#ImprimirListadoFecha").click(function () {
+        var periodo = $("#Periodo").val();
+        var mes = $("#Mes").val();
+        window.open("@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/MovimientosBodega/ImprimirArtiFecha?mes=" + mes + "&periodo=" + periodo);
+    });
+    });
+    //Listado Movimientos mes Mes Periodo
+    $("#Mes").change(function () {
+        var mes = $(this).val();
+        var periodo = parseInt($("#Periodo").val());
+        window.location = "@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/MovimientosBodega/listarMovimientosMes?mes=" + mes + "&periodo=" + periodo;
+    });
+    $("#Periodo").change(function () {
+        var periodo = $(this).val();
+        var mes = parseInt($("Mes").val());
+        window.location = "@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/MovimientosBodega/listarMovimientosMes?mes=" + mes + "&periodo=" + periodo;
+    });
+
+</script>

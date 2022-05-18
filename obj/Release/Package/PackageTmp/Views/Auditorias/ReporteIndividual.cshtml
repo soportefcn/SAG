@@ -1,0 +1,273 @@
+﻿@model SAG2.Models.InformeAuditoria
+@{
+    ViewBag.Title = "Reporte Individual Auditoría";
+    string programaID = Request.QueryString["Programa"].ToString();
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("#imprimirDirecto").click(function () {
+            window.print();
+            return false;
+        });
+    });
+</script>
+<style media="print">
+    @@page
+    {
+        /*size: landscape;*/
+        margin: 2cm !important;
+    }
+    
+    body{ background-color:#FFFFFF; background-image:none; color:#000000;font-family: "Times New Roman"; }   
+    
+    td 
+    {
+    font-size: 12px;    
+    margin: 0;
+    }
+    
+    th 
+    {
+        font-size: 13px;    
+        margin: 0;
+        border-bottom: 1px #000 solid;
+    }
+    
+    h2
+    {
+        font-size: 16px;    
+    }
+    
+    .pie
+    {
+        display: none;    
+    }
+    
+    .permisos, .body, .contenedor
+    {
+        padding: 0 !important;
+        border: 0 !important;
+        margin: 0 auto !important;
+    }
+    
+    .permisos
+    {
+        width: 95% !important;    
+    }
+    
+    .ocultoImpresion, .menu, .top
+    {
+        display: none;    
+    }
+    
+    .soloImpresion
+    {
+        display: block;    
+    }
+</style>
+<div class="permisos" style="width: 800px;">
+   
+    <div class="soloImpresion">
+    <table class="table table-bordered">
+      <tr>
+        <td valign="top" style="border: 0;"><strong>Consejo de Defensa del Niño
+        @Html.Raw(@ViewBag.Proyecto)</strong></td>
+        <td align="right" valign="top" style="border: 0;">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+      </tr>
+    </table>
+         <div class="ocultoImpresion">
+        <input type="button" value="Imprimir reporte" class="imprimirDirectoAuditoria btn btn-default" programaID="@programaID" />
+        <input type="button" value="Imprimir resumen" class="imprimirDirectoAuditoria btn btn-default" />
+    </div>
+  
+    </div>
+    <h2 align="center">Resumen Reporte de Auditoría Financiera Contable</h2>
+    <br />
+    <table class="table table-bordered">
+        <tr>
+            <td>NOMBRE DEL PROYECTO</td>
+            <td>@ViewBag.Proyecto</td>
+        </tr>
+        <tr>
+            <td>NOMBRE DE LA DIRECTOR (A)</td>
+            <td>@ViewBag.Director</td>
+        </tr>
+        <tr>
+            <td>FECHA DE AUDITORÍA</td>
+            <td>@ViewBag.Fecha</td>
+        </tr>
+        <tr>
+            <td>NOMBRE DE LA AUDITORA</td>
+            <td>@ViewBag.NombreAuditora</td>
+        </tr>
+    </table>
+    <br />
+ <table class="table table-bordered">
+  <tr>
+    <th width="20">I</th>
+    <th colspan="5" align="left">SEGUIMIENTO</th>
+  </tr>
+  <tr>
+    <th>A</th>
+    <th colspan="5" align="left">SENAME</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td width="20"></td>
+    <td colspan="3">Observaciones superadas</td>
+    <td align="center">
+        @if (@Model.V_US_ObsSuperadas != null && @Model.V_US_ObsSuperadas.Equals("S"))
+        {
+            @Html.Raw("SI");
+        }
+        else
+        {
+            @Html.Raw("NO");
+        }
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">Observaciones pendientes</td>
+    <td align="center">
+        @if (@Model.V_US_ObsPendientes != null && @Model.V_US_ObsPendientes.Equals("S"))
+        {
+            @Html.Raw("SI");
+        }
+        else
+        { 
+            @Html.Raw("NO");
+        }
+    </td>
+  </tr>
+  <tr>
+    <th>B</th>
+    <th colspan="5" align="left">CODENI</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">Observaciones superadas</td>
+    <td align="center">
+        @if (@Model.V_UC_ObsSuperadas != null && @Model.V_UC_ObsSuperadas.Equals("S"))
+        {
+            @Html.Raw("SI");
+        }
+        else
+        { 
+            @Html.Raw("NO");
+        }
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">Observaciones pendientes</td>
+    <td align="center">
+        @if (@Model.V_UC_ObsPendientes != null && @Model.V_UC_ObsPendientes.Equals("S"))
+        {
+            @Html.Raw("SI");
+        }
+        else
+        { 
+            @Html.Raw("NO");
+        }
+    </td>
+  </tr>
+  <tr>
+    <th>II</th>
+    <th colspan="5" align="left">RESULTADOS DE LA AUDITORÍA INDIVIDUAL</th>
+  </tr>
+  <tr>
+    <th>A</th>
+    <th colspan="4" align="left">AREA FINANCIEROS</th>
+    <th align="center">@ViewBag.CumplimientoFinanciero.ToString("#0.00")%</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">1.- Libro Banco y Movimientos Bancarios</td>
+    <td align="center">@ViewBag.CumplimientoLibro.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">2.-Comprobantes de Ingreso, Egreso y Reintegro</td>
+    <td align="center">@ViewBag.CumplimientoComprobantes.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">3.- Fondo Fijo</td>
+    <td align="center">@ViewBag.CumplimientoFondo.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">4.- Programa Semanal de Pagos</td>
+    <td align="center">@ViewBag.CumplimientoPrograma.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">5.- Rendiciones de Cuentas</td>
+    <td align="center">@ViewBag.CumplimientoRendiciones.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">6.- Retención de Impuestos</td>
+    <td align="center">@ViewBag.CumplimientoRetencion.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td colspan="3">7.- Provisión de Fondos para Indemnización</td>
+    <td align="center">@ViewBag.CumplimientoProvision.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <th>B</th>
+    <th colspan="4" align="left">AREA PERSONAL</th>
+    <th align="center">@ViewBag.CumplimientoPersonal.ToString("#0.00")%</th>
+  </tr>
+  <tr>
+    <th>C</th>
+    <th colspan="4" align="left">AREA ADMINISTRATIVA</th>
+    <th align="center">@ViewBag.CumplimientoAdministrativa.ToString("#0.00")%</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td>&nbsp;</td>
+    <td colspan="3">1.- Contrato</td>
+    <td align="center">@ViewBag.CumplimientoContrato.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>&nbsp;</td>
+    <td colspan="3">2.- Inventarios</td>
+    <td align="center">@ViewBag.CumplimientoInventario.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>&nbsp;</td>
+    <td colspan="3">3. Control Presupuestario</td>
+    <td align="center">@ViewBag.CumplimientoPresupuesto.ToString("#0.00")%</td>
+  </tr>
+    @if (@ViewBag.CumplimientoBodega != null)
+    {
+    <tr>
+        <td></td>
+        <td>&nbsp;</td>
+        <td colspan="3">5. Control de Bodega</td>
+        <td align="center">@ViewBag.CumplimientoBodega.ToString("#0.00")%</td>
+    </tr>
+    }
+</table>
+    <a href="javascript:history.back(1)">Volver Atrás</a>
+<div class="soloImpresion">
+    <br />
+   
+</div>
+
+</div>

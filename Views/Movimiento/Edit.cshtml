@@ -1,0 +1,233 @@
+﻿@model SAG2.Models.Movimiento
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2></h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Movimiento</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EstablecimientoID, "Establecimiento")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("EstablecimientoID", String.Empty)
+            @Html.ValidationMessageFor(model => model.EstablecimientoID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ProyectoID, "Proyecto")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("ProyectoID", String.Empty)
+            @Html.ValidationMessageFor(model => model.ProyectoID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TipoComprobanteID, "TipoComprobante")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("TipoComprobanteID", String.Empty)
+            @Html.ValidationMessageFor(model => model.TipoComprobanteID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CuentaID, "Cuenta")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("CuentaID", String.Empty)
+            @Html.ValidationMessageFor(model => model.CuentaID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BeneficiarioID, "Beneficiario")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("BeneficiarioID", String.Empty)
+            @Html.ValidationMessageFor(model => model.BeneficiarioID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CuentaCorrienteID, "CuentaCorriente")
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("CuentaCorrienteID", String.Empty)
+            @Html.ValidationMessageFor(model => model.CuentaCorrienteID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Nombre)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Nombre)
+            @Html.ValidationMessageFor(model => model.Nombre)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NumeroComprobante)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.NumeroComprobante)
+            @Html.ValidationMessageFor(model => model.NumeroComprobante)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Periodo)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Periodo)
+            @Html.ValidationMessageFor(model => model.Periodo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Mes)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Mes)
+            @Html.ValidationMessageFor(model => model.Mes)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Fecha)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Fecha)
+            @Html.ValidationMessageFor(model => model.Fecha)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Cheque)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Cheque)
+            @Html.ValidationMessageFor(model => model.Cheque)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Monto_Ingresos)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Monto_Ingresos)
+            @Html.ValidationMessageFor(model => model.Monto_Ingresos)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Monto_Egresos)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Monto_Egresos)
+            @Html.ValidationMessageFor(model => model.Monto_Egresos)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Saldo)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Saldo)
+            @Html.ValidationMessageFor(model => model.Saldo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Linea)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Linea)
+            @Html.ValidationMessageFor(model => model.Linea)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Conciliado)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Conciliado)
+            @Html.ValidationMessageFor(model => model.Conciliado)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Mes_Anterior)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Mes_Anterior)
+            @Html.ValidationMessageFor(model => model.Mes_Anterior)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Periodo_Anterior)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Periodo_Anterior)
+            @Html.ValidationMessageFor(model => model.Periodo_Anterior)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Cerrado)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Cerrado)
+            @Html.ValidationMessageFor(model => model.Cerrado)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Saldo_cartola)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Saldo_cartola)
+            @Html.ValidationMessageFor(model => model.Saldo_cartola)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Dep_No_Consignados)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Dep_No_Consignados)
+            @Html.ValidationMessageFor(model => model.Dep_No_Consignados)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Cheques_No_Cobrados)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Cheques_No_Cobrados)
+            @Html.ValidationMessageFor(model => model.Cheques_No_Cobrados)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Gastos_Bancarios)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Gastos_Bancarios)
+            @Html.ValidationMessageFor(model => model.Gastos_Bancarios)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Descripcion)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Descripcion)
+            @Html.ValidationMessageFor(model => model.Descripcion)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Saldo_Libro)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Saldo_Libro)
+            @Html.ValidationMessageFor(model => model.Saldo_Libro)
+        </div>
+
+        <p>
+            <input type="submit" value="Guardar" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    <a href="javascript: history.go(-1)">Volver</a>
+</div>

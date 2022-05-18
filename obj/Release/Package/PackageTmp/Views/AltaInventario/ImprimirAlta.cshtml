@@ -1,0 +1,144 @@
+﻿
+@model IEnumerable<SAG2.Models.InventarioEspecie>
+@{
+    Layout = null;
+    ViewBag.Title = "ListarLineas";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+<html>
+<head>
+   <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >    
+    <link href="@Url.Content("~/Content/dist/css/bootstrap-submenu.min.css")" rel="stylesheet" >
+
+    <title>Imprimir Alta</title>
+        <script language="javascript" type="text/javascript">
+       <!--
+    function printThis() {
+        window.print();
+        setTimeout('window.close()', 10);
+        // self.close();
+    }
+    //-->
+    </script>
+
+	<style>
+ 
+     @@page
+    {
+        size:portrait;
+     
+          margin-top: 0pt;
+    }
+ 		body {font-family: Helvetica;
+ 		font-size: 10pt;
+ 		}
+ 		p { margin: 0pt;
+ 		}
+ 		#pagina { 
+ 			width: 100%;
+ 			float: left;
+ 			margin: 5%;
+ 			text-align: justify;
+		}
+		#titulo {
+			text-align: center; 
+			font-size: 15pt;
+		}
+ 		#firma {
+ 			text-align: left; 
+ 			width: 50%; 
+ 			float: right
+ 		}
+
+ 		.items{
+ 			font-size: 9pt; 
+ 			border-collapse: collapse;
+ 		}
+	</style>
+</head>
+<body onLoad="printThis();" >
+<head name="myheader">
+ 			<table width="90%"  style="font-size: 7pt;">
+ 				<tr>
+ 					<td width="50%" style="color:#000000;"> <br />
+ 						<img src="@Url.Content("~/Content/Images/logoimp.PNG")" width="140" >
+ 						<br /><span align="center" style="font-size: 7pt;">Consejo Defensa del Niño</span>
+ 						<br />@ViewBag.nombreproyecto
+ 					</td>
+ 					<td width="50%" style="text-align: right;"></td>
+ 				</tr>
+ 			</table>
+
+    <div id="titulo">Alta Inventario Nº  @ViewBag.NumeroAlta </div>
+    <br />
+    <table width="70%" border="1" style="margin: 0 auto;" >
+ 				<tr>
+ 					<td>Proyecto </td><td> @ViewBag.nombreproyecto </td>
+ 					<td>Código SENAME</td><td> @ViewBag.codigosename </td>	
+ 				</tr>
+        	<tr>
+ 					<td>Fecha </td><td> @ViewBag.fecha </td>
+ 					<td>Centro Costo CODENI</td><td> @ViewBag.ccodeni </td>	
+ 				</tr>
+ 			</table>
+    <br />
+ 		</head>
+ 
+	
+		
+			
+@if (Model.Count() > 0)
+{
+    <table class ="table table-bordered table-hover">
+        <thead >
+        <tr class="info">
+            <th nowrap="nowrap">Especie</th>
+            <th nowrap="nowrap">Descripción</th>
+            <th nowrap="nowrap">Proced.<br />(S);(T);(I)</th>
+            <th nowrap="nowrap">Nº C/E/<br />Año</th>       
+            <th nowrap="nowrap">Cantidad</th>
+            <th nowrap="nowrap">Valor $</th>
+            <th nowrap="nowrap">Observaciones</th>       
+        </tr>
+            </thead>
+       
+        @foreach (var inventarioespecie in Model)
+        {
+        
+        <tr>
+            <td nowrap="nowrap">@inventarioespecie.Especie.Nombre  </td>
+            <td align="center" nowrap="nowrap">@inventarioespecie.Observacion </td>
+            <td align="center" nowrap="nowrap">S</td>
+            <td nowrap="nowrap">@inventarioespecie.DetalleEgreso.Egreso.NumeroComprobante / @inventarioespecie.DetalleEgreso.Egreso.Periodo </td>        
+            <td nowrap="nowrap">@inventarioespecie.Cantidad</td>
+            <td align="center" nowrap="nowrap">@inventarioespecie.Valor </td>
+            <td align="center" nowrap="nowrap">@inventarioespecie.DetalleEgreso.Egreso.Proveedor.Nombre <br />Factura :@inventarioespecie.DetalleEgreso.NDocumento </td>
+            
+        </tr>        
+        }
+    </table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen detalle egreso </th>
+        </tr>
+    </table>
+}
+</body></html>

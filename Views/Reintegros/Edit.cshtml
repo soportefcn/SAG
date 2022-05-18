@@ -1,0 +1,219 @@
+﻿@model SAG2.Models.Movimiento
+@using SAG2.Models
+@{
+    ViewBag.Title = "Modificar";
+    DetalleEgreso detalle = (DetalleEgreso)@ViewBag.detalle;
+    var descripcion = Model.Descripcion;
+    Usuario Usuario = (Usuario)Session["Usuario"];
+
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+@if (ViewBag.Imprimir != null && ViewBag.Imprimir.Equals("true"))
+{ 
+    <script type="text/javascript" language="javascript">
+        window.open("../../Imprimir/Reintegro/@Html.Raw(Model.ID.ToString())", 'Comprobante de Reintegro', 'width=800,height=600,scrollbars=yes,menubar=no,toolbars=no');
+    </script>
+}
+<div id="SAGBox">
+    <h3>Reintegros</h3>
+   
+    <div id="contenido" class="ingresos">
+@using (Html.BeginForm())
+{
+    @Html.Raw(@ViewBag.Mensaje)
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.ProyectoID)
+    @Html.HiddenFor(model => model.CuentaCorrienteID)
+    @Html.HiddenFor(model => model.Periodo)
+    @Html.HiddenFor(model => model.Mes)
+    @Html.HiddenFor(model => model.NumeroComprobante)
+    @Html.HiddenFor(model => model.TipoComprobanteID)
+    @Html.HiddenFor(model => model.FechaCreacion)
+    @Html.Hidden("MontoOriginal", Model.Monto_Ingresos)
+    @Html.HiddenFor(model => model.NDocumento)
+    <input type="hidden" name="flagReitegro" id="flagReitegro" value="true" />
+    <input type="hidden" name="NDocumento" id="NDocumento" value="1" />
+    if (Model.Nulo != null && Model.Nulo.Equals("S"))
+    {
+        <input type="hidden" name="Nulo" id="Nulo" value="S" />
+        <script type="text/javascript" language="javascript">
+            $(document).ready(function () {
+                $("input").attr('disabled', 'disabled');
+                $("select").attr('disabled', 'disabled');
+                $("textarea").attr('disabled', 'disabled');
+            });
+        </script>
+    }
+    <fieldset>
+
+    <div class="panel panel-default">
+    <div class="panel-heading"><h3>Registro de comprobantes de reintegro</h3></div>
+    <div class="panel-body">
+
+        <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 20px;">
+                <label>Nº Comprobante</label>
+            </div>
+            <div class="form-group" style="margin-right: 350px;">
+            <input class="form-control" type="text" readonly="readonly" value="@Model.NumeroComprobante.ToString()" size="@Model.NumeroComprobante.ToString().Length" />        
+            </div>     
+        <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.Fecha)
+        </div>
+        <div class="form-group">
+            @Html.TextBox("Fecha", Model.Fecha.Value.ToShortDateString(), new { @class = "calendario_mov form-control", @readonly = "readonly" })
+        </div>
+      </div>
+        <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 55px;">
+            @Html.LabelFor(model => model.Monto_Ingresos, "Monto $")
+            </div>
+            <div class="form-group" style="margin-right: 30px;">
+                @Html.TextBoxFor(model => model.Monto_Ingresos, new { @class = "form-control" })
+        </div>
+        <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.Cheque, "Nº Documento")
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Cheque, new { @class = "form-control" })
+        </div>
+            </div>
+        </div>
+ <div class="panel-heading" style="padding-top: 5px; padding-bottom: 3px;"><h3>Datos egreso</h3></div>
+    <div class="panel-body">
+       
+         <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 58px;">
+                @Html.LabelFor(model => model.DetalleEgresoID, "Nº Egreso")
+            </div>
+            <div class="form-group" style="margin-right: 330px;">
+            @try
+            {
+                @Html.HiddenFor(model => model.DetalleEgresoID, Model.DetalleEgresoID)
+                @Html.TextBox("ComprobanteEgreso", null, new { @class= "form-control", @readonly = "readonly", @Value = detalle.Egreso.NumeroComprobante, @size = "3" })
+                if (Model.Nulo == null || Model.Nulo.Equals("N"))
+                {
+                    <img id="BuscarComprobanteEgresoID" src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="cursor: pointer; vertical-align: middle;" />
+                }
+            }
+            catch (Exception)
+            {
+                @Html.HiddenFor(model => model.DetalleEgresoID)
+                @Html.TextBox("ComprobanteEgreso", null, new { @readonly = "readonly", @Value = "", @size = "3" })
+                if (Model.Nulo == null || Model.Nulo.Equals("N"))
+                {
+                    <img id="BuscarComprobanteEgresoID" src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="cursor: pointer; vertical-align: middle;" />
+                }
+            }
+        </div>
+        <div class="form-group" style="margin-right: 20px;">
+            @Html.Label("Fecha")
+        </div>
+        <div class="form-group">
+            @try
+            {
+                @Html.TextBox("fechaEgreso", null, new { @class="form-control", @readonly = "readonly", @Value = detalle.Egreso.Fecha.Value.ToShortDateString() })
+            }
+            catch (Exception)
+            {
+                @Html.TextBox("fechaEgreso", null, new { @readonly = "readonly", @Value = "" })
+            }
+        </div>
+             </div>
+         <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 20px;">
+            @Html.Label("Cuenta contable")
+        </div>
+        <div class="form-group">
+            <select class="form-control" name="CuentaID" id="CuentaID">
+                @Html.Raw(@ViewBag.Arbol)
+            </select>
+        </div>
+             </div>
+            
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, "Glosa")
+        </div>
+        <div class="form-group">
+            @if (Model.Nulo == null || Model.Nulo.Equals("N"))
+            {
+            @Html.TextArea("Descripcion", new { @class="form-control", @cols = "4", @rows = "2", @value = descripcion })
+            }
+            else
+            {
+                @Html.Raw("<textarea class=\"form-control\" name=\"Descripcion\" id=\"Descripcion\" cols=\"4\" rows=\"2\">COMPROBANTE NULO</textarea>")
+            }
+        </div>
+
+        @if (Usuario.esAdministrador)
+        {
+             <div class ="form-group form-inline">
+        <div class="form-group">
+            Período
+        <br />
+            <input type="text" value="@Model.Periodo" readonly="readonly" />
+        </div>
+         <div class="form-group">
+            Mes
+       <br />
+            <input type="text" value="@Meses[@Model.Mes - 1]" readonly="readonly" />
+        </div>
+                 </div>
+        }
+    </div>
+    <div class="panel-footer">
+	    <div  style ="width: 500px ; display:inline-block">
+              <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Buscar" href="../Index" onclick="window.open(this.href, 'Buscar','width=1100,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-lg"></span></a>
+           <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Nuevo" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Reintegros/Create"><span class ="fa fa-file-o  fa-lg"></span></a>
+           <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../../Imprimir/Reintegro/@Html.Raw(Model.ID.ToString())" onclick="window.open(this.href, 'Comprobante de Reintegro','width=800,height=600,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-print fa-lg"></span></a>
+            @if (Model.Nulo == null || Model.Nulo.Equals("N"))
+            {
+                <a class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Anular" href="../Anular/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea anular este reintegro?Si lo hace, PERDERÁ el correlativo.');"><span class ="fa fa-times fa-lg"></span></a>
+                if (@ViewBag.UltimoIdentificador != null && @ViewBag.UltimoIdentificador.Equals(Model.ID.ToString()))
+                {
+                    <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea eliminar este reintegro? Si lo hace, podrá utilizar nuevamente este correlativo.');"><span class ="fa fa-trash-o fa-fw"></span></a>
+                }
+             }
+            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Cancelar" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Reintegros/Create"><span class ="fa fa-undo fa-fw"></span></a>
+        
+        </div>
+         <div style="float :right;display:inline-block">
+	       @if (Model.Nulo == null || Model.Nulo.Equals("N"))
+        {
+        <p>
+            <input type="submit" value="Guardar" id="botonGuardar" class="btn btn-primary" />
+        </p>
+        }
+	    </div>
+    </div>
+    </div>
+
+
+        <br />
+    </fieldset>
+}    
+    </div>
+</div>

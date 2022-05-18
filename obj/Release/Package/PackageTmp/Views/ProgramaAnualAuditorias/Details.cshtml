@@ -1,0 +1,40 @@
+﻿@model SAG2.Models.ProgramaAnualAuditorias
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>ProgramaAnualAuditorias</legend>
+
+    <div class="display-label">Proyecto</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Proyecto.Nombre)
+    </div>
+
+    <div class="display-label">Auditor</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Auditor.Rut)
+    </div>
+
+    <div class="display-label">Numero</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Numero)
+    </div>
+
+    <div class="display-label">FechaProgramada</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaProgramada)
+    </div>
+
+    <div class="display-label">FechaReal</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaReal)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

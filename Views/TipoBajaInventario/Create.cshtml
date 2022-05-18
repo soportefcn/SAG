@@ -1,0 +1,32 @@
+﻿@model SAG2.Models.TipoBajaInventario
+@{
+    ViewBag.Title = "Ingresar registro";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<div id="SAGBox">
+    <h3>Baja de inventario</h3>
+    <div id="controles">
+        <p><a href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">BUSCAR</a></p>
+        <p>@Html.ActionLink("NUEVO", "Create")</p>
+    </div>
+    <div id="contenido">
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+        <fieldset>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Nombre)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.Nombre)
+                <a href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">
+                <img src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="vertical-align: middle;" />
+            </a>
+            </div>
+            <p>
+                <input type="submit" value="Guardar" />
+            </p>
+        </fieldset>
+}
+    </div>
+</div>

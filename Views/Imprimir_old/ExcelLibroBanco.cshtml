@@ -1,0 +1,309 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=LIBROBANCO.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+
+    int movimientos = 9;
+    int Saldo = 0;
+    int saldoInicial = 0;
+    int totalDebe = 0;
+    int totalHaber = 0;
+    SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)@ViewBag.cuentaCorriente;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    if (@ViewBag.SaldoInicial != null && !@ViewBag.SaldoInicial.Equals("0"))
+    {
+        Saldo = Int32.Parse(@ViewBag.SaldoInicial.ToString());
+    }
+
+    saldoInicial = Saldo;
+    
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Libro Banco</title>
+    <style type="text/css" media="print">
+    @@page
+    {
+        size: landscape;
+        margin: 2cm;
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+        font-size: 10px;    
+    }
+    
+    th 
+    {
+        font-size: 12px;    
+    }
+    h2 {
+        text-align: center;
+    }
+    
+    .registros td
+    {
+        border: 1px solid black;    
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+    }
+    
+    thead {	display: table-header-group;}
+    tfoot {display: table-footer-group;}
+    
+    tbody {
+        display:table-row-group;
+    }
+    
+    tr  {
+        page-break-inside: avoid;
+    }
+    
+    .registros td {padding: 2px;}
+    </style>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" colspan="8"><strong>Consejo de Defensa del Ni&ntilde;o<br />
+    @Html.Raw(@ViewBag.Proyecto)</strong></td>
+    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+  </tr>
+</table>
+
+<table>
+    <tr>
+        <td colspan="9" style="text-align: center;">
+            <h2>Libro Banco</h2>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="9" style="text-align: center;">
+            Per&iacute;odo @Meses[@ViewBag.mes - 1] de @ViewBag.periodo
+        </td>
+    </tr>
+    <tr>
+        <td colspan="9" style="text-align: center;">
+            Cta. Cte.: @CuentaCorriente.Numero&nbsp;&nbsp;|&nbsp;&nbsp;Saldo Inicial: @Saldo.ToString("#,###").-
+        </td>
+    </tr>
+</table>
+<br />
+<table cellpadding="5" border="1" style="width: 100%;" cellspacing="0" class="registros">
+    <thead>
+        <tr>
+            <th colspan="2">Documento</th>
+            <th colspan="3">Movimientos</th>
+            <th colspan="4" style="border-right: 1px solid black;">Comprobante</th>
+        </tr>
+        <tr>
+            <th>Fecha</th>
+            <th>N&uacute;mero</th>
+            <th>Debe (Dep&oacute;sitos)</th>
+            <th>Haber (Giros)</th>
+            <th>Saldo</th>
+            <th>Tipo</th>
+            <th>N&uacute;mero</th>
+            <th>Cuenta</th>
+            <th style="border-right: 1px solid black;">Beneficiario/Descripci&oacute;n</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+    var descripcion = @item.Descripcion.ToUpper();
+    if (descripcion.Length > 25)
+    {
+        descripcion = descripcion.Substring(0, 25);
+    }
+    
+    if (item.TipoComprobanteID != 2)
+    {
+        movimientos++;
+        var nulo = "";
+        
+
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            nulo = " style=\"text-decoration: line-through;\"";
+        }
+        else
+        {
+            totalDebe = totalDebe + item.Monto_Ingresos;
+        }
+    <tr @Html.Raw(nulo)>
+        <td align="center" style="white-space: nowrap; overflow: hidden;">@item.Fecha.Value.ToShortDateString()</td>
+        <td align="center">@item.Cheque</td>
+        <td align="right">
+        @if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            @Html.Raw("$0");
+        }
+        else
+        {
+            @Html.Raw("$" + @item.Monto_Ingresos.ToString("#,##0"));
+            Saldo = Saldo + item.Monto_Ingresos;
+        }
+        </td>
+        <td align="right">-</td>
+        <td align="right">
+            @Html.Raw("$" + @Saldo.ToString("#,##0"))
+        </td>
+        <td align="center" style="white-space: nowrap; overflow: hidden;">@item.TipoComprobante.Nombre</td>
+        <td align="center">@item.NumeroComprobante</td>
+        <td nowrap>@if (@item.Cuenta != null) { @System.Web.HttpUtility.UrlDecode(utils.cuentaPadre(@item.Cuenta)) }</td>
+        <td nowrap>@System.Web.HttpUtility.UrlDecode(descripcion)</td>
+    </tr>
+    }
+    else
+    {
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            movimientos++;
+            <tr style="text-decoration: line-through;">
+                <td  align="center">
+                    @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="center">
+                    @item.Cheque
+                </td>
+                <td align="right">
+                   -
+                </td>
+                <td align="right">
+                    @Html.Raw("$0")
+                </td>
+                <td align="right">
+                    @Html.Raw("$" + @Saldo.ToString("#,##0"))
+                </td>
+                <td  align="center">
+                    @if (item.TipoComprobanteID == 2) 
+                    {
+                        @Html.Raw("Egreso");
+                    }
+                    else if (item.TipoComprobanteID == 1) 
+                    {
+                        @Html.Raw("Ingreso");
+                    } 
+                    else
+                    {
+                        @Html.Raw("Reintegro");
+                    }
+                </td>
+                <td  align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td align="left" nowrap>@if (@item.Cuenta != null)
+                                 { @System.Web.HttpUtility.UrlDecode(utils.cuentaPadre(@item.Cuenta)) } else {@Html.Raw("-")}</td>
+
+                <td nowrap>
+                   @try
+                    {
+                        if (item.Persona != null)
+                        {
+                            @System.Web.HttpUtility.UrlDecode(item.Persona.NombreCompleto.ToUpper())
+                        }
+                        else if (item.Proveedor != null)
+                        {
+                            @System.Web.HttpUtility.UrlDecode(item.Proveedor.Nombre.ToUpper())
+                        }
+                        else
+                        {
+                            @System.Web.HttpUtility.UrlDecode(item.Beneficiario.ToUpper())
+                        }
+                    }
+                    catch (Exception)
+                    {}
+                </td>
+            </tr>
+        }
+        else
+        {
+            SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+            foreach (var detalle in detalles)
+            {
+                movimientos++;
+                totalHaber = totalHaber + detalle.Monto;
+                <tr>
+            <td align="center">@item.Fecha.Value.ToShortDateString()</td>
+            <td align="center">@item.Cheque</td>
+            <td align="right">-</td>
+            <td align="right">$@detalle.Monto.ToString("#,##0")@{Saldo = Saldo - detalle.Monto;}</td>
+            <td align="right">$@Saldo.ToString("#,##0")</td>
+            <td align="center">@item.TipoComprobante.Nombre</td>
+            <td align="center">@item.NumeroComprobante</td>
+            <td nowrap>@if (@detalle.Cuenta != null) { @System.Web.HttpUtility.UrlDecode(utils.cuentaPadre(@detalle.Cuenta)) }</td>
+            <td nowrap>
+            @try
+                    {
+                        if (item.Persona != null)
+                        {
+                            @System.Web.HttpUtility.UrlDecode(item.Persona.NombreCompleto.ToUpper())
+                        }
+                        else if (item.Proveedor != null)
+                        {
+                            @System.Web.HttpUtility.UrlDecode(item.Proveedor.Nombre.ToUpper())
+                        }
+                        else
+                        { 
+                            @System.Web.HttpUtility.UrlDecode(item.Beneficiario.ToUpper())
+                        }
+                    }
+                    catch (Exception)
+                    {}
+            </td>
+        </tr>
+            }
+        }
+    }
+}
+        @{
+            movimientos--;    
+        }
+    <tr>
+        <th colspan="2" rowspan="2">Totales</th>
+        <th align="right">=SUMA(C9:@Html.Raw("C"+movimientos))</th>
+        <th align="right" style="border-left: 0;">=SUMA(D9:@Html.Raw("D"+movimientos))</th>
+        <th style="border-left: 0;"></th>
+        <th colspan="4" rowspan="2" style="border-right: 1px solid black;"></th>
+    </tr>
+        @{
+            movimientos++;    
+        }
+    <tr>
+        <th align="left" colspan="2">Saldo Libro Banco</th>
+        <th align="right" style="border-left: 0;">=@Html.Raw("C"+movimientos)-@Html.Raw("D"+movimientos)+@saldoInicial</th>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

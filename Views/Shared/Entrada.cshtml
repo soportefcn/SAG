@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <title>SAG2 / @ViewBag.Title</title>
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript" language="javascript"></script>
+      <script src="@Url.Content("~/Scripts/select2.min.js")" type="text/javascript" language="javascript"></script>
+   
+	<!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ie.css")" media="screen" />
+    <![endif]-->
+	
+	
+	<link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/select2.min.css")" rel="stylesheet">
+       <link href="@Url.Content("~/Content/blog.css")" rel="stylesheet" >
+       <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >
+        <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $("#elegirProyecto").click(function () {
+                if ($("#Proyecto").val() == "-1") {
+                    $('body').css('opacity', '0.25');
+                    alert("Debe seleccionar un proyecto.");
+                    $('body').css('opacity', '1');
+                    return false;
+                }
+                return true;
+            });
+
+            $(".boton-login").click(function () {
+                if ($("#NombreUsuario").val() == '' || $("#Password").val() == '') {
+                    $('body').css('opacity', '0.25');
+                    alert("Debe ingresar Nombre de Usuario y Contraseña.");
+                    $('body').css('opacity', '1');
+                    $("#NombreUsuario").focus();
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            $("#NombreUsuario").focus();
+        });
+	</script>
+</head>
+<body>
+
+<div class="contenedor">
+                                                                                                                                                                                       </a>
+
+    <div class="blog-masthead">
+       <div class="container">
+<nav class="blog-nav">
+      <a class="navbar-brand">
+            <img  class ="brand_logo svgLogo" src ="@Url.Content("~/Content/Logo_Codeni3.png")" style="padding-bottom: 0px; border-top-width: 0px; margin-top: -15px;width: 45px; margin-right: -16px;">
+         <m style="color:white">SAG Ciudad del Niño</m>
+             </a>
+			 <a class="blog-nav-item" target="_blank" href="http://sag.codeni.cl/SAG2/Login/">Version Anterior</a>
+<a class="blog-nav-item" target="_blank" href="https://www.facebook.com/ciudaddelninocl?fref=ts"><i class="fa fa-facebook-square fa-2x"></i></a>
+<a class="blog-nav-item" target="_blank" href="http://www.twitter.com/ciudaddelninocl"><i class="fa fa-twitter-square fa-2x"></i></a>
+<a class="blog-nav-item" target="_blank" href="http://www.ciudaddelnino.cl/"><i class="fa fa-reddit fa-2x"></i></a>
+<a class="blog-nav-item" target="_blank" href="https://www.youtube.com/channel/UC0RjNg5fVl2kudcS5lWQEaw"><i class="fa fa-youtube-square fa-2x"></i></a>
+
+</nav>
+</div>
+          </div>
+    
+
+        @RenderBody()
+            </div>
+
+
+
+<div class="blog-footer siteFooter"">
+
+  
+  
+    SAG2 / Codeni &nbsp;&nbsp</div>
+  
+</body>
+</html>

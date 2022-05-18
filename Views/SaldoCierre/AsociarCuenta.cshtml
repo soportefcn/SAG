@@ -1,0 +1,68 @@
+﻿@model SAG2.Models.CInformeCierre 
+@{
+    ViewBag.Title = "AsociarCuenta";
+}
+@using (Html.BeginForm())
+{
+
+  <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Asociar Cuenta</b></h3></div>
+  <div class="panel-body">
+
+      <div class="row" > 
+        <div class="col-sm-4">
+            Grupo :
+               @Html.DropDownList("GinformeID", null, "-- SELECCIONE UN Grupo --", new { @class = "form-control"} )
+         
+            </div>
+          <div class="col-sm-6">
+              Cuenta
+                 <select id="CuentaID" name="CuentaID" class ="js-autocomplete form-control">
+          <option></option>
+                    @Html.Raw(ViewBag.Arbol)
+                </select>
+          </div>
+     </div>
+     <div class="row" > 
+       <div class="col-sm-6">
+          Sumatoria Ingreso
+            <select id="CTotal" name="CTotal" class="form-control">
+                <option value="0">NO</option>
+                <option value="1">SI</option>
+
+            </select>
+        </div> 
+        <div class="col-sm-6">
+          Rojo al tener Valor
+            <select id="valor" name="valor" class="form-control">
+                <option value="0">NO</option>
+                <option value="1">SI</option>
+
+            </select>
+        </div> 
+      </div>
+      <div class="row" > 
+         <div class="col-sm-6">
+          Tipo Comprobante
+           <select id="tipoComprobante" name="tipoComprobante" class="form-control">
+                <option value="0">Por formula</option>
+                <option value="1">Reintegro</option>
+               <option value="2">Egreso </option>
+            </select>
+          </div>
+          <div class="col-sm-6"></div>
+          </div>
+    </div>
+      	<div class="panel-footer">
+    <div  style ="width: 400px ; display:inline-block">
+              <a class="btn btn-success" href="./Lista" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+            <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/SaldoCierre/AsociarCuenta"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+          
+        </div>
+         <div style="float :right;display:inline-block">
+      <input type="submit" value="Guardar" class="btn btn-primary" />
+ </div>
+
+</div>
+</div>
+}

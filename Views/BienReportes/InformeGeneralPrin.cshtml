@@ -1,0 +1,215 @@
+﻿
+@model SAG2.Models.BienModInventarioVM
+@{
+    
+    ViewBag.Title = "Informe General";
+    string FechaSis = DateTime.Now.ToShortDateString();
+    int proyectoID = Model.ProyectoID;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    int total = 0;
+    int totalBajas = 0;
+    int totalTraslados = 0;
+    var listaTraslados = Model.lista.ToList();
+    
+    
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>
+<style>
+    .container{
+
+        width: 1350px !important;
+    }
+    .col-sm-9{
+        width: 1350px !important;
+    }
+    .blog-sidebar{
+        visibility: hidden !important;
+    }
+</style>
+
+<div id="SAGBox">
+    <br />
+
+    <div class="ocultoImpresion">
+        <input type="button"  value="Imprimir reporte" class="imprimirDirecto boton btn" />
+      <a class="btn btn-info" href="@Url.Action("InformeGeneralInventario", "BienReportes", new { id = Model.ProyectoID, })">Descargar Excel</a>
+    </div>
+    <br />
+
+    <div class="soloImpresion">
+        <table class="table table-bordered table-responsive">
+
+            <tr>
+                <th colspan="4" style="font-weight: bold; text-align:center; font-size:14pt">Inventario General</th>
+            </tr>
+            <tr>
+                <th colspan="1">Revisi&oacute;n:</th>
+                <td colspan="1">2</td>
+                <th colspan="1">Fecha Actualizaci&oacute;n:</th>
+                <td colspan="1">@ViewBag.FechaActualizacion.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <th colspan="1">Nombre Proyecto:</th>
+                <td colspan="1">@Model.Proyecto</td>
+                <th colspan="1">C&oacute;digo SENAME:</th>
+                <td colspan="1">@ViewBag.CodigoSename</td>
+            </tr>
+            <tr>
+                <th colspan="1">Instituci&oacute;n:</th>
+                <td colspan="1">@ViewBag.Institucion</td>
+                <th colspan="1">C&oacute;digo:</th>
+                <td colspan="1">@ViewBag.CodigoCodeni</td>
+            </tr>
+            <tr></tr>
+        </table>
+
+        <table class="table table-bordered table-responsive" ">
+            <tr>
+                <th colspan="1" rowspan="2">Especie</th>
+                <th colspan="1" rowspan="2">Descripci&oacute;n especie</th>
+                <th colspan="1" rowspan="2">Procedencia</th>
+                <th colspan="1" rowspan="2">N&ordm; C/E</th>
+                <th colspan="1" rowspan="2">Factura N&ordm;</th>
+                <th colspan="1" rowspan="2">Fecha Egreso o Compra</th>
+                <th colspan="1" rowspan="2">Total</th>
+                <th colspan="1" rowspan="2">Cantidad</th>
+                <th colspan="1" rowspan="2">Valor $</th>
+                <th colspan="1" rowspan="2">Ubicaci&oacute;n</th>
+                <th colspan="1" rowspan="2">Condici&oacute;n</th>
+                <th colspan="1" rowspan="2">Tipo Mov.</th>
+                <th colspan="1" rowspan="2">N&ordm; Acta Baja/año / Cant.</th>
+                <th colspan="1" rowspan="2">Bajas / Traslados</th>
+                @*<th colspan="1" rowspan="2">Observaciones</th>*@
+
+            </tr>
+            <tr></tr>
+            
+            @foreach (var item in Model.lista.Where(x => x.Estado == "ALTA" )) 
+            {
+                total = 0;
+                totalBajas = 0;
+                totalTraslados = 0;
+                // var ubicacionID = int.Parse(item.Ubicacion);
+                // var w = db.Dependencia.Where(x => x.ID == ubicacionID).First();
+                var proID = db.Dependencia.Where(x => x.Nombre == item.Ubicacion);
+
+                total = Model.lista.Where(z => (z.Familia == item.Familia && z.Estado != "BAJA") && (item.ProyectoID == z.ProyectoID && item.ID == z.ID) /*|| (item.ProyectoAnteriorID == z.ProyectoAnteriorID)*/).Sum(x => x.Cantidad);
+                var menos = Model.lista.Where(z => z.Familia == item.Familia && z.Estado == "BAJA" && item.ProyectoID == z.ProyectoID && item.ID == z.ID).Sum(x => x.Cantidad);
+                total = total - menos;
+
+                if ((item.ProyectoID == proyectoID && total > 0) && (listaTraslados.Contains(item)))
+                {
+                    <tr>
+                        <td colspan="1">@item.Familia</td>
+                        <td colspan="1">@item.DescripcionBien</td>
+                        <td colspan="1">@item.Procedencia[0]</td>
+                        <td colspan="1">@item.Movimiento.NumeroComprobante</td>
+                        @if (item.Egreso != null)
+                        {
+                            <td>@item.Egreso.NDocumento</td>
+                        }
+                        else
+                        {
+                            <td>@item.Reintegro.NDocumento</td>
+                        }
+                        @{
+                            string fecha = @item.Movimiento.Fecha.ToString();
+                            string fechafinal = fecha.Substring(0, Math.Min(fecha.Length, 10));
+                            <td colspan="1">@fechafinal</td>
+                        }
+                            <td colspan="1">
+                                @{totalTraslados = 0;
+                                    totalBajas = 0;
+                                    var totalTrasladosPrueba = Model.lista.Where(x => x.Estado != "ALTA" && x.ProyectoAnteriorID == item.ProyectoID && item.DescripcionBien == x.DescripcionBien && item.Familia == x.Familia).Sum(c => c.Cantidad);
+
+                                    var totalAltasPrueba = Model.lista.Where(x => x.Estado == "ALTA" && (x.ProyectoID == item.ProyectoID && x.ProyectoAnteriorID != item.ProyectoID) && item.DescripcionBien == x.DescripcionBien && item.Familia == x.Familia && x.ID == item.ID || (x.MovimientoBienID == item.MovimientoBienID && x.MovimientoBienID > 0 && x.Estado == "ALTA")).Sum(c => c.Cantidad);
+                                    }
+                                @foreach (var item2 in Model.lista.Where(z => z.Familia == item.Familia && z.Estado != "ALTA" && z.DescripcionBien == item.DescripcionBien))
+                                {
+                                    if (@item2.Estado == "TRASLADO")
+                                    {
+                                        totalTraslados += item2.Cantidad;
+                                    }
+                                    else if (item2.Estado == "BAJA")
+                                    {
+                                        totalBajas += @item2.Cantidad;
+                                    }
+                                    if (item.ProyectoID == item2.ProyectoAnteriorID)
+                                    {
+                                        total += item.Cantidad - totalTraslados - totalBajas;
+                                    }
+                                    else 
+                                    {
+                                        total = item.Cantidad;
+                                    }
+                                    //  total = total - totalBajas;
+                                    //total = total - totalTraslados;
+                                }
+
+                                @{var totalFinal = totalAltasPrueba - totalTrasladosPrueba;}
+                                @*@total;*@
+                                @totalFinal
+                            </td>
+                        <td colspan="1">@item.Cantidad</td>
+                        <td colspan="1">$@item.MontoInt.ToString("#,##0")</td>
+                        <td colspan="1">@item.Ubicacion</td>
+                        <td colspan="1">@item.CondicionText</td>
+                        <td colspan="1">@item.Estado</td>
+
+                        <td>
+                            @{totalTraslados = 0;
+                                totalBajas = 0;}
+                            @foreach (var item2 in Model.lista.Where(z => z.Familia == item.Familia && z.Estado != "ALTA" && z.DescripcionBien == item.DescripcionBien))
+                            {
+                                string nombre = "";
+                                if (item2.Estado == "TRASLADO")
+                                {
+                                    nombre = System.IO.Path.GetFileNameWithoutExtension(item2.RutaArchivo.ToString());
+                                    nombre = nombre.Replace("Traslado-" + item.Movimiento.Fecha.ToString().Substring(0, Math.Min(item.Movimiento.Fecha.ToString().Length, 10)) + " 00000-", "");
+
+
+                                    <li>
+                                        @nombre @item2.Estado
+                                    </li>
+                                }
+                                if (item2.Estado == "BAJA")
+                                {
+                                    nombre = System.IO.Path.GetFileNameWithoutExtension(item2.RutaArchivo.ToString());
+                                    nombre = nombre.Replace("Baja-" + item2.Movimiento.ProyectoID.ToString() + "-" + item2.ID.ToString() + "-", "");
+
+                                    <li>
+                                        @nombre @item2.Estado
+                                    </li>
+                                }
+
+
+                                if (@item2.Estado == "TRASLADO" && item.ProyectoAnteriorID != proyectoID)
+                                {
+                                    totalTraslados += item2.Cantidad;
+                                }
+                                else if (item2.Estado == "BAJA")
+                                {
+                                    totalBajas += @item2.Cantidad;
+                                }
+
+
+                            }
+                        </td>
+
+                        @*<td colspan="1"></td>*@
+
+
+                        <td colspan="1">@totalBajas   /   @totalTraslados </td>
+                        @*<td colspan="1">@item.Detalle</td>*@
+                        @{listaTraslados.RemoveAll(z => z.MovimientoBienID == item.MovimientoBienID && item.MovimientoBienID > 0);
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    Layout = null;
+    ViewBag.Title = "Informe General Inventario";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Gral.Inventario.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 20px;
+    }
+</style>
+
+<table cellpadding="5" border="1" style="width: 80%;">
+
+    <tr>
+        <th rowspan="4" colspan="3" style="font-size: 12px;"> Fundaci&oacute;n Ciudad del Ni&ntilde;o  <br /> Administracion Central</th>
+        <th rowspan="2" colspan="5" style="font-size: 30px; font-weight: bold;">Formulario</th>
+        <th colspan="4" style="font-weight: bold;">C&oacute;digo:</th>
+        <th colspan="2" style="font-weight: bold;">F-DAF-014</th>
+    </tr>
+    <tr>
+        <td colspan="3">P&aacute;gina:</td>
+        <td colspan="2">1 de 1</td>
+        <td></td>
+
+    </tr>
+    <tr>
+        <th rowspan="2" colspan="5" style="font-size: 30px; font-weight: bold;">Inventario General</th>
+        <td colspan="3">Revisi&oacute;n:</td>
+        <td colspan="2">2</td>
+    </tr>
+    <tr>
+        <td colspan="2">Fecha Rev:</td>
+        <td>@FechaSis</td>
+        <td></td>
+    </tr>
+    <tr>
+        <th colspan="3">Nombre Proyecto:</th>
+        <td colspan="8">@Model.Proyecto</td>
+        <th colspan="3">C&oacute;digo SENAME:</th>
+        <td colspan="2">@ViewBag.CodigoSename</td>
+    </tr>
+    <tr>
+        <th colspan="3">Institución:</th>
+        <td colspan="4">@ViewBag.Institucion</td>
+        <th colspan="2">C&oacute;digo:</th>
+        <td colspan="2">@ViewBag.CodigoCodeni</td>
+        <td colspan="3">Fecha Actualizaci&oacute;n:</td>
+        <td colspan="2">@*@ViewBag.FechaActualizacion.ToShortDateString()*@</td>
+    </tr>
+    <tr>
+    </tr>
+
+</table>
+

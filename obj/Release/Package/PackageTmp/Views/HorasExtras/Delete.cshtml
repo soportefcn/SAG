@@ -1,0 +1,38 @@
+﻿@model SAG2.Models.HorasExtras
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>HorasExtras</legend>
+
+    <div class="display-label">ProyectoID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProyectoID)
+    </div>
+
+    <div class="display-label">Periodo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Periodo)
+    </div>
+
+    <div class="display-label">Mes</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Mes)
+    </div>
+
+    <div class="display-label">MontoHorasExtras</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MontoHorasExtras)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

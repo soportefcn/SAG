@@ -1,0 +1,197 @@
+﻿@model IEnumerable<SAG2.Models.Bodega>
+@{
+    ViewBag.Title = "Traspasos bodega";
+   
+}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".js-autocomplete").select2();
+        });
+    </script>
+<div id="SAGBox">
+    <h2>Consulta de Saldos</h2>
+    @using (Html.BeginForm("TrasladoBodega", "Bodega", FormMethod.Post))
+    {
+        <h3>Traslado de saldos</h3>
+
+        <select name="destino" id="destino" class="js-autocomplete">
+            <option value="-1"> Destino</option>
+            @foreach (SAG2.Models.Proyecto destino in ViewBag.Proyectos)
+            {
+                    <option value="@destino.ID">@destino.NombreEstado</option>
+            }
+        </select>
+        <input type="button" value="Proceder Traslado" id="Traslado" class="btn btn-success"/>
+    }
+
+<p>&nbsp;</p>
+
+        <div  id="tableContainer" class="tableContainer">
+    <table class="table table-bordered scrollTable" id="table">
+        <thead class="fixedHeader">
+        <tr class="info">
+            <th style="text-align: center;width:442px;">Descripción</th>
+            <th  style="text-align: center;width: 51px;">Unidad</th>
+            <th style="text-align: center;width: 87px;">Saldo Inicial</th>
+             <th style="text-align: center;width: 87px;">Total Entradas</th>
+            <th style="text-align: center;width: 87px;">Total Salida</th>
+            <th style="text-align: center;width: 87px;">Saldo Final</th>
+             <th style="text-align: center;width: 42px;">Mov./Art</th>
+        </tr>
+            </thead>
+        <tbody class="scrollContent">
+         @{
+             int? Tentrada = 0;
+             int? Tsalida = 0;
+             int? Tsaldo = 0;
+             int Tsaldoinicial = 0;
+             }
+        @foreach (var saldosbodega in Model)
+        {
+            int? entrada = 0;
+            int? salida = 0;
+            int? saldo = 0;
+            int periodo = @ViewBag.periodo;
+            int mes = @ViewBag.mes;
+            int saldoinicial = 0;
+            saldoinicial = saldosbodega.SaldoInicial;
+            entrada = saldosbodega.Entrada;
+            salida = saldosbodega.Salida;
+            saldo = saldosbodega.Saldo;
+            Tentrada += entrada;
+            Tsalida += salida;
+            Tsaldoinicial += saldoinicial;   
+            Tsaldo  += saldo ;
+        <tr @if (saldo == 0) { @Html.Raw("style=\"background-color: #f0f0f0;\""); } else { @Html.Raw("style=\"font-weight: bold;\""); }>
+            
+            <td style="width:450px;" >@saldosbodega.Articulo.Categoria.nombre a / @saldosbodega.Articulo.Nombre</td>
+            <td style="width: 56px;text-align: center;" >@saldosbodega.Articulo.UnidadMedida.Unidad</td>
+            <td style="width: 87px;text-align: center;" >@saldoinicial.ToString()</td>
+            <td style="width: 87px;text-align: center;" >@entrada.ToString()</td>
+            <td style="width: 87px;text-align: center;" >@salida.ToString()</td>
+            <td style="width: 87px;text-align: center;" @{
+                if (saldo == 1)
+                {
+                    @Html.Raw(" style=\"color: Yellow;\"");
+                } 
+                else if (saldo > 1)
+                {
+                    @Html.Raw(" style=\"color: Blue;\"");
+                } 
+                else if (saldo < 1)
+                {
+                    @Html.Raw(" style=\"color: Red;\"");
+                }
+                } align="center">
+                @saldo.ToString()
+            </td>
+              <td style="width: 68px;">
+            <a href="@Url.Action("MovimientosArticulos", "MovimientosBodega", new { articuloId = @saldosbodega.Articulo.ID  })" title="Seleccionar" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        </tr>
+        }
+          
+            </tbody>
+   
+    </table>
+        <table>
+                 <tr class="info">
+            <td style="text-align: right;width:432px;">Totales</td>
+            <td  style="text-align: center;width: 51px;"></td>
+         <th style="text-align: center;width: 87px;">Saldo Inicial</th>
+             <th style="text-align: center;width: 87px;">Total Entradas</th>
+            <th style="text-align: center;width: 87px;">Total Salida</th>
+            <th style="text-align: center;width: 87px;">Saldo Final</th>
+           
+        </tr>
+  <tr class="info">
+            <td style="text-align: right;width:432px;"></td>
+            <td  style="text-align: center;width: 51px;"></td>
+            <td style="text-align: center;width: 87px;">@Tsaldoinicial </td>
+             <td style="text-align: center;width: 87px;">@Tentrada</td>
+            <td style="text-align: center;width: 87px;">@Tsalida</td>
+            <td style="text-align: center;width: 87px;">@Tsaldo</td>
+           
+        </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+        $(document).ready(function () {
+
+            if ($.browser.msie) //si es IE
+
+            {
+
+                if ($.browser.version == '7.0') {
+
+                    $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'scroll', 'height': '250px' });
+
+                    $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
+
+                    $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block' });
+
+                };//if browser IE7
+
+
+                if ($.browser.version == '8.0') {
+
+                    $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden', 'height': '250px' });
+
+                    $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
+
+                    $('.fixedHeader').css({ 'float': 'left', 'width': '98%' });
+
+                    $('.scrollContent').css({ 'float': 'left', 'height': '250px', 'overflow': 'scroll', 'width': '100%', 'clear': 'left' });
+
+                    $('.scrollTable th').css({ 'border': 'auto', 'width': '200px' });
+
+                    $('.scrollTable td').css({ 'border': 'auto', 'width': '200px' });
+
+                };//if browser IE8
+
+            }
+
+            else // si es FF o Chrome
+
+            {
+
+                $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden' });
+
+                $('.tableContainer table').css({ 'float': 'left', 'width': '100%' });
+
+                $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block', 'width': '98%' });
+
+                $('.scrollContent').css({ 'display': 'block', 'height': '250px', 'overflow': 'auto', 'width': '100%' });
+
+            }//if browser
+
+            $("#Traslado").click(function () {
+                
+                Swal.fire({
+                    title: '¿Esta Seguro?',
+                    text: "Esto es irreversible!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si , Desea Trasladar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                    $("form").submit();
+    Swal.fire(
+      'Traslado!',
+      'el traslado se procedio',
+      'success'
+    )
+            }
+            })
+
+                    });
+
+        }) //ready
+
+
+</script>

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<SAG2.Models.DeudaPendiente>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Deudas pendientes";
+}
+ <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("a").click(function () {
+            window.opener.document.getElementById("NComprobanteDP").value = $(this).attr("NumeroComprobante");
+            window.opener.document.getElementById("DocumentoID").value = $(this).attr("DocumentoID");
+            window.opener.document.getElementById("NDocumento").value = $(this).attr("NumeroDocumento");
+            window.opener.document.getElementById("Monto").value = $(this).attr("Monto");
+            window.opener.document.getElementById("FechaEmision").value = $(this).attr("FechaEmision");
+            window.opener.document.getElementById("FechaVencimiento").value = $(this).attr("FechaVencimiento");
+            window.opener.document.getElementById("CuentaID").value = $(this).attr("CuentaID");
+            window.opener.document.getElementById("Glosa").value = $(this).attr("Glosa");
+            window.opener.document.getElementById("DeudaPendienteID").value = $(this).attr("DeudaPendienteID");
+            window.close();
+            return false;
+        });
+    }); 
+</script>
+<div class="top" style="height: 15px;">Deudas Pendientes&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+<table class="table table-bordered table-hover">
+    <tr  class="info">
+        <th class="controles"></th>
+        <th>Nº Comp.</th>
+        <th>Fecha Comp.</th>
+        <th>Nº Doc.</th>
+        <th>Tipo Doc.</th>
+        <th>Emisión</th>
+        <th>Vencimiento</th>
+        <th>Monto $</th>
+        <th>Beneficiario</th>
+        <th>Cuenta</th>
+        <th>Glosa</th>
+    </tr>
+@foreach (var item in Model)
+{
+    <tr>
+        <td><a href="./" title="Seleccionar" DeudaPendienteID="@item.ID" NumeroComprobante="@item.NumeroComprobante.ToString()" Monto="@item.Monto.ToString()" NumeroDocumento="@item.NumeroDocumento.ToString()" DocumentoID="@item.DocumentoID" FechaEmision="@item.FechaEmision.ToShortDateString()"
+        FechaVencimiento="@item.FechaVencimiento.ToShortDateString()" CuentaID="@item.CuentaID" Glosa="@item.Glosa"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a></td>
+        <td>@Html.DisplayFor(modelItem => item.NumeroComprobante)</td>
+        <td>@item.Fecha.ToShortDateString()</td>
+        <td>@Html.DisplayFor(modelItem => item.NumeroDocumento)</td>
+        <td>@Html.DisplayFor(modelItem => item.Documento.NombreLista)</td>
+        <td>@item.FechaEmision.ToShortDateString()</td>
+        <td>@item.FechaVencimiento.ToShortDateString()</td>
+        <td align="right">$@Html.DisplayFor(modelItem => item.Monto)</td>
+        <td>
+        @if (item.Persona != null)
+        {
+            @Html.DisplayFor(modelItem => item.Persona.NombreLista)
+        }
+        else if (item.Proveedor != null)
+        {
+            @Html.DisplayFor(modelItem => item.Proveedor.NombreLista)
+        }
+        else
+        { 
+            @Html.Raw(@item.Rut+"-"+@item.DV+" " + @item.Beneficiario)
+        }
+        </td>
+        <td>@Html.DisplayFor(modelItem => item.Cuenta.NombreLista)</td>
+        <td>@Html.DisplayFor(modelItem => item.Glosa)</td>
+    </tr>
+}
+</table>
+</div>

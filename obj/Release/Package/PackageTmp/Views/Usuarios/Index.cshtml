@@ -1,0 +1,64 @@
+﻿@model IEnumerable<SAG2.Models.Usuario>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Usuarios";
+}
+
+ <div id="contenido_popup">
+   <table cellpadding="5" border="1" align="center">
+    <tr>
+        <th>
+            Persona
+        </th>
+        <th>
+            Usuario
+        </th>
+        <th>
+            Estado
+        </th>
+        <th>
+            Tipo
+        </th>
+        <th class="controles"></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Persona.NombreLista)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @if ("A".Equals(item.Estado))
+            {
+                @Html.Raw("Habilitado");
+            }
+            else
+            { 
+                @Html.Raw("Inhabilitado");
+            }
+        </td>
+        <td>
+            @if ("S".Equals(item.Administrador))
+            {
+                @Html.Raw("Administrador");
+            }
+            else if ("S".Equals(item.Supervisor))
+            { 
+                @Html.Raw("Supervisor");
+            }
+            else
+            { 
+                @Html.Raw("Normal");
+            }
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", "Usuarios", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+        </table>
+    </div>

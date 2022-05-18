@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/style.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+    <link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection"/>
+	<!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Ccss/ie.css?" + @DateTime.Now.Ticks)" media="screen" />
+    <![endif]-->
+	<link href="@Url.Content("~/Content/Site.css?" + @DateTime.Now.Ticks)" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.dropdownPlain.js?" + @DateTime.Now.Ticks)"></script>
+    <script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/funciones.js?" + @DateTime.Now.Ticks)"></script>
+   <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+       <link href="@Url.Content("~/Content/blog.css")" rel="stylesheet" >
+       <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >
+        <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#busqueda").keyup(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                var current = window.location.pathname;
+                var querystring = "?q=" + $.trim($(this).val());
+                if (keycode == '13') {
+                    if ($.trim($(this).val()) != "") {
+                        window.location.href = current + querystring;
+                    } else {
+                        window.location.href = current;
+                    }
+                } else if ($.trim($(this).val()) == "") {
+                    window.location.href = current;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+        <form class="navbar-form navbar-left" role="search" style="width: 400px; padding-bottom: 0px; padding-top: 0px; margin-top: 0px; margin-bottom: 0px;">
+        <div class="form-inline">     
+        </div>
+        
+     </form>
+<div class="contenedor">
+ 
+    @RenderBody()
+ 
+    <script>
+        $(document).ready(function () {
+
+            if ($.browser.msie) //si es IE
+
+            {
+
+                if ($.browser.version == '7.0') {
+
+                    $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'scroll', 'height': '250px' });
+
+                    $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
+
+                    $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block' });
+
+                };//if browser IE7
+
+
+                if ($.browser.version == '8.0') {
+
+                    $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden', 'height': '250px' });
+
+                    $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
+
+                    $('.fixedHeader').css({ 'float': 'left', 'width': '98%' });
+
+                    $('.scrollContent').css({ 'float': 'left', 'height': '250px', 'overflow': 'scroll', 'width': '100%', 'clear': 'left' });
+
+                    $('.scrollTable th').css({ 'border': 'auto', 'width': '200px' });
+
+                    $('.scrollTable td').css({ 'border': 'auto', 'width': '200px' });
+
+                };//if browser IE8
+
+            }
+
+            else // si es FF o Chrome
+
+            {
+
+                $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden' });
+
+                $('.tableContainer table').css({ 'float': 'left', 'width': '100%' });
+
+                $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block', 'width': '98%' });
+
+                $('.scrollContent').css({ 'display': 'block', 'height': '250px', 'overflow': 'auto', 'width': '100%' });
+
+            }//if browser
+
+
+        }) //ready
+
+
+</script>
+</div>
+<div class="pie"></div>
+</body>
+</html>

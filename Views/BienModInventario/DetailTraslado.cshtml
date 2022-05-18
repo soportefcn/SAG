@@ -1,0 +1,109 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Detalle Traslado";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+    /* Conversion a mayusculas */
+    input[type="text"], textarea {
+        text-transform: uppercase;
+    }
+</style>
+<div id="SAGBox">
+
+    <h3>Control de Inventario</h3>
+    <label>  </label>
+    <div id="controles">
+
+    </div>
+    <div id="contenido">
+        <fieldset>
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3><b>Detalle Traslado</b></h3></div>
+                <div class="panel-body">
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 90px;">
+                            <label>Fecha Baja:</label>
+                        </div>
+                        <div class="form-group" style="margin-right: 110px;">
+                            @Html.TextBoxFor(model => model.Fecha, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+                        <div class="form-group" style="margin-right: 27px;">
+                            <label>Condición:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.CondicionText, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 50px;">
+                            <label><strong>Categoría del bien</strong></label>
+                        </div>
+                        <div class="form-group" style="margin-right: 25px;">
+                            <label>Familia:</label>
+                        </div>
+                        <div class="form-group" style="margin-right: 40px;">
+                            @Html.TextBoxFor(model => model.Familia, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group" style="margin-right: 25px;">
+                            <label>Subfamilia:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.SubFamilia, new { @style = "width: 200px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 56px;">
+                            <label>Descripcion Bien:</label>
+                        </div>
+                        <div class="form-group" style="margin-right: 40px;">
+                            @Html.TextBoxFor(model => model.DescripcionBien, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 96px;">
+                            <label>Ubicación:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.Ubicacion, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 46px;">
+                            <label>Ubicación Anterior:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.Procedencia, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 69px;">
+                            <label>Usuario Actual:</label>
+                        </div>
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.Usuario, new { @style = "width: 400px;", @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+
+                    <br />
+                    <div class="panel-footer">
+                        <div style="width: 400px ; display:inline-block">
+                            <a class="btn btn-success" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Traslados" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class="fa fa-search fa-fw"></span>BUSCAR</a>
+                        </div>
+                    </div>
+                </div>
+                @if (TempData["Message"] != null)
+                {
+                    @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+                }
+            </div>
+
+        </fieldset>
+    </div>
+</div>

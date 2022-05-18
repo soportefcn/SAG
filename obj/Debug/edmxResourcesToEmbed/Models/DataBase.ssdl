@@ -1,0 +1,2151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="codeni09Model.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="codeni09ModelStoreContainer">
+    <EntitySet Name="AltasMenores" EntityType="codeni09Model.Store.AltasMenores" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AmarrePlantilla" EntityType="codeni09Model.Store.AmarrePlantilla" store:Type="Tables" store:Schema="dbo" store:Name="AmarrePlantilla">
+      <DefiningQuery>SELECT 
+      [AmarrePlantilla].[Nombre_Plantilla] AS [Nombre_Plantilla], 
+      [AmarrePlantilla].[EstablecimientoID] AS [EstablecimientoID], 
+      [AmarrePlantilla].[Proyecto] AS [Proyecto], 
+      [AmarrePlantilla].[Naturaleza] AS [Naturaleza], 
+      [AmarrePlantilla].[Tipo_Registro] AS [Tipo_Registro], 
+      [AmarrePlantilla].[Codigo_Grupo] AS [Codigo_Grupo], 
+      [AmarrePlantilla].[Nombre_Grupo] AS [Nombre_Grupo], 
+      [AmarrePlantilla].[Codigo_Concepto] AS [Codigo_Concepto], 
+      [AmarrePlantilla].[Nombre_Concepto] AS [Nombre_Concepto], 
+      [AmarrePlantilla].[Codigo_CtaItem] AS [Codigo_CtaItem], 
+      [AmarrePlantilla].[Nombre_CtaItem] AS [Nombre_CtaItem], 
+      [AmarrePlantilla].[Totaliza] AS [Totaliza]
+      FROM [dbo].[AmarrePlantilla] AS [AmarrePlantilla]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="Articulo" EntityType="codeni09Model.Store.Articulo" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Asistencia" EntityType="codeni09Model.Store.Asistencia" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Banco" EntityType="codeni09Model.Store.Banco" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Bodega" EntityType="codeni09Model.Store.Bodega" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CalendarioAnual" EntityType="codeni09Model.Store.CalendarioAnual" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Cuenta" EntityType="codeni09Model.Store.Cuenta" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CuentaCorriente" EntityType="codeni09Model.Store.CuentaCorriente" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DepositoPlazo" EntityType="codeni09Model.Store.DepositoPlazo" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DeudaPendiente" EntityType="codeni09Model.Store.DeudaPendiente" store:Type="Tables" store:Schema="dbo" store:Name="DeudaPendiente">
+      <DefiningQuery>SELECT 
+      [DeudaPendiente].[ID] AS [ID], 
+      [DeudaPendiente].[Numero] AS [Numero], 
+      [DeudaPendiente].[Fecha_registro] AS [Fecha_registro], 
+      [DeudaPendiente].[Tipo_Acreedor] AS [Tipo_Acreedor], 
+      [DeudaPendiente].[Rut] AS [Rut], 
+      [DeudaPendiente].[Dv] AS [Dv], 
+      [DeudaPendiente].[Nombre] AS [Nombre], 
+      [DeudaPendiente].[Numero_Doc] AS [Numero_Doc], 
+      [DeudaPendiente].[DocumentoID] AS [DocumentoID], 
+      [DeudaPendiente].[Fecha_Doc] AS [Fecha_Doc], 
+      [DeudaPendiente].[Fecha_Ven_doc] AS [Fecha_Ven_doc], 
+      [DeudaPendiente].[Monto] AS [Monto], 
+      [DeudaPendiente].[Glosa] AS [Glosa], 
+      [DeudaPendiente].[CuentaID] AS [CuentaID], 
+      [DeudaPendiente].[Egreso] AS [Egreso], 
+      [DeudaPendiente].[Fecha_Egreso] AS [Fecha_Egreso], 
+      [DeudaPendiente].[Pagado] AS [Pagado], 
+      [DeudaPendiente].[Cerrado] AS [Cerrado], 
+      [DeudaPendiente].[Mes_Pro] AS [Mes_Pro], 
+      [DeudaPendiente].[Ano_Pro] AS [Ano_Pro], 
+      [DeudaPendiente].[EstablecimientoID] AS [EstablecimientoID], 
+      [DeudaPendiente].[ProyectoID] AS [ProyectoID]
+      FROM [dbo].[DeudaPendiente] AS [DeudaPendiente]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="Direccion" EntityType="codeni09Model.Store.Direccion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Documento" EntityType="codeni09Model.Store.Documento" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Establecimiento" EntityType="codeni09Model.Store.Establecimiento" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Familia" EntityType="codeni09Model.Store.Familia" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Folios" EntityType="codeni09Model.Store.Folios" store:Type="Tables" store:Schema="dbo" store:Name="Folios">
+      <DefiningQuery>SELECT 
+      [Folios].[Numero] AS [Numero], 
+      [Folios].[Tipo] AS [Tipo], 
+      [Folios].[Nombre_pc] AS [Nombre_pc], 
+      [Folios].[EstablecimientoID] AS [EstablecimientoID], 
+      [Folios].[ProyectoID] AS [ProyectoID]
+      FROM [dbo].[Folios] AS [Folios]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="FondoFijo" EntityType="codeni09Model.Store.FondoFijo" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Historico" EntityType="codeni09Model.Store.Historico" store:Type="Tables" store:Schema="dbo" store:Name="Historico">
+      <DefiningQuery>SELECT 
+      [Historico].[Tipo] AS [Tipo], 
+      [Historico].[Numero] AS [Numero], 
+      [Historico].[Linea] AS [Linea], 
+      [Historico].[Fecha] AS [Fecha], 
+      [Historico].[Ctacte] AS [Ctacte], 
+      [Historico].[Nombre_cta] AS [Nombre_cta], 
+      [Historico].[Cta_Contable] AS [Cta_Contable], 
+      [Historico].[Monto_Ingreso] AS [Monto_Ingreso], 
+      [Historico].[Glosa] AS [Glosa], 
+      [Historico].[Nro_Cheque] AS [Nro_Cheque], 
+      [Historico].[EstablecimientoID] AS [EstablecimientoID], 
+      [Historico].[Cerrado] AS [Cerrado], 
+      [Historico].[YearMov] AS [YearMov], 
+      [Historico].[MesMov] AS [MesMov], 
+      [Historico].[Proyecto] AS [Proyecto], 
+      [Historico].[Fecha_Cheque] AS [Fecha_Cheque], 
+      [Historico].[Monto_Cheque] AS [Monto_Cheque], 
+      [Historico].[Tipo_Beneficiario] AS [Tipo_Beneficiario], 
+      [Historico].[Rut] AS [Rut], 
+      [Historico].[Dv] AS [Dv], 
+      [Historico].[Nombre_Beneficiario] AS [Nombre_Beneficiario], 
+      [Historico].[Tipo_Origen] AS [Tipo_Origen], 
+      [Historico].[Comprobante_DP] AS [Comprobante_DP], 
+      [Historico].[DocumentoID] AS [DocumentoID], 
+      [Historico].[Nombre_Doc] AS [Nombre_Doc], 
+      [Historico].[Numero_Doc] AS [Numero_Doc], 
+      [Historico].[Monto_Doc] AS [Monto_Doc], 
+      [Historico].[Fecha_Emision] AS [Fecha_Emision], 
+      [Historico].[Fecha_Vencimiento] AS [Fecha_Vencimiento], 
+      [Historico].[Monto_Egreso] AS [Monto_Egreso], 
+      [Historico].[Nro_egreso] AS [Nro_egreso], 
+      [Historico].[Cta_Original] AS [Cta_Original], 
+      [Historico].[Nombre_Cta_Original] AS [Nombre_Cta_Original], 
+      [Historico].[ItemGastoID] AS [ItemGastoID], 
+      [Historico].[Nombre_Item] AS [Nombre_Item], 
+      [Historico].[Glosa_Global] AS [Glosa_Global], 
+      [Historico].[Uso_Cta] AS [Uso_Cta]
+      FROM [dbo].[Historico] AS [Historico]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="Honorarios" EntityType="codeni09Model.Store.Honorarios" store:Type="Tables" store:Schema="dbo" store:Name="Honorarios">
+      <DefiningQuery>SELECT 
+      [Honorarios].[Boleta] AS [Boleta], 
+      [Honorarios].[Fecha] AS [Fecha], 
+      [Honorarios].[Rut] AS [Rut], 
+      [Honorarios].[Dv] AS [Dv], 
+      [Honorarios].[Nombre] AS [Nombre], 
+      [Honorarios].[Neto] AS [Neto], 
+      [Honorarios].[Retencion] AS [Retencion], 
+      [Honorarios].[Bruto] AS [Bruto], 
+      [Honorarios].[Concepto] AS [Concepto], 
+      [Honorarios].[EstablecimientoID] AS [EstablecimientoID], 
+      [Honorarios].[ProyectoID] AS [ProyectoID], 
+      [Honorarios].[Ano] AS [Ano], 
+      [Honorarios].[Mes] AS [Mes], 
+      [Honorarios].[Porcentaje] AS [Porcentaje], 
+      [Honorarios].[Tipo] AS [Tipo], 
+      [Honorarios].[Egreso] AS [Egreso], 
+      [Honorarios].[Fecha_Egreso] AS [Fecha_Egreso], 
+      [Honorarios].[Beneficiario] AS [Beneficiario], 
+      [Honorarios].[Estado] AS [Estado]
+      FROM [dbo].[Honorarios] AS [Honorarios]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="IndiceGestion" EntityType="codeni09Model.Store.IndiceGestion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Intervencion" EntityType="codeni09Model.Store.Intervencion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Inventario" EntityType="codeni09Model.Store.Inventario" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ItemGasto" EntityType="codeni09Model.Store.ItemGasto" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="LineaAccion" EntityType="codeni09Model.Store.LineaAccion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Menores" EntityType="codeni09Model.Store.Menores" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Movimiento" EntityType="codeni09Model.Store.Movimiento" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Persona" EntityType="codeni09Model.Store.Persona" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Plantilla" EntityType="codeni09Model.Store.Plantilla" store:Type="Tables" store:Schema="dbo" store:Name="Plantilla">
+      <DefiningQuery>SELECT 
+      [Plantilla].[Nombre] AS [Nombre], 
+      [Plantilla].[EstablecimientoID] AS [EstablecimientoID], 
+      [Plantilla].[ProyectoID] AS [ProyectoID], 
+      [Plantilla].[Saldo_Inicial] AS [Saldo_Inicial], 
+      [Plantilla].[Aporte_Concejo] AS [Aporte_Concejo], 
+      [Plantilla].[Saldo_Inicial_Real] AS [Saldo_Inicial_Real], 
+      [Plantilla].[Mes_Inicio_Proyecto] AS [Mes_Inicio_Proyecto], 
+      [Plantilla].[Ano_Inicio_Proyecto] AS [Ano_Inicio_Proyecto], 
+      [Plantilla].[Mes1] AS [Mes1], 
+      [Plantilla].[Mes2] AS [Mes2], 
+      [Plantilla].[Mes3] AS [Mes3], 
+      [Plantilla].[Mes4] AS [Mes4], 
+      [Plantilla].[Mes5] AS [Mes5], 
+      [Plantilla].[Mes6] AS [Mes6], 
+      [Plantilla].[Mes7] AS [Mes7], 
+      [Plantilla].[Mes8] AS [Mes8], 
+      [Plantilla].[Mes9] AS [Mes9], 
+      [Plantilla].[Mes10] AS [Mes10], 
+      [Plantilla].[Mes11] AS [Mes11], 
+      [Plantilla].[Mes12] AS [Mes12]
+      FROM [dbo].[Plantilla] AS [Plantilla]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="PlantillaEjecucion" EntityType="codeni09Model.Store.PlantillaEjecucion" store:Type="Tables" store:Schema="dbo" store:Name="PlantillaEjecucion">
+      <DefiningQuery>SELECT 
+      [PlantillaEjecucion].[ID] AS [ID], 
+      [PlantillaEjecucion].[Nombre_Plantilla] AS [Nombre_Plantilla], 
+      [PlantillaEjecucion].[EstablecimientoID] AS [EstablecimientoID], 
+      [PlantillaEjecucion].[ProyectoID] AS [ProyectoID], 
+      [PlantillaEjecucion].[Naturaleza] AS [Naturaleza], 
+      [PlantillaEjecucion].[Tipo_Linea] AS [Tipo_Linea], 
+      [PlantillaEjecucion].[Grupo] AS [Grupo], 
+      [PlantillaEjecucion].[Tipo_Reg] AS [Tipo_Reg], 
+      [PlantillaEjecucion].[Concepto] AS [Concepto], 
+      [PlantillaEjecucion].[Descripcion] AS [Descripcion], 
+      [PlantillaEjecucion].[PptoMes1] AS [PptoMes1], 
+      [PlantillaEjecucion].[RealMes1] AS [RealMes1], 
+      [PlantillaEjecucion].[DesvMes1] AS [DesvMes1], 
+      [PlantillaEjecucion].[PorcenMes1] AS [PorcenMes1], 
+      [PlantillaEjecucion].[PptoMes2] AS [PptoMes2], 
+      [PlantillaEjecucion].[RealMes2] AS [RealMes2], 
+      [PlantillaEjecucion].[DesvMes2] AS [DesvMes2], 
+      [PlantillaEjecucion].[PorcenMes2] AS [PorcenMes2], 
+      [PlantillaEjecucion].[PptoMes3] AS [PptoMes3], 
+      [PlantillaEjecucion].[RealMes3] AS [RealMes3], 
+      [PlantillaEjecucion].[DesvMes3] AS [DesvMes3], 
+      [PlantillaEjecucion].[PorcenMes3] AS [PorcenMes3], 
+      [PlantillaEjecucion].[PptoMes4] AS [PptoMes4], 
+      [PlantillaEjecucion].[RealMes4] AS [RealMes4], 
+      [PlantillaEjecucion].[DesvMes4] AS [DesvMes4], 
+      [PlantillaEjecucion].[PorcenMes4] AS [PorcenMes4], 
+      [PlantillaEjecucion].[PptoMes5] AS [PptoMes5], 
+      [PlantillaEjecucion].[RealMes5] AS [RealMes5], 
+      [PlantillaEjecucion].[DesvMes5] AS [DesvMes5], 
+      [PlantillaEjecucion].[PorcenMes5] AS [PorcenMes5], 
+      [PlantillaEjecucion].[PptoMes6] AS [PptoMes6], 
+      [PlantillaEjecucion].[RealMes6] AS [RealMes6], 
+      [PlantillaEjecucion].[DesvMes6] AS [DesvMes6], 
+      [PlantillaEjecucion].[PorcenMes6] AS [PorcenMes6], 
+      [PlantillaEjecucion].[PptoMes7] AS [PptoMes7], 
+      [PlantillaEjecucion].[RealMes7] AS [RealMes7], 
+      [PlantillaEjecucion].[DesvMes7] AS [DesvMes7], 
+      [PlantillaEjecucion].[PorcenMes7] AS [PorcenMes7], 
+      [PlantillaEjecucion].[PptoMes8] AS [PptoMes8], 
+      [PlantillaEjecucion].[RealMes8] AS [RealMes8], 
+      [PlantillaEjecucion].[DesvMes8] AS [DesvMes8], 
+      [PlantillaEjecucion].[PorcenMes8] AS [PorcenMes8], 
+      [PlantillaEjecucion].[PptoMes9] AS [PptoMes9], 
+      [PlantillaEjecucion].[RealMes9] AS [RealMes9], 
+      [PlantillaEjecucion].[DesvMes9] AS [DesvMes9], 
+      [PlantillaEjecucion].[PorcenMes9] AS [PorcenMes9], 
+      [PlantillaEjecucion].[PptoMes10] AS [PptoMes10], 
+      [PlantillaEjecucion].[RealMes10] AS [RealMes10], 
+      [PlantillaEjecucion].[DesvMes10] AS [DesvMes10], 
+      [PlantillaEjecucion].[PorcenMes10] AS [PorcenMes10], 
+      [PlantillaEjecucion].[PptoMes11] AS [PptoMes11], 
+      [PlantillaEjecucion].[RealMes11] AS [RealMes11], 
+      [PlantillaEjecucion].[DesvMes11] AS [DesvMes11], 
+      [PlantillaEjecucion].[PorcenMes11] AS [PorcenMes11], 
+      [PlantillaEjecucion].[PptoMes12] AS [PptoMes12], 
+      [PlantillaEjecucion].[RealMes12] AS [RealMes12], 
+      [PlantillaEjecucion].[DesvMes12] AS [DesvMes12], 
+      [PlantillaEjecucion].[PorcenMes12] AS [PorcenMes12], 
+      [PlantillaEjecucion].[Total_Concepto] AS [Total_Concepto], 
+      [PlantillaEjecucion].[Fila] AS [Fila], 
+      [PlantillaEjecucion].[X] AS [X]
+      FROM [dbo].[PlantillaEjecucion] AS [PlantillaEjecucion]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="Programa" EntityType="codeni09Model.Store.Programa" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Proveedor" EntityType="codeni09Model.Store.Proveedor" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Proyecto" EntityType="codeni09Model.Store.Proyecto" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SistemaAsistencial" EntityType="codeni09Model.Store.SistemaAsistencial" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="sysdiagrams" EntityType="codeni09Model.Store.sysdiagrams" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TipoComprobante" EntityType="codeni09Model.Store.TipoComprobante" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Usuario" EntityType="codeni09Model.Store.Usuario" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_AltasMenores_Institutions" Association="codeni09Model.Store.FK_AltasMenores_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="AltasMenores" EntitySet="AltasMenores" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AmarrePlantillaSet_EstablecimientoSet" Association="codeni09Model.Store.FK_AmarrePlantillaSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="AmarrePlantilla" EntitySet="AmarrePlantilla" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ArticuloSet_FamiliaSet" Association="codeni09Model.Store.FK_ArticuloSet_FamiliaSet">
+      <End Role="Familia" EntitySet="Familia" />
+      <End Role="Articulo" EntitySet="Articulo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Asistencia_Institutions" Association="codeni09Model.Store.FK_Asistencia_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Asistencia" EntitySet="Asistencia" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Asistencia_ProyectoSet" Association="codeni09Model.Store.FK_Asistencia_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Asistencia" EntitySet="Asistencia" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Bodega_Institutions" Association="codeni09Model.Store.FK_Bodega_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Bodega_ProyectoSet" Association="codeni09Model.Store.FK_Bodega_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BodegaSet_DocumentoSet" Association="codeni09Model.Store.FK_BodegaSet_DocumentoSet">
+      <End Role="Documento" EntitySet="Documento" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BodegaSet_ProveedorSet" Association="codeni09Model.Store.FK_BodegaSet_ProveedorSet">
+      <End Role="Proveedor" EntitySet="Proveedor" />
+      <End Role="Bodega" EntitySet="Bodega" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_BancoSet" Association="codeni09Model.Store.FK_CuentaCorrienteSet_BancoSet">
+      <End Role="Banco" EntitySet="Banco" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_DireccionSet" Association="codeni09Model.Store.FK_CuentaCorrienteSet_DireccionSet">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_EstablecimientoSet" Association="codeni09Model.Store.FK_CuentaCorrienteSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CuentaCorrienteSet_ProyectoSet" Association="codeni09Model.Store.FK_CuentaCorrienteSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DepositoPlazoSet_CuentaCorrienteSet" Association="codeni09Model.Store.FK_DepositoPlazoSet_CuentaCorrienteSet">
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+      <End Role="DepositoPlazo" EntitySet="DepositoPlazo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DepositoPlazoSet_EstablecimientoSet" Association="codeni09Model.Store.FK_DepositoPlazoSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="DepositoPlazo" EntitySet="DepositoPlazo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DepositoPlazoSet_ProyectoSet" Association="codeni09Model.Store.FK_DepositoPlazoSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="DepositoPlazo" EntitySet="DepositoPlazo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_CuentaSet" Association="codeni09Model.Store.FK_DeudaPendienteSet_CuentaSet">
+      <End Role="Cuenta" EntitySet="Cuenta" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_DocumentoSet" Association="codeni09Model.Store.FK_DeudaPendienteSet_DocumentoSet">
+      <End Role="Documento" EntitySet="Documento" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_EstablecimientoSet" Association="codeni09Model.Store.FK_DeudaPendienteSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeudaPendienteSet_ProyectoSet" Association="codeni09Model.Store.FK_DeudaPendienteSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="DeudaPendiente" EntitySet="DeudaPendiente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Establecimiento_Persona" Association="codeni09Model.Store.FK_Establecimiento_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EstablecimientoSet_DireccionSet" Association="codeni09Model.Store.FK_EstablecimientoSet_DireccionSet">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EstablecimientoSet_SistemaAsistencialSet" Association="codeni09Model.Store.FK_EstablecimientoSet_SistemaAsistencialSet">
+      <End Role="SistemaAsistencial" EntitySet="SistemaAsistencial" />
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Folios_Institutions" Association="codeni09Model.Store.FK_Folios_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Folios" EntitySet="Folios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Folios_ProyectoSet" Association="codeni09Model.Store.FK_Folios_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Folios" EntitySet="Folios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_CuentaSet" Association="codeni09Model.Store.FK_FondoFijoSet_CuentaSet">
+      <End Role="Cuenta" EntitySet="Cuenta" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_EstablecimientoSet" Association="codeni09Model.Store.FK_FondoFijoSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_ItemGastoSet" Association="codeni09Model.Store.FK_FondoFijoSet_ItemGastoSet">
+      <End Role="ItemGasto" EntitySet="ItemGasto" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FondoFijoSet_ProyectoSet" Association="codeni09Model.Store.FK_FondoFijoSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="FondoFijo" EntitySet="FondoFijo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Historico_DocumentoSet" Association="codeni09Model.Store.FK_Historico_DocumentoSet">
+      <End Role="Documento" EntitySet="Documento" />
+      <End Role="Historico" EntitySet="Historico" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Historico_Institutions" Association="codeni09Model.Store.FK_Historico_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Historico" EntitySet="Historico" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Historico_ItemGastoSet" Association="codeni09Model.Store.FK_Historico_ItemGastoSet">
+      <End Role="ItemGasto" EntitySet="ItemGasto" />
+      <End Role="Historico" EntitySet="Historico" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Honorarios_Institutions" Association="codeni09Model.Store.FK_Honorarios_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Honorarios" EntitySet="Honorarios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Honorarios_ProyectoSet" Association="codeni09Model.Store.FK_Honorarios_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Honorarios" EntitySet="Honorarios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IndiceGestionSet_ProyectoSet" Association="codeni09Model.Store.FK_IndiceGestionSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="IndiceGestion" EntitySet="IndiceGestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IndiGestion_Institutions" Association="codeni09Model.Store.FK_IndiGestion_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="IndiceGestion" EntitySet="IndiceGestion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IntervencionSet_EstablecimientoSet" Association="codeni09Model.Store.FK_IntervencionSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Intervencion" EntitySet="Intervencion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InventarioSet_FamiliaSet" Association="codeni09Model.Store.FK_InventarioSet_FamiliaSet">
+      <End Role="Familia" EntitySet="Familia" />
+      <End Role="Inventario" EntitySet="Inventario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_InventarioSet_ProyectoSet" Association="codeni09Model.Store.FK_InventarioSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Inventario" EntitySet="Inventario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Inventories_Institutions" Association="codeni09Model.Store.FK_Inventories_Institutions">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Inventario" EntitySet="Inventario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Movimiento_CuentaCorriente" Association="codeni09Model.Store.FK_Movimiento_CuentaCorriente">
+      <End Role="CuentaCorriente" EntitySet="CuentaCorriente" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Movimiento_Persona" Association="codeni09Model.Store.FK_Movimiento_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_CuentaSet" Association="codeni09Model.Store.FK_MovimientoSet_CuentaSet">
+      <End Role="Cuenta" EntitySet="Cuenta" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_EstablecimientoSet" Association="codeni09Model.Store.FK_MovimientoSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_ProyectoSet" Association="codeni09Model.Store.FK_MovimientoSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MovimientoSet_TipoComprobanteSet" Association="codeni09Model.Store.FK_MovimientoSet_TipoComprobanteSet">
+      <End Role="TipoComprobante" EntitySet="TipoComprobante" />
+      <End Role="Movimiento" EntitySet="Movimiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Persona_Direccion" Association="codeni09Model.Store.FK_Persona_Direccion">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="Persona" EntitySet="Persona" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaEjecucionSet_EstablecimientoSet" Association="codeni09Model.Store.FK_PlantillaEjecucionSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="PlantillaEjecucion" EntitySet="PlantillaEjecucion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaEjecucionSet_ProyectoSet" Association="codeni09Model.Store.FK_PlantillaEjecucionSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="PlantillaEjecucion" EntitySet="PlantillaEjecucion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaSet_EstablecimientoSet" Association="codeni09Model.Store.FK_PlantillaSet_EstablecimientoSet">
+      <End Role="Establecimiento" EntitySet="Establecimiento" />
+      <End Role="Plantilla" EntitySet="Plantilla" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlantillaSet_ProyectoSet" Association="codeni09Model.Store.FK_PlantillaSet_ProyectoSet">
+      <End Role="Proyecto" EntitySet="Proyecto" />
+      <End Role="Plantilla" EntitySet="Plantilla" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Proveedor_Persona" Association="codeni09Model.Store.FK_Proveedor_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Proveedor" EntitySet="Proveedor" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProveedorSet_DireccionSet" Association="codeni09Model.Store.FK_ProveedorSet_DireccionSet">
+      <End Role="Direccion" EntitySet="Direccion" />
+      <End Role="Proveedor" EntitySet="Proveedor" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProyectoSet_ProgramaSet" Association="codeni09Model.Store.FK_ProyectoSet_ProgramaSet">
+      <End Role="Programa" EntitySet="Programa" />
+      <End Role="Proyecto" EntitySet="Proyecto" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SistemaAsistencial_LineaAccion" Association="codeni09Model.Store.FK_SistemaAsistencial_LineaAccion">
+      <End Role="LineaAccion" EntitySet="LineaAccion" />
+      <End Role="SistemaAsistencial" EntitySet="SistemaAsistencial" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuario_Persona" Association="codeni09Model.Store.FK_Usuario_Persona">
+      <End Role="Persona" EntitySet="Persona" />
+      <End Role="Usuario" EntitySet="Usuario" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="AltasMenores">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="RUT_NINIO" Type="numeric" />
+    <Property Name="Anio" Type="numeric" />
+    <Property Name="Mes" Type="smallint" />
+    <Property Name="Fecha" Type="datetime" />
+    <Property Name="Tipo_Mov" Type="smallint" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'codeni09.dbo.AmarrePlantilla' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="AmarrePlantilla">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+    </Key>
+    <Property Name="Nombre_Plantilla" Type="char" MaxLength="60" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="Proyecto" Type="numeric" />
+    <Property Name="Naturaleza" Type="smallint" />
+    <Property Name="Tipo_Registro" Type="smallint" />
+    <Property Name="Codigo_Grupo" Type="numeric" />
+    <Property Name="Nombre_Grupo" Type="char" MaxLength="35" />
+    <Property Name="Codigo_Concepto" Type="numeric" />
+    <Property Name="Nombre_Concepto" Type="char" MaxLength="43" />
+    <Property Name="Codigo_CtaItem" Type="numeric" />
+    <Property Name="Nombre_CtaItem" Type="char" MaxLength="35" />
+    <Property Name="Totaliza" Type="char" MaxLength="1" />
+  </EntityType>
+  <EntityType Name="Articulo">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="FamiliaID" Type="int" Nullable="false" />
+    <Property Name="Codigo_Articulo" Type="numeric" />
+    <Property Name="Codigo_UMedida" Type="smallint" />
+    <Property Name="Descripcion" Type="char" MaxLength="60" />
+    <Property Name="Saldo_Art" Type="float" />
+  </EntityType>
+  <EntityType Name="Asistencia">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="anio" Type="int" />
+    <Property Name="mes" Type="smallint" />
+    <Property Name="mes_palabras" Type="char" MaxLength="10" />
+    <Property Name="total_mes" Type="int" />
+    <Property Name="obs" Type="char" MaxLength="70" />
+  </EntityType>
+  <EntityType Name="Banco">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Bodega">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="Anio" Type="int" />
+    <Property Name="mes" Type="smallint" />
+    <Property Name="Tipo_mov" Type="char" MaxLength="1" />
+    <Property Name="NroDoc" Type="numeric" />
+    <Property Name="DocumentoID" Type="int" Nullable="false" />
+    <Property Name="Nombre_doc" Type="char" MaxLength="30" />
+    <Property Name="Fecha_mov" Type="datetime" />
+    <Property Name="ProveedorID" Type="int" Nullable="false" />
+    <Property Name="Descrip" Type="char" MaxLength="30" />
+    <Property Name="Cod_UM" Type="int" />
+    <Property Name="Nom_UM" Type="char" MaxLength="10" />
+    <Property Name="C_Salida" Type="float" />
+    <Property Name="C_entrada" Type="float" />
+    <Property Name="Obs" Type="char" MaxLength="120" />
+  </EntityType>
+  <EntityType Name="CalendarioAnual">
+    <Key>
+      <PropertyRef Name="ID_R" />
+    </Key>
+    <Property Name="ID_R" Type="numeric" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="COD_EST" Type="numeric" />
+    <Property Name="Anio" Type="numeric" />
+    <Property Name="Mes" Type="smallint" />
+    <Property Name="D1" Type="char" MaxLength="1" />
+    <Property Name="D2" Type="char" MaxLength="1" />
+    <Property Name="D3" Type="char" MaxLength="1" />
+    <Property Name="D4" Type="char" MaxLength="1" />
+    <Property Name="D5" Type="char" MaxLength="1" />
+    <Property Name="D6" Type="char" MaxLength="1" />
+    <Property Name="D7" Type="char" MaxLength="1" />
+    <Property Name="D8" Type="char" MaxLength="1" />
+    <Property Name="D9" Type="char" MaxLength="1" />
+    <Property Name="D10" Type="char" MaxLength="1" />
+    <Property Name="D11" Type="char" MaxLength="1" />
+    <Property Name="D12" Type="char" MaxLength="1" />
+    <Property Name="D13" Type="char" MaxLength="1" />
+    <Property Name="D14" Type="char" MaxLength="1" />
+    <Property Name="D15" Type="char" MaxLength="1" />
+    <Property Name="D16" Type="char" MaxLength="1" />
+    <Property Name="D17" Type="char" MaxLength="1" />
+    <Property Name="D18" Type="char" MaxLength="1" />
+    <Property Name="D19" Type="char" MaxLength="1" />
+    <Property Name="D20" Type="char" MaxLength="1" />
+    <Property Name="D21" Type="char" MaxLength="1" />
+    <Property Name="D22" Type="char" MaxLength="1" />
+    <Property Name="D23" Type="char" MaxLength="1" />
+    <Property Name="D24" Type="char" MaxLength="1" />
+    <Property Name="D25" Type="char" MaxLength="1" />
+    <Property Name="D26" Type="char" MaxLength="1" />
+    <Property Name="D27" Type="char" MaxLength="1" />
+    <Property Name="D28" Type="char" MaxLength="1" />
+    <Property Name="D29" Type="char" MaxLength="1" />
+    <Property Name="D30" Type="char" MaxLength="1" />
+    <Property Name="D31" Type="char" MaxLength="1" />
+    <Property Name="TotalDias" Type="smallint" />
+  </EntityType>
+  <EntityType Name="Cuenta">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="CuentaCorriente">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Numero" Type="char" MaxLength="20" />
+    <Property Name="ProyectoID" Type="int" />
+    <Property Name="BancoID" Type="int" />
+    <Property Name="Sucursal" Type="char" MaxLength="40" />
+    <Property Name="Saldo_Inicial" Type="money" />
+    <Property Name="DireccionID" Type="int" Nullable="false" />
+    <Property Name="Ejecutivo" Type="char" MaxLength="40" />
+    <Property Name="Fono" Type="char" MaxLength="20" />
+    <Property Name="Fax" Type="char" MaxLength="20" />
+    <Property Name="Movil" Type="char" MaxLength="20" />
+    <Property Name="Email" Type="char" MaxLength="50" />
+    <Property Name="Pweb" Type="char" MaxLength="100" />
+    <Property Name="Obs" Type="char" MaxLength="150" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="LineaCredito" Type="money" />
+    <Property Name="Desactiva" Type="smallint" />
+  </EntityType>
+  <EntityType Name="DepositoPlazo">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="Anio" Type="int" />
+    <Property Name="Mes" Type="smallint" />
+    <Property Name="CuentaCorrienteID" Type="int" />
+    <Property Name="Banco" Type="char" MaxLength="10" />
+    <Property Name="Monto" Type="money" />
+    <Property Name="interes" Type="float" />
+    <Property Name="intereses" Type="money" />
+    <Property Name="apagar" Type="money" />
+    <Property Name="comprobante" Type="char" MaxLength="15" />
+    <Property Name="fecha_dep" Type="datetime" />
+    <Property Name="fecha_ven" Type="datetime" />
+    <Property Name="obs" Type="char" MaxLength="200" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'codeni09.dbo.DeudaPendiente' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="DeudaPendiente">
+    <Key>
+      <PropertyRef Name="Numero" />
+    </Key>
+    <Property Name="ID" Type="int" />
+    <Property Name="Numero" Type="numeric" Nullable="false" />
+    <Property Name="Fecha_registro" Type="datetime" />
+    <Property Name="Tipo_Acreedor" Type="smallint" />
+    <Property Name="Rut" Type="numeric" />
+    <Property Name="Dv" Type="char" MaxLength="1" />
+    <Property Name="Nombre" Type="char" MaxLength="60" />
+    <Property Name="Numero_Doc" Type="numeric" />
+    <Property Name="DocumentoID" Type="int" />
+    <Property Name="Fecha_Doc" Type="datetime" />
+    <Property Name="Fecha_Ven_doc" Type="datetime" />
+    <Property Name="Monto" Type="money" />
+    <Property Name="Glosa" Type="char" MaxLength="150" />
+    <Property Name="CuentaID" Type="int" />
+    <Property Name="Egreso" Type="numeric" />
+    <Property Name="Fecha_Egreso" Type="datetime" />
+    <Property Name="Pagado" Type="char" MaxLength="1" />
+    <Property Name="Cerrado" Type="char" MaxLength="1" />
+    <Property Name="Mes_Pro" Type="smallint" />
+    <Property Name="Ano_Pro" Type="int" />
+    <Property Name="EstablecimientoID" Type="int" />
+    <Property Name="ProyectoID" Type="int" />
+  </EntityType>
+  <EntityType Name="Direccion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Calle" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Numero" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Depto" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Documento">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Establecimiento">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="SistemaAsistencialID" Type="int" Nullable="false" />
+    <Property Name="DireccionID" Type="int" Nullable="false" />
+    <Property Name="DirectorID" Type="int" Nullable="false" />
+    <Property Name="CodCodeni" Type="varchar" MaxLength="50" />
+    <Property Name="CodSename" Type="varchar" MaxLength="50" />
+    <Property Name="Nombre" Type="char" MaxLength="60" />
+    <Property Name="Institucion" Type="char" MaxLength="60" />
+    <Property Name="Fono" Type="char" MaxLength="20" />
+    <Property Name="Fax" Type="char" MaxLength="20" />
+    <Property Name="Plazas" Type="int" Nullable="false" />
+    <Property Name="PlazasAdicional" Type="int" Nullable="false" />
+    <Property Name="EdadMinima" Type="int" Nullable="false" />
+    <Property Name="EdadMaxima" Type="int" Nullable="false" />
+    <Property Name="ValorSubencion" Type="bigint" Nullable="false" />
+    <Property Name="Sexo" Type="char" MaxLength="1" />
+    <Property Name="Flexibilizacion" Type="char" MaxLength="1" />
+    <Property Name="DiasAtencion" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Familia">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Codigo" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Descripcion" Type="varchar" Nullable="false" MaxLength="60" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'codeni09.dbo.Folios' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="Folios">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+    </Key>
+    <Property Name="Numero" Type="numeric" />
+    <Property Name="Tipo" Type="smallint" />
+    <Property Name="Nombre_pc" Type="char" MaxLength="30" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FondoFijo">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="CuentaID" Type="int" />
+    <Property Name="EstablecimientoID" Type="int" />
+    <Property Name="ProyectoID" Type="int" />
+    <Property Name="ItemGastoID" Type="int" />
+    <Property Name="Fecha" Type="datetime" />
+    <Property Name="NroDocumento" Type="varchar" MaxLength="50" />
+    <Property Name="Monto" Type="money" />
+    <Property Name="Glosa" Type="varbinary" MaxLength="50" />
+    <Property Name="Ano" Type="int" />
+    <Property Name="Mes" Type="int" />
+    <Property Name="Cerrado" Type="char" MaxLength="1" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'codeni09.dbo.Historico' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="Historico">
+    <Key>
+      <PropertyRef Name="Numero" />
+      <PropertyRef Name="Ctacte" />
+      <PropertyRef Name="Cta_Contable" />
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="Proyecto" />
+      <PropertyRef Name="Rut" />
+      <PropertyRef Name="DocumentoID" />
+      <PropertyRef Name="ItemGastoID" />
+    </Key>
+    <Property Name="Tipo" Type="smallint" />
+    <Property Name="Numero" Type="numeric" Nullable="false" />
+    <Property Name="Linea" Type="int" />
+    <Property Name="Fecha" Type="datetime" />
+    <Property Name="Ctacte" Type="char" Nullable="false" MaxLength="15" />
+    <Property Name="Nombre_cta" Type="char" MaxLength="60" />
+    <Property Name="Cta_Contable" Type="numeric" Nullable="false" />
+    <Property Name="Monto_Ingreso" Type="money" />
+    <Property Name="Glosa" Type="char" MaxLength="250" />
+    <Property Name="Nro_Cheque" Type="numeric" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="Cerrado" Type="char" MaxLength="1" />
+    <Property Name="YearMov" Type="int" />
+    <Property Name="MesMov" Type="int" />
+    <Property Name="Proyecto" Type="numeric" Nullable="false" />
+    <Property Name="Fecha_Cheque" Type="datetime" />
+    <Property Name="Monto_Cheque" Type="money" />
+    <Property Name="Tipo_Beneficiario" Type="smallint" />
+    <Property Name="Rut" Type="numeric" Nullable="false" />
+    <Property Name="Dv" Type="char" MaxLength="1" />
+    <Property Name="Nombre_Beneficiario" Type="char" MaxLength="60" />
+    <Property Name="Tipo_Origen" Type="smallint" />
+    <Property Name="Comprobante_DP" Type="numeric" />
+    <Property Name="DocumentoID" Type="int" Nullable="false" />
+    <Property Name="Nombre_Doc" Type="char" MaxLength="30" />
+    <Property Name="Numero_Doc" Type="numeric" />
+    <Property Name="Monto_Doc" Type="money" />
+    <Property Name="Fecha_Emision" Type="datetime" />
+    <Property Name="Fecha_Vencimiento" Type="datetime" />
+    <Property Name="Monto_Egreso" Type="money" />
+    <Property Name="Nro_egreso" Type="numeric" />
+    <Property Name="Cta_Original" Type="numeric" />
+    <Property Name="Nombre_Cta_Original" Type="char" MaxLength="40" />
+    <Property Name="ItemGastoID" Type="int" Nullable="false" />
+    <Property Name="Nombre_Item" Type="char" MaxLength="40" />
+    <Property Name="Glosa_Global" Type="varchar" MaxLength="150" />
+    <Property Name="Uso_Cta" Type="smallint" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'codeni09.dbo.Honorarios' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="Honorarios">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+    </Key>
+    <Property Name="Boleta" Type="numeric" />
+    <Property Name="Fecha" Type="datetime" />
+    <Property Name="Rut" Type="numeric" />
+    <Property Name="Dv" Type="char" MaxLength="1" />
+    <Property Name="Nombre" Type="char" MaxLength="60" />
+    <Property Name="Neto" Type="money" />
+    <Property Name="Retencion" Type="money" />
+    <Property Name="Bruto" Type="money" />
+    <Property Name="Concepto" Type="char" MaxLength="150" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="Ano" Type="int" />
+    <Property Name="Mes" Type="smallint" />
+    <Property Name="Porcentaje" Type="float" />
+    <Property Name="Tipo" Type="char" MaxLength="1" />
+    <Property Name="Egreso" Type="numeric" />
+    <Property Name="Fecha_Egreso" Type="datetime" />
+    <Property Name="Beneficiario" Type="smallint" />
+    <Property Name="Estado" Type="char" MaxLength="2" />
+  </EntityType>
+  <EntityType Name="IndiceGestion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Correlativo" Type="int" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="Cod_factor" Type="smallint" />
+    <Property Name="Nombre_factor" Type="char" MaxLength="60" />
+    <Property Name="Cod_Variable" Type="smallint" />
+    <Property Name="Nombre_Variable" Type="char" MaxLength="60" />
+    <Property Name="Nombre_Indicador" Type="char" MaxLength="40" />
+    <Property Name="Indicador" Type="char" MaxLength="5" />
+    <Property Name="Estandar" Type="char" MaxLength="12" />
+    <Property Name="Estandar_Real" Type="float" />
+    <Property Name="Medicion" Type="smallint" />
+    <Property Name="Nombre_Medicion" Type="char" MaxLength="20" />
+    <Property Name="valor_1" Type="money" />
+    <Property Name="valor_2" Type="money" />
+    <Property Name="valor_3" Type="money" />
+    <Property Name="valor_4" Type="money" />
+    <Property Name="Cta_Item" Type="char" MaxLength="100" />
+    <Property Name="Cta_2" Type="char" MaxLength="100" />
+    <Property Name="Obs" Type="char" MaxLength="160" />
+  </EntityType>
+  <EntityType Name="Intervencion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="COD_MENOR" Type="numeric" Nullable="false" />
+    <Property Name="FECHA" Type="datetime" />
+    <Property Name="COD_INTER" Type="numeric" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="Cerrado" Type="char" MaxLength="1" />
+  </EntityType>
+  <EntityType Name="Inventario">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="decimal" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="Anio" Type="int" />
+    <Property Name="Descrip" Type="char" MaxLength="120" />
+    <Property Name="Ubicacion" Type="char" MaxLength="100" />
+    <Property Name="Estado" Type="smallint" />
+    <Property Name="Cantidad" Type="int" />
+    <Property Name="Valor" Type="money" />
+    <Property Name="Fecha_Mov" Type="datetime" />
+    <Property Name="Tipo_Mov" Type="char" MaxLength="1" />
+    <Property Name="Cod_Tipo_Mov" Type="decimal" />
+    <Property Name="Nom_Tipo_Mov" Type="char" MaxLength="25" />
+    <Property Name="Egreso" Type="decimal" />
+    <Property Name="Factura" Type="decimal" />
+    <Property Name="Acta" Type="decimal" />
+    <Property Name="Fecha_acta" Type="datetime" />
+    <Property Name="Obs" Type="char" MaxLength="250" />
+    <Property Name="FamiliaID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ItemGasto">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="LineaAccion">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Menores">
+    <Key>
+      <PropertyRef Name="ID_MENOR" />
+    </Key>
+    <Property Name="ID_MENOR" Type="numeric" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Rut" Type="numeric" Nullable="false" />
+    <Property Name="DV" Type="char" MaxLength="1" />
+    <Property Name="Nombre" Type="varchar" MaxLength="50" />
+    <Property Name="Obs" Type="varchar" MaxLength="100" />
+    <Property Name="Codigo_est" Type="real" />
+    <Property Name="Fecha_ing" Type="datetime" />
+    <Property Name="Fecha_Sal" Type="datetime" />
+    <Property Name="Estado" Type="smallint" />
+    <Property Name="Sexo" Type="smallint" />
+    <Property Name="Tipo" Type="smallint" />
+    <Property Name="NRO_INTERVEN" Type="smallint" />
+    <Property Name="DIAS_PERMANENCIA" Type="smallint" />
+    <Property Name="DIAS_A_PAGAR" Type="float" />
+  </EntityType>
+  <EntityType Name="Movimiento">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="EstablecimientoID" Type="int" />
+    <Property Name="ProyectoID" Type="int" />
+    <Property Name="TipoComprobanteID" Type="int" />
+    <Property Name="CuentaID" Type="int" />
+    <Property Name="BeneficiarioID" Type="int" Nullable="false" />
+    <Property Name="CuentaCorrienteID" Type="int" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" />
+    <Property Name="NumeroComprobante" Type="int" />
+    <Property Name="Periodo" Type="int" />
+    <Property Name="Mes" Type="int" />
+    <Property Name="Fecha" Type="datetime" />
+    <Property Name="Cheque" Type="int" />
+    <Property Name="Monto_Ingresos" Type="money" />
+    <Property Name="Monto_Egresos" Type="money" />
+    <Property Name="Saldo" Type="money" />
+    <Property Name="Linea" Type="int" />
+    <Property Name="Conciliado" Type="char" MaxLength="1" />
+    <Property Name="Mes_Anterior" Type="int" />
+    <Property Name="Periodo_Anterior" Type="int" />
+    <Property Name="Cerrado" Type="char" MaxLength="1" />
+    <Property Name="Saldo_cartola" Type="int" />
+    <Property Name="Dep_No_Consignados" Type="money" />
+    <Property Name="Cheques_No_Cobrados" Type="money" />
+    <Property Name="Gastos_Bancarios" Type="money" />
+    <Property Name="Descripcion" Type="text" />
+    <Property Name="Saldo_Libro" Type="money" />
+  </EntityType>
+  <EntityType Name="Persona">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="DireccionID" Type="int" Nullable="false" />
+    <Property Name="Rut" Type="varchar" Nullable="false" MaxLength="10" />
+    <Property Name="DV" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Nombres" Type="varchar" MaxLength="100" />
+    <Property Name="ApellidoParterno" Type="varchar" MaxLength="100" />
+    <Property Name="ApellidoMaterno" Type="varchar" MaxLength="100" />
+    <Property Name="FechaNacimiento" Type="datetime" />
+    <Property Name="Sexo" Type="varchar" MaxLength="50" />
+    <Property Name="EstadoCivil" Type="varchar" MaxLength="50" />
+    <Property Name="FechaIngreso" Type="datetime" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'codeni09.dbo.Plantilla' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="Plantilla">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+      <PropertyRef Name="Saldo_Inicial" />
+      <PropertyRef Name="Aporte_Concejo" />
+      <PropertyRef Name="Saldo_Inicial_Real" />
+    </Key>
+    <Property Name="Nombre" Type="char" MaxLength="60" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="Saldo_Inicial" Type="money" Nullable="false" />
+    <Property Name="Aporte_Concejo" Type="float" Nullable="false" />
+    <Property Name="Saldo_Inicial_Real" Type="float" Nullable="false" />
+    <Property Name="Mes_Inicio_Proyecto" Type="smallint" />
+    <Property Name="Ano_Inicio_Proyecto" Type="smallint" />
+    <Property Name="Mes1" Type="char" MaxLength="6" />
+    <Property Name="Mes2" Type="char" MaxLength="6" />
+    <Property Name="Mes3" Type="char" MaxLength="6" />
+    <Property Name="Mes4" Type="char" MaxLength="6" />
+    <Property Name="Mes5" Type="char" MaxLength="6" />
+    <Property Name="Mes6" Type="char" MaxLength="6" />
+    <Property Name="Mes7" Type="char" MaxLength="6" />
+    <Property Name="Mes8" Type="char" MaxLength="6" />
+    <Property Name="Mes9" Type="char" MaxLength="6" />
+    <Property Name="Mes10" Type="char" MaxLength="6" />
+    <Property Name="Mes11" Type="char" MaxLength="6" />
+    <Property Name="Mes12" Type="char" MaxLength="6" />
+  </EntityType>
+  <!--Errors Found During Generation:
+      warning 6002: The table/view 'codeni09.dbo.PlantillaEjecucion' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+  <EntityType Name="PlantillaEjecucion">
+    <Key>
+      <PropertyRef Name="EstablecimientoID" />
+      <PropertyRef Name="ProyectoID" />
+    </Key>
+    <Property Name="ID" Type="int" />
+    <Property Name="Nombre_Plantilla" Type="char" MaxLength="60" />
+    <Property Name="EstablecimientoID" Type="int" Nullable="false" />
+    <Property Name="ProyectoID" Type="int" Nullable="false" />
+    <Property Name="Naturaleza" Type="int" />
+    <Property Name="Tipo_Linea" Type="smallint" />
+    <Property Name="Grupo" Type="int" />
+    <Property Name="Tipo_Reg" Type="int" />
+    <Property Name="Concepto" Type="numeric" />
+    <Property Name="Descripcion" Type="char" MaxLength="60" />
+    <Property Name="PptoMes1" Type="money" />
+    <Property Name="RealMes1" Type="money" />
+    <Property Name="DesvMes1" Type="money" />
+    <Property Name="PorcenMes1" Type="float" />
+    <Property Name="PptoMes2" Type="money" />
+    <Property Name="RealMes2" Type="money" />
+    <Property Name="DesvMes2" Type="money" />
+    <Property Name="PorcenMes2" Type="float" />
+    <Property Name="PptoMes3" Type="money" />
+    <Property Name="RealMes3" Type="money" />
+    <Property Name="DesvMes3" Type="money" />
+    <Property Name="PorcenMes3" Type="float" />
+    <Property Name="PptoMes4" Type="money" />
+    <Property Name="RealMes4" Type="money" />
+    <Property Name="DesvMes4" Type="money" />
+    <Property Name="PorcenMes4" Type="float" />
+    <Property Name="PptoMes5" Type="money" />
+    <Property Name="RealMes5" Type="money" />
+    <Property Name="DesvMes5" Type="money" />
+    <Property Name="PorcenMes5" Type="float" />
+    <Property Name="PptoMes6" Type="money" />
+    <Property Name="RealMes6" Type="money" />
+    <Property Name="DesvMes6" Type="money" />
+    <Property Name="PorcenMes6" Type="float" />
+    <Property Name="PptoMes7" Type="money" />
+    <Property Name="RealMes7" Type="money" />
+    <Property Name="DesvMes7" Type="money" />
+    <Property Name="PorcenMes7" Type="float" />
+    <Property Name="PptoMes8" Type="money" />
+    <Property Name="RealMes8" Type="money" />
+    <Property Name="DesvMes8" Type="money" />
+    <Property Name="PorcenMes8" Type="float" />
+    <Property Name="PptoMes9" Type="money" />
+    <Property Name="RealMes9" Type="money" />
+    <Property Name="DesvMes9" Type="money" />
+    <Property Name="PorcenMes9" Type="float" />
+    <Property Name="PptoMes10" Type="money" />
+    <Property Name="RealMes10" Type="money" />
+    <Property Name="DesvMes10" Type="money" />
+    <Property Name="PorcenMes10" Type="float" />
+    <Property Name="PptoMes11" Type="money" />
+    <Property Name="RealMes11" Type="money" />
+    <Property Name="DesvMes11" Type="money" />
+    <Property Name="PorcenMes11" Type="float" />
+    <Property Name="PptoMes12" Type="money" />
+    <Property Name="RealMes12" Type="money" />
+    <Property Name="DesvMes12" Type="money" />
+    <Property Name="PorcenMes12" Type="float" />
+    <Property Name="Total_Concepto" Type="money" />
+    <Property Name="Fila" Type="int" />
+    <Property Name="X" Type="char" MaxLength="1" />
+  </EntityType>
+  <EntityType Name="Programa">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Sigla" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="Proveedor">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="PersonID" Type="int" Nullable="false" />
+    <Property Name="DireccionID" Type="int" Nullable="false" />
+    <Property Name="Fono" Type="char" MaxLength="20" />
+    <Property Name="Fax" Type="char" MaxLength="20" />
+    <Property Name="Email" Type="char" MaxLength="60" />
+    <Property Name="Contacto" Type="char" MaxLength="60" />
+    <Property Name="Pweb" Type="char" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Proyecto">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="ProgramaID" Type="int" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="SistemaAsistencial">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="LineaAccionID" Type="int" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" />
+    <Property Name="Abreviatura" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="128" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="TipoComprobante">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="PersonaID" Type="int" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Nivel" Type="smallint" />
+    <Property Name="Estado" Type="varchar" MaxLength="1" />
+    <Property Name="Password" Type="varchar" Nullable="false" MaxLength="33" />
+    <Property Name="Obs" Type="char" MaxLength="120" />
+    <Property Name="M1_1" Type="char" MaxLength="1" />
+    <Property Name="M1_2" Type="char" MaxLength="1" />
+    <Property Name="M1_3" Type="char" MaxLength="1" />
+    <Property Name="M1_4" Type="char" MaxLength="1" />
+    <Property Name="M1_5" Type="char" MaxLength="1" />
+    <Property Name="M1_6" Type="char" MaxLength="1" />
+    <Property Name="M1_7" Type="char" MaxLength="1" />
+    <Property Name="M1_8" Type="char" MaxLength="1" />
+    <Property Name="M1_9" Type="char" MaxLength="1" />
+    <Property Name="M1_10" Type="char" MaxLength="1" />
+    <Property Name="M2_1" Type="char" MaxLength="1" />
+    <Property Name="M2_2" Type="char" MaxLength="1" />
+    <Property Name="M2_3" Type="char" MaxLength="1" />
+    <Property Name="M2_4" Type="char" MaxLength="1" />
+    <Property Name="M2_5" Type="char" MaxLength="1" />
+    <Property Name="M2_6" Type="char" MaxLength="1" />
+    <Property Name="M2_7" Type="char" MaxLength="1" />
+    <Property Name="M2_8" Type="char" MaxLength="1" />
+    <Property Name="M2_9" Type="char" MaxLength="1" />
+    <Property Name="M2_10" Type="char" MaxLength="1" />
+    <Property Name="M2_11" Type="char" MaxLength="1" />
+    <Property Name="M2_12" Type="char" MaxLength="1" />
+    <Property Name="M2_13" Type="char" MaxLength="1" />
+    <Property Name="M2_14" Type="char" MaxLength="1" />
+    <Property Name="M2_15" Type="char" MaxLength="1" />
+    <Property Name="M2_16" Type="char" MaxLength="1" />
+    <Property Name="M2_17" Type="char" MaxLength="1" />
+    <Property Name="M2_18" Type="char" MaxLength="1" />
+    <Property Name="M2_19" Type="char" MaxLength="1" />
+    <Property Name="M2_20" Type="char" MaxLength="1" />
+    <Property Name="M2_21" Type="char" MaxLength="1" />
+    <Property Name="M2_22" Type="char" MaxLength="1" />
+    <Property Name="M2_23" Type="char" MaxLength="1" />
+    <Property Name="M2_24" Type="char" MaxLength="1" />
+    <Property Name="M2_25" Type="char" MaxLength="1" />
+    <Property Name="M2_26" Type="char" MaxLength="1" />
+    <Property Name="M2_27" Type="char" MaxLength="1" />
+    <Property Name="M2_28" Type="char" MaxLength="1" />
+    <Property Name="M2_29" Type="char" MaxLength="1" />
+    <Property Name="M2_30" Type="char" MaxLength="1" />
+    <Property Name="M3_1" Type="char" MaxLength="1" />
+    <Property Name="M3_2" Type="char" MaxLength="1" />
+    <Property Name="M3_3" Type="char" MaxLength="1" />
+    <Property Name="M3_4" Type="char" MaxLength="1" />
+    <Property Name="M3_5" Type="char" MaxLength="1" />
+    <Property Name="M3_6" Type="char" MaxLength="1" />
+    <Property Name="M3_7" Type="char" MaxLength="1" />
+    <Property Name="M3_8" Type="char" MaxLength="1" />
+    <Property Name="M3_9" Type="char" MaxLength="1" />
+    <Property Name="M4_1" Type="char" MaxLength="1" />
+    <Property Name="M4_2" Type="char" MaxLength="1" />
+    <Property Name="M4_3" Type="char" MaxLength="1" />
+    <Property Name="M4_4" Type="char" MaxLength="1" />
+    <Property Name="M4_5" Type="char" MaxLength="1" />
+    <Property Name="M4_6" Type="char" MaxLength="1" />
+    <Property Name="M4_7" Type="char" MaxLength="1" />
+    <Property Name="M4_8" Type="char" MaxLength="1" />
+    <Property Name="M4_9" Type="char" MaxLength="1" />
+    <Property Name="M4_10" Type="char" MaxLength="1" />
+    <Property Name="M4_11" Type="char" MaxLength="1" />
+    <Property Name="M4_12" Type="char" MaxLength="1" />
+    <Property Name="M5_1" Type="char" MaxLength="1" />
+    <Property Name="M5_2" Type="char" MaxLength="1" />
+    <Property Name="M5_3" Type="char" MaxLength="1" />
+    <Property Name="M5_4" Type="char" MaxLength="1" />
+    <Property Name="M5_5" Type="char" MaxLength="1" />
+    <Property Name="M5_6" Type="char" MaxLength="1" />
+    <Property Name="M5_7" Type="char" MaxLength="1" />
+    <Property Name="M5_8" Type="char" MaxLength="1" />
+    <Property Name="M5_9" Type="char" MaxLength="1" />
+    <Property Name="M5_10" Type="char" MaxLength="1" />
+    <Property Name="M5_11" Type="char" MaxLength="1" />
+    <Property Name="M5_12" Type="char" MaxLength="1" />
+    <Property Name="M5_13" Type="char" MaxLength="1" />
+    <Property Name="M5_14" Type="char" MaxLength="1" />
+    <Property Name="M5_15" Type="char" MaxLength="1" />
+    <Property Name="M5_16" Type="char" MaxLength="1" />
+    <Property Name="M6_1" Type="char" MaxLength="1" />
+    <Property Name="M6_2" Type="char" MaxLength="1" />
+    <Property Name="M6_3" Type="char" MaxLength="1" />
+    <Property Name="M6_4" Type="char" MaxLength="1" />
+    <Property Name="M6_5" Type="char" MaxLength="1" />
+    <Property Name="M6_6" Type="char" MaxLength="1" />
+    <Property Name="M6_7" Type="char" MaxLength="1" />
+    <Property Name="M6_8" Type="char" MaxLength="1" />
+    <Property Name="M6_9" Type="char" MaxLength="1" />
+    <Property Name="M6_10" Type="char" MaxLength="1" />
+    <Property Name="M6_11" Type="char" MaxLength="1" />
+    <Property Name="M7_1" Type="char" MaxLength="1" />
+    <Property Name="M7_2" Type="char" MaxLength="1" />
+    <Property Name="M7_3" Type="char" MaxLength="1" />
+    <Property Name="M7_4" Type="char" MaxLength="1" />
+    <Property Name="M7_5" Type="char" MaxLength="1" />
+    <Property Name="M7_6" Type="char" MaxLength="1" />
+    <Property Name="M7_7" Type="char" MaxLength="1" />
+    <Property Name="M7_8" Type="char" MaxLength="1" />
+    <Property Name="M7_9" Type="char" MaxLength="1" />
+  </EntityType>
+  <Association Name="FK_AltasMenores_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AltasMenores" Type="codeni09Model.Store.AltasMenores" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="AltasMenores">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AmarrePlantillaSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AmarrePlantilla" Type="codeni09Model.Store.AmarrePlantilla" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="AmarrePlantilla">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ArticuloSet_FamiliaSet">
+    <End Role="Familia" Type="codeni09Model.Store.Familia" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Articulo" Type="codeni09Model.Store.Articulo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Familia">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Articulo">
+        <PropertyRef Name="FamiliaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Asistencia_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Asistencia" Type="codeni09Model.Store.Asistencia" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Asistencia">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Asistencia_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Asistencia" Type="codeni09Model.Store.Asistencia" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Asistencia">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Bodega_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Store.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Bodega_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Store.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BodegaSet_DocumentoSet">
+    <End Role="Documento" Type="codeni09Model.Store.Documento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Store.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Documento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="DocumentoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BodegaSet_ProveedorSet">
+    <End Role="Proveedor" Type="codeni09Model.Store.Proveedor" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Bodega" Type="codeni09Model.Store.Bodega" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proveedor">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bodega">
+        <PropertyRef Name="ProveedorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_BancoSet">
+    <End Role="Banco" Type="codeni09Model.Store.Banco" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.Store.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Banco">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="BancoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_DireccionSet">
+    <End Role="Direccion" Type="codeni09Model.Store.Direccion" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.Store.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.Store.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CuentaCorrienteSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CuentaCorriente" Type="codeni09Model.Store.CuentaCorriente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CuentaCorriente">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DepositoPlazoSet_CuentaCorrienteSet">
+    <End Role="CuentaCorriente" Type="codeni09Model.Store.CuentaCorriente" Multiplicity="0..1" />
+    <End Role="DepositoPlazo" Type="codeni09Model.Store.DepositoPlazo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CuentaCorriente">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DepositoPlazo">
+        <PropertyRef Name="CuentaCorrienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DepositoPlazoSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1" />
+    <End Role="DepositoPlazo" Type="codeni09Model.Store.DepositoPlazo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DepositoPlazo">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DepositoPlazoSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DepositoPlazo" Type="codeni09Model.Store.DepositoPlazo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DepositoPlazo">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_CuentaSet">
+    <End Role="Cuenta" Type="codeni09Model.Store.Cuenta" Multiplicity="0..1" />
+    <End Role="DeudaPendiente" Type="codeni09Model.Store.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cuenta">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="CuentaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_DocumentoSet">
+    <End Role="Documento" Type="codeni09Model.Store.Documento" Multiplicity="0..1" />
+    <End Role="DeudaPendiente" Type="codeni09Model.Store.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Documento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="DocumentoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DeudaPendiente" Type="codeni09Model.Store.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeudaPendienteSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DeudaPendiente" Type="codeni09Model.Store.DeudaPendiente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DeudaPendiente">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Establecimiento_Persona">
+    <End Role="Persona" Type="codeni09Model.Store.Persona" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Establecimiento">
+        <PropertyRef Name="DirectorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EstablecimientoSet_DireccionSet">
+    <End Role="Direccion" Type="codeni09Model.Store.Direccion" Multiplicity="1" />
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Establecimiento">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EstablecimientoSet_SistemaAsistencialSet">
+    <End Role="SistemaAsistencial" Type="codeni09Model.Store.SistemaAsistencial" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SistemaAsistencial">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Establecimiento">
+        <PropertyRef Name="SistemaAsistencialID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Folios_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Folios" Type="codeni09Model.Store.Folios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Folios">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Folios_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Folios" Type="codeni09Model.Store.Folios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Folios">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_CuentaSet">
+    <End Role="Cuenta" Type="codeni09Model.Store.Cuenta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="FondoFijo" Type="codeni09Model.Store.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cuenta">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="CuentaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="FondoFijo" Type="codeni09Model.Store.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_ItemGastoSet">
+    <End Role="ItemGasto" Type="codeni09Model.Store.ItemGasto" Multiplicity="0..1" />
+    <End Role="FondoFijo" Type="codeni09Model.Store.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ItemGasto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="ItemGastoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FondoFijoSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="0..1" />
+    <End Role="FondoFijo" Type="codeni09Model.Store.FondoFijo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FondoFijo">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Historico_DocumentoSet">
+    <End Role="Documento" Type="codeni09Model.Store.Documento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Historico" Type="codeni09Model.Store.Historico" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Documento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Historico">
+        <PropertyRef Name="DocumentoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Historico_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Historico" Type="codeni09Model.Store.Historico" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Historico">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Historico_ItemGastoSet">
+    <End Role="ItemGasto" Type="codeni09Model.Store.ItemGasto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Historico" Type="codeni09Model.Store.Historico" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ItemGasto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Historico">
+        <PropertyRef Name="ItemGastoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Honorarios_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Honorarios" Type="codeni09Model.Store.Honorarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Honorarios">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Honorarios_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Honorarios" Type="codeni09Model.Store.Honorarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Honorarios">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IndiceGestionSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="IndiceGestion" Type="codeni09Model.Store.IndiceGestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="IndiceGestion">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IndiGestion_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="IndiceGestion" Type="codeni09Model.Store.IndiceGestion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="IndiceGestion">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IntervencionSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Intervencion" Type="codeni09Model.Store.Intervencion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Intervencion">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InventarioSet_FamiliaSet">
+    <End Role="Familia" Type="codeni09Model.Store.Familia" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Inventario" Type="codeni09Model.Store.Inventario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Familia">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Inventario">
+        <PropertyRef Name="FamiliaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_InventarioSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Inventario" Type="codeni09Model.Store.Inventario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Inventario">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Inventories_Institutions">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Inventario" Type="codeni09Model.Store.Inventario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Inventario">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Movimiento_CuentaCorriente">
+    <End Role="CuentaCorriente" Type="codeni09Model.Store.CuentaCorriente" Multiplicity="0..1" />
+    <End Role="Movimiento" Type="codeni09Model.Store.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CuentaCorriente">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="CuentaCorrienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Movimiento_Persona">
+    <End Role="Persona" Type="codeni09Model.Store.Persona" Multiplicity="1" />
+    <End Role="Movimiento" Type="codeni09Model.Store.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="BeneficiarioID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_CuentaSet">
+    <End Role="Cuenta" Type="codeni09Model.Store.Cuenta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Store.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cuenta">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="CuentaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Store.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Store.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MovimientoSet_TipoComprobanteSet">
+    <End Role="TipoComprobante" Type="codeni09Model.Store.TipoComprobante" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Movimiento" Type="codeni09Model.Store.Movimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TipoComprobante">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Movimiento">
+        <PropertyRef Name="TipoComprobanteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Persona_Direccion">
+    <End Role="Direccion" Type="codeni09Model.Store.Direccion" Multiplicity="1" />
+    <End Role="Persona" Type="codeni09Model.Store.Persona" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Persona">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaEjecucionSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PlantillaEjecucion" Type="codeni09Model.Store.PlantillaEjecucion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PlantillaEjecucion">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaEjecucionSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PlantillaEjecucion" Type="codeni09Model.Store.PlantillaEjecucion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PlantillaEjecucion">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaSet_EstablecimientoSet">
+    <End Role="Establecimiento" Type="codeni09Model.Store.Establecimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Plantilla" Type="codeni09Model.Store.Plantilla" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Establecimiento">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Plantilla">
+        <PropertyRef Name="EstablecimientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlantillaSet_ProyectoSet">
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Plantilla" Type="codeni09Model.Store.Plantilla" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Plantilla">
+        <PropertyRef Name="ProyectoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Proveedor_Persona">
+    <End Role="Persona" Type="codeni09Model.Store.Persona" Multiplicity="1" />
+    <End Role="Proveedor" Type="codeni09Model.Store.Proveedor" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Proveedor">
+        <PropertyRef Name="PersonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProveedorSet_DireccionSet">
+    <End Role="Direccion" Type="codeni09Model.Store.Direccion" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Proveedor" Type="codeni09Model.Store.Proveedor" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Direccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Proveedor">
+        <PropertyRef Name="DireccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProyectoSet_ProgramaSet">
+    <End Role="Programa" Type="codeni09Model.Store.Programa" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Proyecto" Type="codeni09Model.Store.Proyecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Programa">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Proyecto">
+        <PropertyRef Name="ProgramaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SistemaAsistencial_LineaAccion">
+    <End Role="LineaAccion" Type="codeni09Model.Store.LineaAccion" Multiplicity="0..1" />
+    <End Role="SistemaAsistencial" Type="codeni09Model.Store.SistemaAsistencial" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LineaAccion">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SistemaAsistencial">
+        <PropertyRef Name="LineaAccionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuario_Persona">
+    <End Role="Persona" Type="codeni09Model.Store.Persona" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Usuario" Type="codeni09Model.Store.Usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Persona">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Usuario">
+        <PropertyRef Name="PersonaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <!--Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.General' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="General">
+        <Property Name="Ancho_codigo_Familia" Type="smallint" />
+        <Property Name="Mes_Gestion" Type="smallint" />
+        <Property Name="Ano_Gestion" Type="smallint" />
+        <Property Name="Email" Type="char" MaxLength="80" />
+        <Property Name="Fecha_Dia" Type="datetime" />
+        <Property Name="Retencion" Type="float" />
+        <Property Name="Codigo_TipoDoc" Type="numeric" />
+        <Property Name="Nombre_TipoDoc" Type="char" MaxLength="40" />
+      </EntityType>
+      Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.Parametros' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="Parametros">
+        <Property Name="Mes_Gestion" Type="smallint" />
+        <Property Name="Ano_Gestion" Type="smallint" />
+        <Property Name="Codigo_est" Type="numeric" />
+        <Property Name="Nro_Ingreso" Type="numeric" />
+        <Property Name="Nro_Egreso" Type="numeric" />
+        <Property Name="Nro_Reintegro" Type="numeric" />
+        <Property Name="Nro_DP" Type="numeric" />
+        <Property Name="Mem_Linea1" Type="char" MaxLength="100" />
+        <Property Name="Mem_Linea2" Type="char" MaxLength="100" />
+        <Property Name="Mem_Linea3" Type="char" MaxLength="100" />
+        <Property Name="Mem_Linea4" Type="char" MaxLength="100" />
+        <Property Name="Titulo_Comp_Ingreso" Type="char" MaxLength="60" />
+        <Property Name="Titulo_Comp_Egreso" Type="char" MaxLength="60" />
+        <Property Name="Titulo_Comp_Reintegro" Type="char" MaxLength="60" />
+        <Property Name="Titulo_Comp_DP" Type="char" MaxLength="60" />
+        <Property Name="NroAP_Ingreso" Type="numeric" />
+        <Property Name="NroAP_Egreso" Type="numeric" />
+        <Property Name="NroAP_Reintegro" Type="numeric" />
+        <Property Name="NroAP_DP" Type="numeric" />
+        <Property Name="Ene" Type="char" MaxLength="1" />
+        <Property Name="Feb" Type="char" MaxLength="1" />
+        <Property Name="Mar" Type="char" MaxLength="1" />
+        <Property Name="Abr" Type="char" MaxLength="1" />
+        <Property Name="May" Type="char" MaxLength="1" />
+        <Property Name="Jun" Type="char" MaxLength="1" />
+        <Property Name="Jul" Type="char" MaxLength="1" />
+        <Property Name="Ago" Type="char" MaxLength="1" />
+        <Property Name="Sep" Type="char" MaxLength="1" />
+        <Property Name="Oct" Type="char" MaxLength="1" />
+        <Property Name="Nov" Type="char" MaxLength="1" />
+        <Property Name="Dic" Type="char" MaxLength="1" />
+        <Property Name="Codigo_CtaHonorarios" Type="numeric" />
+        <Property Name="Nombre_CtaHonorarios" Type="char" MaxLength="40" />
+        <Property Name="Nro_Int" Type="smallint" />
+      </EntityType>
+      Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.PlantillaSename' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="PlantillaSename">
+        <Property Name="Codigo_est" Type="numeric" />
+        <Property Name="Proyecto" Type="numeric" />
+        <Property Name="Periodo" Type="int" />
+        <Property Name="Tipo_Linea" Type="int" />
+        <Property Name="Tipo_reg" Type="int" />
+        <Property Name="Concepto" Type="numeric" />
+        <Property Name="Descripcion" Type="char" MaxLength="60" />
+        <Property Name="Mes1" Type="money" />
+        <Property Name="Mes2" Type="money" />
+        <Property Name="Mes3" Type="money" />
+        <Property Name="Mes4" Type="money" />
+        <Property Name="Mes5" Type="money" />
+        <Property Name="Mes6" Type="money" />
+        <Property Name="Mes7" Type="money" />
+        <Property Name="Mes8" Type="money" />
+        <Property Name="Mes9" Type="money" />
+        <Property Name="Mes10" Type="money" />
+        <Property Name="Mes11" Type="money" />
+        <Property Name="Mes12" Type="money" />
+        <Property Name="Total_Concepto" Type="money" />
+      </EntityType>
+      Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.PptoAmarreSename' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="PptoAmarreSename">
+        <Property Name="Codigo_est" Type="numeric" />
+        <Property Name="Proyecto" Type="numeric" />
+        <Property Name="Tipo_Concepto" Type="int" />
+        <Property Name="Codigo_Concepto" Type="numeric" />
+        <Property Name="Nombre_Concepto" Type="char" MaxLength="60" />
+        <Property Name="Tipo_Reg" Type="int" />
+        <Property Name="Codigo_Cta" Type="numeric" />
+        <Property Name="Nombre_Cta" Type="char" MaxLength="60" />
+      </EntityType>
+      Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.SaldoCuenta' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="SaldoCuenta">
+        <Property Name="Ctacte" Type="char" MaxLength="20" />
+        <Property Name="Periodo" Type="int" />
+        <Property Name="Cod_est" Type="numeric" />
+        <Property Name="SI_Periodo" Type="money" />
+        <Property Name="Saldo_actual" Type="money" />
+        <Property Name="SI_Enero" Type="money" />
+        <Property Name="SF_Enero" Type="money" />
+        <Property Name="SI_Febrero" Type="money" />
+        <Property Name="SF_Febrero" Type="money" />
+        <Property Name="SI_Marzo" Type="money" />
+        <Property Name="SF_Marzo" Type="money" />
+        <Property Name="SI_Abril" Type="money" />
+        <Property Name="SF_Abril" Type="money" />
+        <Property Name="SI_Mayo" Type="money" />
+        <Property Name="SF_Mayo" Type="money" />
+        <Property Name="SI_Junio" Type="money" />
+        <Property Name="SF_Junio" Type="money" />
+        <Property Name="SI_Julio" Type="money" />
+        <Property Name="SF_Julio" Type="money" />
+        <Property Name="SI_Agosto" Type="money" />
+        <Property Name="SF_Agosto" Type="money" />
+        <Property Name="SI_Septiembre" Type="money" />
+        <Property Name="SF_Septiembre" Type="money" />
+        <Property Name="SI_Octubre" Type="money" />
+        <Property Name="SF_Octubre" Type="money" />
+        <Property Name="SI_Noviembre" Type="money" />
+        <Property Name="SF_Noviembre" Type="money" />
+        <Property Name="SI_Diciembre" Type="money" />
+        <Property Name="SF_Diciembre" Type="money" />
+      </EntityType>
+      Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.Tablas_Alfanumericas' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="Tablas_Alfanumericas">
+        <Property Name="Tipo_tabla" Type="smallint" />
+        <Property Name="Codigo_Tabla" Type="char" MaxLength="12" />
+        <Property Name="Descripcion" Type="char" MaxLength="60" />
+        <Property Name="Atributo1" Type="smallint" />
+      </EntityType>
+      Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.Tablas_Numericas' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="Tablas_Numericas">
+        <Property Name="Tipo_Tabla" Type="smallint" />
+        <Property Name="Codigo_Tabla" Type="int" />
+        <Property Name="Descripcion" Type="char" MaxLength="60" />
+        <Property Name="Atributo1" Type="char" MaxLength="5" />
+        <Property Name="PA_Comp_Ingreso" Type="numeric" />
+        <Property Name="PA_Comp_Egreso" Type="numeric" />
+        <Property Name="PA_Comp_Reintegro" Type="numeric" />
+        <Property Name="PA_Comp_DP" Type="numeric" />
+        <Property Name="cod_est" Type="numeric" />
+        <Property Name="Proyecto" Type="numeric" />
+        <Property Name="Cta_Honorarios" Type="numeric" />
+        <Property Name="Nombre_Cta_Honorarios" Type="char" MaxLength="40" />
+      </EntityType>
+      Errors Found During Generation:
+      warning 6013: The table/view 'codeni09.dbo.Umedida' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="Umedida">
+        <Property Name="Codigo_Unidad" Type="smallint" />
+        <Property Name="Descripcion" Type="char" MaxLength="15" />
+        <Property Name="Nombre_Nemo" Type="char" MaxLength="5" />
+      </EntityType>-->
+</Schema>

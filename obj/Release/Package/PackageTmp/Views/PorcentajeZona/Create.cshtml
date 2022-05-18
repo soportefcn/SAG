@@ -1,0 +1,66 @@
+﻿@model SAG2.Models.PorcentajeZona
+@{
+    ViewBag.Title = "Ingresar Registro";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+    /* Conversion a mayusculas */
+    input[type="text"], textarea {
+        text-transform: uppercase;
+    }
+</style>
+<div id="SAGBox">
+
+    <h3>Porcentaje Zona</h3>
+    <label>  </label>
+    <div id="controles">
+
+    </div>
+    <div id="contenido">
+        @using (Html.BeginForm("Save", "PorcentajeZona", FormMethod.Post))
+        {
+            @Html.ValidationSummary(true)
+            <fieldset>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3><b>Datos del Porcentaje</b></h3></div>
+                    <div class="panel-body">
+                        <div class="form-inline">
+                            <div class="form-group" style="margin-right: 10px;">
+                                Comunas
+                            </div>
+                            <div class="form-group" style="margin-right: 10px; width: 350px;">
+                              @Html.DropDownList("ComunaID", null, "-- SELECCIONE UNA COMUNA --", new { @class = "form-control"} )
+                                
+                            </div>
+                        
+                            <div class="form-group" style="margin-right: 10px;">
+                                @Html.Label("Porcentaje:")
+                            </div>
+                            <div class="form-group" style="margin-right: 10px;">
+                                @Html.TextBoxFor(model=> model.Valor, new {@class="form-control", @type="number", @max="100", @min="0"})
+                            </div>
+                        </div>
+                        <hr>
+                        <p class="alert alert-info">Aquí debería ir la lista de comunas para ir agregando su % correspondiente, para mostrar cuando se genere el upload de intervenciones <br>
+                        Falta campo comunaID en la base de datos.</p>
+                    </div>
+                    <div class="panel-footer">
+                        <div style="width: 400px ; display:inline-block">
+                            <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class="fa fa-search fa-fw"></span>BUSCAR</a>
+                            <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/PorcentajeZona/Create"><span class="fa fa-file-o  fa-fw"></span>NUEVO</a>
+                        </div>
+                        <div style="float :right;display:inline-block">
+                            <input type="submit" value="Guardar" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+                @if (TempData["Message"] != null)
+                {
+                    @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+                }
+            </fieldset>
+        }
+    </div>
+</div>

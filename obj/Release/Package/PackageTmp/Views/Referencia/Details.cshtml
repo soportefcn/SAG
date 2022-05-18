@@ -1,0 +1,40 @@
+﻿@model SAG2.Models.Referencia
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Referencia</legend>
+
+    <div class="display-label">GRUPO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GRUPO)
+    </div>
+
+    <div class="display-label">VALOR</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VALOR)
+    </div>
+
+    <div class="display-label">PERIODO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PERIODO)
+    </div>
+
+    <div class="display-label">PREDETERMINADO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PREDETERMINADO)
+    </div>
+
+    <div class="display-label">ESTADO</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ESTADO)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

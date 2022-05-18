@@ -1,0 +1,169 @@
+﻿@model IEnumerable<SAG2.Models.BoletaHonorario>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Honorarios";
+    var totalBruto = 0;
+    var totalRetencion = 0;
+    var totalLiquido = 0;
+
+    var Meses = new string[13]
+    {
+        "",
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <style type="text/css" media="all">
+    @@page
+    {
+    size: landscape;
+    margin: 2cm;
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+    font-size: 10px;    
+    }
+    
+    th 
+    {
+    font-size: 12px;    
+    }
+    h2 {
+        text-align: center;
+    }
+    .registros td
+    {
+        border: 0;    
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+    </style>
+<script language="javascript" type="text/javascript">
+       <!--
+    function printThis() {
+        window.print();
+        setTimeout('window.close()', 10);
+        //self.close();
+    }
+        //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Consejo de Defensa del Niño<br />
+    @Html.Raw(@ViewBag.Proyecto)</strong></td>
+    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2>@ViewBag.Title</h2>
+<div align="right">Período @Html.Raw(Meses[@ViewBag.Mes].ToString()) de @Html.Raw(@ViewBag.Periodo.ToString())</div>
+    <table cellpadding="5" border="0" style="width: 100%;" cellspacing="0">
+        <tr>
+            <th style="border-left: 1px solid black;" align="center" width="50px">Fecha</th>
+            <th align="center" width="60px" style="white-space: nowrap;">Nº Boleta</th>
+            <th align="center" width="60px" style="white-space: nowrap;">Nº Egreso</th>
+
+            <th align="left" width="50px">Rut</th>
+            <th align="left">Beneficiario</th>
+
+            <th align="left">Glosa</th>            
+            <th align="right" width="60px" style="white-space: nowrap;">Bruto $</th>
+            <th align="right" width="90px" style="white-space: nowrap;">Retención $</th>
+            <th align="right" width="50px" style="border-right: 1px solid black;" style="white-space: nowrap;">Líquido $</th>           
+        </tr>
+    @foreach (var item in Model)
+    {
+        totalBruto = totalBruto + item.Bruto;
+        totalRetencion = totalRetencion + item.Retencion;
+        totalLiquido = totalLiquido + item.Neto;
+            
+         <tr class="registros">
+            <td align="center" style="white-space: nowrap;">
+                @item.Fecha.ToShortDateString()
+            </td>
+            <td align="center">
+                @item.NroBoleta.ToString()
+            </td>
+            <td>
+                @if (item.EgresoID != null)
+                {
+                    @Html.Raw(@item.Egreso.NumeroComprobante.ToString());
+                }
+            </td>
+                @if (item.Persona != null)
+                    {
+                        <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.Persona.Rut)-@Html.DisplayFor(modelItem => item.Persona.DV)</td>
+                        <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.Persona.NombreCompleto)</td>
+
+                    }
+                    else if (item.Proveedor != null)
+                    {
+                        <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.Proveedor.Rut)-@Html.DisplayFor(modelItem => item.Proveedor.DV)</td>
+                        <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.Proveedor.Nombre)</td>
+                    }
+                    else
+                    { 
+                        <td style="white-space: nowrap;">@item.Rut-@item.DV</td>
+                        <td style="white-space: nowrap;">@item.Beneficiario</td>
+                    }
+            <td>
+                <div style="white-space: nowrap; overflow: hidden; width: 210px;">
+                @Html.DisplayFor(modelItem => item.Concepto)
+                </div>
+            </td>
+            <td align="right">
+                <strong>
+                $@item.Bruto.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                <strong>
+                $@item.Retencion.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                <strong>
+                $@item.Neto.ToString("#,##0")
+                </strong>
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="6" align="right" style="border-top: 1px solid black; font-size: 100%;">Total:</td>
+        <td align="right" style="border-top: 1px solid black; font-size: 100%;">$@totalBruto.ToString("#,##0")</td>
+        <td align="right" style="border-top: 1px solid black; font-size: 100%;">$@totalRetencion.ToString("#,##0")</td>
+        <td align="right" style="border-top: 1px solid black; font-size: 100%;">$@totalLiquido.ToString("#,##0")</td>
+    </tr>
+    </table>
+       <br /><br /><br /><br /><br />
+   <table style="width: 100%;">
+    <tr>
+      
+        <td width="33%" align="right" style="font-size: 14px;">_______________________<br />Firma y Timbre Director (a) </td>
+    </tr>
+</table>
+</body>
+</html>

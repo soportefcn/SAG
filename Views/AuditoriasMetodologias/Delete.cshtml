@@ -1,0 +1,33 @@
+﻿@model SAG2.Models.AuditoriasMetodologia
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>AuditoriasMetodologia</legend>
+
+    <div class="display-label">Metodologia</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Metodologia)
+    </div>
+
+    <div class="display-label">Orden</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Orden)
+    </div>
+
+    <div class="display-label">Activo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Activo)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

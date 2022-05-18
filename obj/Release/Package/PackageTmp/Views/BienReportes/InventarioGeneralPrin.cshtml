@@ -1,0 +1,96 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Reporte";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>
+<h2>Reportes</h2>
+
+@using (Html.BeginForm("InventarioGeneralPrin", "BienReportes", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+<table style="width: 70%">
+    <tr>
+        <td colspan="2" style="padding-right: 30px;"><strong>Seleccione un Proyecto:</strong></td>
+        <td colspan ="2"style="padding-right: 30px;">
+            @Html.DropDownList("proyecto",  new SelectList(ViewBag.comboproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete"})
+        </td>
+        <td rowspan="2"><button type="submit" class="btn btn-default">Filtrar</button></td>
+    </tr>
+</table>
+}
+<br /><br />
+
+
+    @if (Model.ID > 0 && Model.lista.Count() > 0)
+    {
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr>
+                    @if (ViewBag.General > 0)
+                    {
+                        <td width="20%" style="text-align:center;"><a class="btn btn-info" href="@Url.Action("InformeGeneralPrin", "BienReportes", new { id = Model.ID })">Informe General</a></td>
+                    }
+                    else
+                    {
+                        <td width="20%" style="text-align:center;"></td>
+                    }
+
+                </tr>
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr>
+                    <td style="text-align:center;"><h3 style="color:darkorange;">No hay Informes que generar.</h3></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><h6 style="color:red;">*Debe seleccionar un proyecto que contenga bienes y esten autorizados por el auditor.</h6></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    }
+
+    @if (TempData["Message"] != null)
+    {
+        @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+    }
+
+
+        @*<script type="text/javascript">
+            $(document).ready(function () {
+                $(".js-autocomplete").select2();
+
+             $("#proyecto").change(function () {
+            $("#Ubicacion").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetProyectoBien")', // we are calling json method
+                dataType: 'json',
+                data: { id: $("#proyecto").val() },
+                // here we are get value of selected country and passing same value
+                //as inputto json method GetStates.
+                success: function (dependencia) {
+                    // states contains the JSON formatted list
+                    // of states passed from the controller
+                    $.each(dependencia, function (i, dependencia) {
+                        $("#Ubicacion").append('<option value="' + dependencia.Value + '">' +
+                            dependencia.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Error Al Cargar las dependencias' + ex);
+                }
+            });
+            return false;
+        })
+            });
+        </script>*@
+

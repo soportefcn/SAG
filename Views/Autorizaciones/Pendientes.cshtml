@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SAG2.Models.Autorizacion>
+@{
+    ViewBag.Title = "Autorizaciones pendientes";
+    int i = 0;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+}
+<div class="permisos">
+    <h2>@ViewBag.Title</h2>
+    Ordenado por fecha de solicitud (las más nuevas primero)<br /><br />
+    <table class="table table-hover table-bordered">
+        <tr>
+            <th>#</th>
+            <th>Proyecto</th>
+            <th>Tipo Comp.</th>
+            <th># Comp.</th>
+            <th>Solicitado por</th>
+            <th>Tipo solicitud</th>
+            <th>Fecha solicitud</th>
+            <th class="controles"></th>
+        </tr>
+@foreach (var item in Model)
+{
+    SAG2.Models.Movimiento original = db.Movimiento.Find(item.OriginalID);
+    SAG2.Models.Movimiento modificado = db.Movimiento.Find(item.ModificadoID);
+    SAG2.Models.Persona persona = db.Persona.Find(item.SolicitaID);
+    i++;
+        <tr @if (item.Autorizado != null)
+            {@Html.Raw("style=\"opacity: 0.5\"");}>
+            <td align="center">@i</td>
+            <td align="left">@try
+                               {@original.Proyecto.NombreLista}
+                               catch (Exception)
+                               {
+                                   try
+                                   {@modificado.Proyecto.NombreLista}
+                                   catch (Exception) { }
+                               }</td>
+            <td align="center">@try
+                               {@original.TipoComprobante.Nombre}
+                               catch (Exception)
+                               {
+                                   try
+                                   {@modificado.TipoComprobante.Nombre}
+                                   catch (Exception) { }
+                               }</td>
+            <td align="center">@try
+                               {@original.NumeroComprobante}
+                               catch (Exception)
+                               {
+                                   try
+                                   {@modificado.NumeroComprobante}
+                                   catch (Exception) { }
+                               }</td>
+            <td>@persona.NombreCompleto</td>
+            <td align="center">@item.Tipo</td>
+            <td align="center">@item.FechaSolicitud</td>
+            <td>
+            @if (item.Autorizado == null)
+            {
+                <a href="./Autorizar/@item.ID" title="Autorizar" class="Autorizar"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" width="15" height="15" style="border: 0;" /></a>
+                <a href="./Rechazar/@item.ID" title="No autorizar"><img src="@Url.Content("~/Content/Images/Delete.png")" width="15" height="15" style="border: 0;" /></a>
+            }
+            else if (item.Autorizado.Equals("S"))
+            { 
+                @Html.Raw("Autorizado");
+            }
+            else
+            { 
+                @Html.Raw("Rechazado");
+            }
+            </td>
+        </tr>
+   
+}
+    </table>
+</div>

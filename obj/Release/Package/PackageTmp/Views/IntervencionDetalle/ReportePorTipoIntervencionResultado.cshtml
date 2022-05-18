@@ -1,0 +1,128 @@
+﻿@model SAG2.Models.IntervencionResumen
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Intervenciones por Tipo Intervención";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    //List<SAG2.Models.IntervencionResumen> inter = db.IntervencionResumen.ToList();
+    List<SAG2.Models.IntervencionResumen> intervenciones = new List<SAG2.Models.IntervencionResumen>();
+    List<SAG2.Models.Region> regiones = db.Region.ToList();
+    List<SAG2.Models.TipoProyecto> tipoPro = db.TipoProyecto.ToList();
+    List<SAG2.Models.LineasAtencion> linea = db.LineasAtencion.ToList();
+    List<SAG2.Models.Comuna> comunas = db.Comuna.ToList();
+    List<SAG2.Models.EstadoIntervencion> estadoInt = db.EstadoIntervencion.ToList();
+    List<SAG2.Models.Proyecto> pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
+    int proyectoID = Model.Tipo;
+
+
+    //int Periodo = @ViewBag.Periodo;
+    // int Mes = @ViewBag.Mes;
+}
+<div id="SAGBox" style="width: 100%;">
+    <h2>@ViewBag.Title</h2>
+    @using (Html.BeginForm())
+    {
+
+        <fieldset>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @*<select name="Proyecto" id="Proyecto" class="js-autocomplete">
+                        <option value="-1"> - Seleccione proyecto</option>
+                        @foreach (SAG2.Models.Proyecto Proyecto in pro)
+                        {
+                            if (proyectoID == Proyecto.ID)
+                            {
+                                <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                            }
+                            else
+                            {
+                                <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                            }
+                        }
+                    </select>*@
+
+                </div>
+                <div class="ocultoImpresion" style="margin-left:15px;">
+                    <a class="btn btn-info" href="@Url.Action("ReporteTipoIntervencionResultadoEX", "IntervencionDetalle", new { id = Model.Tipo })">Descargar Excel</a>
+                    <a class="btn btn-info" href="@Url.Action("Reporteportipointervencion", "IntervencionDetalle", new { id = Model.ID })">Volver a generar resultados</a>
+                </div>
+                <br />
+                <br />
+            </div>
+        </fieldset>
+
+    }
+    <table class="table " style="margin-bottom: 0px;">
+
+    </table>
+    <div style="height: 100%; overflow: scroll;">
+        <table class="table table-striped table-bordered">
+            @{List<SAG2.Models.IntervencionResumen> inter = db.IntervencionResumen.ToList();
+                List<SAG2.Models.IntervencionDetalle> interD = db.IntervencionDetalle.ToList();}
+            <tr>
+                <th style="width: 60px;">Período</th>
+                <th style="width: 35px;">Mes</th>
+                <th style="width: 55px; text-align: center;">Proyecto</th>
+                <th style="width: 55px; text-align: center;">Cod. Sename</th>
+                <th style="width: 100px; text-align: center;" align="center">Tipo Proyecto</th>
+                <th style="width: 100px; text-align: center;">Línea de protección</th>
+                <th style="width: 60px; text-align: center;">Región</th>
+                <th style="width: 60px;">Comuna</th>
+                <th style=" width: 60px; text-align: center;">Tipo</th>
+                <th nowrap style="text-align: center; width: 60px; ">N° Interv.</th>
+                <th nowrap style="text-align: center;">Estado</th>
+                <th nowrap style=" width: 60px; text-align: center;">Monto Intervención</th>
+                @*<th nowrap style=" width: 60px;">N° Interv. Deuda</th>*@
+                <th nowrap style=" width: 90px; text-align: center;">Monto Pagado</th>
+                <th nowrap style=" width: 90px; text-align: center;">Saldo Pendiente Deuda</th>
+            </tr>
+            @foreach (var item in inter)
+            {
+                var numInterDeuda = 0;
+                var numInter = interD.Where(p => p.ProyectoID == item.ProyectoID).Where(m => m.Mes == item.Mes).Where(a => a.Anio == item.Anio).Where(d => d.Bis == item.Tipo).Sum(n => n.TotalIntervencionesAPagar);
+                var montoDeuda = item.Monto;
+                var saldo = item.Valor - item.Monto; 
+                if (item.EstadoID == 2)
+                {
+                    numInterDeuda = interD.Where(p => p.ProyectoID == item.ProyectoID).Where(m => m.Mes == item.Mes).Where(a => a.Anio == item.Anio).Where(d => d.Bis == item.Tipo).Sum(n => n.TotalIntervencionesAPagar);
+                }
+                if (item.EstadoID == 2)
+                {
+                    montoDeuda = item.Monto;
+                }
+
+                var reg = regiones.Find(p => p.ID == item.RegionID).Nombre;
+                var nombrePro = pro.Find(p => p.ID == item.ProyectoID).Nombre;
+                var tp = tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).Nombre;
+                var tpID = tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).ID;
+                var cSename = pro.Find(p => p.ID == item.ProyectoID).CodSename;
+                var lin = linea.Find(d => d.ID == tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).LineasAtencionID).Sigla;
+                var com = comunas.Find(p => p.ID == item.ComunaID).Nombre;
+                var ie = estadoInt.Find(p => p.ID == item.EstadoID).Nombre;
+
+                if (proyectoID == item.Tipo)
+                {
+                    <tr>
+                        <th style="width: 60px;">@item.Anio</th>
+                        <th style="width: 35px;">@item.Mes</th>
+                        <th style="width: 55px;">@nombrePro</th>
+                        <th style="width:55px;">@cSename</th>
+                        <th style="width: 100px;">@tp</th>
+                        <th style="width: 100px;">@lin</th>
+                        <th style=" width: 60px;">@reg  </th>
+                        <th style=" width: 60px;">@com</th>
+                        <th style=" width: 60px;">@item.Descripcion</th>
+                        <th>@numInter</th>
+                        <th nowrap style=" width: 60px;">@ie</th>
+                        <th nowrap style=" width: 60px;">$@item.Valor.ToString("#,##0")</th>
+                        @*<th style=" width: 60px;">@numInterDeuda</th>*@
+                        <th style=" width: 60px;">$@montoDeuda.ToString("#,##0")</th>
+                        <th style=" width: 60px;">$@saldo.ToString("#,##0")</th>
+                    </tr>
+                }
+
+            }
+        </table>
+    </div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

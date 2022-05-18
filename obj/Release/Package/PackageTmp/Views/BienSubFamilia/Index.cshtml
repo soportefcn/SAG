@@ -1,0 +1,49 @@
+﻿@model IEnumerable<SAG2.Models.BienSubFamiliaViewModel>
+@{
+    ViewBag.Title = "Mantenedor de SubFamilias";
+}
+
+<h2>Mantenedor de Sub Familias</h2>
+<p class="text-right">
+    <a href="@Url.Action("Create")" class="btn btn-primary">Crear Sub Familia</a>
+</p>
+
+@if (TempData["Error"] != null)
+{
+    <div class="bg-danger">
+        <p><strong>Error:</strong> @TempData["Error"].ToString()</p>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="bg-success">
+        <p><strong>Success:</strong> @TempData["Success"].ToString()</p>
+    </div>
+}
+<table class="stripe" id="tablaDataTable">
+    <thead>
+        <tr>
+            <td></td>
+            <td></td>
+            <th>ID SubFamilia</th>
+            <th>Nombre SubFamilia</th>
+            <th>Nombre Familia</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        { 
+            <tr>
+                <td class="text-center">
+                    <a href="@Url.Action("Edit", new { id = item.ID })"><span class="glyphicon glyphicon-pencil"></span></a>
+                </td>
+                <td class="text-center">
+                    <a href="@Url.Action("Delete", new { id = item.ID })"><span class="glyphicon glyphicon-remove"></span></a>
+                </td>
+                <td>@Html.DisplayFor(x => item.ID)</td>
+                <td>@Html.DisplayFor(x => item.Nombre)</td>
+                <td>@Html.DisplayFor(x => item.descFamilia)</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,271 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe Fondos a Rendir";
+    var total = 0;
+    var totReintegro = 0;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Informe Fondos a Rendir</title>
+    <style type="text/css" media="print">
+    @@page
+    {
+    size: landscape;
+    margin: 2cm;
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+    font-size: 10px;    
+    }
+    
+    th 
+    {
+    font-size: 12px;    
+    }
+    
+    h2 {
+        text-align: center;
+    }
+    .registros td
+    {
+        border: 0;    
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+    .registro_nulo td 
+    {
+        text-decoration: line-through;
+    }
+    </style>
+
+<script language="javascript" type="text/javascript">
+       <!--
+    function printThis() {
+        window.print();
+        setTimeout('window.close()', 10);
+       // self.close();
+    }
+    //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Consejo de Defensa del Niño<br />
+    @Html.Raw(@ViewBag.Proyecto)</strong></td>
+    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2>Informe Fondos a Rendir</h2>
+<div align="right">Del @Html.Raw(@ViewBag.Desde) al @Html.Raw(@ViewBag.Hasta)</div>
+    <table class="table table-bordered">
+         <tr>
+            <th style="width: auto;">Nº E.</th>
+            <th  style="width: auto;">Fecha</th>
+            <th style="width: auto;">Nº Cheque</th>
+            <th style="width: auto;">Documento</th>
+            <th style="width: auto;">Nº Doc.</th>
+            <th style="width: auto;">Fecha</th>
+            <th style="width: auto;">Rut </th>
+            <th style="width: auto;">Beneficiario</th>
+            <th style="width: auto;">Monto $</th>
+            <th style="width: auto;">Monto Reintegro$</th>
+            <th style="width: auto;">Cuenta</th>
+            <th>Glosa</th>
+            <th style="width: 90px;">Cta. Cte.</th>
+        </tr>
+    @foreach (var item in Model)
+    {
+
+            SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).Where(d=> d.CuentaID == 60).ToList();
+            foreach (var detalle in detalles)
+            {
+                total = total + detalle.Monto;
+                SAG2.Models.SAG2DB db2 = new SAG2.Models.SAG2DB();
+                int valor_reintegros = 0;
+                try
+                {
+                    valor_reintegros = db2.Movimiento.Where(m => m.auto == 0).Where(d => d.DetalleEgresoID == detalle.ID).Sum(d => d.Monto_Ingresos);
+                }
+                catch (Exception)
+                {
+                    valor_reintegros = 0;
+                }
+                totReintegro = totReintegro + valor_reintegros;
+                
+                
+                
+            <tr detalleid="@detalle.ID">
+                <td align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @detalle.Egreso.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @detalle.Egreso.Cheque
+                </td>
+                <td>
+                    @if (@detalle.Documento != null)
+                    {
+                        @detalle.Documento.Nombre
+                    }
+                </td>
+                <td>
+                    @detalle.NDocumento
+                </td>
+                <td>
+                    @detalle.FechaEmision.ToShortDateString()
+                </td>
+                  <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Persona.RutDV)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.RutDV)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@detalle.Egreso.Rut)
+                    }
+                </td>
+                <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Persona.NombreCompleto)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@detalle.Egreso.Beneficiario)
+                    }
+                </td>
+                <td align="right">
+                    <strong>
+                    $@detalle.Monto.ToString("#,##0")
+                    </strong>
+                </td>
+                   <td align="right">
+                    <strong>
+                    $@valor_reintegros.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="left">@if (@detalle.Cuenta != null)
+                                 { @Html.Raw(utils.cuentaPadre(@detalle.Cuenta)) }</td>
+                <td>
+                    @detalle.Glosa
+                </td>
+                <td>
+                    @detalle.Egreso.CuentaCorriente.Numero
+                </td>
+            </tr>
+      
+            if (valor_reintegros != 0){
+
+            <tr>
+                <td colspan="13" style="background:#e2e0e0">
+                    Reintegros
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: auto;">Nº Comp.</th>
+                            <th style="width: auto;">Fecha</th>
+                            <th style="width: auto;">Monto $</th>
+                            <th style="width: auto;">Nº Doc.</th>
+                            <th style="width: auto;">Cta. Cte.</th>
+                            <th style="width: auto;">Glosa</th>                        
+               
+                        </tr>
+            @{
+            SAG2.Models.SAG2DB db3 = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.Movimiento> Reintegros = db.Movimiento.Where(d => d.auto == 0).Where(d => d.DetalleEgresoID == detalle.ID).Where(d => d.TipoComprobanteID == 3).ToList();
+            foreach (var Reintegro in Reintegros)
+            {
+                <tr>
+                                <td align="center">
+                @Reintegro.NumeroComprobante
+            </td>
+            <td>
+                @Reintegro.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="right">
+                <strong>
+                $@Reintegro.Monto_Ingresos.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                @Reintegro.Cheque
+            </td>
+            <td>
+                @Reintegro.CuentaCorriente.Numero
+            </td>
+            <td>
+                @Reintegro.Descripcion
+            </td>
+            </tr>
+             int idreintegro = Reintegro.ID;    
+            SAG2.Models.SAG2DB db4 = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.DetalleReintegro> DReintegros = db.DetalleReintegro.Where(d => d.MovimientoID == idreintegro).ToList();  //Movimiento.Where(d => d.auto == 0).Where(d => d.DetalleEgresoID == detalle.ID).Where(d => d.TipoComprobanteID == 3).ToList();
+            foreach (var DReintegro in DReintegros)
+            {
+                               <tr>
+                                <td align="center">
+                @DReintegro.NDocumento
+            </td>
+            <td>
+                @DReintegro.Documento.Nombre;
+            </td>
+            <td align="right">
+                <strong>
+                $@DReintegro.Monto.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                 @Html.Raw(db4.Cuenta.Find(@DReintegro.CuentaIDD).NombreLista)
+            </td>
+ 
+</tr> 
+                
+            }
+            }
+            }
+                     </table>
+
+                </td>
+            </tr>
+    }
+    
+   
+            }
+        }
+    
+         </table>
+          @{ var resultado = total - totReintegro;
+                  
+                  }
+
+    <br /><br /><br /><br /><br />
+  <table style="width: 100%;">
+    <tr>
+      
+        <td width="33%" align="right" style="font-size: 14px;">_______________________<br />Firma y Timbre Director (a) </td>
+    </tr>
+</table>
+</body>
+</html>

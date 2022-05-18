@@ -1,0 +1,594 @@
+﻿@model SAG2.Models.InformeAuditoria
+@{
+    ViewBag.Title = "Reporte Grupal Auditoría";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("#imprimirDirecto").click(function () {
+            window.print();
+            return false;
+        });
+    });
+</script>
+<style media="print">
+    @@page
+    {
+        /*size: landscape;*/
+        margin: 2cm !important;
+    }
+    
+    body{ background-color:#FFFFFF; background-image:none; color:#000000;font-family: "Times New Roman"; }   
+    
+    td 
+    {
+    font-size: 10px;    
+    }
+    
+    
+    th 
+    {
+    font-size: 12px;    
+    }
+    
+    h2
+    {
+        font-size: 16px;    
+    }
+    
+    .pie
+    {
+        display: none;    
+    }
+    
+    .permisos, .body, .contenedor
+    {
+        padding: 0 !important;
+        border: 0 !important;
+        margin: 0 auto !important;
+    }
+    
+    .permisos
+    {
+        width: 95% !important;    
+    }
+    
+    .ocultoImpresion, .menu, .top
+    {
+        display: none;    
+    }
+    
+    .soloImpresion
+    {
+        display: block;    
+    }
+</style>
+<style media="all">
+    .sin-hover td, .sin-hover th
+    {
+        border: 1px solid gray;    
+    }
+</style>
+<div class="permisos" style="width: 800px;">
+    <div class="ocultoImpresion">
+        <input type="button" value="Imprimir reporte" class="imprimirDirecto boton" />
+    </div>
+    <div class="soloImpresion">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td valign="top" style="border: 0;"><strong>Consejo de Defensa del Niño<br />
+        @Html.Raw(@ViewBag.Proyecto)</strong></td>
+        <td align="right" valign="top" style="border: 0;">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+      </tr>
+    </table>
+    <br />
+    </div>
+    <h2 align="center">Reporte de Auditoría Financiera Contable</h2>
+    <br />
+    <table width="100%">
+        <tr>
+            <td>TIPO DE PROYECTO</td>
+            <td>@Html.DropDownList("TipoProyectoID")</td>
+        </tr>
+        <tr>
+            <td>PERÍODO DE ANÁLISIS</td>
+            <td><select name="DesdeMes" id="DesdeMes">
+                @for (var i = 0; i < 12; i++)
+                {
+                    <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.DesdeMes == (i + 1))
+                                                                    {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                }
+                </select>
+                <select name="DesdePeriodo" id="DesdePeriodo">
+                @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                {
+                    <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.DesdePeriodo == i)
+                                                                {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                }
+                </select>
+                a
+                <select name="HastaMes" id="HastaMes">
+                @for (var i = 0; i < 12; i++)
+                {
+                    <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.HastaMes == (i + 1))
+                                                                    {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                }
+                </select>
+                <select name="HastaPeriodo" id="HastaPeriodo">
+                @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                {
+                    <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.HastaPeriodo == i)
+                                                                {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                }
+                </select>
+                <input type="button" value="Aceptar" id="informeGrupal" class="informeGrupal" />
+            </td>
+        </tr>
+        <tr>
+            <td>TOTAL DE INFORMES</td>
+            <td>@ViewBag.TotalInformes</td>
+        </tr>
+        <tr>
+            <td>NOMBRE DE LA AUDITORA</td>
+            <td>@ViewBag.NombreAuditora</td>
+        </tr>
+    </table>
+    <br />
+ @if (@ViewBag.TotalInformes < 1)
+ { 
+    @Html.Raw("<div class=\"error\">No existen informes para este tipo de proyecto en el período señalado.</div>");
+ }
+ else
+ {
+ <table width="100%" align="center" class="sin-hover">
+  <tr>
+    <th width="20">I</th>
+    <th colspan="5" align="left">SEGUIMIENTO</th>
+  </tr>
+  <tr>
+    <th>A</th>
+    <th colspan="5" align="left">SENAME</th>
+  </tr>
+  <tr>
+    <td width="20" style="border: 0;"></td>
+    <td colspan="4">Observaciones superadas</td>
+    <td align="center">@ViewBag.SenameSuperadas.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td style="border: 0;"></td>
+    <td colspan="4">Observaciones pendientes</td>
+    <td align="center">@ViewBag.SenamePendientes.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <th>B</th>
+    <th colspan="5" align="left">CODENI</th>
+  </tr>
+  <tr>
+    <td style="border: 0;"></td>
+    <td colspan="4">Observaciones superadas</td>
+    <td align="center">@ViewBag.CodeniSuperadas.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <td style="border: 0;"></td>
+    <td colspan="4">Observaciones pendientes</td>
+    <td align="center">@ViewBag.CodeniPendientes.ToString("#0.00")%</td>
+  </tr>
+  <tr>
+    <th>II</th>
+    <th colspan="5" align="left">RESULTADOS DE LA AUDITORÍA INDIVIDUAL</th>
+  </tr>
+  <tr>
+    <th>A</th>
+    <th colspan="4" align="left">AREA FINANCIEROS</th>
+    <th align="center">
+    @{
+      int ok = 0;
+      decimal total = 0;
+      foreach (var item in @ViewBag.Libro)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Comprobantes)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Fondo)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Programa)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Rendicion)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Retencion)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Provision)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">1.- Libro Banco y Movimientos Bancarios</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Libro)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Libro)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">2.-Comprobantes de Ingreso, Egreso y Reintegro</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Comprobantes)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Comprobantes)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">3.- Fondo Fijo</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Fondo)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Fondo)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">4.- Programa Semanal de Pagos</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Programa)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Programa)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">5.- Rendiciones de Cuentas</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Rendicion)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Rendicion)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">6.- Retención</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Retencion)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Retencion)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">7.- Provisión de Fondos para Indemnización</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Provision)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Provision)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <th>B</th>
+    <th colspan="4" align="left">AREA PERSONAL</th>
+    <th>
+    @{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Personal)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%
+    </th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Personal)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td colspan="4" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <th>C</th>
+    <th colspan="4" align="left">AREA ADMINISTRATIVA</th>
+    <th>@{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Contratos)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Inventarios)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Presupuesto)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      foreach (var item in @ViewBag.Bodega)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%</th>
+  </tr>
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">1.- Contrato</th>
+    <th>@{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Contratos)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%</th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Contratos)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;">&nbsp;</td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">2.- Inventarios</th>
+    <th>@{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Inventarios)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%</th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Inventarios)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;"></td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+    <td style="border: 0;"></td>
+    <th colspan="4" align="left">3. Control Presupuestario</th>
+    <th>@{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Presupuesto)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%</th>
+  </tr>
+  @{
+      foreach (var item in @ViewBag.Presupuesto)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;"></td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+  <tr>
+        <td style="border: 0;"></td>
+        <th colspan="4" align="left">4. Control de Bodega</th>
+        <th>@{
+      ok = 0;
+      total = 0;
+      foreach (var item in @ViewBag.Bodega)
+      {
+          ok += item.ok;
+          total += item.total;
+      }
+      @((100* ok / total).ToString("#0.00"))
+    }%</th>
+    </tr>
+  @{
+      foreach (var item in @ViewBag.Bodega)
+      {
+      <tr>
+        <td style="border: 0;"></td>
+        <td style="border: 0;"></td>
+        <td colspan="3" align="left">@item.proyectoNombre</td>
+        <td align="center">@item.porcentaje.ToString("#0.00")%</td>
+      </tr>
+      }
+    }
+</table>
+     }
+<div class="soloImpresion">
+    <br />
+    * * * Fin reporte * * *
+</div>
+<div class="ocultoImpresion">
+    <br />
+    <input type="button" value="Imprimir reporte" class="imprimirDirecto boton" />
+</div>
+</div>

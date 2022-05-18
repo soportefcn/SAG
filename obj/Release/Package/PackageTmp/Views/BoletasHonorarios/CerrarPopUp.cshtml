@@ -1,0 +1,24 @@
+﻿@model SAG2.Models.BoletaHonorario
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CerrarPopUp</title>
+</head>
+<script type="text/javascript" language="javascript">
+    window.opener.document.getElementById("DocumentoIDD").value = "3";
+    window.opener.document.getElementById("NDocumentoD").value = "@{@Model.NroBoleta}";
+    window.opener.document.getElementById("Monto").value = "@{@Model.Neto}";
+    window.opener.document.getElementById("FechaEmision").value = "@{@Model.Fecha.ToShortDateString()}";
+    window.opener.document.getElementById("Glosa").value = "@{@Model.Concepto}";
+    window.opener.document.getElementById("BoletaHonorarioID").value = "@{@Model.ID}";
+    window.close();
+</script>
+<body>
+    <div>
+        
+    </div>
+</body>
+</html>

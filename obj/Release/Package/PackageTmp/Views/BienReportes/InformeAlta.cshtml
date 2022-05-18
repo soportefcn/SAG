@@ -1,0 +1,126 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Informe Alta";
+    string FechaSis = DateTime.Now.ToShortDateString();
+    var itemMov = new List<SAG2.Models.BienMovimiento>().ToList();
+}
+
+
+<style>
+    .container {
+        width: 1350px !important;
+    }
+
+    .col-sm-9 {
+        width: 1350px !important;
+    }
+
+    .blog-sidebar {
+        visibility: hidden !important;
+    }
+</style>
+
+<div id="SAGBox">
+    <br />
+
+    <div class="ocultoImpresion">
+        <input type="button" value="Imprimir reporte" class="imprimirDirecto boton btn" />
+        <a class="btn btn-info" href="@Url.Action("InformeAltaInventario", "BienReportes", new { id = Model.ProyectoID, hasta = Model.Hasta, desde = Model.Desde })">Descargar Excel</a>
+    </div>
+    <br />
+
+    <div class="soloImpresion">
+        <table class="table table-bordered table-responsive">
+
+            <tr>
+                <th colspan="4" style="font-weight: bold; text-align:center; font-size:14pt">Informe Altas</th>
+            </tr>
+            <tr>
+                <th colspan="1">Revisi&oacute;n:</th>
+                <td colspan="1">2</td>
+                <th colspan="1">Fecha Actualizaci&oacute;n:</th>
+                <td colspan="1">@FechaSis</td>
+            </tr>
+            <tr>
+                <th colspan="1">Nombre Proyecto:</th>
+                <td colspan="1">@Model.Proyecto</td>
+                <th colspan="1">C&oacute;digo SENAME:</th>
+                <td colspan="1">@ViewBag.CodSename</td>
+            </tr>
+            <tr>
+                <th colspan="2"></th>
+                <th colspan="1">C. Costo CODENI:</th>
+                <td colspan="1">@ViewBag.CCosto</td>
+            </tr>
+            <tr></tr>
+        </table>
+
+        <table class="table table-bordered table-responsive">
+            <tr>
+                <th>Especie</th>
+                <th>Descripci&oacute;n del Bien</th>
+                <th>Procedencia </th>
+                <th>N&ordm; C/E / A&ntilde;o</th>
+                <th>N&ordm; Documento</th>
+                <th>Cantidad</th>
+                <th>Valor $</th>
+                <th>Dependencia</th>
+            </tr>
+            <tr></tr>
+            @{
+                int montoTotal = 0;
+                int cantidadTotal = 0;
+            }
+
+            @foreach (var item in Model.lista)
+            {
+
+                var obj = itemMov.Where(i => i.ID == item.ID);
+                int traslados = itemMov.Where(b => (b.BienID == item.MovimientoBienID || b.bienAnteriorID == item.MovimientoBienID) && (item.EstadoID == 3)).Sum(x => x.Cantidad);
+                int bajas = itemMov.Where(b => (b.BienID == item.MovimientoBienID || b.bienAnteriorID == item.MovimientoBienID) && (item.EstadoID == 2)).Sum(x => x.Cantidad);
+
+                montoTotal += item.MontoInt;
+                cantidadTotal += item.Cantidad;
+                if (item.ProyectoID == item.ProyectoID)
+                {
+
+
+
+                    <tr>
+                        <td>@item.Familia - @item.SubFamilia</td>
+                        <td>@item.DescripcionBien</td>
+                        <td>@item.Procedencia[0]</td>
+                        <td>@item.Movimiento.NumeroComprobante</td>
+
+
+                        @if (item.Egreso != null)
+                        {
+                            <td>@item.Egreso.NDocumento</td>
+                        }
+                        else
+                        {
+                            <td>@item.Reintegro.NDocumento</td>
+                        }
+                        <td>@item.Cantidad.ToString("#,##0")</td>
+                        <td>$@item.MontoInt.ToString("#,##0")</td>
+                        <td>@item.Ubicacion</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="8"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="1"></td>
+                <td></td>
+                <td></td>
+                <td><strong>Suma Total</strong></td>
+                <td><strong>@cantidadTotal.ToString("#,##0") </strong></td>
+                <td colspan="1"><strong>$@montoTotal.ToString("#,##0")</strong></td>
+                <td colspan="1"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,73 @@
+﻿@model SAG2.Models.Convenio
+
+@{
+    ViewBag.Title = "Edit";
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<h2>Edit</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Convenio</legend>
+
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ResEx)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.ResEx)
+            @Html.ValidationMessageFor(model => model.ResEx)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FechaInicio)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.FechaInicio)
+            @Html.ValidationMessageFor(model => model.FechaInicio)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FechaTermino)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.FechaTermino)
+            @Html.ValidationMessageFor(model => model.FechaTermino)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NroPlazas)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.NroPlazas)
+            @Html.ValidationMessageFor(model => model.NroPlazas)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Comentarios)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(model => model.Comentarios)
+            @Html.ValidationMessageFor(model => model.Comentarios)
+        </div>
+
+        <p>
+            <input type="submit" value="Guardar" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

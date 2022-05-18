@@ -1,0 +1,56 @@
+﻿@model SAG2.Models.TipoImputacion
+@{
+    ViewBag.Title = "Ingresar registro";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox">
+    <h3>Tipo Imputación</h3>
+
+    <div id="contenido">
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+        <fieldset>
+
+    <div class="panel panel-default">
+    <div class="panel-heading"><h3>Dato de tipo imputación</h3></div>
+    <div class="panel-body">
+      <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.Nombre)
+        </div>
+        <div class="form-group">
+           <input class="form-control" type="text" value="" name="Nombre" id="Nombre" style="width: 400px;">
+           
+        </div>
+     </div>
+  </div>
+  <div class="panel-footer">
+	<div  style ="width: 500px ; display:inline-block">
+          <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoImputacion/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+            
+        </div>
+         <div style="float :right;display:inline-block">
+	 <input class="btn btn-primary" type="submit" value="Guardar" />
+	</div>
+
+  </div>
+</div>
+@if (TempData["Message"] != null)
+{
+    @Html.Raw("<script>alert('"+TempData["Message"]+".');</script>");
+}
+      
+        </fieldset>
+}
+    </div>
+</div>

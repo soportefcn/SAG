@@ -1,0 +1,64 @@
+﻿@model IEnumerable<SAG2.Models.DetalleReintegro>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Detalles de Reintegros";
+    int p1;
+    int p2 = 0;
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $("a").click(function () {
+            window.opener.document.getElementById("EgresoID").value = $(this).attr("DetalleReintegroID");
+            window.opener.document.getElementById("NumeroAuxiliar").value = $(this).attr("ComprobanteReintegro");
+            window.opener.document.getElementById("MovimientoID").value = $(this).attr("MovimientoID");
+            window.opener.document.getElementById("Fecha").value = $(this).attr("Fecha");
+            window.opener.document.getElementById("Detalle").value = $(this).attr("Glosa");
+            window.opener.document.getElementById("MontoEgreso").value = $(this).attr("Monto");
+            window.opener.document.getElementById("NumeroDocumento").value = $(this).attr("NumeroDocumento");
+            window.close();
+
+            return false;
+        });
+
+    });
+</script>
+<div class="top" style="height: 15px;">REINTEGROS&nbsp;&nbsp;</div>
+<div id="contenido_popup">
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="fixedHeader">
+                <tr>
+                    <th style=" width:36px;" class="controles"></th>
+                    <th style=" width:40px;">Nº</th>
+                    <th style=" width:180px;">Cuenta</th>
+                    <th style=" width:80px;">Nº Doc</th>
+                    <th style=" width:80px;">Valor</th>
+                    <th style=" width:450px;">Glosa</th>
+                </tr>
+            </thead>
+            <tbody class="scrollContent">
+                @foreach (var item in Model)
+                {
+
+                <tr>
+
+                    <td style=" width:36px;"><a href="./" title="Seleccionar" MovimientoID="@item.Reintegro.ID" NumeroDocumento="@item.NDocumento"  Glosa="@item.Reintegro.Descripcion" Monto="@item.Monto.ToString()" ComprobanteReintegro="@item.Reintegro.NumeroComprobante" DetalleReintegroID="@item.ID" Fecha="@item.FechaEmision.ToShortDateString()" cuentaid="@item.CuentaIDD" cuenta="@item.Cuenta.Nombre" NDocumento="@item.NDocumento" ValorDoc="@item.Monto"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a></td>
+                    <td style=" width:38px;" align="center">@Html.DisplayFor(modelItem => item.Reintegro.NumeroComprobante)</td>
+                    <td style=" width:180px;">@item.Cuenta.Nombre</td>
+                    <td style=" width:80px;">@item.NDocumento </td>
+                    <td style=" width:80px;">@item.Monto.ToString("#,##0")</td>
+                    <td style=" width:480px;">@Html.DisplayFor(modelItem => item.Reintegro.Descripcion)</td>
+
+                </tr>
+
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="warning">No hay Egresos en la cuenta 8 (inversiones) disponibles para este Proyecto</div>
+    }
+</div>
+

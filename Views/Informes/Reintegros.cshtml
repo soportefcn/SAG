@@ -1,0 +1,158 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    ViewBag.Title = "Reintegros";
+    var total = 0;
+}
+<div id="SAGBox">
+    <h2>Informe de Reintegros</h2>
+    @using (Html.BeginForm())
+    {
+        if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+        {
+
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <fieldset>
+                        <h3>Periodo</h3>
+                        <div class="form-inline form-group">
+                            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                                <label>Desde</label>
+                            </div>
+                            <div class="form-group">
+                                <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" />
+                            </div>
+                            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                                <label>Hasta</label>
+                            </div>
+                            <div class="form-group">
+                                <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" style="margin-right: 20px;" />
+                            </div>
+                            <div class="form-group"><input type="submit" value="Ver resultados!" class="btn btn-primary" /></div>
+                            <div class="form-group" style="margin-right:10px">
+                                <a value="Excel" data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="Reintegros" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
+                                    <span class="fa fa-file-excel-o  fa-2x"></span>
+                                </a>
+                            </div>
+
+
+                        </div>
+                    </fieldset>
+                </div>
+
+            </div>
+
+        }
+    }
+    <div style="height: 280px; overflow: scroll;">
+        <table class="table table-striped table-bordered" style="margin-bottom: 0px;">
+            <tr>
+                <th style="width: 30px;">Nº Comp.</th>
+                <th style="width: 81px;">Fecha</th>
+                <th style="width: 86px;">Monto $</th>
+                <th style="width: 73px;">Nº Doc.</th>
+                <th style="width: 74px;">Cta. Cte.</th>
+                <th style="width: 206px;">Beneficiario</th>
+                <th style="width: 206px;">Glosa</th>
+                <th style="width: 55px;">Nº Egreso</th>
+                <th style="width: 80px;">Fecha</th>
+                <th>Cuenta</th>
+            </tr>
+
+            @{
+                SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            }
+            @foreach (var item in Model)
+            {
+                if (item.TipoComprobanteID != 3)
+                {
+                    continue;
+                }
+                if (item.auto == 1)
+                {
+                    continue;
+                }
+
+                var style = "";
+                if (item.Nulo != null && item.Nulo.Equals("S"))
+                {
+                    style = " style=\"text-decoration: line-through;\"";
+                }
+                else
+                {
+                    total = total + item.Monto_Ingresos;
+                }
+
+                <tr @Html.Raw(style)>
+                    <td align="center">
+                        <a @*href="@Url.Action("IndexBodega", "Egresos", new { numero = movimiento.DetalleEgreso.Egreso.ID })"*@ title="Seleccionar" onclick="window.open('../Reintegros/Edit2/'+@item.ID,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                        @Html.DisplayFor(modelItem => item.NumeroComprobante)
+                    </td>
+                    <td>
+                        @item.Fecha.Value.ToShortDateString()
+                    </td>
+                    <td align="right">
+                        <strong>
+                            $@item.Monto_Ingresos.ToString("#,##0")
+                        </strong>
+                    </td>
+                    <td align="right">
+                        @Html.DisplayFor(modelItem => item.Cheque)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+                    </td>
+                    <td>
+                        @if (item.Persona != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                        }
+                        else if (item.Proveedor != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Proveedor.Nombre)
+                        }
+                        else
+                        {
+                            @Html.Raw(@item.Beneficiario)
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripcion)
+                    </td>
+                    @try
+                    {
+                        SAG2.Models.DetalleEgreso detalle = db.DetalleEgreso.Find(item.DetalleEgresoID);
+                        <td align="center">@Html.Raw(detalle.Egreso.NumeroComprobante.ToString())</td>
+                        <td>@Html.Raw(detalle.Egreso.Fecha.Value.ToShortDateString())</td>
+                        <td>@Html.Raw(detalle.Cuenta.NombreLista)</td>
+                    }
+                    catch (Exception)
+                    {
+                        <td>No disponible</td>
+                        <td>No disponible</td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+<div class="form-group form-inline" style="margin-top: 10px;">
+    @using (Html.BeginForm())
+    {
+
+        <div class="form-group" style="margin-right:10px">
+            <a class="btn btn-default imprimirInformePeriodo" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../Imprimir/InformeReintegro?Desde=@Html.Raw(@ViewBag.Desde)&Hasta=@Html.Raw(@ViewBag.Hasta)">
+                <span class="fa fa-print fa-2x"></span>
+            </a>
+        </div>
+
+        <div class="form-group" style="margin-right:10px">
+            <label>Total Reintegros</label>
+        </div>
+        <div class="form-group" style="margin-right:10px">
+            <input class="form-control" value="$@total.ToString("#,###")" readonly="readonly" style="text-align: right;" />
+        </div>
+
+
+    }
+</div></div>

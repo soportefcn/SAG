@@ -1,0 +1,101 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Registro de Movimientos";
+    int i = 1;
+    var meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+@using (Html.BeginForm())
+{
+<div class="permisos">
+    <h2>@ViewBag.Title</h2>
+    <div class="form-group form-inline">
+       <div class="form-group" style="margin-right: 15px;">Seleccione Proyecto:</div>  
+        <div class="form-group" style="margin-right: 15px;">@Html.DropDownList("ProyectoID", String.Empty)</div>
+        <div class="form-group"><input class="btn btn-primary" type="submit" value="Aceptar" /></div>
+    </div>
+    <table class="table table-hover" >
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Proyecto</th>
+                <th>Usuario</th>
+                <th>Tipo</th>
+                <th>N° Comp.</th>
+                <th>Monto $</th>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Fecha Comp.</th>
+                <th>Fecha Creación</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var item in Model)
+{
+            <tr>
+                <td align="right">@i.ToString("#,##0")</td>
+                <td title="ProyectoID: @item.ProyectoID">@item.Proyecto.NombreLista</td>
+                <td title="UsuarioID/PersonaID: @item.UsuarioID/@try {@item.Usuario.PersonaID}catch(Exception){}">@try {@item.Usuario.Persona.NombreLista}catch(Exception){}</td>
+                <td>@item.TipoComprobante.Nombre</td>
+                <td title="ComprobanteID: @item.ID" align="center">@item.NumeroComprobante</td>
+                <td align="right">@if(item.Monto_Egresos>0){@item.Monto_Egresos.ToString("#,##0")}else{@item.Monto_Ingresos.ToString("#,##0")}</td>
+                <td>@item.Periodo</td>
+                <td>@meses[item.Mes - 1]</td>
+                <td align="center">@item.Fecha.Value.ToShortDateString()</td>
+                <td align="center">@item.FechaCreacion</td>
+                <td align="center">
+                @if(item.Nulo != null)
+                {
+                    @Html.Raw("ANULADO");
+                }
+                else if (item.Eliminado != null)
+                { 
+                    @Html.Raw("ELIMINADO");
+                }
+                else if (item.Conciliado != null)
+                { 
+                    @Html.Raw("CONCILIADO");
+                }
+                else if (item.Cerrado != null)
+                { 
+                    @Html.Raw("CERRADO");
+                }
+                else
+                { 
+                    @Html.Raw("MODIFICABLE");
+                }
+                </td>
+                <td align="center">
+                @if (item.Conciliado != null)
+                {
+                    @Html.ActionLink("Desconciliar", "Conciliar", new { movimientoID = item.ID });
+                }
+				else
+				{
+					@Html.ActionLink("Conciliar", "Conciliar", new { movimientoID = item.ID });
+				}
+                </td>
+            </tr>
+    i++;
+}
+        </tbody>
+    </table>   
+</div>
+    <p>&nbsp;</p>
+}

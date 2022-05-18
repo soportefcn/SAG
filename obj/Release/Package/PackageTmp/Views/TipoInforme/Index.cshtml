@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SAG2.Models.TipoInforme>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        <a class="btn btn-success" ahref=@Html.ActionLink("Nuevo", "Create") </a>
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+               Nombre
+            </th>
+        
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Eliminado)
+            </td>*@
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

@@ -1,0 +1,252 @@
+﻿@{
+    ViewBag.Title = "Movimientos de mercadería e insumos";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+    SAG2.Models.DetalleEgreso egresos = new SAG2.Models.DetalleEgreso();
+}
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox" class="control_bodega">
+    <h2>Control de bodega</h2>
+@using (Html.BeginForm())
+{
+    
+   
+               <fieldset>
+         <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Movimiento de Ingreso de Articulo</h3>
+  </div>
+  <div class="panel-body">
+   <div class="form-group form-inline" style="text-align:right" >
+        <div class="form-group">
+            <label>Mes</label>
+         </div>
+         <div class="form-group">
+         <select name="Mes" id="Mes" class="form-control">
+          @{ if (@ViewBag.mes == 1)
+            {
+                <option value="12">@Html.Raw(@Meses[11])</option>
+                <option value="@Html.Raw((@ViewBag.mes).ToString())"@Html.Raw("selected=\"selected\"")>@Html.Raw(@Meses[@ViewBag.mes - 1])</option>
+
+            }
+            else
+             {
+                 <option value="@Html.Raw((@ViewBag.mes - 1).ToString())">@Html.Raw(@Meses[@ViewBag.mes - 2])</option>
+                  <option value="@Html.Raw((@ViewBag.mes).ToString())"@Html.Raw("selected=\"selected\"")>@Html.Raw(@Meses[@ViewBag.mes - 1])</option>
+                                
+             }  
+          }                      
+          </select>
+          </div>
+          <div class="form-group"> 
+            <label>Año</label>
+           </div>
+           <div class="form-group"> 
+                <input type="text" name="Periodo" id="Periodo" class="form-control"  readonly="readonly" value ="@ViewBag.Periodo" style="width: 57px" /> 
+            
+            </div>         
+         </div>
+      <hr />
+       <div class="form-group form-inline">
+           <h3>Documento de Respaldo</h3>
+          <div class="form-group">
+           <label>Buscar Egreso</label>
+        </div>
+       <div class="form-group">     
+            <img id="BuscarEgresoID" src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="cursor: pointer; vertical-align: middle;margin-right: 15px;" />               
+            <label>Nº Egreso.</label> 
+       </div>
+       <div class="form-group" style="margin-right:5px;">   
+            @Html.Hidden("ID")   
+        
+           <input id="DetalleEgresoID" type="hidden" value="" name="DetalleEgresoID" >  
+            <input id="CuentaID"   type="hidden" value="" name="CuentaID" > 
+           <input id="ArticuloIDp"   type="hidden" value="" name="ArticuloIDp" >             
+           <input type="text" name="NroDocumento" id="NroDocumento" readonly="readonly" value="" style="width: 40px;"/></div>
+       
+      <div class ="form-group">
+          <label>Cuenta</label>
+          <input type="text" name="cuentad" id="cuentad" readonly="readonly" style="width:200px;" value="" /></div>
+              <div class ="form-group">
+          <label>Nº Doc</label>
+          <input type="text" name="ndoc" id="ndoc" readonly="readonly" style="width: 60px;" value="" /></div>
+             <div class ="form-group">
+          <label>Valor Doc</label>
+          <input type="text" name="vdoc" id="vdoc" readonly="readonly" style="width: 60px;" value="" /></div>
+            <buton id="Buscarproducto" class="btn btn-default" alt="Cargar Producto" title="Cargar" style="cursor: pointer; vertical-align: middle;margin-right: 15px;" >Buscar Producto </buton>               
+      </div>
+     
+    <h3>Articulo</h3>
+      <div class="form-group form-inline">
+          <div class="form-group">
+           <label>Artículo</label>
+        </div>
+            <div class="form-group" style="margin-right: 10px;">
+            <select name="ArticuloID" id="ArticuloID" tabindex="5" class="form-control">
+                <option>Seleccione Documento de Respaldo</option>
+                  
+            </select>
+            </div>
+
+          <div class="form-group">
+           <label>Cantidad</label>
+        </div>
+          <div class="form-group"><input type="text" name="Entrada" id="Entrada" class="form-control"/></div> 
+            
+  </div>
+       <label>Destino y Observaciones </label>
+       <input class="form-control" type="text" name="Observaciones" id="Observaciones" style="width: 610px;" />
+      </div>
+      <div class="panel-footer">
+    <div  style ="width: 400px ; display:inline-block">
+       <a class="btn btn-success" href="./ListarEntradas" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+        <a class="btn btn-default" href="/SAG_5/MovimientosBodega/movimientoentrada"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+        
+    </div>
+         <div style="float :right;display:inline-block">
+         <input class ="btn btn-primary" type="submit" value="Guardar" />
+         </div>
+   
+</div>
+                 
+                                      
+                   </fieldset>
+ 
+                             if (TempData["Message"] != null)
+                             {
+    @Html.Raw("<script>alert('" + TempData["Message"] + ViewBag.NroDocumento + ".');</script>");
+
+                             }
+
+
+
+
+}
+</div>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function ()
+    {
+        $('#NroDocumento').on ('change', function () {
+            alert("hola"); // or $(this).val()
+        });
+        $('#Mes').change(function () {
+            var mesactual = @ViewBag.mes
+            if(mesactual == 1) {
+                if ($('#Mes').val() == 12) {
+                    var anio = $('#Periodo').val();
+                    var valor = anio - 1;
+                    $('#Periodo').val(valor);
+                } else {
+                    var anio = $('#Periodo').val();
+                    var valor = @ViewBag.Periodo
+                    $('#Periodo').val(valor);
+                }
+            }
+        });
+        $("#BuscarEgresoID").click(function () {
+            var periodo = $("#Periodo").val();
+            var mes = $("#Mes").val();
+           
+            window.open("/SAG_5/MovimientosBodega/ListadoDetalles?periodo="+ periodo + "&mes=" + mes, 'AltaInventario', 'width=800,height=350');
+            $('#ArticuloID > option').remove();
+            return false;
+        
+        });
+        $("#Buscarproducto").click(function () {
+            if ($('#CuentaID').val() != "") {
+                $.get('/SAG_5/MovimientosBodega/Articulos/' + $('#CuentaID').val(), function (response) {
+                    var articulos = $.parseJSON(response);
+                    var ddlArticulos = $('#ArticuloID');
+
+                    $('#ArticuloID > option').remove();
+                    if (articulos.length == 0) {
+                        ddlArticulos.append($("<option />").val("").text("Sin información"));
+
+                    } else {
+                        ddlArticulos.append($("<option />").val("").text("Seleccione Articulos"));
+                        for (i = 0; i < articulos.length; i++) {
+                            ddlArticulos.append($("<option />").val(articulos[i].Value).text(articulos[i].Text));
+                        }
+                    }
+                });
+            }
+            if ($('#ArticuloIDp').val() != "") {
+                $.get('/SAG_5/MovimientosBodega/Articulos/' + $('#CuentaID').val(), function (response) {
+                    var articulos = $.parseJSON(response);
+                    var ddlArticulos = $('#ArticuloID');
+                    $('#ArticuloID > option').remove();
+                    if (articulos.length == 0) {
+                        ddlArticulos.append($("<option />").val("").text("Sin información"));
+                    } else {
+                        ddlArticulos.append($("<option />").val("").text("Seleccione Articulos"));
+                        for (i = 0; i < articulos.length; i++) {
+                            ddlArticulos.append($("<option />").val(articulos[i].Value).text(articulos[i].Text));
+                        }
+                    }
+                });
+                $('#ArticuloID').value = $('#ArticuloIDp').val();
+
+            }
+
+        });
+    
+
+    });
+    $(document).focus(function () {
+        if ($('#CuentaID').val() != "") {
+            $.get('/SAG_5/MovimientosBodega/Articulos/' + $('#CuentaID').val(), function (response) {
+                var articulos = $.parseJSON(response);
+                var ddlArticulos = $('#ArticuloID');
+              
+                $('#ArticuloID > option').remove();
+                if (articulos.length == 0) {
+                    ddlArticulos.append($("<option />").val("").text("Sin información"));
+                    
+                } else {
+                    ddlArticulos.append($("<option />").val("").text("Seleccione Articulos"));
+                    for (i = 0; i < articulos.length; i++) {
+                        ddlArticulos.append($("<option />").val(articulos[i].Value).text(articulos[i].Text));
+                    }
+                }
+            });
+        }
+        if ($('#ArticuloIDp').val() != "") {
+            $.get('/SAG_5/MovimientosBodega/Articulos/' + $('#CuentaID').val(), function (response) {
+                var articulos = $.parseJSON(response);
+                var ddlArticulos = $('#ArticuloID');
+                $('#ArticuloID > option').remove();
+                if (articulos.length == 0) {
+                    ddlArticulos.append($("<option />").val("").text("Sin información"));
+                } else {
+                    ddlArticulos.append($("<option />").val("").text("Seleccione Articulos"));
+                    for (i = 0; i < articulos.length; i++) {
+                        ddlArticulos.append($("<option />").val(articulos[i].Value).text(articulos[i].Text));
+                    }
+                }
+            });
+            $('#ArticuloID').value = $('#ArticuloIDp').val();
+
+        }
+    });
+   
+  
+</script>

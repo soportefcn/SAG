@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Generar archivo SenaInfo";
+    ViewBag.mes = (int)Session["Mes"];
+    ViewBag.periodo = (int)Session["Periodo"];
+    
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div class="inicio">
+@using (Html.BeginForm("Exportar", "SenaInfo"))
+{
+    <h2>Senainfo</h2>
+    
+    <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Exportar a Senainfo</b></h3></div>
+  <div class="panel-body">
+   
+    <div class="form-group" style="margin-right: 30px;">
+        <label>Seleccione período a exportar</label>
+    </div>
+      <div class ="form-group form-inline">
+       <div class="form-group" style="margin-right: 10px;margin-left: 7px">
+          <label>Mes</label>
+       </div>
+          <div class="form-group">
+           <select name="Mes" id="Mes" class="form-control">
+                @for (var i = 0; i < 12; i++)
+                {
+                    <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1))
+                                                                    {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                }
+                </select> 
+       </div></div>
+           <div class ="form-group form-inline">
+       <div class="form-group" style="margin-right: 10px;margin-left: 7px">
+          <label>Año</label>
+       </div>
+          <div class="form-group">
+             <select name="Periodo" id="Periodo" class="form-control">
+                @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                {
+                    <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                }
+                </select>
+  </div></div>
+
+           </div>
+  <div class="panel-footer">
+	<div  style ="width: 250px ; display:inline-block">
+           <input class="btn btn-primary" type="submit" value="Generar archivo"  /> 
+        </div>
+         <div style="float :right;width:500px;display:inline-block">
+	
+	</div>
+
+  </div>
+</div>
+  
+}
+    <br />
+    <br />
+    @{
+       
+     <h2> Proyectos que no seran Exportados </h2>   
+      <table class="table table-bordered">
+    <tr>
+        <th class="codigo">Cód.Sename</th>
+        <th>Nombre Proyecto</th>  
+    </tr>  
+    @foreach (SAG2.Models.Proyecto Proyectos2 in ViewBag.Proyec)
+    {
+         <tr>
+            <td>
+                <label>@Proyectos2.CodSename</label>
+            </td> 
+              <td>
+                <label>@Proyectos2.NombreLista</label>
+            </td>
+        </tr>
+       
+    }
+     @foreach (SAG2.Models.Proyecto Proyectos3 in ViewBag.Proy)
+    {
+       <tr>
+            <td>
+                <label>Sin Información</label>
+            </td> 
+              <td>
+                <label>@Proyectos3.NombreLista</label>
+            </td>
+        </tr>
+    }
+          </table>
+    }
+</div>

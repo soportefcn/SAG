@@ -1,0 +1,56 @@
+﻿@model SAG2.Models.BienMovimientoVM
+@{
+    ViewBag.Title = "Mantenedor de Movimientos";
+}
+
+<h2>Mantenedor de Movimientos</h2>
+<p class="text-right">
+    <a href="@Url.Action("Create")" class="btn btn-primary">Crear Movimiento</a>
+</p>
+
+@if (TempData["Error"] != null)
+{
+    <div class="bg-danger">
+        <p><strong>Error:</strong> @TempData["Error"].ToString()</p>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="bg-success">
+        <p><strong>Success:</strong> @TempData["Success"].ToString()</p>
+    </div>
+}
+
+<table class="stripe" id="tablaDataTable">
+    <thead>
+        <tr>
+            <td></td>
+            <td></td>
+            <th>Estado</th>
+            <th>Inventario</th>
+            <th>Ubicacion</th>
+            <th>Descripcion</th>
+            <th>Proyecto</th>
+            <th>Fecha Sistema</th>
+            <th>Usuario</th>
+        </tr>
+    </thead>
+    <tbody> 
+        @foreach (var item in Model.lista)
+        { 
+            <td class="text-center">
+                <a href="@Url.Action("Edit", new { id = @item.ID })"><span class="glyphicon glyphicon-pencil"></span></a>
+            </td>
+            <td class="text-center">
+                <a href="@Url.Action("Delete", new { id = @item.ID })"><span class="glyphicon glyphicon-remove"></span></a>
+            </td>
+            <td>@item.Estado</td>
+            <td>@item.Inventario</td>
+            <td>@item.Ubicacion</td>
+            <td>@item.Descripcion</td>
+            <td>@item.Proyecto</td>
+            <td>@item.FechaSistema</td>
+            <td>@item.Usuario</td>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,236 @@
+﻿@model IEnumerable<SAG2.Models.BoletaHonorario>
+@{
+    ViewBag.Title = "Honorarios";
+    SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+    var totalBruto = 0;
+    var totalRetencion = 0;
+    var totalLiquido = 0;
+    var Meses = new string[12]
+    {
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
+}
+<div id="SAGBox">
+    <h2>Busqueda de Honorarios </h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+ 
+      <fieldset>
+
+    <div class="panel panel-default">
+    <div class="panel-body">
+      <h3>Filtros</h3> 
+        
+      <div class="form-inline form-group">
+          <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>Tipo Programa</label>
+          </div>
+          <div class="form-group">
+               @Html.DropDownList("TipoProgramaID",null, " " , new { @class = "form-control"} )
+
+          </div>
+          <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>Proyecto</label>
+          </div>
+          <div class="form-group">
+               @Html.DropDownList("ProyectoID",null, "Seleccione " , new { @class = "form-control"} )
+
+          </div>
+          </div>
+        <div class ="form-inline form-group">
+            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>N° Boleta</label>
+          </div>
+          <div class="form-group">
+              <input name="Nboleta" id="Nboleta" class="form-control" value="@Html.Raw(@ViewBag.Nboleta)" maxlength="10" style="margin-right: 20px;" />
+          </div>
+                </div>
+        <div class ="form-inline form-group">
+            <div class="form-group tipobeneficiario">
+            <select class="form-control" name="tipoBeneficiario" id="tipoBeneficiario">
+                <option selected="selected"></option>
+                <option value="1">Personal</option>
+                <option value="2">Proveedores</option>
+                <option value="3">Otro</option>
+            </select>
+            <input id="PersonaID" name="PersonaID" type="hidden" value="System.Web.Mvc.SelectList">
+            <input id="ProveedorID" name="ProveedorID" type="hidden" value="System.Web.Mvc.SelectList">
+            <span id="InfoBeneficiario">
+                <input class="form-control" id="Rut" maxlength="8" name="Rut" style="width: 100px;" type="text" value="">-<input class="form-control" id="DVBuscar" maxlength="1" name="DV" style="width: 70px;" type="text" value=""> 
+                <img src="/SAG_5/Content/Images/Buscar2.png" class="BuscarPopUpBH" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;">
+                <input class="form-control" id="Beneficiario" name="Beneficiario" readonly="readonly" style="width: 350px;" type="text" value="">
+            </span>
+        </div>
+        </div>
+
+        <div class="form-inline form-group">
+                      <div class="form-group">
+              <input type="submit" value="Ver resultados!" class="btn btn-primary" />
+          </div>
+          @*@{ if (Usuario.esAdministrador)
+              {
+                  <div class="form-group" style="margin-right: 10px;">
+                      <a data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="Honorarios" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
+                          <span class="fa fa-file-excel-o  fa-2x"></span>
+                      </a>
+                  </div>
+              }}*@
+            </div>
+  </div>
+
+</div>
+               
+                </fieldset>
+        
+    }
+}
+
+    <div style="height: 300px; overflow: scroll;">
+        <table class="table table-striped table-bordered">
+            <tr>
+                 <th>Tipo</th>
+                <th>Proyecto</th>
+                <th>Fecha</th>
+                <th>Nº Boleta</th>
+                <th>Nº Egreso</th>
+
+                <th>Rut</th>
+                <th>DV</th>
+                <th>Beneficiario</th>
+            
+                <th>Bruto $</th>
+                <th>Retención $</th>
+                <th>Líquido $</th>
+
+                <th>Estado</th>
+                <th>Glosa</th>
+            </tr>
+        @foreach (var item in Model)
+        {
+            totalBruto = totalBruto + item.Bruto;
+            totalRetencion = totalRetencion + item.Retencion;
+            totalLiquido = totalLiquido + item.Neto;
+            
+            <tr>
+                <td> @item.Proyecto.TipoProyecto.Sigla    </td>
+                <td> @item.Proyecto.NombreLista  </td>
+                <td align="center">
+                    @item.Fecha.ToShortDateString()
+                </td>
+                <td>
+                    @item.NroBoleta.ToString()
+                </td>
+                <td>
+                    @if (item.EgresoID != null)
+                    {
+                        @Html.Raw(@item.Egreso.NumeroComprobante.ToString());
+                    }
+                </td>
+                    @if (item.Persona != null)
+                    {
+                        <td>@Html.DisplayFor(modelItem => item.Persona.Rut)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Persona.DV)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Persona.NombreCompleto)</td>
+
+                    }
+                    else if (item.Proveedor != null)
+                    {
+                        <td>@Html.DisplayFor(modelItem => item.Proveedor.Rut)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Proveedor.DV)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Proveedor.Nombre)</td>
+                    }
+                    else
+                    { 
+                        <td>@item.Rut</td>
+                        <td>@item.DV</td>
+                        <td>@item.Beneficiario</td>
+                    }
+                <td align="right">
+                    <strong>
+                    $@item.Bruto.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="right">
+                    <strong>
+                    $@item.Retencion.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="right">
+                    <strong>
+                    $@item.Neto.ToString("#,##0") 
+                    </strong>
+                </td>
+                <td>
+                @if (item.Nula == null)
+                {<span class="label label-success">Vigente</span>
+                }
+                else
+                {<span class="label label-danger">Nula</span>
+                }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Concepto)
+                </td>
+            </tr>
+        }
+        </table>
+    </div>
+    <div class="form-group form-inline" style="margin-top: 10px;">
+      
+         
+         
+              <div class="form-group" style="margin-right: 10px;">
+                  <label>Total Bruto $ </label>
+                  </div>
+              <div class="form-group" style="margin-right: 10px;">
+                  <input class="form-control" value="$@totalBruto.ToString("#,###")" readonly="readonly" style="text-align: right; width: 130px;" />
+              </div>
+             <div class="form-group" style="margin-right: 10px;">
+                  <label>Total Ret. $</label>
+                  </div>
+            <div class="form-group" style="margin-right: 10px;">
+                <input class="form-control" value="$@totalRetencion.ToString("#,###")" readonly="readonly" style="text-align: right; width: 130px;" />
+                </div>
+             <div class="form-group" style="margin-right: 10px;">
+                  <label>Saldo Líq. $ </label>
+                  </div>
+             <div class="form-group">
+            <input class="form-control" value="$@totalLiquido.ToString("#,###")" readonly="readonly" style="text-align: right; width: 130px;" />
+                 </div>
+         
+    </div>
+        
+</div>
+<script>
+    $(document).ready(function () {
+        $('#TipoProgramaID').change(function () {
+            $.get('/SAG_5/Informes/ProyectoTipo/' + $(this).val(), function (response) {
+                var comunas = $.parseJSON(response);
+                var ddlComunas = $('#ProyectoID');
+                $('#ProyectoID > option').remove();
+                if (comunas.length == 0) {
+                    ddlComunas.append($("<option />").val("1").text("Sin información"));
+                } else {
+                    ddlComunas.append($("<option />").val("1").text("Seleccione Programa"));
+                    for (i = 0; i < comunas.length; i++) {
+                        ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                    }
+                }
+            });
+        });
+
+    });
+</script>

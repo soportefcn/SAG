@@ -1,0 +1,191 @@
+﻿@model SAG2.Models.IndicadorCalidad
+
+@{
+    ViewBag.Title = "Edit";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+    
+    var tinf = new string[4]
+    {
+      "Sename",
+      "Codeni",
+      "Retención de Impuestos",
+      "Inventario General"
+    };
+}
+
+
+
+
+ @Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm("edit", "IndicadorCalidad", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+          @Html.HiddenFor(model => model.Tipo)
+         @Html.HiddenFor(model => model.ProyectoID)
+         @Html.HiddenFor(model => model.Periodo)
+         @Html.HiddenFor(model => model.Mes)
+             <div class="panel panel-default">
+    <div class="panel-heading"><h3>@ViewBag.nombre </h3></div>
+    <div class="panel-body">
+        <div class ="form-group form-inline">
+                               <div class="form-group" style="width:160px;">
+                <label>Periodo</label> &nbsp;
+                <select name="Periodo" id="Periodo" class="form-control">
+                @for (var i = DateTime.Now.Year - 3; i <= DateTime.Now.Year + 1; i++)
+                  {
+                    <option value="@Html.Raw((@i).ToString())" @if (Model.Periodo == i)
+                    {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())
+                    </option>
+                  }
+                </select>
+            </div>
+              
+
+            <div class="form-group" style="margin-left: 20px;">
+              <label>Mes</label> &nbsp;
+              <select name="Mes" id="Mes" class="form-control">
+                @for (var i = 0; i < 12; i++) {
+                  <option value="@Html.Raw((@i + 1).ToString())"@if (Model.Mes == (i + 1)) { @Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i]) </option>
+                }
+              </select>       
+            </div>
+           <div class="form-group" style=" width:520px; text-align: right;">    
+              <label><i class="fa fa-calendar"></i> Fecha de Informe</label>
+            
+            
+      @Html.TextBoxFor(model => model.FechaInforme, new { @class = "form-control calendario_mov", @Value = ((DateTime)Model.FechaInforme).ToShortDateString(), @readonly = "readonly" })
+</div></div>
+        <div class ="form-group form-inline" style="margin-bottom: 10px; margin-top: 5px;">
+              <div class="form-group" style="width:40%;"> 
+              <label>Tipo de Informe</label><br /> 
+              <select id="Tipo" name="Tipo" class="form-control">
+            @for (var i = 0; i < 4; i++) {
+                  <option value="@Html.Raw((@i + 1).ToString())"@if (Model.Tipo == (i + 1))
+                                                                { @Html.Raw("selected=\"selected\"")}>@Html.Raw(@tinf[@i]) </option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-right: 30px;">
+                <label>N° Informe</label>
+            </div>
+            <div class="form-group" style="margin-right: 30px;">
+         
+                       <input type="text" class="form-control" id="NumeroInforme" name="NumeroInforme" 
+                    value ="@Model.NumeroInforme" placeholder="N° Informe">   
+             </div> 
+        </div>
+      
+        <div class ="form-group form-inline" style="margin-bottom: 10px; margin-top: 10px;">
+            <div class="form-group" style="margin-right: 10px;">
+               <label>Gastos Objetados</label><br />  
+                     <div class="input-group">
+                  <div class="input-group-addon">$</div>
+                  <input type="text" class="form-control" id="GaObjetado" name="GaObjetado" value ="@Model.GastoObjetado" placeholder="Gastos Objetados">            
+                </div> 
+                 
+                
+            </div>       
+            <div class="form-group" style="margin-right: 10px;margin-left: 10px;">
+                <label>Gastos Rechazado</label><br />
+                 <div class="input-group">
+                  <div class="input-group-addon">$</div>
+                  <input type="text" class="form-control" id="GaRechazado" name="GaRechazado" value ="@Model.GastoRechazado" placeholder="Gastos Rechazado">            
+                </div>        
+            </div>
+            <div class="form-group" style="margin-right: 10px;margin-left: 10px;">
+                <label>Cantidad Observaciones</label><br />   
+               
+                <input type="text" class="form-control" id="CantidadObservaciones" name="CantidadObservaciones" 
+                    value ="@Model.CantidadObservaciones" placeholder="Cantidad de Observaciones" style = "text-align:center">   
+                
+            </div>
+         </div>
+            
+             <div class ="form-group form-inline" style="margin-bottom: 10px; margin-top: 10px;">
+            <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.Observacion)
+            </div>
+            <div class="form-group">
+                 @Html.TextArea("Observacion", new { @class = "form-control",@style = "width: 569px; height: 76px;"})
+            </div>
+            </div>
+          
+             <div class ="form-group form-inline" style="margin-bottom: 10px; margin-top: 10px;">
+            <div class="form-group" style="margin-right: 30px;">
+            @Html.LabelFor(model => model.FechaCumplimiento)
+            </div>
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.FechaCumplimiento, new { @class = "form-control calendario_mov", @Value = ((DateTime)Model.FechaCumplimiento).ToShortDateString() })
+               
+            </div>
+            </div>
+        <div class="alert alert-warning">
+   @{
+    if (Model.AdjuntarInforme != null)
+    {
+          <div class ="form-group form-inline" style=" margin-left: 40px;">
+                <div class="form-group">
+                <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/pdf/@Model.AdjuntarInforme" target="_blank">Mirar Archivo Adjunto</a>
+                </div>
+
+          </div>
+    }
+    else{ 
+            <div class ="form-group form-inline" style=" margin-left: 40px;">
+                <div class="form-group">
+                    @Html.Label("Seleccione Informe en PDF")
+                </div>
+                <div class="form-group">
+                    <input type="file" name="file" id="file" />
+                </div>
+                 <div>
+                     @ViewBag.Message
+                 </div>
+
+            </div>
+   }
+   }</div>
+  </div>
+        </div>
+  <div class="panel-footer">
+	<div  style ="width: 500px ; display:inline-block">
+              <a class="btn btn-success" href="../Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/IndicadorCalidad/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+         <a class="btn btn-danger" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/IndicadorCalidad/Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-fw"></span>ELIMINAR</a>
+        </div>
+         <div style="float :right;display:inline-block">
+	
+            <div>
+            <input class="btn btn-primary" type="submit"  value="Guardar" />
+        </div>
+
+	</div>
+
+  </div>
+</fieldset>
+}
+
+		<script type="text/javascript">
+		    $(document).ready(function () {
+		        $('#GaRechazado').number(true);
+		        $('#GaObjetado').number(true);
+
+		    });
+
+		</script>

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<SAG2.Models.Articulo>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Artículos";
+}
+
+ <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+ <div id="contenido_popup">
+    <table class ="table table-bordered table-hover">
+    <thead class="fixedHeader">
+    <tr class="info">
+        <th class="codigo">Cód.</th>
+        <th style="width: 650px;">Descripción</th>
+        <th class="controles" style="width: 35px;"></th>
+    </tr>
+</thead>
+ <tbody class="scrollContent">  
+   
+@foreach (var item in Model)
+{
+    <tr>
+        <td  style="width: 49px;">
+            @Html.DisplayFor(modelItem => item.ID)
+        </td>
+        <td style="width: 650px;">
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", "Articulos", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+</tbody>
+</table>

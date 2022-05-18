@@ -1,0 +1,111 @@
+﻿<script type="text/javascript">
+    $(document).ready(function() {
+      $(".js-autocomplete").select2();
+    });
+</script>
+
+@{
+    ViewBag.Title = "Propiedades del sistema";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div class="blog-post">
+<br />
+<br />
+@Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm())
+{
+    var ProyectoSelected = (SAG2.Models.Proyecto)Session["Proyecto"];
+ <fieldset>
+    <h3>Información del Proyecto</h3>
+    <div class="form-group">
+       Nombre
+    </div>
+    <div class="form-group">
+        <select name="Proyecto" id="Proyecto"  class="js-autocomplete" style="width: 400px;">
+            <option> - Seleccione proyecto</option>
+            @foreach (SAG2.Models.Proyecto Proye in ViewBag.Proyectos)
+            { 
+            <option value="@Proye.ID" @if (@Proye.ID.Equals(ProyectoSelected.ID)) { @Html.Raw("selected=\"selected\"") }>@Proye.NombreEstado</option>
+            }
+        </select>
+    </div>
+    </fieldset>
+
+    <fieldset>
+    <h3>Período activo</h3>
+   <div class="form-inline" >
+    <div class="form-group" style="margin-right: 15px;">
+        @Html.Label("Año")
+    </div>
+    <div class="form-group">
+        <input name="PeriodoAnio" value="@Html.Raw(Session["Periodo"].ToString())" readonly="readonly" size="10" class ="form-control" style="width: 150px;"/>
+    </div>
+   </div>
+        <br /><br />
+        <div class="form-inline" >
+    <div class="form-group" style="margin-right: 15px;">
+        @Html.Label("Mes")
+    </div>
+    <div class="form-group">
+        <input name="PeriodoMes" value="@Html.Raw(@Meses[((int)Session["Mes"]) - 1])" readonly="readonly" size="10" class ="form-control" style="width: 150px;" />
+    </div>
+            </div>
+</fieldset>
+    <br />
+<fieldset>
+    <h3>Correlativos de comprobantes (Proy. @ViewBag.Proyecto)</h3>
+    <table style="width: 100%;" class ="table table-hover">
+        <tr>
+            <td style="width: 25%;">
+                INGRESOS
+            </td>
+            <td style="width: 25%;" align="right">
+                <strong>@ViewBag.NroIngresos</strong>
+            </td>
+            <td>
+                EGRESOS
+            </td>
+            <td style="width: 25%;" align="right">
+                <strong>@ViewBag.NroEgresos</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                REINTEGROS
+            </td>
+            <td align="right">
+                <strong>@ViewBag.NroReintegros</strong>
+            </td>
+            <td>
+                DEUDAS PENDIENTES
+            </td>
+            <td align="right">
+                <strong>@ViewBag.NroDeudas</strong>
+            </td>
+        </tr>
+    </table><br />
+</fieldset>
+
+<fieldset>
+    <p style="margin:0;">
+        <input type="submit" value="Guardar cambios" class="btn btn-primary" />
+    </p>
+</fieldset>
+    <br />
+<br />
+}
+</div>

@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Ingreso cuenta corriente";
+}
+<div id="SAGBox" class="inicio">
+<h2>Ingrese cuenta corriente</h2>
+<p>SAG2 ha detectado que el Proyecto asignado a su usuario no tiene una Cuenta Corriente ingresada, por favor ingrese una para continuar.</p>
+@using (Html.BeginForm()) {
+<fieldset>
+    <legend>Datos de la Cuenta Corriente</legend>
+    <table width="100%" border="0" cellspacing="0" cellpadding="5" class="sin-hover">
+          <tr>
+            <td style="width: 120px;">@Html.Label("Proyecto"):</td>
+            <td colspan="3">@Html.TextBox("Proyecto", (string)ViewBag.Proyecto, new { @readonly = "readonly" })</td>
+          </tr>
+          <tr>
+            <td style="width: 120px;">@Html.Label("Banco"):</td>
+            <td>@Html.DropDownList("BancoID", string.Empty)</td>
+            <td style="width: 120px;">@Html.Label("Número"):</td>
+            <td>@Html.TextBox("Numero")</td>
+         </tr>
+         <tr>   
+            <td></td>
+            <td></td>
+            <td style="width: 120px;">@Html.Label("Saldo inicial"):</td>
+            <td>@Html.TextBox("SaldoInicial")</td>
+          </tr>
+        </table>
+    <p>
+        <input type="submit" value="Aceptar" />
+    </p>
+</fieldset>
+}
+</div>

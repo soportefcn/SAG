@@ -1,0 +1,141 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Ingresos";
+    var total = 0;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Informe de Ingresos</title>
+    <style type="text/css" media="all">
+    @@page
+    {
+    size: landscape;
+    margin: 2cm;
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+    font-size: 10px;    
+    }
+    th 
+    {
+    font-size: 12px;
+    }
+    h2 {
+        text-align: center;
+    }
+    .registros td
+    {
+        border: 0;
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+    
+    .registro_nulo td 
+    {
+        text-decoration: line-through;
+    }
+    </style>
+<script language="javascript" type="text/javascript">
+       <!--
+    function printThis() {
+        window.print();
+        setTimeout('window.close()', 10);
+        //self.close();
+    }
+        //-->
+    </script>
+</head>
+<body onLoad="printThis();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top"><strong>Consejo de Defensa del Niño<br />
+    @Html.Raw(@ViewBag.Proyecto)</strong></td>
+    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h2>Informe de Ingreso</h2>
+<div align="right">Del @Html.Raw(@ViewBag.Desde) al @Html.Raw(@ViewBag.Hasta)</div>
+    <table cellpadding="5" border="0" style="width: 100%;" cellspacing="0">
+        <tr>
+            <th style="border-left: 1px solid black;" align="left" width="50px">Fecha</th>
+            <th align="center" width="60px" style="white-space: nowrap;">Nº Comp.</th>
+            <th align="left" width="100px" style="white-space: nowrap;">Cuenta</th>
+            <th align="left">Detalle</th>
+            <th align="left" width="50px">Monto $</th>
+            <th align="left" width="100px">Nº Documento</th>
+            <th style="border-right: 1px solid black;" align="left" width="50px">Cta. Cte.</th>
+        </tr>
+    @foreach (var item in Model)
+    {
+        if (item.TipoComprobanteID != 1)
+        {
+            continue;
+        }
+        var nulo = "";
+        if (item.Nulo != null && item.Nulo.Equals("S"))
+        {
+            nulo = "registro_nulo";
+        }
+        else
+        {
+            total = total + item.Monto_Ingresos;
+        }
+        <tr class="registros @Html.Raw(nulo)">
+            <td style="white-space: nowrap;" align="left">
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="center" nowrap>
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            
+            <td style="white-space: nowrap;">
+                <div style="white-space: nowrap; overflow: hidden; width: 150px;">
+                @Html.DisplayFor(modelItem => item.Cuenta.NombreLista)
+                </div>
+            </td>
+            <td>
+                <div style="white-space: nowrap; overflow: hidden; width: 250px;">
+                @Html.DisplayFor(modelItem => item.Descripcion)
+                </div>
+            </td>
+            <td align="left" nowrap>
+                <strong>
+                $@Html.Raw(item.Monto_Ingresos.ToString("#,##0")) 
+                </strong>
+            </td>
+            <td align="left" nowrap>
+                @Html.DisplayFor(modelItem => item.Cheque)
+            </td>
+            
+            <td nowrap align="left">
+                @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+            </td>
+        </tr>
+    }
+    </table>
+    <br />
+    <table style="width: 100%;">
+        <tr>
+            <th align="right" style="border-bottom: 0;"><strong>Total Informe de Ingresos $@total.ToString("#,##0")</strong></th>
+           <th>&nbsp;&nbsp</th>
+        </tr>
+    </table>
+        <br /><br /><br /><br /><br />
+   <table style="width: 100%;">
+    <tr>
+      
+        <td width="33%" align="right" style="font-size: 14px;">_______________________<br />Firma y Timbre Director (a) </td>
+    </tr>
+</table>
+</body>
+</html>

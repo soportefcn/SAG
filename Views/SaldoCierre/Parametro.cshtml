@@ -1,0 +1,73 @@
+﻿@model SAG2.Models.ParametroInforme
+
+@{
+    ViewBag.Title = "Parametro";
+}
+
+<h2>Parametro</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+     <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Parametro Informe de Cierre por Proyectos</b></h3></div>
+  <div class="panel-body">
+          
+        <div class="editor-label">
+            <label> Proyecto</label> 
+        </div>
+        <div class="editor-field">
+         
+             @Html.DropDownList("ProyectoID", null, "-- SELECCIONE PROYECTO --", new { @class = "form-control"} )
+        </div>
+
+        <div class="editor-label">
+          <label> Cuenta Asociada</label> 
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("CInformeID", null, "-- SELECCIONE CUENTA --", new { @class = "form-control"} )
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Tipo)
+        </div>
+        <div class="editor-field">
+            <select id="Tipo" name="Tipo" class="form-control">
+                <option value="0">NO Definido</option>
+                <option value="1"> Con tope de Valor</option>
+                <option value="2"> Meses de Inicio del Proyecto </option>
+                <option value="3"> Porcentaje Sumatoria de Ingreso </option>
+                 <option value="4"> Febrero - Noviembre  Rojo al tener Valor</option>
+            </select>
+        </div>
+
+        <div class="editor-label">
+           Valor Parametro
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Parametro)
+            @Html.ValidationMessageFor(model => model.Parametro)
+        </div>
+
+
+   
+      </div>
+               	<div class="panel-footer">
+    <div  style ="width: 400px ; display:inline-block">
+              <a class="btn btn-success" href="./ListaParametros" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+            <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/SaldoCierre/Parametro"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+          
+        </div>
+         <div style="float :right;display:inline-block">
+      <input type="submit" value="Guardar" class="btn btn-primary" />
+ </div>
+
+</div>
+     </div>
+
+     </fieldset>
+}
+
+<div>
+  
+</div>

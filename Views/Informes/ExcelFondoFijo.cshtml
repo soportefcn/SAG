@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SAG2.Models.FondoFijo>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Caja Chica";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.FondoFijo.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    var total = 0; 
+    }
+<style type="text/css" media="all">
+body 
+{
+    font-family: Arial;    
+}
+
+th
+{
+    font-weight: bold;    
+}
+
+td, th
+{
+    white-space: nowrap;
+    font-size: 12px;
+}
+</style>
+<table>
+    <tr>
+    <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.Proyecto </td>
+    </tr>
+</table>
+<h2>@ViewBag.Title</h2>
+Periodo  : @ViewBag.Periodo Mes : @ViewBag.Mes
+<br /><br />
+<table cellpadding="5" border="1" style="width: 100%;">
+            <tr>
+                <th>@System.Web.HttpUtility.UrlDecode("N° Doc.")</th>
+                <th>Fecha</th>
+                <th>Cuenta</th>
+                <th>Monto $</th>
+                <th>Glosa</th>
+            </tr>
+        @foreach (var item in Model)
+        {
+            total = item.Monto + total;
+            <tr>
+                <td align="center">
+                    @item.NumeroDocumento.ToString()
+                </td>
+                <td>
+                    @item.Fecha.ToShortDateString()
+                </td>
+                <td>
+                    @item.Cuenta.NombreLista
+                </td>
+                <td>
+                    $@item.Monto.ToString("#,##0")
+                </td>
+                <td>
+                    @System.Web.HttpUtility.UrlDecode(item.Glosa)
+                </td>
+            </tr>
+        }
+    <tr></tr><tr><td></td><td></td><td>Total</td><td>$@total.ToString("#,##0")</td></tr>
+        </table>

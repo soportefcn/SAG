@@ -1,0 +1,223 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    if (@ViewBag.Exportar.Equals("xls"))
+    {
+        // Generar archivo excel
+        Layout = null;
+        Response.Clear();
+        Response.Buffer = true;
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("Content-Disposition", "attachment;filename=Intervenciones." + @ViewBag.Periodo + ".SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    }
+    
+    ViewBag.Title = "Intervenciones";
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    int periodo = @ViewBag.Periodo;
+}
+@{ 
+     var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox" style="width: 90%">
+
+    <h2 align="center">INTERVENCIONES MENSUALES PER&Iacute;ODO @periodo</h2>
+    @if (!@ViewBag.Exportar.Equals("xls"))
+    {<input class="btn btn-success" type="button" style="float: right;" value="Exportar a Excel" id="boton" onclick="@Html.Raw("window.location='/SAG_5_desarrollo/Control/Intervenciones?export=xls&Periodo="+@ViewBag.Periodo+"'");" />
+    }<br />
+    <br /><span style='float: right;'>
+        @Html.CheckBox("vigentes", false)Incluir no vigentes
+    </span>
+          <script type="text/javascript">
+              $("#vigentes").change(function () {
+                  if ($('#vigentes').prop('checked')) {
+                                            $("#boton").attr("onclick", "@Html.Raw("window.location='/SAG_5_desarrollo/Control/Intervenciones?export=xls&Periodo="+@ViewBag.Periodo+"&cerrado=S'");");
+
+                  }
+                  else {
+                                            $("#boton").attr("onclick", "@Html.Raw("window.location='/SAG_5_desarrollo/Control/Intervenciones?export=xls&Periodo="+@ViewBag.Periodo+"&cerrado='");");
+                  }
+              });
+
+          </script>
+    @if (!@ViewBag.Exportar.Equals("xls"))
+    {
+        using (Html.BeginForm())
+        {
+            @Html.Raw("Período:")
+            <select name="Periodo" id="Periodo">
+                @for (var i = DateTime.Now.Year; i > DateTime.Now.Year - 5; i--)
+                {
+                    <option value="@Html.Raw((@i).ToString())" @if (i == periodo) { @Html.Raw("selected=\"selected\"") ; }>@Html.Raw((@i).ToString())</option>
+                }
+            </select>
+            <input class="btn btn-primary" type="submit" value="Aceptar" />
+        }
+    }
+    <br />
+    <!-- Nuevo formato intervenciones -->
+    <table class="table table-bordered table-hover" @if (@ViewBag.Exportar.Equals("xls")) { @Html.Raw("border=\"1\"") ; }>
+        <tr>
+            <th>Cobertura</th>
+            @for (var i = 0; i < 12; i++)
+            {
+                <th style="text-align: center; width: 57px;">@Html.Raw(@Meses[@i].Substring(0, 3) + ".")</th>
+                if (i == 5)
+                {
+                    <th style="text-align: center; width: 57px;">Total 1&deg; Sem.</th>
+                }
+            }
+            <th style="text-align: center; width: 57px;">Total 2&deg; Sem.</th>
+            <th style="text-align: center; width: 57px;">Total</th>
+        </tr>
+        @foreach (var proyecto in Model)
+        {
+            var coberturas = db.Convenio.Where(p => p.Periodo == periodo && p.ProyectoID == proyecto.ID).ToList();
+            <!-- Cobertura -->
+            <tr>
+                <td style="font-weight: bold;" @if (@ViewBag.Exportar.Equals("xls")) { @Html.Raw("width=\"400px\"") ; }>@proyecto.CodCodeni  @proyecto.Nombre</td>
+                @for (var i = 1; i < 13; i++)
+                {
+                    try
+                    {
+                        var cobertura = @coberturas.Where(p => p.Mes == i).Single().NroPlazas;
+                        <td style="text-align: center;">@cobertura</td>
+                    }
+                    catch
+                    {
+                        <td style="text-align: center;">0</td>
+                    }
+                    if (i == 6)
+                    {
+                        <td style="text-align: center; width: 57px;">@coberturas.Where(p => p.Mes < 7).Sum(p => p.NroPlazas)</td>
+                    }
+                }
+                <td style="text-align: center; width: 57px;">@coberturas.Where(p => p.Mes > 6).Sum(p => p.NroPlazas)</td>
+                <td style="text-align: center; width: 57px;">@coberturas.Sum(p => p.NroPlazas)</td>
+            </tr>
+
+            <!-- Atenciones por mes -->
+            <tr>
+                <td align="right">Atenciones/Mes</td>
+                @for (var i = 1; i < 13; i++)
+                {
+                    try
+                    {
+                        var atencion = proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes == i).Single();
+                        <td style="text-align: center;@if (atencion.Atenciones < atencion.Cobertura)
+                                                  {@Html.Raw(" color: Red;")}
+                                                  else if (atencion.Atenciones > atencion.Cobertura)
+                                                  {@Html.Raw(" color: Blue;")}" valign="middle">
+                            @atencion.Atenciones
+                        </td>
+                    }
+                    catch
+                    {
+                        <td style="text-align: center; color: Red;">0</td>
+                    }
+                    if (i == 6)
+                    {
+                        <td style="text-align: center; width: 57px;">@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes < 7).Sum(p => p.Atenciones)</td>
+                    }
+                }
+                <td style="text-align: center; width: 57px;">@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6).Sum(p => p.Atenciones)</td>
+                <td style="text-align: center; width: 57px;">@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.Atenciones)</td>
+            </tr>
+
+            <!-- % Cobertura -->
+            <tr>
+                <td align="right">% Cobertura</td>
+                @for (var i = 1; i < 13; i++)
+                {
+                    try
+                    {
+                        var atencion = proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes == i).Single();
+                        <td style="text-align: center;@if (@atencion.Porcentaje < 100)
+                                                  {@Html.Raw(" color: Red;")}
+                                                  else
+                                                  {@Html.Raw(" color: Blue;")}">
+                            @atencion.Porcentaje.ToString("0.00")%
+                        </td>
+                    }
+                    catch
+                    {
+                        <td style="text-align: center; color: Red;">0,00%</td>
+                    }
+                    if (i == 6)
+                    {
+                        float cobertura = float.Parse(@coberturas.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes < 7).Sum(p => p.NroPlazas).ToString());
+                        float atenciones = float.Parse(@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes < 7).Sum(p => p.Atenciones).ToString());
+                        float porcentaje = atenciones * 100 / cobertura;
+                        var porcentaje_str = porcentaje.ToString("0.00");
+                        if (porcentaje_str.Equals("NeuN"))
+                        {
+                            porcentaje_str = "0,00";
+                        }
+
+                        <td style="text-align: center; width: 57px;@if (porcentaje < 100)
+                                                               {@Html.Raw(" color: Red;")}
+                                                               else
+                                                               {@Html.Raw(" color: Blue;")}">
+                            @Html.Raw(porcentaje_str)%
+                        </td>
+                    }
+                }
+                @{
+                    float cobertura2 = float.Parse(@coberturas.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6).Sum(p => p.NroPlazas).ToString());
+                    float atenciones2 = float.Parse(@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6).Sum(p => p.Atenciones).ToString());
+                    float porcentaje2 = atenciones2 * 100 / cobertura2;
+                    var porcentaje_str2 = porcentaje2.ToString("0.00");
+                    if (porcentaje_str2.Equals("NeuN"))
+                    {
+                        porcentaje_str2 = "0,00";
+                    }
+
+                    <td style="text-align: center; width: 57px;@if (porcentaje2 < 100)
+                                                           {@Html.Raw(" color: Red;")}
+                                                           else
+                                                           {@Html.Raw(" color: Blue;")}">
+                        @Html.Raw(porcentaje_str2)%
+                    </td>
+                }
+                @{
+                    float cobertura3 = float.Parse(@coberturas.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.NroPlazas).ToString());
+                    float atenciones3 = float.Parse(@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.Atenciones).ToString());
+                    float porcentaje3 = atenciones3 * 100 / cobertura3;
+                    var porcentaje_str3 = porcentaje3.ToString("0.00");
+                    if (porcentaje_str3.Equals("NeuN"))
+                    {
+                        porcentaje_str3 = "0,00";
+                    }
+
+                    <td style="text-align: center; width: 57px;@if (porcentaje3 < 100)
+                                                           {@Html.Raw(" color: Red;")}
+                                                           else
+                                                           {@Html.Raw(" color: Blue;")}">
+                        @Html.Raw(porcentaje_str3)%
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>

@@ -1,0 +1,109 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Bajas";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Bajas.Inventario.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 20px;
+    }
+</style>
+
+<table cellpadding="5" border="1" style="width: 80%;">
+
+    <tr>
+        <th rowspan="4" colspan="3" style="font-size: 12px;"> Fundaci&oacute;n Ciudad del Ni&ntilde;o  <br /> Administracion Central</th>
+        <th rowspan="2" colspan="6" style="font-size: 30px; font-weight: bold;">Formulario</th>
+        <th align="left" colspan="3" style="font-weight: bold;">C&oacute;digo:</th>
+        <th align="left" colspan="2" style="font-weight: bold;">F-DAF-018</th>
+    </tr>
+    <tr>
+        <td colspan="3">P&aacute;gina:</td>
+        <td colspan="2">1 de 1</td>
+    </tr>
+    <tr>
+        <th rowspan="2" colspan="6" style="font-size: 30px; font-weight: bold;">Baja de Inventario</th>
+        <td colspan="3">Revisi&oacute;n:</td>
+        <td colspan="2">2</td>
+    </tr>
+    <tr>
+        <td colspan="3">Fecha Rev:</td>
+        <td align="left" colspan="2">@FechaSis.Trim()</td>
+    </tr>
+    <tr></tr>
+
+    <tr>
+        <th align="left" colspan="3" style="">Nombre Proyecto:</th>
+        <td colspan="6">@Model.ClaseProyecto.Nombre</td>
+        <th align="left" colspan="3">C&oacute;digo SENAME:</th>
+        <td colspan="2">@Model.ClaseProyecto.CodSename</td>
+    </tr>
+    <tr>
+        <th align="left" colspan="3">Instituci&oacute;n:</th>
+        <td colspan="3">@Model.ClaseProyecto.Institucion</td>
+        <th align="left" colspan="2">C&oacute;digo:</th>
+        <td>@Model.ClaseProyecto.CodCodeni</td>
+        <th align="left" colspan="3">Fecha Solicitud Baja::</th>
+        <td colspan="2"></td>
+    </tr>
+    <tr></tr>
+
+    <tr>
+        <th rowspan="2" colspan="2">Especie</th>
+        <th rowspan="2" colspan="2">Descripci&oacute;n y/o caracter&iacute;sticas de la especie</th>
+        <th rowspan="2">Procedencia (S); (T); (I)</th>
+        <th rowspan="2">N&ordm; C/E</th>
+        <th rowspan="2">A&ntilde;o</th>
+        <th rowspan="2" colspan="2">Acta Traspaso(A)<br />Resoluci&oacute;n Exenta(R)</th>
+        <th rowspan="2">Cantidad</th>
+        <th rowspan="2" colspan="2">Ubicaci&oacute;n</th>
+        <th rowspan="2">Condici&oacute;n<br />(malo)</th>
+        <th rowspan="2">Motivo</th>
+    </tr>
+
+    <tr>
+
+    </tr>
+    @foreach (var item in Model.lista)
+    {
+        <tr>
+            <td colspan="2">@item.Familia</td>
+            <td colspan="2">@item.DescripcionBien</td>
+            <td>@item.Procedencia[0]</td>
+            <td>@item.Movimiento.NumeroComprobante</td>
+            <td>@item.Fecha.Year.ToString()</td>
+            <td colspan="2"></td>
+            <td>@item.Cantidad</td>
+            <td colspan="2">@item.Ubicacion</td>
+            <td>@item.CondicionText</td>
+            <td>@item.Detalle</td>
+        </tr>
+    }
+
+
+</table>
+<table>
+    <tr></tr>
+    <tr></tr>
+    <tr>
+        <td colspan="8"></td>
+        <td colspan="6">Nombre y firma Director:________________________________</td>
+    </tr>
+
+</table>

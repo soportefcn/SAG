@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Conciliación Masiva";
+
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+}
+<div id="SAGBox" style="min-height: 180px; padding: 0 15px;">
+<h2>@ViewBag.Title</h2>
+    @using (Html.BeginForm("ExportarConciliacionMasiva", "Banco"))
+{
+        <fieldset>
+        <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Conciliación Masiva</b></h3></div>
+  <div class="panel-body">
+      <div class="form-group" style="margin-right: 30px;">
+          <label>Periodo</label>
+     </div>
+         <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 30px;">
+                 <label>Mes</label>
+            </div>
+            <div class="form-group" style="margin-right: 30px;">
+             <select class="form-control" name="Mes" id="Mes">
+              @for (var i = 0; i < 12; i++)
+               {
+                  <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1)) {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                }
+              </select>
+            </div>
+         </div>
+       <div class ="form-group form-inline">
+            <div class="form-group" style="margin-right: 30px;">
+                 <label>Año</label>
+            </div>
+            <div class="form-group" style="margin-right: 30px;">
+            <select name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+                </div></div>
+  </div>
+              <div class="panel-footer">
+	<div  style ="width: 250px ; display:inline-block">
+           <input class="btn btn-primary" type="submit" value="Exportar" style="height:100%" />
+        
+          </div>
+  </div>
+            </div>
+            
+              
+              
+            </fieldset>
+        
+    }
+</div>

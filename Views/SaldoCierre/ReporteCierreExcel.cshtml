@@ -1,0 +1,453 @@
+﻿@{
+    ViewBag.Title = "Reporte Cierre";
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Reporte Cierre ";
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+    List<SAG2.Models.Proyecto> Proyectos = new List<SAG2.Models.Proyecto>();
+    List<SAG2.Models.Cuenta> Cuentas = new List<SAG2.Models.Cuenta>();
+    List<SAG2.Models.CuentaCorriente> cta = new List<SAG2.Models.CuentaCorriente>();
+    List<SAG2.Models.Rol> Rol = new List<SAG2.Models.Rol>();
+    List<SAG2.Models.Persona> Per = new List<SAG2.Models.Persona>();
+    List<SAG2.Models.Saldo> Saldo = new List<SAG2.Models.Saldo>();
+    List<SAG2.Models.Movimiento> ingresos = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleEgreso> egresos = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Movimiento> reintegros = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleReintegro> reintegrosGastos = new List<SAG2.Models.DetalleReintegro>();
+    List<SAG2.Models.Periodo> Provision = new List<SAG2.Models.Periodo>();
+    List<SAG2.Models.CInformeCierre> InformeCuenta = new List<SAG2.Models.CInformeCierre>();
+    List<SAG2.Models.DetalleEgreso> NoCobrados = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Conciliacion> Conciliacion = new List<SAG2.Models.Conciliacion>();
+    List<SAG2.Models.GinformeCierre> nombreGrupo = new List<SAG2.Models.GinformeCierre>();
+    List<SAG2.Models.ParametroInforme> Parametro = new List<SAG2.Models.ParametroInforme>();
+    List<SAG2.Models.SaldosCorporativos> SaldosCorporativos = new List<SAG2.Models.SaldosCorporativos>();
+    List<SAG2.Models.chequesNo> NoCobrados2 = new List<SAG2.Models.chequesNo>();
+    // ViewBag.saldoViewBag.NombreGrupo
+
+    //   ViewBag.SaldosCorpo = db.SaldosCorporativos.ToList();
+
+    Rol = (List<SAG2.Models.Rol>)@ViewBag.Rol;
+    Proyectos = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;
+    Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.cuentas;
+    cta = (List<SAG2.Models.CuentaCorriente>)@ViewBag.Cta;
+    Per = (List<SAG2.Models.Persona>)@ViewBag.per;
+    Saldo = (List<SAG2.Models.Saldo>)@ViewBag.saldo;
+    ingresos = (List<SAG2.Models.Movimiento>)@ViewBag.Ingresos;
+    egresos = (List<SAG2.Models.DetalleEgreso>)@ViewBag.egresos;
+    reintegros = (List<SAG2.Models.Movimiento>)@ViewBag.reintegros;
+    reintegrosGastos = (List<SAG2.Models.DetalleReintegro>)@ViewBag.reintegrosGastos;
+    Provision = (List<SAG2.Models.Periodo>)@ViewBag.provision;
+    InformeCuenta = (List<SAG2.Models.CInformeCierre>)@ViewBag.InformeCuenta;
+    NoCobrados = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Nocobrados;
+    Conciliacion = (List<SAG2.Models.Conciliacion>)@ViewBag.Conciliacion;
+    nombreGrupo = (List<SAG2.Models.GinformeCierre>)@ViewBag.NombreGrupo;
+    Parametro = (List<SAG2.Models.ParametroInforme>)@ViewBag.Parametro;
+    SaldosCorporativos = (List<SAG2.Models.SaldosCorporativos>)@ViewBag.SaldosCorpo;
+    NoCobrados2 = (List<SAG2.Models.chequesNo>)@ViewBag.Nocobrados2; 
+
+    int xmes = ViewBag.DesdeMes;
+    int xPeriodo = ViewBag.DesdePeriodo;  
+
+
+    Layout = null;
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.Charset = "utf-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=SaldoCorp" + @ViewBag.DesdeMes + @ViewBag.DesdePeriodo + DateTime.Now.ToShortDateString() + ".xls");
+}
+
+      <table  align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+      <tr><td colspan="36" align="center" style="font-weight: bold;">Gesti&oacute;n Cierre de Mes @Html.Raw(Meses[xmes - 1]) @xPeriodo </td>  </tr>
+        <tr class="warning"> 
+            <td colspan="3"> </td>
+             <td colspan="7">Caratula Rendicion de Cuentas </td>
+            <td colspan="6">Cuadraturas de Saldos </td>
+            @{
+                int grupo = 0;
+                int contgrupo = 0;
+                int tot = 1;
+                int xTotal = 0;
+            }
+         @foreach (var Nombrecuenta in ViewBag.InformeCuenta)
+         {
+             int tgrupo = Nombrecuenta.GinformeID;
+             int ttotal = Nombrecuenta.CTotal;
+             if (grupo == 0)
+             {
+                 grupo = tgrupo;
+                 contgrupo = 1;
+                 xTotal = Nombrecuenta.CTotal;
+             }
+             else
+             {
+                 if (grupo == tgrupo)
+                 {
+                     
+                         contgrupo++;                       
+                    
+                 }
+                 else
+                 {
+                     string NGrupo = " ";
+
+                     try
+                     {
+                         NGrupo = nombreGrupo.Where(d => d.ID == grupo).FirstOrDefault().Descripcion.ToString();
+                     }
+                     catch (Exception e)
+                     {
+                         NGrupo = "No Definido";
+                     }
+                     grupo = tgrupo;
+                     contgrupo = contgrupo + tot; 
+                    
+                     <td colspan="@contgrupo">@NGrupo </td>
+             
+                     contgrupo = 1;
+                     tot = 0;
+                 }
+             }
+
+             //string nombreCuenta = Cuentas.Where(d => d.ID == Nombrecuenta.CuentaID).FirstOrDefault().NombreLista;
+
+
+         }
+             @{
+                 string NGrupo2 = " ";
+                 try
+                 {
+                     NGrupo2 = nombreGrupo.Where(d => d.ID == grupo).FirstOrDefault().Descripcion.ToString();
+                 }
+                 catch (Exception e)
+                 {
+                     NGrupo2 = "No Definido";
+                 } 
+                 
+                 <td colspan="@contgrupo">@NGrupo2 </td>
+             }
+
+
+             <td> </td>
+        </tr>
+    <tr class="success">
+       <td style="width: 318px;">Nombre Proyecto</td>
+       <td style="width: 120px;">Cod.Sag</td>
+       <td style="width: 120px;">N° CTA CTE</td>
+       <td>Saldo Iinicial</td>
+       <td>Total Ingresos</td>
+       <td>Inversion</td>
+       <td>Total Egresos</td>
+       <td>Saldo Disponible Cta. Cte.</td>
+       <td>Provisión Indemnizacion</td>
+       <td>Saldo Real</td>
+       <td>Saldo Libro Banco</td>
+       <td>Saldo Libro Banco Conciliación Bancaria</td>
+       <td>Cheques Girados y No Cobrados</td>
+       <td>Saldo Final de la Cartola Cta. Cte. (Banco)</td>
+       <td>Diferencias (libro banco y Cartola) </td>
+        <td> </td>
+        @{
+            tot = 1;
+        }
+         @foreach (var Nombrecuenta in ViewBag.InformeCuenta)
+         {
+             string nombreCuenta = Cuentas.Where(d => d.ID == Nombrecuenta.CuentaID).FirstOrDefault().NombreLista;
+             int xGrup = Nombrecuenta.CTotal;
+         
+             if (xGrup != tot){
+                 tot = 0;
+                 
+                 <td>Ingreso Total</td>  
+             }
+               
+             <td>@nombreCuenta</td> 
+         }
+        <td>Supervisor</td>
+    </tr>
+    @foreach (var DatoProyecto in ViewBag.Proyectos)
+    {
+        // Rescatar Cuenta
+        int xProyectoID = DatoProyecto.ID;
+       
+        if (xProyectoID == 300)
+        {
+            xProyectoID = DatoProyecto.ID;
+        }
+        var Numcuenta = cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().NumeroLista.ToString();
+        int IdCuenta = int.Parse(cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().ID.ToString());
+        // supervisor
+        var nombre = "";
+        try
+        {
+            int idPer = int.Parse(Rol.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().PersonaID.ToString());
+            nombre = Per.Where(c => c.ID == idPer).FirstOrDefault().NombreLista.ToString();
+        }
+        catch (Exception e)
+        {
+            nombre = "No Definido";
+        }
+        // Saldo Corporativo 
+        double SaldoCuentaBanco = 0;
+        try
+        {
+            SaldoCuentaBanco = SaldosCorporativos.Where(d => d.Numerocuenta == Numcuenta).FirstOrDefault().Saldo_Disponible;
+          
+        }
+        catch (Exception e)
+        {
+            SaldoCuentaBanco = 0;
+        }
+        // SAldo Inicial
+        double SaldoInicial = 0;
+        try
+        {
+            SaldoInicial = double.Parse(Saldo.Where(d => d.CuentaCorrienteID.Equals(IdCuenta)).FirstOrDefault().SaldoInicialCartola.ToString());
+        }
+        catch (Exception e)
+        {
+            SaldoInicial = 0;
+        }
+        // S D CTA CTE
+        double Saldocta = 0;
+        try
+        {
+            Saldocta = double.Parse(Saldo.Where(d => d.CuentaCorrienteID.Equals(IdCuenta)).FirstOrDefault().SaldoFinal.ToString());
+        }
+        catch (Exception e)
+        {
+            Saldocta = 0;
+        }
+
+        double No1 = 0;
+        try
+        {
+            No1 = NoCobrados.Where(d => d.Egreso.ProyectoID == xProyectoID && d.Egreso.Mes <= xmes).Sum(d => d.Monto);
+        }
+        catch (Exception e)
+        {
+            No1 = 0;
+        }
+
+        double No2 = 0;
+        try
+        {
+            No2 = NoCobrados2.Where(d => d.ProyectoID  == xProyectoID).Sum(d => d.Monto);
+        }
+        catch (Exception e)
+        {
+            No2 = 0;
+        }
+        No1 = No1 + No2;
+        double ValorConciliacion = 0;
+        try
+        {
+            ValorConciliacion = Conciliacion.Where(d => d.ProyectoID == xProyectoID).FirstOrDefault().SaldoCartola;
+        }
+        catch (Exception e)
+        {
+            ValorConciliacion = 0;
+        }
+        // Total Ingresos
+        double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+        // Inversion
+        double valorInversion = 0;
+
+
+        valorInversion = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == xProyectoID && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+        double valor_ReintegrosE = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
+        double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 127 || e.CuentaIDD == 101 || e.CuentaIDD == 102 || e.CuentaIDD == 104 || e.CuentaIDD == 43)).Where(d => d.Reintegro.ProyectoID == xProyectoID).Sum(d => d.Monto).ToString());
+
+        valorInversion = (valorInversion + valor_GastosReintegros) - valor_ReintegrosE;
+
+        // Total egresos
+
+        double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == xProyectoID && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+        double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 155 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
+        var DatosReintegros = reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.ProyectoID == xProyectoID).ToList();
+
+        //valorEgresos = valorEgresos; //- valor_Reintegros;
+
+        //
+        int Provi = 0;
+        try
+        {
+            Provi = int.Parse(Provision.Where(p => p.ProyectoID == xProyectoID).FirstOrDefault().Indemnizacion.ToString());
+        }
+        catch (Exception e)
+        {
+            Provi = 0;
+        }
+        // Saldo REal
+        string  colorDiferencia = " " ;
+        if (xProyectoID == 376)
+       {
+           Provi = Provi;
+        }
+        double SaldoReal = double.Parse(Saldocta.ToString()) - Provi;
+        double diferencia = ValorConciliacion - SaldoCuentaBanco;
+        if (diferencia != 0) {
+            colorDiferencia = "danger";
+        } 
+    <tr>    
+        
+       <td>@DatoProyecto.NombreLista.Trim()  </td>
+       <td>@DatoProyecto.CodCodeni </td>
+       <td>@Numcuenta</td>
+       <td>@SaldoInicial.ToString("#,##0")</td>
+       <td>@valorIngresos.ToString("#,##0")</td>
+       <td>@valorInversion.ToString("#,##0")</td>
+       <td>@valorEgresos.ToString("#,##0")</td>
+       <td>@Saldocta.ToString("#,##0")</td>
+       <td>@Provi.ToString("#,##0")</td>
+       <td>@SaldoReal.ToString("#,##0")</td>
+       <td>@Saldocta.ToString("#,##0")</td>
+       <td>@ValorConciliacion.ToString("#,##0")</td>
+       <td>@No1.ToString("#,##0")</td>
+       <td>@SaldoCuentaBanco.ToString("#,##0")</td>
+       <td class="@colorDiferencia">@diferencia.ToString("#,##0")  <td>
+         @{
+                tot = 1;
+                double Sumatoria = 0;
+           }
+         @foreach (var Nombrecuenta in ViewBag.InformeCuenta)
+         {
+             string xParametro = " ";
+             if (Nombrecuenta.CuentaID == 60 )
+             {
+                xParametro = " ";
+           }
+                
+             string TipoCuenta = Cuentas.Where(d => d.ID == Nombrecuenta.CuentaID).FirstOrDefault().Tipo;
+
+             double Ingresos = double.Parse(ingresos.Where(m => (m.CuentaID == Nombrecuenta.CuentaID) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+             double VEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == xProyectoID && (e.CuentaID == Nombrecuenta.CuentaID)).Sum(m => m.Monto).ToString());
+             double vReintegrosE = double.Parse(reintegros.Where(e => (e.CuentaID == Nombrecuenta.CuentaID)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
+             double vGastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == Nombrecuenta.CuentaID)).Where(d => d.Reintegro.ProyectoID == xProyectoID).Sum(d => d.Monto).ToString());
+             double valorCuenta = (VEgresos + vGastosReintegros) - (vReintegrosE + Ingresos);
+             double MostrarValor = 0;
+             if (TipoCuenta.Trim() == "I")
+             {
+                 MostrarValor = Ingresos;
+             }
+             else
+             {
+                 MostrarValor = valorCuenta; 
+             }
+            
+             if ( Nombrecuenta.tipoComprobante == 1 )  
+             {
+                 MostrarValor = (vReintegrosE * -1);
+             }
+             if (Nombrecuenta.tipoComprobante == 2)
+             {
+                 MostrarValor = VEgresos;
+             }
+             
+             int  xGGupo =  Nombrecuenta.CTotal;
+             if (xGGupo == 1){
+                 Sumatoria = Ingresos + Sumatoria;
+             }
+             if (xGGupo != tot)
+             {
+                 <td>@Sumatoria.ToString("#,##0")</td>                                
+                tot = 0;
+             }
+             
+            
+             try
+             {
+                 Double xParametroValor = Parametro.Where(d => d.CInformeID == Nombrecuenta.ID && d.ProyectoID == xProyectoID).FirstOrDefault().Parametro;
+                 int xxtipo = Parametro.Where(d => d.CInformeID == Nombrecuenta.ID && d.ProyectoID == xProyectoID).FirstOrDefault().Tipo;
+                 int PeriodoSel = ViewBag.DesdePeriodo;
+                 int mesSel = ViewBag.DesdeMes;
+                 
+                 if (xxtipo == 1) {
+                        if (MostrarValor > xParametroValor){
+                            xParametro = "danger";
+                            }
+                     }
+                 if (xxtipo == 2)
+                 {
+                     int PeriodoInicio = int.Parse(Proyectos.Where(d => d.ID == xProyectoID).FirstOrDefault().PeriodoInicio.ToString() );
+                     int MesInicio = int.Parse(Proyectos.Where(d => d.ID == xProyectoID).FirstOrDefault().MesInicio.ToString());
+                    
+                     int xdper = PeriodoSel - PeriodoInicio;
+                     MesInicio = MesInicio + int.Parse(xParametroValor.ToString()) ;
+                      if(MesInicio > 12 )
+                      {
+                          PeriodoInicio = PeriodoInicio + 1;
+                          MesInicio = MesInicio - 12;
+                      }
+                      if (PeriodoInicio == PeriodoSel && mesSel > MesInicio)
+                     {
+                         xParametro = "ver";                     
+                     }
+                      if (xdper > 1)
+                      {
+                          xParametro = "ver";
+                      }
+                      if (xParametro == "ver"){
+                      if (MostrarValor > 0)
+                      {
+                          xParametro = "danger";
+                      }else
+                      {
+                          xParametro = "";
+                      }  
+                     }
+                 } 
+                 if (xxtipo == 3)
+                 {
+                     Double delta = xParametroValor / 100;
+                     double valorD = Sumatoria * delta;
+                     if(valorD != MostrarValor) {
+                         xParametro = "danger";
+                         }
+                 }
+                 if (xxtipo == 4)
+                 {
+                     if ((mesSel != 1) || (mesSel != 12))
+                     {
+                     if (MostrarValor > 0)
+                     {
+                         xParametro = "danger";
+                     }
+                 }
+                 }
+                 if( Nombrecuenta.valor == 1 )
+                 {
+                     if (MostrarValor > 0)
+                     {
+                         xParametro = "danger";
+                     }
+                 }
+             }
+             catch (Exception e)
+             {
+                 xParametro = "";
+             }
+             
+
+           
+                    <td class="@xParametro">@MostrarValor.ToString("#,##0")</td> 
+        
+         }
+        <td>@nombre</td>
+     </tr>
+    }
+  
+    </table>

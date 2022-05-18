@@ -1,0 +1,61 @@
+﻿@model SAG2.Models.Resolucion
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+
+           <div class="panel panel-default">
+  <div class="panel-heading"><h3><b> Resolución Eliminar</b></h3></div>
+  <div class="panel-body">
+<h3>Esta Seguro de Borrar Resolucion?</h3>
+<fieldset>
+    <legend>Resolucion</legend>
+
+    <div class="display-label">ProyectoID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Proyecto.Nombre)
+    </div>
+
+    <div class="display-label">ResEx</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ResEx)
+    </div>
+
+    <div class="display-label">FechaInicio</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaInicio)
+    </div>
+
+    <div class="display-label">FechaTermino</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaTermino)
+    </div>
+
+    <div class="display-label">Fechaprorroga</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FechaProrroga)
+    </div>
+
+    <div class="display-label">NroPlazas</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NroPlazas)
+    </div>
+
+    <div class="display-label">Comentarios</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Comentarios)
+    </div>
+
+    <div class="display-label">Estado</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Estado)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Eliminar" /> |
+        @Html.ActionLink("Cancelar Operación", "Create")
+    </p>
+}
+</div></div>

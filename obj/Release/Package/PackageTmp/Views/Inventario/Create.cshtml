@@ -1,0 +1,121 @@
+﻿@model SAG2.Models.Inventario
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Inventario</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ProyectoID, "Proyecto")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("ProyectoID", String.Empty)
+            @Html.ValidationMessageFor(model => model.ProyectoID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DetalleEgresoID, "Egreso")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("DetalleEgresoID", String.Empty)
+            @Html.ValidationMessageFor(model => model.DetalleEgresoID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EspecieID, "Especie")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("EspecieID", String.Empty)
+            @Html.ValidationMessageFor(model => model.EspecieID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Descripcion)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Descripcion)
+            @Html.ValidationMessageFor(model => model.Descripcion)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Procedencia)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Procedencia)
+            @Html.ValidationMessageFor(model => model.Procedencia)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Resolucion)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Resolucion)
+            @Html.ValidationMessageFor(model => model.Resolucion)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Cantidad)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Cantidad)
+            @Html.ValidationMessageFor(model => model.Cantidad)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Estado)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Estado)
+            @Html.ValidationMessageFor(model => model.Estado)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Baja)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Baja)
+            @Html.ValidationMessageFor(model => model.Baja)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CantidadBajas)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CantidadBajas)
+            @Html.ValidationMessageFor(model => model.CantidadBajas)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Observaciones)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Observaciones)
+            @Html.ValidationMessageFor(model => model.Observaciones)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Fecha)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Fecha)
+            @Html.ValidationMessageFor(model => model.Fecha)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

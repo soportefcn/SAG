@@ -1,0 +1,263 @@
+﻿@model IEnumerable<SAG2.Models.MovimientosBodega>
+@{
+    ViewBag.Title = "ListarLineas";
+    string arti = "";
+    string categoria = "";
+    int saldo_inicial = 0;
+    var entrada = 0;
+    var salida = 0;
+    var saldo = 0;
+    int mes = ViewBag.Mes;
+    int perio = ViewBag.Periodo;
+    int idarti = 0;
+    int idpro = 0;
+    int entmes = 0;
+    int salmes = 0;
+    // list<SAG2.Models.Bodega> ba = new SAG2.Models.Bodega();
+    List<SAG2.Models.Bodega> dp = new List<SAG2.Models.Bodega>();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+
+    var Meses = new string[12]
+{
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+};
+}
+<h3>Programa: @ViewBag.nombreproyecto</h3>
+<h3>Cod. Sename: @ViewBag.CodSename</h3>
+<h3>Consulta de Movimientos </h3>
+
+<div class="form-group form-inline">
+    <div class="form-group">
+        <label>Mes</label>
+    </div>
+    <div class="form-group">
+        <select name="Mes" id="Mes" class="form-control">
+            @for (var i = 0; i < 12; i++)
+            {
+                <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.mes == (i + 1)) { @Html.Raw("selected=\"selected\"") }>@Html.Raw(@Meses[@i])</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Año</label>
+    </div>
+    <div class="form-group">
+        <select name="Periodo" id="Periodo" class="form-control">
+            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+            {
+                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) { @Html.Raw("selected=\"selected\"") }>@Html.Raw((@i).ToString())</option>
+            }
+        </select>
+    </div>
+
+    <a class="btn btn-default" name="ImprimirListado" id="ImprimirListado" data-toggle="tooltip" data-placement="top" title="Imprimir">
+        Imprimir
+    </a>
+
+    <a class="btn btn-success" name="Excel" id="Excel" data-toggle="tooltip" data-placement="top" title="Excel">
+        Excel
+    </a>
+</div>
+<h3>Listado de Movimientos </h3>
+<h3> </h3>
+
+@if (Model.Count() > 0)
+{
+<table class="table table-bordered">
+    <thead>
+        <tr class="info">
+            <th style="text-align: center;">Nº Egreso</th>
+            <th style="text-align: center;">Fecha</th>
+            <th style="text-align: center;" width="150px">Unidad de Medida<br />KILO, LITRO, UNID</th>
+            <th style="text-align: center;">Factura</th>
+            <th style="text-align: center;">Ingreso de artículos</th>
+            <th style="text-align: center;">Egreso de artículos</th>
+            <th style="text-align: center;">Saldo Final</th>
+            <th style="text-align: center;">Destino y Observaciones</th>
+        </tr>
+    </thead>
+    @foreach (var movimiento in Model)
+    {
+        if (arti != movimiento.Articulo.Nombre)
+        {
+            if (arti != "")
+            {
+                 saldo = (entrada + saldo_inicial) - salida;
+                <tr>
+                    <td colspan="3">  </td>
+                    <td>Totales</td>
+                    <td align="center">@entrada </td>
+                    <td align="center">@salida </td>
+                    <td align="center">@saldo</td>
+                    <td colspan="3">  </td>
+                </tr>
+                
+                 idarti = movimiento.ArticuloID;
+                saldo_inicial = 0;
+               
+                foreach (SAG2.Models.Bodega sbodega in ViewBag.bartic)
+                {
+
+                    if (idarti == sbodega.ArticuloID)
+                    {
+                        saldo_inicial = sbodega.SaldoInicial;
+                        entmes = sbodega.Entrada;
+                        salmes = sbodega.Salida;
+                        saldo = sbodega.Saldo;
+                    }
+                }
+
+                idpro = movimiento.ProyectoID;
+
+      
+                entrada = 0;
+                salida = 0;
+            }
+        }
+
+        if (categoria != movimiento.Articulo.Categoria.nombre)
+        {
+            categoria = movimiento.Articulo.Categoria.nombre;
+            <tr>
+                <td colspan="9">Categoría : @movimiento.Articulo.Categoria.nombre</td>
+            </tr>
+
+        }
+        if (arti != movimiento.Articulo.Nombre)
+        {
+            //   idarti = movimiento.ArticuloID;
+            idpro = movimiento.ProyectoID;
+            // saldo_inicial = dp.Where(d => d.ProyectoID == idpro).Where(d => d.ArticuloID == idarti).Where(d => d.Mes == mes).Where(d => d.Periodo == perio).Sum(d => d.SaldoInicial);
+            arti = movimiento.Articulo.Nombre;
+            idarti = movimiento.ArticuloID;
+            saldo_inicial = 0;
+            foreach (SAG2.Models.Bodega sbodega in ViewBag.bartic)
+            {
+                if (idarti == sbodega.ArticuloID)
+                {
+                    saldo_inicial = sbodega.SaldoInicial;
+
+                }
+            }
+            <tr>
+                <td align="rigth" colspan="3"> @movimiento.Articulo.Nombre </td>
+                <td colspan="6">Saldo Inicial : @saldo_inicial </td>
+            </tr>
+        }
+            <tr>
+                @if (movimiento.Tdoc == 0)
+                {
+                    salida = salida + Int32.Parse(movimiento.Salida.ToString());
+                    <td nowrap="nowrap" style="text-align: center;">--</td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.Fecha.ToShortDateString()</td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                    <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
+                }
+                @if (movimiento.Tdoc == 1)
+                {
+                    entrada = entrada + Int32.Parse(movimiento.Entrada.ToString());
+                    <td align="center" nowrap="nowrap">
+                        <a @*href="@Url.Action("IndexBodega", "Egresos", new { numero = movimiento.DetalleEgreso.Egreso.ID })"*@ title="Seleccionar" onclick="window.open('../Egresos/Edit/'+@movimiento.DetalleEgreso.Egreso.ID,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                        @movimiento.NroDocumento
+                    </td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.DetalleEgreso.FechaEmision.ToShortDateString()</td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                    <td align="center" nowrap="nowrap">@movimiento.DetalleEgreso.NDocumento</td>
+                }
+                @if (movimiento.Tdoc == 2)
+                {
+                    salida = salida + int.Parse(movimiento.Salida.ToString());
+                    <td align="center" nowrap="nowrap"></td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.Fecha.ToShortDateString()</td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                    <td nowrap="nowrap"></td>
+                }
+                @if (movimiento.Tdoc == 3)
+                {
+                    entrada = entrada + int.Parse(movimiento.Entrada.ToString());
+                    <td align="center" nowrap="nowrap"></td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.Fecha.ToShortDateString()</td>
+                    <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
+                    <td nowrap="nowrap"></td>
+                }
+
+                <td align="center" nowrap="nowrap">
+                    @if (movimiento.Entrada > 0)
+                    {@movimiento.Entrada}
+                </td>
+                <td align="center" nowrap="nowrap">
+                    @if (movimiento.Salida > 0)
+                    {@movimiento.Salida}
+                </td>
+                <td></td>
+                <td style="text-align: center;">@movimiento.Observaciones</td>
+            </tr>
+}
+    @if (arti != "")
+    {
+
+        // saldo_inicial = dp.Where(d => d.ProyectoID == idpro).Where(d => d.ArticuloID == idarti).Where(d => d.Mes == mes).Where(d => d.Periodo == perio).Sum(d => d.SaldoInicial);
+        saldo = (entrada + saldo_inicial) - salida;
+        <tr>
+            <td colspan="3">  </td>
+            <td>Totales</td>
+            <td align="center">@entrada </td>
+            <td align="center">@salida </td>
+            <td align="center">@saldo</td>
+            <td colspan="3">  </td>
+        </tr>
+        entrada = 0;
+        salida = 0;
+    }
+
+</table>
+}
+else
+{ 
+    <table style="width: 100%;">
+        <tr>
+            <th align="center">No existen movimientos de bodega para el período</th>
+        </tr>
+    </table>
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+
+   $("#ImprimirListado").click(function () {
+        var periodo = $("#Periodo").val();
+        var mes = $("#Mes").val();
+        window.open("/SAG_5/MovimientosBodega/ImprimirArti?mes=" + mes + "&periodo=" + periodo);
+    });
+   
+
+
+        $("#Excel").click(function () {
+            var periodo = $("#Periodo").val();
+            var mes = $("#Mes").val();
+            window.open("/SAG_5/MovimientosBodega/ListaMovimientoCategoriaEX?mes=" + mes + "&periodo=" + periodo);
+        });
+    });
+    //Listado Movimientos mes Mes Periodo
+    $("#Mes").change(function () {
+        var mes = $(this).val();
+        var periodo = parseInt($("#Periodo").val());
+        window.location = "/SAG_5/MovimientosBodega/listarMovimientosCategoria?mes=" + mes + "&periodo=" + periodo;
+    });
+    $("#Periodo").change(function () {
+        var periodo = $(this).val();
+        var mes = parseInt($("Mes").val());
+        window.location = "/SAG_5/MovimientosBodega/listarMovimientosCategoria?mes=" + mes + "&periodo=" + periodo;
+    });
+
+</script>

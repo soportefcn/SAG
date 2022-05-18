@@ -1,0 +1,501 @@
+﻿@{
+    ViewBag.Title = "Página de inicio";
+    SAG2.Models.Proyecto Proyecto = (SAG2.Models.Proyecto)@ViewBag.Proyecto;
+    SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)@ViewBag.CuentaCorriente;
+    SAG2.Models.Saldo Saldo = (SAG2.Models.Saldo)@ViewBag.Saldo;
+    SAG2.Models.Resolucion Resolucion = (SAG2.Models.Resolucion)ViewBag.Resolucion;
+
+    int periodo = (int)Session["Periodo"];
+    int mes = (int)Session["Mes"];
+
+
+
+    //int dias_vencimiento = 0;
+    int i = 1;
+    }
+    @*@{ 
+        if (Session["dias_vencimiento"] != null)
+        {
+            int.TryParse(Session["dias_vencimiento"].ToString(), out dias_vencimiento);
+        }
+        else
+        {
+            dias_vencimiento = 0;
+            (Session["dias_vencimiento"]) = 0;
+        }
+
+    }*@
+<div class="blog-post">
+    @Html.Raw(@ViewBag.Mensaje)
+    @if (Proyecto.MesInicio != null)
+    {
+        if (!(DateTime.Now.Year > Proyecto.PeriodoInicio || (DateTime.Now.Month >= Proyecto.MesInicio && DateTime.Now.Year >= Proyecto.PeriodoInicio) || Proyecto.MesInicio == null))
+        {
+            <div class="warning">Este proyecto tiene como fecha de inicio el @Proyecto.MesInicio del @Proyecto.PeriodoInicio, antes de esa fecha no puede generar ningún movimiento.</div>
+        }
+    }
+    <div style="margin-top:5px; padding-left:10px;">
+        <h2>Antecedentes del Programa @Proyecto.NombreLista</h2>
+    </div>
+        
+    <hr>
+    <table class="table table-condensed table-hover table-bordered">
+        <tbody>
+            <tr>
+                <th class="active">Institución</th>
+                <td>@Html.Raw(Proyecto.Institucion)</td>
+            </tr>
+            <tr>
+                <th class="active">Programa</th>
+                <td style="width:">@Html.Raw(Proyecto.Nombre)</td>
+                <th class="active">Cód. Programa</th>
+                <td>@Html.Raw(Proyecto.CodCodeni)</td>
+                <th class="active">Cód. SENAME</th>
+                <td>
+                    @{
+                        if (Proyecto.CodSename != null)
+                        {
+                            @Html.Raw(Proyecto.CodSename)
+                        }
+                        else
+                        {
+                            @Html.Raw("<span class='label label-danger' >SIN INFORMACIÓN</span>");
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th class="active">Dirección</th>
+                <td colspan="3">
+                    @{
+                        if (Proyecto.Direccion.Calle == null)
+                        {
+                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                        }
+                        else
+                        {
+                            if (Proyecto.Direccion.Calle != null)
+                            {
+                                @Html.Raw(Proyecto.Direccion.Calle.ToUpper())
+                            }
+
+                            if (Proyecto.Direccion.Numero != null)
+                            {
+                                @Html.Raw(" " + Proyecto.Direccion.Numero.ToUpper())
+                            }
+
+                            if (Proyecto.Direccion.Depto != null)
+                            {
+                                @Html.Raw(" " + Proyecto.Direccion.Depto.ToUpper())
+                            }
+
+                            if (Proyecto.Direccion.Comuna.Nombre != null)
+                            {
+                                @Html.Raw(", " + Proyecto.Direccion.Comuna.Nombre.ToUpper())
+                            }
+                        }
+                    }
+                </td>
+                <th class="active">Tél.</th>
+                <td>
+                    @{
+                        if (Proyecto.Fono != null)
+                        {
+                            @Html.Raw(Proyecto.Fono)
+                        }
+                        else
+                        {
+                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                        }
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <hr/>
+
+    <h3>Antecedentes del Convenio</h3>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <tbody>
+                <tr>
+                    <th class="active">Res. Ex.</th>
+                    <td>
+                        @{
+                            if (Proyecto.Convenio.ResEx != null)
+                            {
+                                @Html.Raw(Proyecto.Convenio.ResEx)
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                    <th class="active">Nº de Plazas</th>
+                    <td>
+                        @{
+                            if (Proyecto.Convenio.NroPlazas != null)
+                            {
+                                @Html.Raw(Proyecto.Convenio.NroPlazas.ToString())
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th class="active">Fecha inicio</th>
+                    <td>
+                        @{
+                            if (Proyecto.Convenio.FechaInicio != null)
+                            {
+                                @Html.Raw(Proyecto.Convenio.FechaInicio.Value.ToShortDateString());
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                    <th class="active">Fecha termino</th>
+                    <td>
+                        @{
+                            if (Proyecto.Convenio.FechaTermino != null)
+                            {
+                                @Html.Raw(Proyecto.Convenio.FechaTermino.Value.ToShortDateString());
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                <tr>
+                    <th class="active">Comentarios:</th>
+
+                    <td>
+                        @{
+                            if (Proyecto.Convenio.Comentarios != null)
+                            {
+                                @Html.Raw(Proyecto.Convenio.Comentarios);
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tr>
+            </tbody>
+        </table>
+        <p>&nbsp;</p>
+    </div>
+    <hr/>
+    @*<h3>Antecedentes de Prorroga</h3>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <tbody>
+                <tr>
+                    <th class="active">Res. Ex.</th>
+                    <td>
+                        @{
+                           
+                            if ( Resolucion.ProyectoID != null)
+                            {
+                                @Html.Raw(Resolucion.ResEx)
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                    <th class="active">Nº de Plazas</th>
+                    <td>
+                        @{
+                            if (Resolucion.NroPlazas != null)
+                            {
+                                @Html.Raw(Resolucion.NroPlazas.ToString())
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th class="active">Fecha inicio</th>
+                    <td>
+                        @{
+                            if (Resolucion.FechaInicio != null)
+                            {
+                                @Html.Raw(Resolucion.FechaInicio.ToShortDateString());
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                    <th class="active">Fecha termino</th>
+                    <td>
+                        @{
+                            if (Resolucion.FechaTermino != null)
+                            {
+                                @Html.Raw(Resolucion.FechaTermino.ToShortDateString());
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>&nbsp;</p>
+    </div>
+    <hr/>
+    *@
+    <h3>Responsabilidades administrativas</h3>
+    <table style="width: 100%;" class="table table-striped table-bordered table-hover">
+        <tbody>
+            @foreach (SAG2.Models.Rol rol in @ViewBag.Roles)
+            {
+                <tr>
+                    <td style="width: 15px;">@i</td>
+                    <td>@Html.Raw(rol.TipoRol.Nombre.ToUpper())</td>
+                    <td>@Html.Raw(rol.Persona.NombreLista.ToUpper())</td>
+                    <td>
+                        @if (rol.Persona.CorreoElectronico != null)
+                        {
+                            <a href="mailto:@Html.Raw(rol.Persona.CorreoElectronico.ToLower())"> @Html.Raw(rol.Persona.CorreoElectronico.ToUpper())</a>
+                        }
+                        else
+                        {
+                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                        }
+                    </td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+    <hr/>
+    <h3>Contratos</h3>
+    @{
+        if (ViewBag.Contratos.Count == 0)
+        {
+            @Html.Raw("<h4 align=\"left\">No existen servicios contratados para este Proyecto, haga <a href=\"/SAG_5_desarrollo/Contratos/Create\" class=\"btn btn-sm btn-primary\">click acá</a> para agregar uno.</h4>");
+        }
+        else
+        {
+            <table style="width: 100%;" class="table table-hover table-bordered">
+                <tbody>
+                    @{i = 1;}
+                    @foreach (SAG2.Models.Contrato Contrato in ViewBag.Contratos)
+                    {
+                        <tr>
+                            <td style="width: 15px;">@i</td>
+                            <td style="width: 40%;">@Html.Raw(Contrato.Servicio.Nombre.ToUpper())</td>
+                            <td style="width: 40%;">@Html.Raw(Contrato.Nombre.ToUpper())</td>
+                            <td>@Html.Raw(Contrato.Monto.ToString("#,###"))</td>
+                            <td>@Contrato.Moneda</td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        }
+    }
+
+    <hr/>
+
+    <h3>Antecedentes administrativos, financieros y contables</h3>
+    <table style="width: 100%;" class="table table-hover table-bordered">
+        <tbody>
+            <tr>
+                <th class="active">Valor subvención</th>
+                <td style="width: 16.6%">
+                    @{
+                        if (Proyecto.ValorSubvencion != null)
+                        {
+                            @Html.Raw("$" + Proyecto.ValorSubvencion.Value.ToString("#,###"));
+                        }
+                        else
+                        {
+                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                        }
+                    }
+                </td>
+                <th class="active">Subvención mes</th>
+                <td style="width: 16.6%">
+                    @{
+                        if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
+                        {
+                            @Html.Raw("$" + (Proyecto.Convenio.NroPlazas * Proyecto.ValorSubvencion.Value).ToString("#,###"));
+                        }
+                        else
+                        {
+                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                        }
+                    }
+                </td>
+                <th class="active">Subvención año</th>
+                <td style="width: 16.6%">
+                    @{
+                        if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
+                        {
+                            @Html.Raw("$" + (12 * Proyecto.Convenio.NroPlazas * Proyecto.ValorSubvencion.Value).ToString("#,###"))
+                        }
+                        else
+                        {
+                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th class="active">Cuenta corriente</th>
+                <td colspan="2"><strong>@Html.Raw(CuentaCorriente.Numero)</strong></td>
+                <th class="active">Banco</th>
+                <td colspan="2"><strong>@Html.Raw(CuentaCorriente.Banco.Nombre.ToUpper())</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr/>
+    <h3>Supervisiones FCN</h3>
+    @if (ViewBag.Auditorias.Count == 0)
+    {
+        @Html.Raw("<p>No existen auditorías.</p>")
+    }
+    else
+    {
+        i = 1;
+        <table style="width: 100%;" class="table table-hover table-bordered">
+            <tbody>
+                <tr>
+
+                    <th class="active">N°</th>
+                    <th class="active">Fecha</th>
+                    <th class="active">Resouesta</th>
+                    <th class="active">Seguimiento</th>
+                    <th class="active">Gastos Objetados</th>
+                    <th class="active">Gastos Rechazados</th>
+                    <th class="active"> </th>
+                </tr>
+                @foreach (SAG2.Models.IndicadorCalidad Auditoria in ViewBag.Auditorias)
+                {
+                    <tr>
+
+                        <td>@Html.Raw(Auditoria.NumeroInforme.ToString())</td>
+                        <td>@Html.Raw(Auditoria.FechaInforme.ToShortDateString())</td>
+                        <td>@Html.Raw(Auditoria.Observacion)</td>
+                        <td>@Html.Raw(Auditoria.FechaCumplimiento.ToShortDateString())</td>
+                        <td>$ @Html.Raw(Auditoria.GastoObjetado.ToString("#,###,##0"))</td>
+                        <td>$ @Html.Raw(Auditoria.GastoRechazado.ToString("#,###,##0"))</td>
+                        <td style="width: 33px;">
+                            <a href="@Url.Action("Edit", "IndicadorCalidad", new { id = Auditoria.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" /></a>
+                        </td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    }
+
+    <hr/>
+    <h3>Supervisiones SENAME</h3>
+    @if (ViewBag.Supervisiones.Count == 0)
+    {
+        @Html.Raw("<p>No existen supervisiones.</p>")
+    }
+    else
+    {
+        i = 1;
+        <table style="width: 100%;" class="table table-hover table-bordered">
+            <tbody>
+                <tr>
+                    <th class="active">Nº</th>
+                    <th class="active">N° Informe</th>
+                    <th class="active">Fecha Informe</th>
+                    <th class="active">Obs. Pendientes</th>
+                    <th class="active">N° Observaciones</th>
+                    <th class="active">Gastos Objetados</th>
+                    <th class="active">Gastos Rechazados</th>
+                    <th></th>
+                </tr>
+                @foreach (SAG2.Models.IndicadorCalidad Supervision in ViewBag.Supervisiones)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@Html.Raw(Supervision.NumeroInforme.ToString())</td>
+                        <td>@Html.Raw(Supervision.FechaInforme.ToShortDateString())</td>
+                        <td>@Html.Raw(Supervision.Observacion)</td>
+                        <td>@Html.Raw(Supervision.CantidadObservaciones.ToString())</td>
+                        <td>$ @Html.Raw(Supervision.GastoObjetado.ToString("#,###,##0"))</td>
+                        <td>$ @Html.Raw(Supervision.GastoRechazado.ToString("#,###,##0"))</td>
+                        <td style="width: 33px;">
+                            <a href="@Url.Action("Edit", "IndicadorCalidad", new { id = Supervision.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" /></a>
+                        </td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    }
+    @*<h3>Resoluciones </h3>
+        @if (dias_vencimiento < 3)
+        {
+            <a class="btn btn-success " href="/SAG_5_desarrollo/Resolucion/Create" style="margin-bottom: 10px;"><span class="fa fa-file-o  fa-fw"></span>NUEVO</a>
+        }
+        <br />
+        @if (@ViewBag.TotResolucion == 0)
+        {
+            @Html.Raw("<div class='alert alert-success' r> No hay Resoluciones </div>")
+        }
+        else
+        {
+            <table style="width: 100%;" class="table table-hover table-bordered">
+                <tbody>
+                    <tr>
+                        <th class="active">Tipo</th>
+                        <th class="active">Nº Resolucion</th>
+                        <th class="active">N° Plaza</th>
+                        <th class="active">Fecha Inicio</th>
+                        <th class="active">Fecha Termino</th>
+                        <th class="active">Fecha Prorroga</th>
+                        <th class="active">Comentarios</th>
+
+                    </tr>
+                    @foreach (SAG2.Models.Resolucion Rr in @ViewBag.Resolucion)
+                    {
+                        <tr>
+                            <td>@Html.Raw(Rr.tipo.ToString())</td>
+                            <td>@Html.Raw(Rr.ResEx.ToString())</td>
+                            <td>@Html.Raw(Rr.NroPlazas.ToString()) </td>
+                            <td>@Html.Raw(Rr.FechaInicio.ToString())</td>
+                            <td>@Html.Raw(Rr.FechaTermino.ToString())</td>
+                            <td>@Html.Raw(Rr.FechaProrroga.ToString())</td>
+                            <td>@Html.Raw(Rr.Comentarios.ToString())</td>
+
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        }*@
+</div>
+        @if (Proyecto.CodSename == null)
+        {
+            @Html.Raw("<script>alert('Debe ingresar el Codigo Sename.');</script>");
+        }

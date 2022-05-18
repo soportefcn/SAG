@@ -1,0 +1,23 @@
+﻿@model SAG2.Models.Cargo
+@{
+    ViewBag.Title = "Eliminar";
+}
+<div id="SAGBox">
+    <h3>Cargos</h3>
+    <div id="controles">
+        <p>@Html.ActionLink("NUEVO", "Create")</p>
+        <p>@Html.ActionLink("LISTAR", "Index")</p>
+        <p>@Html.ActionLink("CANCELAR", "Index")</p>
+    </div>
+    <div id="contenido">
+        <fieldset>
+            <h3>Realmente desea eliminar este registro?</h3>
+        @using (Html.BeginForm())
+        {
+            <p>
+                <input type="submit" value="Guardar" />
+            </p>
+        }
+        </fieldset>
+    </div>
+</div>

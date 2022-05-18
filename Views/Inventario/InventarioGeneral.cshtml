@@ -1,0 +1,179 @@
+﻿@model IEnumerable<SAG2.Models.InventarioItem>
+@{
+    ViewBag.Title = "Inventario General";
+    string Proyecto = ((SAG2.Models.Proyecto)Session["Proyecto"]).NombreLista;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+}
+<style type="text/css" media="print">
+    @@page
+    {
+        size: landscape;
+        margin: 1cm !important;
+    }
+    body 
+    {
+        font-family: Arial;   
+        font-size: 9pt;    
+    }
+    h2, h3, h1 {
+        text-align: center;
+        font-size: 11pt;  
+        margin-bottom: 11pt;  
+    }
+    
+    td, th
+    {
+        border: 1px solid black;
+        padding: 2px;  
+    }
+    
+    .resumen tr, .resumen tr th, .resumen tr td
+    {
+        border: 0;
+    }
+
+    </style>
+<div class="permisos">
+    <div class="ocultoImpresion">
+        <input value="IMPRIMIR" type="button" style="float: right; margin-left: 10px;" id="imprimirDirecto" />
+    </div>
+    <!--<div class="soloImpresion">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+        <td valign="top" style="border: 0;"><strong>Consejo de Defensa del Niño<br />
+        @Html.Raw(Proyecto)</strong></td>
+        <td align="right" valign="top" style="border: 0;">Fecha impresión: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+        </tr>
+    </table>
+    <br />
+    </div>-->
+<h2>INVENTARIO GENERAL</h2>
+<br />
+    <table class="soloImpresion">
+        <tr>
+            <th width="100px;" align="left">Proyecto:</th>
+            <td style="padding-right: 10px;">@ViewBag.Proyecto.Nombre</td>
+            <th width="100px;" align="left">Código SENAME:</th>
+            <td>@ViewBag.Proyecto.CodSename</td>
+        </tr>
+        <tr>
+            <th align="left">Institución:</th>
+            <td>@ViewBag.Proyecto.Institucion</td>
+            <th align="left">Fecha:</th>
+            <td>@DateTime.Now.ToShortDateString()</td>
+        </tr>
+    </table>
+    <br class="soloImpresion" />
+    <br />
+<table cellpadding="5" border="0" align="center" style="width: 100%;">
+    <tr>
+        <th>
+            Especie
+        </th>
+        <th>
+            Descripción y/o<br />características de la especie
+        </th>
+        <th>
+            Procedencia<br />SENAME(S);<br />Traspaso(T);<br />Institución(I)
+        </th>
+        <th>
+            Nº C/E
+        </th>
+        <th>
+            N° Factura
+        </th>
+        <th>
+            Acta Traspaso(A)<br />Resolución Exenta(R)
+        </th>
+        <th>
+            Fecha<br />Egreso o<br />Compra
+        </th>
+        <th>
+            Cantidad
+        </th>
+        <th>
+            Ubicación
+        </th>
+        <th>
+            Estado 
+        </th>
+        <th>Cantidad<br />de Bajas</th>
+        <th>Observaciones</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Especie.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Procedencia)
+        </td>
+        <td>
+            @{
+                try
+                {
+                    @Html.Raw(@item.Egreso.Egreso.NumeroComprobante.ToString());
+                }
+                catch (Exception)
+                {}
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Egreso.NDocumento)
+        </td>
+        <td>
+            @*Html.DisplayFor(modelItem => item.Resolucion)*@
+        </td>
+        <td>
+            @try
+            {
+                @item.Egreso.FechaEmision.ToShortDateString()
+            }
+            catch (Exception)
+            { }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cantidad)
+        </td>
+        <td>
+            
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estado)
+        </td>
+        <td align="center">
+        @try
+        {
+            @Html.Raw(@db.InventarioBajas.Where(b => b.InventarioID == item.ID).Sum(b => b.Cantidad).ToString());
+        }
+        catch (Exception)
+        { 
+            @Html.Raw("0");
+        }
+        </td>
+        <td>
+           @Html.DisplayFor(modelItem => item.Observaciones)
+        </td
+    </tr>
+}
+
+</table>
+<div class="soloImpresion">
+<p>&nbsp;</p>
+<p align="right">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="sin-hover firma">
+  <tr>
+    <td></td>
+    <td align="center" valign="top" style="width: 200px;">
+    <hr noshade="noshade" size="1" style="width: 250px;" />
+    <strong>@Html.Raw(@ViewBag.Director)</strong><br />
+    Firma y Timbre Director</td>
+  </tr>
+</table>
+</p>
+</div>
+</div>

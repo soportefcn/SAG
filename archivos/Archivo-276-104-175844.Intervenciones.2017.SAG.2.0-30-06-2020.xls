@@ -1,0 +1,50 @@
+
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox" style="width: 90%">
+
+    <h2 align="center">INTERVENCIONES MENSUALES PER&Iacute;ODO 2017</h2>
+<br />
+    <br /><span style='float: right;'>
+        <input id="vigentes" name="vigentes" type="checkbox" value="true" /><input name="vigentes" type="hidden" value="false" />Incluir no vigentes
+    </span>
+          <script type="text/javascript">
+              $("#vigentes").change(function () {
+                  if ($('#vigentes').prop('checked')) {
+                                            $("#boton").attr("onclick", "window.location='/SAG_5_desarrollo/Control/Intervenciones?export=xls&Periodo=2017&cerrado=S';");
+
+                  }
+                  else {
+                                            $("#boton").attr("onclick", "window.location='/SAG_5_desarrollo/Control/Intervenciones?export=xls&Periodo=2017&cerrado=';");
+                  }
+              });
+
+          </script>
+    <br />
+    <!-- Nuevo formato intervenciones -->
+    <table class="table table-bordered table-hover" border="1">
+        <tr>
+            <th>Cobertura</th>
+                <th style="text-align: center; width: 57px;">Ene.</th>
+                <th style="text-align: center; width: 57px;">Feb.</th>
+                <th style="text-align: center; width: 57px;">Mar.</th>
+                <th style="text-align: center; width: 57px;">Abr.</th>
+                <th style="text-align: center; width: 57px;">May.</th>
+                <th style="text-align: center; width: 57px;">Jun.</th>
+                    <th style="text-align: center; width: 57px;">Total 1&deg; Sem.</th>
+                <th style="text-align: center; width: 57px;">Jul.</th>
+                <th style="text-align: center; width: 57px;">Ago.</th>
+                <th style="text-align: center; width: 57px;">Sep.</th>
+                <th style="text-align: center; width: 57px;">Oct.</th>
+                <th style="text-align: center; width: 57px;">Nov.</th>
+                <th style="text-align: center; width: 57px;">Dic.</th>
+            <th style="text-align: center; width: 57px;">Total 2&deg; Sem.</th>
+            <th style="text-align: center; width: 57px;">Total</th>
+        </tr>
+    </table>
+</div>

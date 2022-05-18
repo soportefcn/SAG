@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SAG2.Models.ParametroUss>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Mantenedor USS";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+
+<div id="contenido_popup">
+    <table class="table table-bordered table-hover">
+        <thead class="fixedHeader">
+            <tr class="info">
+                <th style="width: 33px;" class="controles"></th>
+                <th style="width: 49px;">Cód </th>
+                <th style="width: 70px;">Año </th>
+                <th style="width: 70px;">Mes </th>
+                <th style="width: 250px;">Tipo </th>
+                <th style="width: 70px;">Uss </th>
+                <th style="width: 100px;">Fecha </th>
+                <th style="width: 33px;">Eliminar </th>
+            </tr>
+        </thead>
+        <tbody class="scrollContent">
+
+            @foreach (var item in Model)
+            {
+                var style = "";
+
+            <tr @Html.Raw(style)>
+                <td style="width: 33px;">
+                    <a href="@Url.Action("Edit", "ParametroUSS", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                </td>
+                <td style="width: 49px;">
+                    @item.ID.ToString()
+                </td>
+                <td style="width: 70px;">
+                    @item.Anio.ToString()
+                </td>
+                <td style="width: 70px;">
+                    @item.Mes.ToString()
+                </td>
+                <td style="width: 250px;">
+                    @item.Tipo
+                </td>
+                <td style="width: 70px;">
+                    $@item.uss.ToString("#,##0")
+                </td>
+                <td style="width: 100px;">
+                    @item.FechaIngreso.ToString().Substring(0, 10)
+                </td>
+                <td style="width: 63px;">
+                    <a href="@Url.Action("Delete", "ParametroUSS", new { id = item.ID })" title="Eliminar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Delete.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,794 @@
+﻿@model IEnumerable<SAG2.Models.Cuenta>
+@{
+    ViewBag.Title = "Balance Presupuestario";
+    Layout = null;
+    List<SAG2.Models.DetallePresupuesto> dp = new List<SAG2.Models.DetallePresupuesto>();
+    List<SAG2.Models.Movimiento> ingresos = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleEgreso> egresos = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Movimiento> reintegros = new List<SAG2.Models.Movimiento>();
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+
+    List<int> Ingresos = (List<int>)@ViewBag.MovIngresos;
+    List<int> Egresos = (List<int>)@ViewBag.MovEgresos;
+    List<int> Reintegros = (List<int>)ViewBag.MovReintegros;
+    List<int> PreIngresos = (List<int>)ViewBag.PreIngresos;
+    List<int> PreEgresos = (List<int>)ViewBag.PreEgresos;
+    SAG2.Models.Cuenta cuentaAnterior = new SAG2.Models.Cuenta();
+    bool totalIngresos = false;
+    int mes_inicio = 0, periodo_inicio = 0;
+    bool subtotales = false;
+    try
+    {
+        dp = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.Detalle;
+        ingresos = (List<SAG2.Models.Movimiento>)@ViewBag.Ingresos;
+        reintegros = (List<SAG2.Models.Movimiento>)@ViewBag.Reintegros;
+        egresos = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Egresos;
+        mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+        periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+    }
+    catch (Exception)
+    { }
+
+    int j = 0;
+    var Meses = new string[12]
+    {
+	    "Ene.",
+	    "Feb.",
+	    "Mar.",
+	    "Abr.",
+	    "May.",
+	    "Jun.",
+	    "Jul.",
+	    "Ago.",
+	    "Sep.",
+	    "Oct.",
+	    "Nov.",
+	    "Dic."
+	};
+
+    var celdas = new string[]
+    {
+	    "", "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","AA","AB","AC","AD","AE","AF","AG","AH","AI","AJ","AK","AL","AM","AN","AO","AP","AQ","AR","AS","AT","AU","AV","AW","AX","AY","AZ","BA","BB","BC","BD","BE","BF","BG","BH","BI","BJ","BK","BL","BM","BN","BO","BP","BQ","BR","BS","BT","BU","BV","BW","BX","BY","BZ", "CA", "CB", "CC", "CD"
+	};
+    
+
+    int columna_actual = 1;
+    int fila_actual = 0;
+    int filas = 0;
+
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.Charset = "utf-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Balance.Presup.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Control Presupuestario</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+            /*mso-number-format:"\#\,\#\#0\.000";*/
+            /*mso-number-format: "[Azul][>0]#.##0";*/
+            /*mso-number-format:"0";*/
+        }
+    </style>
+</head>
+<body>
+<h2>Control Presupuestario @periodo_inicio</h2>
+@if (@ViewBag.NoHayPresupuesto != null)
+{
+        @Html.Raw(@ViewBag.NoHayPresupuesto);
+}
+else
+{
+    j = 0;
+    using (Html.BeginForm())
+    {
+    <table align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+        <tr>
+            <th rowspan="2">
+               Cuenta
+            </th>
+            @for (int i = mes_inicio; i < 12 + mes_inicio; i++)
+            {
+                if (i > 12)
+                {
+                    j = j + 1;
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + j)">@Html.Raw(Meses[j - 1])</th>
+                }
+                else
+                {
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + i)">@Html.Raw(Meses[i - 1])</th>
+                }
+            }
+            @{
+            j = 0;
+            }
+            <th style="white-space: nowrap;" colspan="4">Totales</th>
+        </tr>
+        <tr>
+            @for (int i = mes_inicio; i < 12 + mes_inicio; i++)
+            {
+                if (i > 12)
+                {
+                    j = j + 1;
+                    <th style="width: 55px; width: 0px;display: none;" class="@Html.Raw("Periodo" + j)">Pres. $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + j)">Real  $</th>
+                    <th style="width: 55px; width: 0px;display: none;" class="@Html.Raw("Periodo" + j)">Desv. $</th>
+                    <th style="width: 55px; width: 0px;display: none;" class="@Html.Raw("Periodo" + j)">Desv. %</th>
+                }
+                else
+                {
+                    <th style="width: 55px; width: 0px;display: none;;" class="@Html.Raw("Periodo" + i)">Pres. $</th>
+                    <th style="width: 55px;" class="@Html.Raw("Periodo" + i)">Real  $</th>
+                    <th style="width: 55px; width: 0px;display: none;" class="@Html.Raw("Periodo" + i)">Desv. $</th>
+                    <th style="width: 55px; width: 0px;display: none;" class="@Html.Raw("Periodo" + i)">Desv. %</th>
+                }
+            }
+            <th style="white-space: nowrap; width: 0px;display: none;">Pres. $</th>
+            <th style="white-space: nowrap;">Real  $</th>
+            <th style="white-space: nowrap; width: 0px;display: none;">Desv. $</th>
+            <th style="white-space: nowrap; width: 0px;display: none;">Desv. %</th>
+        </tr>
+        <!-- Fila 4 -->
+        <tr>
+            <th align="left">SALDO INICIAL</th>
+            @{
+            int saldoInicial = Int32.Parse(ViewBag.SaldoInicial.ToString());
+            int saldoInicialPre = Int32.Parse(ViewBag.SaldoInicial.ToString());
+            <td class="num" style="mso-protection:locked; background-color: silver; width: 0px;display: none;">@((saldoInicialPre).ToString("#,##0"))</td>
+            <td class="num" style="mso-protection:locked; background-color: silver;">@((saldoInicial).ToString("#,##0"))</td>
+            <td class="num" style="mso-protection:locked; background-color: silver; width: 0px;display: none;">+C5-B5</td>
+            <td class="por100" style="mso-protection:locked; background-color: silver; width: 0px;display: none;">+D5/B5</td>
+            }
+            @{
+           columna_actual = 6;
+            for (int i = 1; i < 12; i++)
+            {
+                <td class="num" style=" width: 0px;display: none;">+@celdas[columna_actual - 4]5</td>
+                columna_actual++;
+                <td class="num">+@celdas[columna_actual - 4]128</td>
+                columna_actual++;
+                <td class="num" style=" width: 0px;display: none;">+@celdas[columna_actual-1]5-@celdas[columna_actual-2]5</td>
+                columna_actual++;
+                <td class="por100" style=" width: 0px;display: none;">=SI(Y(@celdas[columna_actual-1]5=0;@celdas[columna_actual-3]5=0);0;SI(ESERROR(@celdas[columna_actual-1]5/@celdas[columna_actual-3]5);1;@celdas[columna_actual-1]5/@celdas[columna_actual-3]5))</td>
+                columna_actual++;
+            }
+            }
+            <td class="num" style="mso-protection:locked; background-color: silver; width: 0px;display: none;">=B5</td>
+            <td class="num" style="mso-protection:locked; background-color: silver;">=C5</td>
+            <td class="num" style="mso-protection:locked; background-color: silver; width: 0px;display: none;">+AY5-AX5</td>
+            <td class="por100" style="mso-protection:locked; background-color: silver; width: 0px;display: none;">+AZ5/AX5</td>
+        </tr>
+        <!-- Fila 6 -->
+        <tr>
+            <th>Ingresos</th>
+        </tr>
+        @foreach (var cuenta in Model)
+        {
+            var periodo_actual = periodo_inicio;
+            if (!cuenta.Codigo.Contains(".") && cuenta.Hijos.Count() > 0)
+            {
+                @Html.Raw("<tr class=\"cuenta_" + @cuenta.Tipo + "\" style=\"background-color: Silver;\"><th class=\"text\">" + Html.Encode(@cuenta.NombreLista) + "</th></tr>");
+                List<SAG2.Models.Cuenta> nivel1 = cuenta.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).Where(c => !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden).ToList();
+                foreach (var cuenta1 in nivel1)
+                {
+                    if (@cuenta1.Hijos.Count() == 0)
+                    {
+                        @Html.Raw("<tr class=\"cuenta_" + @cuenta1.Tipo + "\"><td style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;" + Html.Encode(@cuenta1.NombreLista) + "</td>");
+                        // Se imprimen valores mensuales
+                        try
+                        {
+                            mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                            periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                        }
+                        catch (Exception)
+                        { }
+                        periodo_actual = periodo_inicio;
+                        for (int i = 0; i < 12; i++)
+                        { 
+                            if (mes_inicio > 12)
+                            {
+                                mes_inicio = 1;
+                                periodo_actual = periodo_inicio + 1;
+                            }
+
+                            int valor_presupuesto = dp.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto);
+                            int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                            int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                            int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                            
+                            <td style="text-align: right; width: 0px;display: none;" class="num">@valor_presupuesto.ToString("#,##0")</td>
+                            if (cuenta1.Tipo.Equals("I"))
+                            {
+                                <td style="text-align: right;" class="num">@valor_ingresos.ToString("#,##0")</td>
+                                <td style="text-align: right; width: 0px;display: none;" class="num">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td>
+                                <td class="por100" style=" width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;-1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                            }
+                            else
+                            {
+                                <td class="num">@((valor_egresos-valor_reintegros).ToString("#,##0"))</td>
+                                <td class="num" style=" width: 0px;display: none;">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1));0))</td>
+                                <td class="por100" style=" width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                            }
+                            mes_inicio++;
+                        }
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                
+                        if (@cuenta.Tipo.Equals("E"))
+                        {
+                        <td class="num" style="background-color: #D3D3D3;width: 0px;display: none;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))</td>
+                        <td class="por100" style="background-color: #D3D3D3;width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                        }
+                        else
+                        {
+                        <td class="num" style="background-color: #D3D3D3;width: 0px;display: none;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2)))</td>
+                        <td class="por100" style="background-color: #D3D3D3;width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                        }
+                        @Html.Raw("</tr>");
+                    }
+                    else
+                    {
+                        @Html.Raw("<tr class=\"cuenta_" + @cuenta1.Tipo + "\" style=\"background-color: Silver;\"><th class=\"text\">&nbsp;" + "&nbsp;" + Html.Encode(@cuenta1.NombreLista) + "</th></tr>");
+                        List<SAG2.Models.Cuenta> nivel2 = cuenta1.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).Where(c => !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden).ToList();
+                        foreach (var cuenta2 in nivel2)
+                        {
+                            if (@cuenta2.Hijos.Count() == 0)
+                            {
+                                @Html.Raw("<tr class=\"cuenta_" + @cuenta2.Tipo + "\"><td style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta2.NombreLista) + "</td>");
+                                // Hijos tercer nivel
+                                // X.Y.Z
+                                try
+                                {
+                                    mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                                    periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                                }
+                                catch (Exception)
+                                { }
+                                periodo_actual = periodo_inicio;
+                                for (int i = 0; i < 12; i++)
+                                { 
+                                    if (mes_inicio > 12)
+                                    {
+                                        mes_inicio = 1;
+                                        periodo_actual = periodo_inicio + 1;
+                                    }
+
+                                    int valor_presupuesto = dp.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto);
+                                    int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                    int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                                    int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                    
+                                    <td class="num" style="width: 0px;display: none;">@valor_presupuesto.ToString("#,##0")</td>
+                                    if (cuenta1.Tipo.Equals("I"))
+                                    {
+                                        <td class="num">@valor_ingresos.ToString("#,##0")</td>
+                                        <td class="num" stylewidth: 0px;display: none;>=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td>
+                                        <td class="por100" style="width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;-1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="num">@((valor_egresos-valor_reintegros).ToString("#,##0"))</td>
+                                        <td class="num" style="width: 0px;display: none;">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1));0))</td>
+                                        <td class="por100" style="width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                    }
+                                    mes_inicio++;
+                                }
+                                <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                                {     
+                                    @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                                }0</td>
+                                <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                                {     
+                                    @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                                }0</td>
+                
+                                if (@cuenta.Tipo.Equals("E"))
+                                {
+                                <td class="num" style="background-color: #D3D3D3;width: 0px;display: none;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))</td>
+                                <td class="por100" style="background-color: #D3D3D3;width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                }
+                                else
+                                {
+                                <td class="num" style="background-color: #D3D3D3;width: 0px;display: none;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2)))</td>
+                                <td class="por100" style="background-color: #D3D3D3;width: 0px;display: none;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                }
+                                @Html.Raw("</tr>");
+                            }
+                            else
+                            {
+                                @Html.Raw("<tr class=\"cuenta_" + @cuenta2.Tipo + "\" style=\"background-color: Silver;\"><th class=\"text\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta2.NombreLista) + "</th></tr>");
+                                List<SAG2.Models.Cuenta> nivel3 = cuenta2.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).Where(c => !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden).ToList();
+                                foreach (var cuenta3 in nivel3)
+                                {
+                                    if (@cuenta3.Hijos.Count() == 0)
+                                    {
+                                        if (cuenta3.Codigo.Equals("7.3.9"))
+                                        {
+                                            @Html.Raw("<tr style=\"width: 0px;display: none;\" class=\"cuenta_" + @cuenta3.Tipo + "\"><td style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta3.NombreLista) + "</td>");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<tr class=\"cuenta_" + @cuenta3.Tipo + "\"><td style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta3.NombreLista) + "</td>");
+                                        }
+                                        // Hijos cuarto nivel
+                                        // X.Y.Z.1
+                                        try
+                                        {
+                                            mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                                            periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                                        }
+                                        catch (Exception)
+                                        { }
+                                        periodo_actual = periodo_inicio;
+                                        for (int i = 0; i < 12; i++)
+                                        { 
+                                            if (mes_inicio > 12)
+                                            {
+                                                mes_inicio = 1;
+                                                periodo_actual = periodo_inicio + 1;
+                                            }
+
+                                            int valor_presupuesto = dp.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto);
+                                            int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                            int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                                            int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                            
+                                            <td class="num">@valor_presupuesto.ToString("#,##0")</td>
+                                            if (cuenta1.Tipo.Equals("I"))
+                                            {
+                                                <td class="num">@valor_ingresos.ToString("#,##0")</td>
+                                                <td class="num">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2));0))</td>
+                                                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;-1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="num">@((valor_egresos-valor_reintegros).ToString("#,##0"))</td>
+                                                <td class="num">=VALOR(DECIMAL(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1));0))</td>
+                                                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                            }
+                                            mes_inicio++;
+                                        }
+                                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                                        {     
+                                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                                        }0</td>
+                                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                                        {     
+                                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                                        }0</td>
+                
+                                        if (@cuenta.Tipo.Equals("E"))
+                                        {
+                                        <td class="num" style="background-color: #D3D3D3;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))</td>
+                                        <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                        }
+                                        else
+                                        {
+                                        <td class="num" style="background-color: #D3D3D3;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2)))</td>
+                                        <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                        }
+                                        @Html.Raw("</tr>");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("<tr class=\"cuenta_" + @cuenta3.Tipo + "\" style=\"background-color: Silver;\"><th style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + Html.Encode(@cuenta3.NombreLista) + "</th></tr>");
+                                        //List<SAG2.Models.Cuenta> nivel2 = cuenta1.Hijos.Where(c => c.Codigo.StartsWith(cuenta.Codigo + ".")).ToList();
+                                        @Html.Raw("<tr class=\"cuenta_" + @cuenta3.Tipo + "\" style=\"background-color: Silver;\"><th style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "TOTAL " + Html.Encode(@cuenta3.NombreLista) + "</th></tr>");
+                                    }
+                                }
+                                @Html.Raw("<tr class=\"cuenta_" + @cuenta2.Tipo + "\" style=\"background-color: Silver;\"><th style=\"background-color: Silver;\" class=\"text\">&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "TOTAL " + Html.Encode(@cuenta2.NombreLista) + "</th>");
+                                // Totales de cuentas X.Y.Z
+                                try
+                                {
+                                    mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                                    periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                                }
+                                catch (Exception)
+                                { }
+                                periodo_actual = periodo_inicio;
+                                columna_actual = 2;
+                                for (int i = 0; i < 12; i++)
+                                { 
+                                    switch (cuenta2.Codigo)
+                                    {
+                                        case "7.1.1":
+                                            <td class="num">=SUMA(@celdas[columna_actual]49:@celdas[columna_actual]52)</td>
+                                            <td class="num">=SUMA(@celdas[columna_actual + 1]49:@celdas[columna_actual + 1]52)</td>
+                                            <td class="num">=@celdas[columna_actual]53-@celdas[columna_actual + 1]53</td>
+                                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]53=0;@celdas[columna_actual]53=0);0;SI(ESERROR(@celdas[columna_actual + 2]53/@celdas[columna_actual]53);-1;@celdas[columna_actual + 2]53/@celdas[columna_actual]53)))</td>
+                                            break;
+                                        case "7.1.5":
+                                            <td class="num">=SUMA(@celdas[columna_actual]58:@celdas[columna_actual]59)</td>
+                                            <td class="num">=SUMA(@celdas[columna_actual + 1]58:@celdas[columna_actual + 1]59)</td>
+                                            <td class="num">=@celdas[columna_actual]60-@celdas[columna_actual + 1]60</td>
+                                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]60=0;@celdas[columna_actual]60=0);0;SI(ESERROR(@celdas[columna_actual + 2]60/@celdas[columna_actual]60);-1;@celdas[columna_actual + 2]60/@celdas[columna_actual]60)))</td>
+                                            break;
+                                        case "7.1.7":
+                                            <td class="num">=SUMA(@celdas[columna_actual]63:@celdas[columna_actual]75)</td>
+                                            <td class="num">=SUMA(@celdas[columna_actual + 1]63:@celdas[columna_actual + 1]75)</td>
+                                            <td class="num">=@celdas[columna_actual]76-@celdas[columna_actual + 1]76</td>
+                                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]76=0;@celdas[columna_actual]76=0);0;SI(ESERROR(@celdas[columna_actual + 2]76/@celdas[columna_actual]76);-1;@celdas[columna_actual + 2]76/@celdas[columna_actual]76)))</td>
+                                            break;
+                                        default:
+                                            <td class="num"></td>
+                                            <td class="num"></td>
+                                            <td class="num"></td>
+                                            <td class="por100"></td>
+                                            break; 
+                                    }
+                                    columna_actual = columna_actual + 4;
+                                    mes_inicio++;
+                                }
+                                <td class="num">=@for (int i = 1; i <= 12; i++)
+                                {     
+                                    @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                                }0</td>
+                                <td class="num">=@for (int i = 1; i <= 12; i++)
+                                {     
+                                    @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                                }0</td>
+                                <td class="num">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))</td>
+                                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                                @Html.Raw("</tr>");
+                            }
+                        }
+                        @Html.Raw("<tr class=\"cuenta_" + @cuenta1.Tipo + "\" style=\"background-color: Silver;\"><th class=\"text\">&nbsp;" + "&nbsp;" + "TOTAL " + Html.Encode(@cuenta1.NombreLista) + "</th>");
+                        // Totales de cuentas X.Y.
+                        try
+                        {
+                            mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                            periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                        }
+                        catch (Exception)
+                        { }
+                        periodo_actual = periodo_inicio;
+                        columna_actual = 2;
+                        for (int i = 0; i < 12; i++)
+                        {   
+                            switch (cuenta1.Codigo)
+                            {
+                                case "7.1":
+                                    <td class="num">=@celdas[columna_actual]53+SUMA(@celdas[columna_actual]54:@celdas[columna_actual]56)+@celdas[columna_actual]60+@celdas[columna_actual]61+@celdas[columna_actual]76+SUMA(@celdas[columna_actual]77:@celdas[columna_actual]86)</td>
+                                    columna_actual++;
+                                    <td class="num">=@celdas[columna_actual]53+SUMA(@celdas[columna_actual]54:@celdas[columna_actual]56)+@celdas[columna_actual]60+@celdas[columna_actual]61+@celdas[columna_actual]76+SUMA(@celdas[columna_actual]77:@celdas[columna_actual]86)</td>
+                                    columna_actual--;
+                                    <td class="num">=@celdas[columna_actual]87-@celdas[columna_actual + 1]87</td>
+                                    <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]87=0;@celdas[columna_actual]87=0);0;SI(ESERROR(@celdas[columna_actual + 2]87/@celdas[columna_actual]87);-1;@celdas[columna_actual + 2]87/@celdas[columna_actual]87)))</td>
+                                    break;
+                                case "7.2":
+                                    <td class="num">=SUMA(@celdas[columna_actual]89:@celdas[columna_actual]93)</td>
+                                    <td class="num">=SUMA(@celdas[columna_actual + 1]89:@celdas[columna_actual + 1]93)</td>
+                                    <td class="num">=@celdas[columna_actual]94-@celdas[columna_actual + 1]94</td>
+                                    <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]94=0;@celdas[columna_actual]94=0);0;SI(ESERROR(@celdas[columna_actual + 2]94/@celdas[columna_actual]94);-1;@celdas[columna_actual + 2]94/@celdas[columna_actual]94)))</td>
+                                    break;
+                                case "7.3":
+                                    <td class="num">=SUMA(@celdas[columna_actual]96:@celdas[columna_actual]103)</td>
+                                    <td class="num">=SUMA(@celdas[columna_actual + 1]96:@celdas[columna_actual + 1]103)</td>
+                                    <td class="num">=@celdas[columna_actual]104-@celdas[columna_actual + 1]104</td>
+                                    <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]104=0;@celdas[columna_actual]104=0);0;SI(ESERROR(@celdas[columna_actual + 2]104/@celdas[columna_actual]104);-1;@celdas[columna_actual + 2]104/@celdas[columna_actual]104)))</td>
+                                    break;
+                                case "8.1":
+                                    <td class="num">=SUMA(@celdas[columna_actual]109:@celdas[columna_actual]112)</td>
+                                    <td class="num">=SUMA(@celdas[columna_actual + 1]109:@celdas[columna_actual + 1]112)</td>
+                                    <td class="num">=@celdas[columna_actual]113-@celdas[columna_actual + 1]113</td>
+                                    <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]113=0;@celdas[columna_actual]113=0);0;SI(ESERROR(@celdas[columna_actual + 2]113/@celdas[columna_actual]113);-1;@celdas[columna_actual + 2]113/@celdas[columna_actual]113)))</td>
+                                    break;
+                                default:
+                                    <td class="num"></td>
+                                    <td class="num"></td>
+                                    <td class="num"></td>
+                                    <td class="por100"></td>
+                                    break; 
+                            }
+                    
+                            columna_actual = columna_actual + 4;
+                            mes_inicio++;
+                        }
+                        <td class="num">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))</td>
+                        <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                        @Html.Raw("</tr>");
+                    }
+                }
+                @Html.Raw("<tr class=\"cuenta_" + @cuenta.Tipo + "\" style=\"background-color: Silver;\"><th class=\"text\">TOTAL " + Html.Encode(@cuenta.NombreLista) + "</th>");
+                // Totales de cuentas padres
+                try
+                {
+                    mes_inicio = Int32.Parse(ViewBag.Mes_Inicio);
+                    periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+                }
+                catch (Exception)
+                { }
+                periodo_actual = periodo_inicio;
+                columna_actual = 2;
+                for (int i = 0; i < 12; i++)
+                { 
+                    if (mes_inicio > 12)
+                    {
+                        mes_inicio = 1;
+                        periodo_actual = periodo_inicio + 1;
+                    }
+
+                    /*int valor_presupuesto = dp.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto);
+                    int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                    int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Egreso.Mes == mes_inicio && d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
+                    */
+                   
+                   switch(cuenta.Codigo)
+                   {
+                       case "1":
+                            <td class="num">=SUMA(@celdas[columna_actual]8:@celdas[columna_actual]10)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]8:@celdas[columna_actual + 1]10)</td>
+                            <td class="num">=@celdas[columna_actual + 1]11-@celdas[columna_actual]11</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]11=0;@celdas[columna_actual]11=0);0;SI(ESERROR(@celdas[columna_actual + 2]11/@celdas[columna_actual]11);1;@celdas[columna_actual + 2]11/@celdas[columna_actual]11)))</td>
+                            
+                            break;
+                       case "2":
+                            <td class="num">=SUMA(@celdas[columna_actual]14:@celdas[columna_actual]15)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]14:@celdas[columna_actual + 1]15)</td>
+                            <td class="num">=@celdas[columna_actual + 1]16-@celdas[columna_actual]16</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]16=0;@celdas[columna_actual]16=0);0;SI(ESERROR(@celdas[columna_actual + 2]16/@celdas[columna_actual]16);1;@celdas[columna_actual + 2]16/@celdas[columna_actual]16)))</td>
+                            
+                            break;
+                       case "3":
+                            <td class="num">=SUMA(@celdas[columna_actual]19:@celdas[columna_actual]20)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]19:@celdas[columna_actual + 1]20)</td>
+                            <td class="num">=@celdas[columna_actual + 1]21-@celdas[columna_actual]21</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]21=0;@celdas[columna_actual]21=0);0;SI(ESERROR(@celdas[columna_actual + 2]21/@celdas[columna_actual]21);1;@celdas[columna_actual + 2]21/@celdas[columna_actual]21)))</td>
+                            
+                            break;
+                       case "4":
+                            <td class="num">=SUMA(@celdas[columna_actual]24:@celdas[columna_actual]25)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]24:@celdas[columna_actual + 1]25)</td>
+                            <td class="num">=@celdas[columna_actual + 1]26 - @celdas[columna_actual]26</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]26=0;@celdas[columna_actual]26=0);0;SI(ESERROR(@celdas[columna_actual + 2]26/@celdas[columna_actual]26);1;@celdas[columna_actual + 2]26/@celdas[columna_actual]26)))</td>
+                            break;
+                        case "5":
+                            <td class="num">=SUMA(@celdas[columna_actual]29:@celdas[columna_actual]31)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]29:@celdas[columna_actual + 1]31)</td>
+                            <td class="num">=@celdas[columna_actual + 1]32 - @celdas[columna_actual]32</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]32=0;@celdas[columna_actual]32=0);0;SI(ESERROR(@celdas[columna_actual + 2]32/@celdas[columna_actual]32);1;@celdas[columna_actual + 2]32/@celdas[columna_actual]32)))</td>
+                            
+                            break;
+                        case "6":
+                            <td class="num">=SUMA(@celdas[columna_actual]37:@celdas[columna_actual]43)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]37:@celdas[columna_actual + 1]43)</td>
+                            <td class="num">=@celdas[columna_actual]44-@celdas[columna_actual + 1]44</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]44=0;@celdas[columna_actual]44=0);0;SI(ESERROR(@celdas[columna_actual + 2]44/@celdas[columna_actual]44);-1;@celdas[columna_actual + 2]44/@celdas[columna_actual]44)))</td>
+                            
+                            break;
+                        case "7":
+                            <td class="num">=SUMA(@celdas[columna_actual]87;@celdas[columna_actual]94;@celdas[columna_actual]104)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]87;@celdas[columna_actual + 1]94;@celdas[columna_actual + 1]104)</td>
+                            <td class="num">=@celdas[columna_actual]105-@celdas[columna_actual + 1]105</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]105=0;@celdas[columna_actual]105=0);0;SI(ESERROR(@celdas[columna_actual + 2]105/@celdas[columna_actual]105);-1;@celdas[columna_actual + 2]105/@celdas[columna_actual]105)))</td>
+                            
+                            break;
+                        case "8":
+                            <td class="num">=SUMA(@celdas[columna_actual]113;@celdas[columna_actual]114)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]113;@celdas[columna_actual + 1]114)</td>
+                            <td class="num">=@celdas[columna_actual]115-@celdas[columna_actual + 1]115</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]115=0;@celdas[columna_actual]115=0);0;SI(ESERROR(@celdas[columna_actual + 2]115/@celdas[columna_actual]115);-1;@celdas[columna_actual + 2]115/@celdas[columna_actual]115)))</td>
+                            
+                            break;
+                        case "9":
+                            <td class="num">=SUMA(@celdas[columna_actual]118)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]118)</td>
+                            <td class="num">=@celdas[columna_actual]119-@celdas[columna_actual + 1]119</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]119=0;@celdas[columna_actual]119=0);0;SI(ESERROR(@celdas[columna_actual + 2]119/@celdas[columna_actual]119);-1;@celdas[columna_actual + 2]119/@celdas[columna_actual]119)))</td>
+                            break;
+                        case "10":
+                            <td class="num">=SUMA(@celdas[columna_actual]122)</td>
+                            <td class="num">=SUMA(@celdas[columna_actual + 1]122)</td>
+                            <td class="num">=@celdas[columna_actual]123-@celdas[columna_actual + 1]123</td>
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual + 2]123=0;@celdas[columna_actual]123=0);0;SI(ESERROR(@celdas[columna_actual + 2]123/@celdas[columna_actual]123);-1;@celdas[columna_actual + 2]123/@celdas[columna_actual]123)))</td>
+                            break;
+                        default:
+                            <td class="num"></td>
+                            <td class="num"></td>
+                            <td class="num"></td>
+                            <td class="por100"></td>
+                            break; 
+                    }
+                    
+                    columna_actual = columna_actual + 4;
+                    mes_inicio++;
+                }
+                
+                <td class="num">=@for (int i = 1; i <= 12; i++)
+                {     
+                    @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                }0</td>
+                <td class="num">=@for (int i = 1; i <= 12; i++)
+                {     
+                    @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                }0</td>
+                
+                if (@cuenta.Tipo.Equals("E"))
+                {
+                <td class="num">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))</td>
+                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                }
+                else
+                {
+                <td class="num">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2)))</td>
+                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                }
+            
+                @Html.Raw("</tr>");
+                @Html.Raw("<tr><td>&nbsp;</td></tr>");
+            
+                // Total ingresos y egresos
+                if (@cuenta.Codigo.Equals("5"))
+                {
+                    columna_actual = 2;
+                    <tr>
+                        <th class="text">TOTAL INGRESOS</th>
+                        @for (int i = 0; i < 12; i++)
+                        {
+                            <td class="num">+@celdas[columna_actual]11+@celdas[columna_actual]16+@celdas[columna_actual]21+@celdas[columna_actual]26+@celdas[columna_actual++]32</td>
+                            <td class="num">+@celdas[columna_actual]11+@celdas[columna_actual]16+@celdas[columna_actual]21+@celdas[columna_actual]26+@celdas[columna_actual++]32</td>
+                            <td class="num">+@celdas[columna_actual-1]34-@celdas[columna_actual-2]34</td>
+                            columna_actual++;
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual-1]34=0;@celdas[columna_actual-3]34=0);0;SI(ESERROR(@celdas[columna_actual-1]34/@celdas[columna_actual-3]34); 1;@celdas[columna_actual-1]34/@celdas[columna_actual-3]34)))</td>
+                            columna_actual++;
+                        }
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))-INDIRECTO(DIRECCION(FILA();COLUMNA()-2)))</td>
+                        <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                    </tr>
+                    @Html.Raw("<tr><td>&nbsp;</td></tr>");
+                }
+                
+                if (@cuenta.Codigo.Equals("10"))
+                {
+                    columna_actual = 2;
+                    <tr>
+                        <th class="text">TOTAL EGRESOS</th>
+                        @for (int i = 0; i < 12; i++)
+                        {
+                            <td class="num">+@celdas[columna_actual]44+@celdas[columna_actual]105+@celdas[columna_actual]115+@celdas[columna_actual]119+@celdas[columna_actual++]123</td>
+                            <td class="num">+@celdas[columna_actual]44+@celdas[columna_actual]105+@celdas[columna_actual]115+@celdas[columna_actual]119+@celdas[columna_actual++]123</td>
+                            <td class="num">+@celdas[columna_actual-2]125-@celdas[columna_actual-1]125</td>
+                            columna_actual++;
+                            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual-1]125=0;@celdas[columna_actual-3]125=0);0;SI(ESERROR(@celdas[columna_actual-1]125/@celdas[columna_actual-3]125); -1; @celdas[columna_actual-1]125/@celdas[columna_actual-3]125)))</td>
+                            columna_actual++;
+                        }
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=@for (int i = 1; i <= 12; i++)
+                        {     
+                            @Html.Raw("VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-"+(i*4)+")))+");
+                        }0</td>
+                        <td class="num" style="background-color: #D3D3D3;">=VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-2))-INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))</td>
+                        <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;VALOR(SI(Y(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0);0;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-3))=0;-1;SI(INDIRECTO(DIRECCION(FILA();COLUMNA()-1))=0;1;INDIRECTO(DIRECCION(FILA();COLUMNA()-1))/INDIRECTO(DIRECCION(FILA();COLUMNA()-3)))))))</td>
+                    </tr>
+            
+                    @Html.Raw("<tr><td>&nbsp;</td></tr>");
+                }
+            }
+        }
+        <tr>
+            <th align="left" class="text">FLUJO NETO EFECTIVO</th>
+            @{
+        columna_actual = 2;
+        for (int i = 0; i < 12; i++)
+        {
+            <td class="num">+@celdas[columna_actual]34-@celdas[columna_actual++]125</td>
+            <td class="num">+@celdas[columna_actual]34-@celdas[columna_actual++]125</td>
+            <td class="num">+@celdas[columna_actual-1]127-@celdas[columna_actual-2]127</td>
+            columna_actual++;
+            <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual-1]127=0;@celdas[columna_actual-3]127=0);0;SI(ESERROR(@celdas[columna_actual-1]127/@celdas[columna_actual-3]127); 1; @celdas[columna_actual-1]127/@celdas[columna_actual-3]127)))</td>
+            columna_actual++;
+        }
+            }
+            <td class="num" style="background-color: #D3D3D3;">+AX34-AX125</td>
+            <td class="num" style="background-color: #D3D3D3;">+AY34-AY125</td>
+            <td class="num" style="background-color: #D3D3D3;">+AX127-AY127</td>
+            <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(AX127=0;AY127=0);0;SI(ESERROR(AZ127/AX127); 1; AZ127/AX127)))</td>
+        </tr>
+        <tr>
+            <th align="left" class="text">SALDO ANTES DEL FINANCIAMIENTO</th>
+            @{
+           columna_actual = 2;
+            for (int i = 0; i < 12; i++)
+            {
+                <td class="num">+@celdas[columna_actual]5+@celdas[columna_actual++]127</td>
+                <td class="num">+@celdas[columna_actual]5+@celdas[columna_actual++]127</td>
+                <td class="num">+@celdas[columna_actual-1]128-@celdas[columna_actual-2]128</td>
+                columna_actual++;
+                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual-1]128=0;@celdas[columna_actual-3]128=0);0;SI(ESERROR(@celdas[columna_actual-1]128/@celdas[columna_actual-3]128); 1; @celdas[columna_actual-1]128/@celdas[columna_actual-3]128)))</td>
+                columna_actual++;
+            }
+            }
+            <td class="num" style="background-color: #D3D3D3;">+AX127+AX5</td>
+            <td class="num" style="background-color: #D3D3D3;">+AY127+AY5</td>
+            <td class="num" style="background-color: #D3D3D3;">+AY128-AX128</td>
+            <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(AX128=0;AY128=0);0;SI(ESERROR(AZ128/AX128); 1; AZ128/AX128)))</td>
+        </tr>
+        <tr>
+            <th align="left" class="text">NECESIDAD DE FINANCIAMIENTO</th>
+            @{
+           columna_actual = 2;
+            for (int i = 0; i < 12; i++)
+            {
+                <td class="num">+@celdas[columna_actual]5*3/100-@celdas[columna_actual++]128</td>
+                <td class="num">+@celdas[columna_actual]5*3/100-@celdas[columna_actual++]128</td>
+                <td class="num">+@celdas[columna_actual-1]129-@celdas[columna_actual-2]129</td>
+                columna_actual++;
+                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual-1]129=0;@celdas[columna_actual-3]129=0);0;SI(ESERROR(@celdas[columna_actual-1]129/@celdas[columna_actual-3]129); 1; @celdas[columna_actual-1]129/@celdas[columna_actual-3]129)))</td>
+                columna_actual++;
+            }
+            }
+            <td class="num" style="background-color: #D3D3D3;">+AX5*3/100-AX128</td>
+            <td class="num" style="background-color: #D3D3D3;">+AY5*3/100-AY128</td>
+            <td class="num" style="background-color: #D3D3D3;">+AY129-AX129</td>
+            <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(AX13029=0;AY129=0);0;SI(ESERROR(AZ129/AX129); 1; AZ129/AX129)))</td>
+        </tr>
+        <tr>
+            <th align="left" class="text">SALDO DESPUES DEL FINANCIAMIENTO</th>
+            @{
+           columna_actual = 2;
+            for (int i = 0; i < 12; i++)
+            {
+                <td class="num">+@celdas[columna_actual]128+@celdas[columna_actual++]129</td>
+                <td class="num">+@celdas[columna_actual]128+@celdas[columna_actual++]129</td>
+                <td class="num">+@celdas[columna_actual-1]130-@celdas[columna_actual-2]130</td>
+                columna_actual++;
+                <td class="por100">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(@celdas[columna_actual-1]130=0;@celdas[columna_actual-3]130=0);0;SI(ESERROR(@celdas[columna_actual-1]130/@celdas[columna_actual-3]130); 1; @celdas[columna_actual-1]130/@celdas[columna_actual-3]130)))</td>
+                columna_actual++;
+            }
+            }
+            <td class="num" style="background-color: #D3D3D3;">+AX128+AX129</td>
+            <td class="num" style="background-color: #D3D3D3;">+AY128+AY129</td>
+            <td class="num" style="background-color: #D3D3D3;">+AY130-AX130</td>
+            <td class="por100" style="background-color: #D3D3D3;">=SI(VALOR(INDIRECTO(DIRECCION(FILA();COLUMNA()-1)))=0;0;SI(Y(AX130=0;AY130=0);0;SI(ESERROR(AZ130/AX130); 1; AZ130/AX130)))</td>
+        </tr>
+        </table>
+    }
+}
+</body>
+</html>

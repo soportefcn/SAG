@@ -1,0 +1,129 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Informe Hoja Inventario ";
+    string FechaSis = DateTime.Now.ToShortDateString();
+    int total = 0;
+    int totalBajas = 0;
+    int totalTraslados = 0;
+    var listaTraslados = Model.lista.ToList();
+
+}
+
+<style>
+    .container{
+
+        width: 1350px !important;
+    }
+    .col-sm-9{
+        width: 1350px !important;
+    }
+    .blog-sidebar{
+        visibility: hidden !important;
+    }
+</style>
+
+<div id="SAGBox">
+    <br />
+
+    <div class="ocultoImpresion">
+        <input type="button"  value="Imprimir reporte" class="imprimirDirecto boton btn" />
+        <a class="btn btn-info" href="@Url.Action("InformeHojaInventarioEX", "BienReportes", new { id = Model.ProyectoID, hasta = Model.Hasta, desde = Model.Desde, dependencia = Model.Ubicacion })">Descargar Excel</a>
+    </div>
+    <br />
+
+    <div class="soloImpresion">
+        <table class="table table-bordered table-responsive">
+
+            <tr>
+                <th colspan="4" style="font-weight: bold; text-align:center; font-size:14pt">Hoja de Inventario</th>
+            </tr>
+            <tr>
+                <th colspan="1">Revisi&oacute;n:</th>
+                <td colspan="1">2</td>
+                <th colspan="1">Fecha Actualizaci&oacute;n:</th>
+                <td colspan="1">@ViewBag.FechaActualizacion.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <th colspan="1">Nombre Proyecto:</th>
+                <td colspan="1">@Model.Proyecto</td>
+                <th colspan="1">C&oacute;digo SENAME:</th>
+                <td colspan="1">@ViewBag.CodigoSename</td>
+
+            </tr>
+            <tr>
+                <th colspan="1">Instituci&oacute;n:</th>
+                <td colspan="1">@ViewBag.Institucion</td>
+                <th colspan="1">C&oacute;digo:</th>
+                <td colspan="1">@ViewBag.CodigoCodeni</td>
+                <td colspan="1"></td>
+            </tr>
+            <tr>
+                <th colspan="1">Dependencia:</th>
+                <td>@Model.lista.First().Ubicacion</td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered table-responsive">
+            <tr>
+                <th colspan="2" rowspan="2">Sub Familia</th>
+                <th colspan="2" rowspan="2">Descripci&oacute;n del bien</th>
+                <th colspan="1" rowspan="2">Procedencia</th>
+                <th colspan="2" rowspan="2">N&ordm; C/E</th>
+                <th colspan="2" rowspan="2">Factura N&ordm;</th>
+                <th colspan="2" rowspan="2">Fecha Egreso</th>
+                <th colspan="2" rowspan="2">Cantidad</th>
+                <th colspan="1" rowspan="2">Valor</th>
+                <th colspan="1" rowspan="2">Condici&oacute;n</th>
+                <th colspan="2" rowspan="2">Observaciones</th>
+            </tr>
+            <tr></tr>
+
+
+            @foreach (var item in Model.lista)
+            {
+                <tr>
+                    <td colspan="2">@item.Familia</td>
+                    <td colspan="2">@item.DescripcionBien</td>
+                    <td colspan="1">@item.Procedencia[0]</td>
+                    <td colspan="2">@item.Movimiento.NumeroComprobante</td>
+
+                    @if (item.Egreso != null)
+                    {
+                        <td colspan="2">@item.Egreso.NDocumento</td>
+                    }
+                    else
+                    {
+                        <td colspan="2">@item.Reintegro.NDocumento</td>
+                    }
+
+
+                    @*<td colspan="2"></td>*@
+
+                    @{
+                        string fecha = @item.Movimiento.Fecha.ToString();
+                        string fechafinal = fecha.Substring(0, Math.Min(fecha.Length, 10));
+
+                        <td colspan="2">@fechafinal</td>
+                    }
+
+
+
+
+                    <td colspan="2">@item.Cantidad</td>
+                    @*<td colspan="1">@item.Ubicacion</td>*@
+                    <td colspan="1">$@item.MontoInt.ToString("#,##0")</td>
+                    <td colspan="1">@item.CondicionText</td>
+                    <td colspan="1">@item.Detalle</td>
+                </tr>
+
+            }
+
+        </table>
+
+        <table>
+            <tr></tr>
+            <tr></tr>
+
+        </table>
+    </div>
+</div>

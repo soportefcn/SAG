@@ -1,0 +1,126 @@
+﻿@model SAG2.Models.ParametroInforme
+
+@{
+    ViewBag.Title = "Parametro";
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<style>
+/* Conversion a mayusculas */
+input[type="text"], textarea
+{
+    text-transform: uppercase;
+}
+</style>
+<div id="SAGBox">
+    <h3>Asociar cuenta</h3>
+    <div id="controles">
+  
+    </div>
+    <div id="contenido">
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.ID)
+    <fieldset>
+
+        <div class="panel panel-default">
+  <div class="panel-heading"><h3><b>Datos de Asociar cuenta</b></h3></div>
+  <div class="panel-body">
+     
+
+      <br />
+          
+        <div class="editor-label">
+            <label> Proyecto</label> 
+        </div>
+        <div class="editor-field">
+         
+             @Html.DropDownList("ProyectoID", null, "-- SELECCIONE PROYECTO --", new { @class = "form-control"} )
+        </div>
+     
+
+        <div class="editor-label">
+          <label> Cuenta Asociada</label> 
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("CInformeID", null, "-- SELECCIONE CUENTA --", new { @class = "form-control"} )
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Tipo)
+        </div>
+        <div class="editor-field">
+            <select id="Tipo" name="Tipo" class="form-control">
+                @if (Model.Tipo == 0)
+                {
+                    <option selected="selected" value="0">NO Definido</option>
+                    <option value="1"> Con tope de Valor</option>
+                    <option value="2"> Meses de Inicio del Proyecto </option>
+                    <option value="3"> Porcentaje Sumatoria de Ingreso </option>
+                    <option value="4"> Febrero - Noviembre  Rojo al tener Valor</option>
+                    
+                }
+                   @if (Model.Tipo == 1)
+                {
+                    <option value="0">NO Definido</option>
+                    <option selected="selected"  value="1"> Con tope de Valor</option>
+                    <option value="2"> Meses de Inicio del Proyecto </option>
+                    <option value="3"> Porcentaje Sumatoria de Ingreso </option>
+                    <option value="4"> Febrero - Noviembre  Rojo al tener Valor</option>                    
+                }
+                    @if (Model.Tipo == 2)
+                {
+                    <option value="0">NO Definido</option>
+                    <option   value="1"> Con tope de Valor</option>
+                    <option selected="selected" value="2"> Meses de Inicio del Proyecto </option>
+                    <option value="3"> Porcentaje Sumatoria de Ingreso </option>
+                    <option value="4"> Febrero - Noviembre  Rojo al tener Valor</option>                    
+                }
+                  @if (Model.Tipo == 3)
+                {
+                    <option value="0">NO Definido</option>
+                    <option   value="1"> Con tope de Valor</option>
+                    <option  value="2"> Meses de Inicio del Proyecto </option>
+                    <option selected="selected" value="3"> Porcentaje Sumatoria de Ingreso </option>
+                    <option value="4"> Febrero - Noviembre  Rojo al tener Valor</option>                    
+                }
+                  @if (Model.Tipo == 4)
+                {
+                    <option value="0">NO Definido</option>
+                    <option   value="1"> Con tope de Valor</option>
+                    <option  value="2"> Meses de Inicio del Proyecto </option>
+                    <option value="3"> Porcentaje Sumatoria de Ingreso </option>
+                    <option selected="selected" value="4"> Febrero - Noviembre  Rojo al tener Valor</option>                    
+                }
+            </select>
+        </div>
+              <div class="editor-label">
+           Valor Parametro
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Parametro)
+            @Html.ValidationMessageFor(model => model.Parametro)
+        </div>
+   
+
+     
+  </div>
+	<div class="panel-footer">
+    <div  style ="width: 500px ; display:inline-block">
+             <a class="btn btn-success" href="../ListaParametros" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/SaldoCierre/Parametro"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+        <a class="btn btn-danger" href="../DeleteParametro/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-fw"></span>ELIMINAR</a>
+        <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/SaldoCierre/Parametro"><span class ="fa fa-undo fa-fw"></span> CANCELAR</a>
+            
+        </div>
+         <div style="float :right;width:150px;display:inline-block">
+ <input class="btn btn-primary" type="submit" value="Guardar" />
+ </div>
+
+</div>
+</div>
+          
+    </fieldset>
+}
+    </div>
+</div>

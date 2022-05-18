@@ -1,0 +1,50 @@
+﻿@model IEnumerable<SAG2.Models.Persona>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Personal";
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(".SeleccionarPopUpPersonal").click(function () {
+            window.opener.document.getElementById("tipoBeneficiario").value = "1";
+            window.opener.document.getElementById("PersonaID").value = $(this).attr("PersonaID");
+            window.opener.document.getElementById("Beneficiario").value = $(this).attr("Beneficiario");
+            window.opener.document.getElementById("Rut").value = $(this).attr("Rut");
+            window.opener.document.getElementById("DVBuscar").value = $(this).attr("DV");
+            window.close();
+            return false;
+        });
+    }); 
+</script>
+<div class="top" style="height: 18px;">Personal&nbsp;&nbsp;</div>
+ <div id="contenido_popup">
+      <table class = "table table-hover table-bordered table-condensed">
+   <thead class="fixedHeader">
+    <tr class="info">
+        <th style ="width: 600px;">
+            Nombre
+        </th>
+        <th style ="width: 100px;">
+            Rut
+        </th>
+        <th class="controles" style ="width: 28px;"></th>
+    </tr>
+</thead>
+ <tbody class="scrollContent">  
+@foreach (var item in Model)
+{
+    <tr>
+        <td style ="width: 600px;">
+            @Html.DisplayFor(modelItem => item.NombreCompleto)
+        </td>
+        <td align="right" style ="width: 100px;">
+            @Html.DisplayFor(modelItem => item.RutDV)
+        </td>
+        <td>
+            <img src="@Url.Content("~/Content/Images/Badge-tick.png")" PersonaID="@Html.Raw(item.ID.ToString())" Rut="@Html.Raw(item.Rut)" DV="@Html.Raw(item.DV)" Beneficiario="@Html.Raw(item.NombreCompleto)" class="SeleccionarPopUpPersonal" alt="Seleccionar" width="15" height="15" style="border: 0;vertical-align: middle; cursor:pointer;" />
+        </td>
+    </tr>
+        }
+     </tbody>
+        </table>
+    </div>

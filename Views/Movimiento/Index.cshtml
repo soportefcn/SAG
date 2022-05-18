@@ -1,0 +1,233 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    var TipoListado = ViewBag.Title;
+    var MontoTotal = 0;
+}
+
+<p>
+    @if (!ViewBag.Informe)
+    {
+        @*Html.ActionLink("Create New", "Create")*@
+        @Html.Raw("Listado " + TipoListado)
+    }
+    else
+    {
+        @Html.Raw("Informe " + TipoListado)
+    }
+</p>
+
+@if (Model.Count() == 0)
+{
+    @Html.Raw("No existen registros!");
+}
+else
+{
+    <table align="center">
+        <tr>
+            <th>
+                Nº Comprobante
+            </th>
+            <th>
+                Fecha
+            </th>
+            @if (TipoListado == "Ingresos")
+            {
+            <th>
+                Cuenta
+            </th>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Nº Cheque
+            </th>
+            <th>
+                Monto $
+            </th>
+             <th>
+                Cta. Cte.
+            </th>
+            <th>
+                Glosa
+            </th>
+            }
+            else if (TipoListado == "Reintegros")
+            {
+            <th>
+                Monto $
+            </th>
+            <th>
+                Nº Documento
+            </th>
+            <th>
+                Cta. Cte.
+            </th>
+            <th>
+                Glosa
+            </th>
+            <th>
+                Nº Egreso
+            </th>
+            <th>
+                Fecha Egreso
+            </th>
+            <th>
+                Cuenta
+            </th>
+            <th>
+                Descripción
+            </th>
+            }
+            else if (TipoListado == "Egresos")
+            {
+            <th>
+                Cuenta
+            </th>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Nº Cheque
+            </th>
+            <th>
+                Monto $
+            </th>
+             <th>
+                Cta. Cte.
+            </th>
+            <th>
+                Glosa
+            </th>
+            <th>
+                Beneficiario
+            </th>
+            }
+            @if (!ViewBag.Informe)
+            {<th></th>}
+        </tr>
+
+    @foreach (var item in Model)
+    {
+        {
+            MontoTotal += item.Monto_Ingresos;
+            MontoTotal -= item.Monto_Egresos;
+        }
+        <tr>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td>
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            @if (TipoListado == "Ingresos")
+            {
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.CuentaID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlanDeCuenta.Descripcion)
+            </td>
+            <td align="right">
+                @Html.DisplayFor(modelItem => item.Cheque)
+            </td>
+            <td align="right">
+                <strong>
+                $@Html.DisplayFor(modelItem => item.Monto_Ingresos) 
+                </strong>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            }
+            else if (TipoListado == "Reintegros")
+            {
+            <td align="right">
+                <strong>
+                $@Html.DisplayFor(modelItem => item.Monto_Ingresos) 
+                </strong>
+            </td>
+            <td align="right">
+                @Html.DisplayFor(modelItem => item.Cheque)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.ComprobanteEgreso.NumeroComprobante)                
+            </td>
+            <td>
+                @item.ComprobanteEgreso.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.CuentaID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlanDeCuenta.Descripcion)
+            </td> 
+            }
+            else if (TipoListado == "Egresos")
+            {
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.CuentaID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlanDeCuenta.Descripcion)
+            </td> 
+            <td align="right">
+                @Html.DisplayFor(modelItem => item.Cheque)
+            </td>
+            <td align="right">
+                <strong>
+                $@Html.DisplayFor(modelItem => item.Monto_Egresos) 
+                </strong>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CuentaCorriente.Numero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Beneficiario.NombreLista)
+            </td>
+            }
+            @if (!ViewBag.Informe)
+            {
+            <td>
+                @if (TipoListado != "Egresos")
+                {
+                    <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Movimiento/Imprimir/@item.ID.ToString()" target="_blank"><img src="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Content/Images/Printer.png" alt="Print" title="Generar e imprimir comprobante" width="15" height="15" /></a> 
+                }
+                <a href="@Url.Action("Edit", "Movimiento", new { id = item.ID })" title="Modificar"><img src="@Url.Content("~/Content/Images/Edit.png")" alt="" width="15" height="15" /></a> 
+            <a href="@Url.Action("Delete", "Movimiento", new { id = item.ID })" title="Borrar"><img src="@Url.Content("~/Content/Images/Delete.png")" alt="" width="15" height="15" /></a>
+            </td>
+            }
+        </tr>
+    }
+    </table>
+    if (ViewBag.Informe)
+    {
+        <p></p>
+        <table align="center">
+            <tr>
+                <td align="right">Nº Comprobantes: </td>
+                <td align="left"><strong>@Html.Raw(Model.Count().ToString())</strong></td>
+            </tr>
+            <tr>
+                <td align="right">Monto Total: </td>
+                <td align="left"><strong>$@Html.Raw(MontoTotal.ToString())</strong></td>
+            </tr>
+        </table>
+        if (TipoListado == "Ingresos")
+        { 
+            <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Movimiento/ImprimirInforme/?Informe=Ingresos" target="_blank"><img src="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Content/Images/Printer.png" alt="Print" width="25" height="25" style="vertical-align:middle;" /> Imprimir informe</a> 
+        }
+    }
+}

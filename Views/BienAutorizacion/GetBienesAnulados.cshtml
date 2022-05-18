@@ -1,0 +1,35 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Bienes Anulados";
+}
+
+<h2>Bienes Anulados</h2>
+<table class="stripe" id="tablaDataTable">
+    <thead>
+        <tr>
+            <th>Familia</th>
+            <th>Sub Familia</th>
+            <th>Detalle</th>
+            <th>Ubicación</th>
+            <th>Proyecto</th>
+            <th>Auditor</th>
+            <th>Estado</th>
+            <th>Condición</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.lista)
+        { 
+            <tr>
+                <td>@item.Familia</td>
+                <td>@item.SubFamilia</td>
+                <td>@item.Detalle</td>
+                <td>@item.Ubicacion</td>
+                <td>@item.Proyecto</td>
+                <td>@item.Usuario</td>
+                <td>@item.Estado</td>
+                <td>@item.Condicion</td>
+            </tr>
+        }
+    </tbody>
+</table>

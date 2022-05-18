@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SAG2.Models.ItemIntervencion>
+@{
+	Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Items de intervención";
+}
+<div id="SAGBox">
+    <h3>@ViewBag.Title</h3>
+    <div id="controles">
+        <p>@Html.ActionLink("NUEVO", "Create")</p>
+        <p>@Html.ActionLink("LISTAR", "Index")</p>
+    </div>
+    <div id="contenido">
+        <table cellpadding="5" border="1">
+    <tr>
+        <th>
+            Nombre
+        </th>
+        <th class="controles"></th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+                    <a href="@Url.Action("Edit", "ItemIntervencion", new { id = item.ID })" title="Modificar"><img src="@Url.Content("~/Content/Images/Edit.png")" alt="" width="15" height="15" /></a> 
+                    <a href="@Url.Action("Delete", "ItemIntervencion", new { id = item.ID })" title="Eliminar"><img src="@Url.Content("~/Content/Images/Delete.png")" alt="" width="15" height="15" /></a>
+                </td>
+            </tr>
+        }
+        </table>
+    </div>
+</div>

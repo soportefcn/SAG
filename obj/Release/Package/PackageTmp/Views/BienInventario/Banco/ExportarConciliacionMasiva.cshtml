@@ -1,0 +1,322 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+@using SAG2.Models;
+@using SAG2.Classes;
+@{
+    Layout = null;
+    ViewBag.Title = "Conciliación Bancaria Masiva";
+    Util utils = new Util();
+    SAG2DB db = new SAG2DB();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=CONCILIACION.MASIVA.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    int saldo = 0;
+    int periodo = @ViewBag.periodo;
+    int mes = @ViewBag.mes;
+    int saldoCartola = 0;
+    string fecha = string.Empty;
+    int PeriodoSeleccionado = (int)@ViewBag.periodo;
+    int mesSeleccionado = (int)@ViewBag.mes;
+    int numeroProyecto = 0;
+    int cantidad = 0;
+    
+    // Calculos en Excel
+    int pre_count = 0;
+    int post_count = 24;
+
+    List<Movimiento> movs = (from m in db.Movimiento
+                            where m.TipoComprobanteID == 2 && ((m.Periodo == periodo && m.Mes == mes) || (m.Periodo < periodo) || (m.Periodo == periodo && m.Mes < mes)) && m.Temporal == null && m.Nulo == null && m.Eliminado == null && ((m.CuentaID != 1 && m.CuentaID != 6) || m.CuentaID == null)
+                            orderby m.NumeroComprobante
+                            select m).ToList();
+}
+<style>
+	body, table, tr, td {
+		font-family: Arial Unicode MS, Arial, Helvetica, sans-serif;
+		font-size: 10pt;	
+	}
+</style>
+<property name="contentType" value="text/html; charset=UTF-8" />
+</head>
+
+<body>
+@foreach (var Proyecto in Model)
+{
+    numeroProyecto++;
+    cantidad = 0;
+    CuentaCorriente cc = db.CuentaCorriente.Where(c => c.ProyectoID == Proyecto.ID).Single();
+    try
+    {
+        saldo = db.Saldo.Where(m => m.CuentaCorrienteID == cc.ID).Where(m => m.Periodo == periodo).Where(m => m.Mes == mes).Single().SaldoInicialCartola;
+    }
+    catch (Exception)
+    {
+        saldo = 0;
+        continue;
+    }
+
+    try
+    {
+        Conciliacion Conciliacion = db.Conciliacion.Where(c => c.ProyectoID == Proyecto.ID).Where(c => c.Periodo == periodo).Where(c => c.Mes == mes).Single();
+        saldoCartola = Conciliacion.SaldoCartola;
+        fecha = Conciliacion.FechaCartola.ToShortDateString();
+    }
+    catch (Exception)
+    {
+        saldoCartola = 0;
+        fecha = string.Empty;
+        continue;
+    }
+
+    /*List<Movimiento> movimientos = (from m in db.Movimiento
+                                  where (m.ProyectoID == Proyecto.ID) && m.TipoComprobanteID == 2 && ((m.Periodo == periodo && m.Mes == mes) || (m.Periodo < periodo) || (m.Periodo == periodo && m.Mes < mes)) && m.Temporal == null && m.Nulo == null && m.Eliminado == null && ((m.CuentaID != 1 && m.CuentaID != 6) || m.CuentaID == null)
+                                  orderby m.NumeroComprobante
+                                  select m).ToList();*/
+
+    List<Movimiento> movimientos = movs.Where(m => m.ProyectoID == Proyecto.ID).ToList();
+    
+    if (movimientos.Count() == 0)
+    {
+        continue;
+    }
+    
+    <table border="0">
+	    <tr>
+		    <td colspan="5" align="center" style="text-decoration: underline;"><strong>CUENTA {NUMERO} BANCO @cc.Banco.Nombre @Proyecto.Nombre</strong></td>
+	    </tr>
+	    <tr>
+		    <td colspan="5" align="center" style="text-decoration: underline;"><strong>CTA. CTE. N. @cc.Numero</strong></td>
+	    </tr>
+        <tr>
+		    <td width="93" style="width: 93px;">&nbsp;</td>
+		    <td width="80" style="width: 80px;">&nbsp;</td>
+		    <td width="290" style="width: 290px;">&nbsp;</td>
+		    <td width="60" style="width: 60px;">&nbsp;</td>
+		    <td width="105" style="width: 105px;">&nbsp;</td>
+	    </tr>
+	    <tr>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+	    </tr>
+	    <tr>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+	    </tr>
+	    <tr>
+		    <td colspan="3"><strong>SALDO SEGÚN BALANCE AL @fecha</strong></td>
+		    <td>&nbsp;</td>
+		    <td><strong><span style="text-decoration: underline;">$@Html.Raw(saldo.ToString("#,##0"))</span></strong></td>
+	    </tr>
+        <tr>
+	        <td colspan="3">&nbsp;</td>
+	        <td>&nbsp;</td>
+	        <td>&nbsp;</td>
+        </tr>
+	    <tr>
+	        <td colspan="3">&nbsp;</td>
+	        <td>&nbsp;</td>
+	        <td>&nbsp;</td>
+        </tr>
+	    <tr>
+	        <td colspan="3">&nbsp;</td>
+	        <td>&nbsp;</td>
+	        <td>&nbsp;</td>
+        </tr>
+	    <tr>
+	        <td colspan="3" style="text-decoration: underline;">Análisis del saldo</td>
+	        <td>&nbsp;</td>
+	        <td>&nbsp;</td>
+        </tr>
+	    <tr>
+	        <td colspan="3">&nbsp;</td>
+	        <td>&nbsp;</td>
+	        <td>&nbsp;</td>
+        </tr>
+	    <tr>
+	        <td colspan="3">Saldo según cartola del Banco </td>
+	        <td>&nbsp;</td>
+	        <td>$@saldoCartola.ToString("#,##0")</td>
+        </tr>
+        <tr>
+	      <td colspan="3">&nbsp;</td>
+	      <td>&nbsp;</td>
+	      <td>&nbsp;</td>
+      </tr>
+	    <tr>
+	      <td colspan="3">&nbsp;</td>
+	      <td>&nbsp;</td>
+	      <td>&nbsp;</td>
+      </tr>
+	    <tr>
+	      <td colspan="3">Cheques sin cobrar:</td>
+	      <td>&nbsp;</td>
+	      <td>&nbsp;</td>
+      </tr>
+	    <tr>
+	      <td colspan="3">&nbsp;</td>
+	      <td>&nbsp;</td>
+	      <td>&nbsp;</td>
+      </tr>
+	    <tr>
+	      <td style="text-decoration: underline; display: block;">FECHA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	      <td style="text-decoration: underline; display: block;">CHEQUE&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	      <td style="text-decoration: underline; display: block;">NOMBRE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	      <td>&nbsp;</td>
+	      <td>&nbsp;</td>
+      </tr>
+    @foreach (var item in movimientos)
+    {
+        if (item.TipoComprobanteID == 2)
+        {
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+            foreach (var detalle in detalles)
+            {
+                bool conciliado = false;
+                //bool salto = true;
+                
+                try
+                {
+                    int detalleID = detalle.ID;
+                    SAG2.Models.ConciliacionRegistro cr = db.ConciliacionRegistro.Where(c => c.DetalleID == detalleID).Single();
+
+                    if (cr.Mes > mesSeleccionado && cr.Periodo == PeriodoSeleccionado)
+                    {
+                        conciliado = false;
+                    }
+                    else
+                    {
+                        conciliado = true;
+                    }
+
+                    if (cr.Periodo > PeriodoSeleccionado)
+                    {
+                        conciliado = false;
+                    }
+                    
+                    /*
+                    if (cr.Periodo < PeriodoSeleccionado)
+                    {
+                        conciliado = true;
+                    }
+                    else if (cr.Periodo == PeriodoSeleccionado && cr.Mes < mesSeleccionado)
+                    {
+                        conciliado = true;
+                    }
+                    else if (cr.Mes > mesSeleccionado)
+                    {
+                        conciliado = false;
+                    }
+                    else if (cr.Periodo == PeriodoSeleccionado && cr.Mes == mesSeleccionado)
+                    {
+                        conciliado = true;
+                    }
+                    else
+                    {
+                        conciliado = true;
+                    }
+                     */
+                }
+                catch (Exception)
+                {
+                    conciliado = false;
+                }
+                /*
+                if (detalle.Conciliado != null && detalle.Conciliado.Equals("S") && !(item.Periodo == PeriodoSeleccionado && item.Mes == mesSeleccionado) && salto)
+                {
+                    continue;
+                }
+                
+                */
+                if (conciliado)
+                {
+                    continue;
+                }
+                cantidad++;
+	    <tr>
+	      <td align="left">@item.Fecha.Value.ToShortDateString()</td>
+	      <td align="left">@Html.DisplayFor(modelItem => item.Cheque)</td>
+	      <td>
+            @if (item.Persona != null)
+            {
+                @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+            }
+            else if (item.Proveedor != null)
+            {
+                @Html.DisplayFor(modelItem => item.Proveedor.Nombre)
+            }
+            else
+            { 
+                @Html.Raw(@item.Beneficiario)
+            }
+	      </td>
+	      <td>$@Html.Raw(@detalle.Monto.ToString("#,##0"))</td>
+	      <td>&nbsp;</td>
+      </tr>
+            }
+        }
+    }
+    <tr>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+  </tr>
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>&nbsp;</td>
+	  <td>=SUMA(@Html.Raw("D" + (pre_count + 18)):@Html.Raw("D" + (pre_count + cantidad + 18) +")")</td>
+  </tr>
+</table>
+    
+    
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+<table cellspacing="0" cellpadding="0">
+  <col width="93" />
+  <col width="80" />
+  <col width="289" />
+  <col width="60" />
+  <col width="104" />
+  <tr>
+    <td width="93" style="border-top: 1px solid black;">&nbsp;</td>
+    <td width="80" style="border-top: 1px solid black;">&nbsp;</td>
+    <td width="289"></td>
+    <td width="60"></td>
+    <td width="104" style="border-top: 1px solid black;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td colspan="4"><strong>SALDO ACREEDOR IGUAL MAYOR AL @fecha</strong></td>
+    <td><strong>+@Html.Raw("E" + (pre_count + 20 -  8))-@Html.Raw("E" + (pre_count + cantidad + 20))</strong></td>
+  </tr>
+  <tr>
+    <td style="border-bottom: 1px solid black;">&nbsp;</td>
+    <td style="border-bottom: 1px solid black;">&nbsp;</td>
+    <td></td>
+    <td></td>
+    <td style="border-bottom: 1px solid black;">&nbsp;</td>
+  </tr>
+</table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+        pre_count += cantidad + post_count + 17;
+    }
+</body>

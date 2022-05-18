@@ -1,0 +1,131 @@
+﻿@model IEnumerable<SAG2.Models.BoletaHonorario>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Honorarios";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Honorarios.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    var totalbruto = 0;
+    var totalret = 0;
+    var totalliq = 0;
+    }
+<style type="text/css" media="all">
+body 
+{
+    font-family: Arial;    
+}
+
+th
+{
+    font-weight: bold;    
+}
+
+td, th
+{
+    white-space: nowrap;
+    font-size: 12px;
+}
+</style>
+<table>
+    <tr>
+    <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.Proyecto 
+                                 <br />
+    Cod. Sename: @Html.Raw(@ViewBag.CodSename)
+
+        </td>
+    </tr>
+</table>
+<h2>@ViewBag.Title</h2>
+Periodo  : @ViewBag.Periodo Mes : @ViewBag.Mes
+<br /><br />
+<table cellpadding="5" border="1" style="width: 100%;">
+            <tr>
+                <th>Fecha</th>
+                <th>@System.Web.HttpUtility.UrlDecode("N° Boleta")</th>
+                <th>@System.Web.HttpUtility.UrlDecode("N° Egreso")</th>
+
+                <th>Rut</th>
+                <th>DV</th>
+                <th>Beneficiario</th>
+            
+                <th>Bruto $</th>
+                <th>@System.Web.HttpUtility.UrlDecode("Retención $")</th>
+                <th>@System.Web.HttpUtility.UrlDecode("Líquido $")</th>
+
+                <th>Estado</th>
+                <th>Glosa</th>
+            </tr>
+        @foreach (var item in Model)
+        {
+            totalbruto = totalbruto + item.Bruto;
+            totalret = totalret + item.Retencion;
+            totalliq = totalliq + item.Neto;
+            <tr>
+                <td align="center">
+                    @item.Fecha.ToShortDateString()
+                </td>
+                <td>
+                    @item.NroBoleta.ToString()
+                </td>
+                <td>
+                    @if (item.EgresoID != null)
+                    {
+                        @Html.Raw(@item.Egreso.NumeroComprobante.ToString());
+                    }
+                </td>
+                    @if (item.Persona != null)
+                    {
+                        <td>@Html.DisplayFor(modelItem => item.Persona.Rut)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Persona.DV)</td>
+                        <td>@System.Web.HttpUtility.UrlDecode(item.Persona.NombreCompleto)</td>
+
+                    }
+                    else if (item.Proveedor != null)
+                    {
+                        <td>@Html.DisplayFor(modelItem => item.Proveedor.Rut)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Proveedor.DV)</td>
+                        <td>@System.Web.HttpUtility.UrlDecode(item.Proveedor.Nombre)</td>
+                    }
+                    else
+                    { 
+                        <td>@item.Rut</td>
+                        <td>@item.DV</td>
+                        <td>@System.Web.HttpUtility.UrlDecode(item.Beneficiario)</td>
+                    }
+                <td align="right">
+                    <strong>
+                    $@item.Bruto.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="right">
+                    <strong>
+                    $@item.Retencion.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="right">
+                    <strong>
+                    $@item.Neto.ToString("#,##0") 
+                    </strong>
+                </td>
+                <td style="color: White; text-align: center;">
+                @if (item.Nula == null)
+                { @Html.Raw("<span style=\"background-color: Green;\">Vigente</span>");
+                }
+                else
+                { @Html.Raw("<span style=\"background-color: Red;\">Nula</span>");
+                }
+                </td>
+                <td>
+                    @System.Web.HttpUtility.UrlDecode(item.Concepto)
+                </td>
+            </tr>
+        }
+    <tr></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Bruto</td><td>Retencion</td><td>Liquido</td></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td><td>Totales</td><td>$@totalbruto.ToString("#,##0")</td><td>$@totalret.ToString("#,##0")</td><td>$@totalliq.ToString("#,##0")</td></tr>
+        </table>

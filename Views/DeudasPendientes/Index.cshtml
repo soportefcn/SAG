@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SAG2.Models.DeudaPendiente>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Deudas pendientes";
+}
+ <div class="form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+        </div> 
+ <div id="contenido_popup">
+   <table class="table table-bordered table-hover">
+       <thead class="fixedHeader">
+    <tr class="info">
+    <th style="width: 33px;" class="controles"></th>
+        <th style="width: 38px;">Nº </th>
+        <th style="width: 80px;">Fecha</th>
+        <th>Proveedor/Beneficiario</th>
+        <th style="width: 122px;">Documento</th>
+        <th style="width: 80px;">Nº Doc.</th>
+        <th style="width: 80px;">Emisión</th>
+        <th style="width: 80px;">Vencimiento</th>
+        <th>Monto $</th>
+    </tr>
+</thead>
+        <tbody class="scrollContent">  
+@foreach (var item in Model)
+{
+    <tr>
+    <td>
+            <a href="@Url.Action("Edit", "DeudasPendientes", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumeroComprobante)
+        </td>
+        <td>
+            @item.Fecha.ToShortDateString()
+        </td>
+        <td>
+        @if (item.Persona != null)
+        {
+            @Html.DisplayFor(modelItem => item.Persona.NombreLista)
+        }
+        else if (item.Proveedor != null)
+        {
+            @Html.DisplayFor(modelItem => item.Proveedor.NombreLista)
+        }
+        else
+        { 
+            @Html.Raw(@item.Rut+"-"+@item.DV+" " + @item.Beneficiario)
+        }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Documento.NombreLista)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumeroDocumento)
+        </td>
+        <td>
+            @item.FechaEmision.ToShortDateString()
+        </td>
+        <td>
+            @item.FechaVencimiento.ToShortDateString()
+        </td>       
+        <td>
+            @Html.DisplayFor(modelItem => item.Monto)
+        </td>
+    </tr>
+}
+            </tbody>
+        </table>
+    </div>

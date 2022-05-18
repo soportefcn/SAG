@@ -1,0 +1,96 @@
+﻿@model SAG2.Models.BienModInventarioVM
+@{
+    ViewBag.Title = "Informe Baja";
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+
+
+<style>
+    .container {
+        width: 1350px !important;
+    }
+
+    .col-sm-9 {
+        width: 1350px !important;
+    }
+
+    .blog-sidebar {
+        visibility: hidden !important;
+    }
+</style>
+
+<div id="SAGBox">
+    <br />
+
+    <div class="ocultoImpresion">
+        <input type="button" value="Imprimir reporte" class="imprimirDirecto boton btn" />
+        <a class="btn btn-info" href="@Url.Action("InformeBajaInventario", "BienReportes", new { id = Model.ProyectoID, hasta = Model.Hasta, desde = Model.Desde })">Descargar Excel</a>
+    </div>
+    <br />
+
+    <div class="soloImpresion">
+        <table class="table table-bordered table-responsive">
+
+            <tr>
+                <th colspan="4" style="font-weight: bold; text-align:center; font-size:14pt">Informe Bajas</th>
+            </tr>
+            <tr>
+                <th colspan="1">Revisi&oacute;n:</th>
+                <td colspan="1">2</td>
+                <th colspan="1">Fecha Actualizaci&oacute;n:</th>
+                <td colspan="1">@FechaSis</td>
+            </tr>
+            <tr>
+                <th colspan="1">Nombre Proyecto:</th>
+                <td colspan="1">@Model.Proyecto</td>
+                <th colspan="1">C&oacute;digo SENAME:</th>
+                <td colspan="1">@Model.ClaseProyecto.CodSename</td>
+            </tr>
+            <tr>
+                <th>Instituci&oacute;n:</th>
+                <td>@Model.ClaseProyecto.Institucion</td>
+                <th colspan="1">C&oacute;digo CODENI:</th>
+                <td colspan="1">@Model.ClaseProyecto.CodCodeni</td>
+            </tr>
+            <tr></tr>
+        </table>
+
+        <table class="table table-bordered table-responsive">
+            <tr>
+                <th>Especie</th>
+                <th>Descripci&oacute;n del Bien</th>
+                <th>Procedencia</th>
+                <th>N&ordm; C/E</th>
+                <th>A&ntilde;o</th>
+                <th>Acta Traspaso(A)<br />Resoluci&oacute;n Exenta(R)</th>
+                <th>Cantidad</th>
+                <th>Ubicaci&oacute;n</th>
+                <th>Condici&oacute;n<br />(malo)</th>
+                <th>Motivo</th>
+            </tr>
+            <tr></tr>
+            @foreach (var item in Model.lista)
+            {
+                <tr>
+                    <td>@item.Familia</td>
+                    <td>@item.DescripcionBien</td>
+                    <td>@item.Procedencia[0]</td>
+                    
+                    <td>@item.Movimiento.NumeroComprobante</td>
+                    <td>@item.Fecha.Year.ToString()</td>
+                    <td>@{var nombre = System.IO.Path.GetFileNameWithoutExtension(item.RutaArchivo.ToString());
+                        nombre = nombre.Replace("Baja-"+item.Movimiento.ProyectoID.ToString()+"-"+item.ID.ToString()+"-","" );
+                        }
+                    @nombre</td>
+                    <td>@item.Cantidad</td>
+                    <td>@item.Ubicacion</td>
+                    <td>@item.CondicionText</td>
+                    <td>@item.Detalle</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+
+

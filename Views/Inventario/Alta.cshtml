@@ -1,0 +1,171 @@
+﻿@model SAG2.Models.InventarioItem
+@{
+    ViewBag.Title = "Generar Alta";
+}
+<style type="text/css" media="print">
+    @@page
+    {
+        margin: 1cm !important;
+    }
+    body 
+    {
+        font-family: Arial;   
+        font-size: 9pt;    
+    }
+    h2, h3, h1 {
+        text-align: center;
+        font-size: 11pt;  
+        margin-bottom: 11pt;  
+    }
+    
+    td, th
+    {
+        border: 1px solid black;
+        padding: 2px;  
+    }
+    
+    .resumen tr, .resumen tr th, .resumen tr td
+    {
+        border: 0;
+    }
+
+    </style>
+<div class="permisos">
+    <div class="ocultoImpresion">
+        <input value="IMPRIMIR" type="button" style="float: right; margin-left: 10px;" id="imprimirDirecto" />
+    </div>
+    <h2>ALTA DE INVENTARIOS</h2>
+    <br />
+    <table class="soloImpresion">
+        <tr>
+            <th width="100px;" align="left">Proyecto:</th>
+            <td style="padding-right: 10px;">@ViewBag.Proyecto.Nombre</td>
+            <th width="100px;" align="left">Fecha:</th>
+            <td>@DateTime.Now.ToShortDateString()</td>
+        </tr>
+        <tr>
+            <th align="left">Código SENAME:</th>
+            <td>@ViewBag.Proyecto.CodSename</td>
+            <th align="left">C. Costo CODENI:</th>
+            <td>@ViewBag.Proyecto.CodCodeni</td>
+        </tr>
+    </table>
+    <br />
+    <br class="soloImpresion" />
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.ID, new { @Value = @ViewBag.ID })
+    @Html.Hidden("MovimientoID", null, new { @Value = @ViewBag.MovimientoID })
+    <fieldset class="oculto">
+        <table width="100%">
+            <tr>
+                <td>Especie</td>
+                <td>@Html.DropDownList("EspecieID")</td>
+                <td>Cantidad</td>
+                <td>@Html.TextBoxFor(model => model.Cantidad, new { @size = "5" })</td>
+            </tr>
+            <tr>
+                <td>Procedencia</td>
+                <td>
+                    <select name="Procedencia" id="Procedencia">
+                        <option> - </option>
+                        <option value="S"@if (Model.Procedencia != null && Model.Procedencia.Equals("S"))
+                                         {@Html.Raw("selected=\"selected\"")}>SENAME</option>
+                        <option value="T"@if (Model.Procedencia != null && Model.Procedencia.Equals("T"))
+                                         {@Html.Raw("selected=\"selected\"")}>Traspaso</option>
+                        <option value="I"@if (Model.Procedencia != null && Model.Procedencia.Equals("I"))
+                                         {@Html.Raw("selected=\"selected\"")}>Institución</option>
+                    </select>
+                </td>
+                <td>Valor $</td>
+                <td>@Html.TextBoxFor(model => model.Valor, new { @size = "5" })</td>
+            </tr>
+            <tr>
+                <td>Nº C/E / Año</td>
+                <td>
+                    @Html.Hidden("DetalleEgresoID")
+                    @Html.TextBox("ComprobanteEgresoAlta", null, new { @readonly = "readonly", @Value = @ViewBag.ComprobanteEgreso, @size = "3" })
+                    <img src="@Url.Content("~/Content/Images/Buscar2.png")" id="ComprobanteEgresoAltaLupa" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;" />
+                     / @Html.TextBoxFor(model => model.Periodo, new { @size = "4", @maxlength = "4" })
+                     
+                </td>
+                <td>Res. Ex.</td>
+                <td>@Html.TextBox("Resolucion", null, new { @size = "10", @Value = @ViewBag.Resolucion })</td>
+            </tr>
+            <tr>
+                <td colspan="2" width="50%">
+                    Nombre, descripción y/o características de la especie<br />
+                    @Html.TextAreaFor(model => model.Descripcion, new { @cols = "35" })
+                </td>
+                <td colspan="2">
+                    Observaciones<br />
+                    @Html.TextAreaFor(model => model.Observaciones, new { @cols = "35" })
+                </td>
+            </tr>
+        </table>   
+        <input type="submit" value="GUARDAR DETALLE" /> <input type="button" value="NUEVO" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Inventario/Alta?movimientoID=@ViewBag.MovimientoID';" />
+    </fieldset>    
+}
+@if (@ViewBag.Listado != null)
+{
+    <h2 class="oculto">Detalle del Alta</h2>
+    <table cellpadding="5" align="center" width="100%">
+<tr>
+    <th class="controles oculto"></th>
+        <th>
+            Especie
+        </th>
+        <th>
+            Nombre, descripción y/o características<br />de la especie
+        </th>
+        <th>
+            Proced.<br />(S); (T); (I)
+        </th>
+        <th>
+            Nº C/E<br />/ Año
+        </th>
+        <th>
+            Cantidad
+        </th>
+        <th>
+            Valor $
+        </th>
+        <th>
+            Observaciones
+        </th>       
+    </tr>
+@foreach (SAG2.Models.InventarioAlta item in @ViewBag.Listado)
+{
+    <tr>
+        <td class="oculto">
+            <a href="@Url.Action("Alta", "Inventario", new { id = item.Item.ID, movimientoID = item.MovimientoID })" title="Modificar"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+            <a href="@Url.Action("AltaEliminar", "Inventario", new { id = item.Item.ID, movimientoID = item.MovimientoID })" title="Eliminar"><img src="@Url.Content("~/Content/Images/Delete.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+        <td>@item.Item.Especie.Nombre</td>
+        <td>@item.Item.Descripcion</td>
+        <td>@item.Item.Procedencia</td>
+        <td>
+            @{
+                try
+                {
+                    @Html.Raw(@item.Item.Egreso.Egreso.NumeroComprobante.ToString() + " / " + @item.Item.Periodo);
+                }
+                catch (Exception)
+                {
+                    @Html.Raw("-");
+                }
+            }
+        </td>
+        <td align="center">@item.Cantidad</td>
+        <td align="right">@item.Item.Valor.ToString("#,##0")</td>
+        <td>@item.Item.Observaciones</td>
+    </tr>
+}
+    </table>
+}
+
+    <br />
+    <div align="right" class="oculto">
+        <input type="button" value="TERMINAR" onclick="window.location='@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Inventario/ListadoAltas';" />
+    </div>
+</div>
