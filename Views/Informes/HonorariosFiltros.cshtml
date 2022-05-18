@@ -61,17 +61,45 @@
         <div class ="form-inline form-group">
             <div class="form-group tipobeneficiario">
             <select class="form-control" name="tipoBeneficiario" id="tipoBeneficiario">
-                <option selected="selected"></option>
-                <option value="1">Personal</option>
-                <option value="2">Proveedores</option>
-                <option value="3">Otro</option>
+                <option selected="selected" value="0"></option>
+                @{ if (ViewBag.tipoBeneficiario == 0  ){
+                    <option selected="selected" value="0"></option>
+                   }else{
+                        <option  value="0"></option>
+                   }
+                  if (ViewBag.tipoBeneficiario == 1  ){
+                    <option selected="selected" value="1">Personal</option>
+                                }
+                                else
+                                {
+                        <option value="1">Personal</option>
+                                }
+                    if (ViewBag.tipoBeneficiario == 2 ){
+                        <option selected="selected" value="2">Proveedores</option>
+                    }
+                    else
+                    {
+                      <option value="2">Proveedores</option>
+                    }  
+                    if (ViewBag.tipoBeneficiario == 3 ){
+                        <option selected="selected" value="3">Otro</option>
+                     }
+                      else
+                       {
+                       <option value="3">Otro</option>
+                     }              
+                   }
+         
             </select>
-            <input id="PersonaID" name="PersonaID" type="hidden" value="System.Web.Mvc.SelectList">
-            <input id="ProveedorID" name="ProveedorID" type="hidden" value="System.Web.Mvc.SelectList">
+               
+                     <input id="PersonaID" name="PersonaID" type="hidden" value="System.Web.Mvc.SelectList">
+                    <input id="ProveedorID" name="ProveedorID" type="hidden" value="System.Web.Mvc.SelectList">
+              
+              
             <span id="InfoBeneficiario">
-                <input class="form-control" id="Rut" maxlength="8" name="Rut" style="width: 100px;" type="text" value="">-<input class="form-control" id="DVBuscar" maxlength="1" name="DV" style="width: 70px;" type="text" value=""> 
+                <input class="form-control" id="Rut" maxlength="8" name="Rut" style="width: 100px;" type="text" value="@ViewBag.rut">-<input class="form-control" id="DVBuscar" maxlength="1" name="DV" style="width: 70px;" type="text" value="@ViewBag.dv"> 
                 <img src="/SAG_5/Content/Images/Buscar2.png" class="BuscarPopUpBH" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;">
-                <input class="form-control" id="Beneficiario" name="Beneficiario" readonly="readonly" style="width: 350px;" type="text" value="">
+                <input class="form-control" id="Beneficiario" name="Beneficiario" readonly="readonly" style="width: 350px;" type="text" value="@ViewBag.nombre">
             </span>
         </div>
         </div>

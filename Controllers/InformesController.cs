@@ -2344,13 +2344,16 @@ namespace SAG2.Controllers
                 Periodo = (int)Session["Periodo"];
                
             }
-
+            ViewBag.tipoBeneficiario = 0;
             ViewBag.Periodo = Periodo;
             ViewBag.Proyecto = Proyecto.ID;
             ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.TipoProyectoID == Proyecto.TipoProyectoID).OrderBy(p => p.CodCodeni), "ID", "NombreLista", Proyecto.ID);
             ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla", Proyecto.TipoProyectoID   );  
             ViewBag.PersonaID = new SelectList(db.Persona.Where(d => d.TipoPersonalID  == 2).ToList()  , "ID", "NombreLista");
             ViewBag.Nboleta = "";
+            ViewBag.rut = "";
+            ViewBag.dv = "";
+            ViewBag.nombre = "";
             var bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == Proyecto.ID).OrderBy(m => m.ID);
             return View(bh.ToList());
         }
@@ -2358,8 +2361,24 @@ namespace SAG2.Controllers
         public ActionResult HonorariosFiltros(FormCollection datos)
         {
             int nboleta = 0;
+            int nPersona = 0;
+            int nProveedor = 0;
+            int ntipoBeneficiario = 0;
             int ProyectoID = Int32.Parse(datos["ProyectoID"].ToString());
             int TipoProyectoID = Int32.Parse(datos["TipoProgramaID"].ToString());
+            string nRut = "";
+            string ndv = "";
+            string nbeneficiario = "";
+            try
+            {
+
+            }
+            catch (Exception) { 
+            
+            
+            }
+
+            // Por Boleta
             try
             {
                 nboleta = int.Parse(datos["Nboleta"].ToString());
@@ -2369,17 +2388,71 @@ namespace SAG2.Controllers
             {
                 nboleta = 0;
             }
+            // Por Personal
+            try
+            {
+                nRut = datos["Rut"].ToString();
+                ndv = datos["DV"].ToString();
+                nbeneficiario = datos["Beneficiario"].ToString();
+                nPersona = int.Parse(datos["PersonaID"].ToString());
+            }
+            catch (Exception)
+            {
+                nPersona = 0;
+            }
+            // Por Proveedor
+            try {
+                nRut = datos["Rut"].ToString();
+                ndv = datos["DV"].ToString();
+                nbeneficiario = datos["Beneficiario"].ToString();
+                nProveedor = int.Parse(datos["ProveedorID"].ToString());
+            }
+            catch (Exception) {
+                nProveedor = 0;
+            }
+            // Por Otros
+            try
+            {
+                nRut = datos["Rut"].ToString();
+                ndv = datos["DV"].ToString();
+                nbeneficiario = datos["Beneficiario"].ToString();
+                ntipoBeneficiario = int.Parse(datos["tipoBeneficiario"].ToString());
+            }
+            catch (Exception)
+            {
+                nRut = "";
+            }
             int Periodo = (int)Session["Periodo"];
             ViewBag.Proyecto = ProyectoID;
             ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.TipoProyectoID == TipoProyectoID).OrderBy(p => p.CodCodeni), "ID", "NombreLista", ProyectoID);
             ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla", TipoProyectoID);
             ViewBag.PersonaID = new SelectList(db.Persona.Where(d => d.TipoPersonalID == 2).ToList(), "ID", "NombreLista");
+            ViewBag.rut = nRut;
+            ViewBag.dv = ndv;
+            ViewBag.nombre = nbeneficiario;
+            // Busqueda filtros
 
-            var bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.NroBoleta == nboleta ).OrderBy(m => m.ID);
-            if (nboleta == 0)
+
+
+            var bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID).OrderBy(m => m.ID); 
+            if (nboleta != 0)
             {
-                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID ).OrderBy(m => m.ID);
+                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.NroBoleta == nboleta).OrderBy(m => m.ID);
             }
+            if (nPersona != 0)
+            {
+                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.PersonaID == nPersona).OrderBy(m => m.ID);
+            }
+            if (nProveedor != 0)
+            {
+                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.ProveedorID == nProveedor).OrderBy(m => m.ID);
+            }
+            if (ntipoBeneficiario == 3) {
+                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.Rut == nRut).OrderBy(m => m.ID);
+            }
+
+            ViewBag.tipoBeneficiario = ntipoBeneficiario;
+
             return View(bh.ToList());
         }
         

@@ -205,6 +205,7 @@ namespace SAG2.Models
             modelBuilder.Entity<Especializacion>().ToTable("Especializacion");
             modelBuilder.Entity<Cargo>().ToTable("Cargo");
 
+            
             // Tipos
             modelBuilder.Entity<TipoAsistenciaPersonal>().ToTable("TipoAsistenciaPersonal");
             modelBuilder.Entity<TipoBajaInventario>().ToTable("TipoBajaInventario");
