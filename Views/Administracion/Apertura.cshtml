@@ -69,7 +69,7 @@
               <select name="MesApertura" id="Mesapertura" class="form-control">
                   @for (var i = 0; i < 12; i++)
                   {
-                      <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.Mes == (i + 1))
+                      <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.MesApertura == (i + 1))
                                                                      { @Html.Raw("selected=\"selected\"") }>
                           @Html.Raw(@Meses[@i])
                   </option>
@@ -83,7 +83,7 @@
               <select name="PeriodoApertura" id="PeriodoApertura" class="form-control">
                   @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
                   {
-                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.PeriodoAperura == i)
                                                                  { @Html.Raw("selected=\"selected\"") }>
                           @Html.Raw((@i).ToString())
                   </option>

@@ -30,4 +30,14 @@ namespace SAG2.Models
 
         public virtual Proyecto Establecimiento { get; set; }
     }
+    public class IntervencionLog
+    {
+        public int ID { get; set; }
+        public int Periodo { get; set; }
+        public int Mes { get; set; }
+        public int ProyectoID { get; set; }
+        public int? Cobertura { get; set; }
+        public int Atenciones { get; set; }
+        public int ControlID { get; set; }
+    }
 }

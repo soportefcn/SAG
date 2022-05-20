@@ -14,7 +14,7 @@ namespace SAG2.Comun
     {
           
 
-            public void RegistraControl(string Proceso, string Descripcion, int periodo, int mes, int UsuarioID, int ProyectoID)
+            public int RegistraControl(string Proceso, string Descripcion, int periodo, int mes, int UsuarioID, int ProyectoID)
             {
                 using (SAG2DB d = new SAG2DB())
                 {
@@ -28,7 +28,8 @@ namespace SAG2.Comun
                     Datos.ProyectoID = ProyectoID;
 
                     d.ControlFlujo.Add(Datos);
-                    d.SaveChanges(); 
+                    d.SaveChanges();
+                    return Datos.ID; 
                 }
  
             }

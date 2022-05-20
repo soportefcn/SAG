@@ -19,4 +19,17 @@ namespace SAG2.Models
         public virtual Proyecto Proyecto { get; set; }
         public virtual Persona Persona { get; set; }
     }
+    public class PeriodoLog
+    {
+        public int ID { get; set; }
+        public int Periodo { get; set; }
+        public int Mes { get; set; }
+        public int ProyectoID { get; set; }
+        public int? Indemnizacion { get; set; }
+
+        public DateTime? Fecha { get; set; }
+        public int? PersonalID { get; set; }
+        public int ControlID { get; set; }
+
+    }
 }

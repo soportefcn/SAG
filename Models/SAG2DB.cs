@@ -160,6 +160,8 @@ namespace SAG2.Models
 
         public DbSet<Referencia> Referencia { get; set; }
         public DbSet<ControlFlujo> ControlFlujo { get; set; }
+        public DbSet<PeriodoLog> PeriodoLog { get; set; }
+        public DbSet<IntervencionLog> IntervencionLog { get; set; }  
        
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -307,6 +309,8 @@ namespace SAG2.Models
             modelBuilder.Entity<ParametroInforme>().ToTable("ParametroInforme");
             modelBuilder.Entity<Referencia>().ToTable("Referencia");
             modelBuilder.Entity<ControlFlujo>().ToTable("Control");
+            modelBuilder.Entity<IntervencionLog>().ToTable("IntervencionesLog");
+            modelBuilder.Entity<PeriodoLog>().ToTable("PeriodoLog");    
         }
         public System.Data.Entity.DbSet<SAG2.Models.DetalleInformes> DetalleInformes { get; set; }
         public System.Data.Entity.DbSet<SAG2.Models.CuentasPadres> CuentasPadres { get; set; }

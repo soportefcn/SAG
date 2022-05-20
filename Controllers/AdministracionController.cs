@@ -33,16 +33,42 @@ namespace SAG2.Controllers
             int PeriodoApertura = int.Parse(data["PeriodoApertura"]);
             int MesApertura = int.Parse(data["MesApertura"]);
             int periodo = (int)Session["Periodo"];
-            int Mes = (int)Session["Mes"]; 
-            
+            int Mes = (int)Session["Mes"];
+            int CLog = 0;
+            string Descripcion = " Apertura Mes : " + MesApertura + " Periodo : " + PeriodoApertura;
+            CLog = logReg.RegistraControl("Apertura", Descripcion, periodo, Mes, usuario.ID, Proyecto.ID);
+
+
             //  Borrar_Intervenciones()
-
+            Intervencion DatosIntervencion = db.Intervencion.Where(d => d.Mes == MesApertura && d.Periodo == PeriodoApertura && d.ProyectoID == Proyecto.ID).FirstOrDefault();
+            IntervencionLog DInteLog = new IntervencionLog();
+            DInteLog.Periodo = DatosIntervencion.Periodo;
+            DInteLog.Mes = DatosIntervencion.Mes;
+            DInteLog.ProyectoID = DatosIntervencion.ProyectoID;
+            DInteLog.Cobertura = DatosIntervencion.Cobertura;
+            DInteLog.Atenciones = DatosIntervencion.Atenciones;           
+            DInteLog.ControlID = CLog;
+            db.IntervencionLog.Add(DInteLog);
+            db.SaveChanges();
+            db.Entry(DatosIntervencion).State = EntityState.Deleted;
+            db.SaveChanges();
             // Borrar_Periodos()
-            string Descripcion = " Apertura Mes : " + MesApertura + " Periodo : " + PeriodoApertura ;
-            logReg.RegistraControl("Apertura", Descripcion, periodo, Mes, usuario.ID , Proyecto.ID ); 
+            Periodo DatosPeriodo = db.Periodo.Where(d => d.Mes == MesApertura && d.Ano == PeriodoApertura && d.ProyectoID == Proyecto.ID).FirstOrDefault();
+            PeriodoLog DPlog = new PeriodoLog();
+            DPlog.Periodo  = DatosPeriodo.Ano;
+            DPlog.Mes = DatosPeriodo.Mes;
+            DPlog.PersonalID  = DatosPeriodo.PersonaID;
+            DPlog.ProyectoID = DatosPeriodo.ProyectoID;
+            DPlog.Fecha = DatosPeriodo.Fecha;
+            DPlog.Indemnizacion = DatosPeriodo.Indemnizacion;
+            DPlog.ControlID = CLog;
+            db.PeriodoLog.Add(DPlog);
+            db.Entry(DatosPeriodo).State = EntityState.Deleted;
+            db.SaveChanges();
+            ViewBag.MesApertura = MesApertura;
+            ViewBag.PeriodoApertura = PeriodoApertura;
 
-
-                        if (usuario.esAdministrador)
+          if (usuario.esAdministrador)
             {
                 ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
             }
@@ -102,7 +128,8 @@ namespace SAG2.Controllers
 
             @ViewBag.Proyecto = Proyecto.NombreLista;
             int periodo = (int)Session["Periodo"];
-
+            ViewBag.MesApertura = (int)Session["Mes"];
+            ViewBag.PeriodoApertura = periodo;
             ViewBag.Periodo = periodo;
             ViewBag.Mes = (int)Session["Mes"]; 
             @ViewBag.NroIngresos = "0";
