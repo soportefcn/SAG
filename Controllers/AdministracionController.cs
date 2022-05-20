@@ -7,6 +7,7 @@ using SAG2.Models;
 using System.Data;
 using SAG2.Classes;
 using System.Data.Entity;
+using SAG2.Comun; 
 
 namespace SAG2.Controllers
 {
@@ -15,6 +16,7 @@ namespace SAG2.Controllers
         private SAG2DB db = new SAG2DB();
         private Util utils = new Util();
         private Constantes ctes = new Constantes();
+        private ControlLog logReg = new ControlLog();
 
         //
         // GET: /Administracion/
@@ -23,7 +25,108 @@ namespace SAG2.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public ActionResult Apertura(FormCollection data) {
+            Persona Persona = (Persona)Session["Persona"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            int PeriodoApertura = int.Parse(data["PeriodoApertura"]);
+            int MesApertura = int.Parse(data["MesApertura"]);
+            int periodo = (int)Session["Periodo"];
+            int Mes = (int)Session["Mes"]; 
+            
+            //  Borrar_Intervenciones()
 
+            // Borrar_Periodos()
+            string Descripcion = " Apertura Mes : " + MesApertura + " Periodo : " + PeriodoApertura ;
+            logReg.RegistraControl("Apertura", Descripcion, periodo, Mes, usuario.ID , Proyecto.ID ); 
+
+
+                        if (usuario.esAdministrador)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            }
+            else if (usuario.esSupervisor)
+            {
+                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+            }
+
+            @ViewBag.Proyecto = Proyecto.NombreLista;
+         
+
+            ViewBag.Periodo = periodo;
+            ViewBag.Mes = (int)Session["Mes"]; 
+            @ViewBag.NroIngresos = "0";
+            @ViewBag.NroEgresos = "0";
+            @ViewBag.NroReintegros = "0";
+            @ViewBag.NroDeudas = "0";
+            if (db.Movimiento.Where(a => a.TipoComprobanteID == 1).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroIngresos = db.Movimiento.Where(a => a.TipoComprobanteID == 1).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            if (db.Movimiento.Where(a => a.TipoComprobanteID == 2).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroEgresos = db.Movimiento.Where(a => a.TipoComprobanteID == 2).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            if (db.Movimiento.Where(a => a.TipoComprobanteID == 3).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroReintegros = db.Movimiento.Where(a => a.TipoComprobanteID == 3).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            if (db.DeudaPendiente.Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroDeudas = db.DeudaPendiente.Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            return View(); 
+        }
+        public ActionResult Apertura() {
+            Persona Persona = (Persona)Session["Persona"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+
+            if (usuario.esAdministrador)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            }
+            else if (usuario.esSupervisor)
+            {
+                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+            }
+
+            @ViewBag.Proyecto = Proyecto.NombreLista;
+            int periodo = (int)Session["Periodo"];
+
+            ViewBag.Periodo = periodo;
+            ViewBag.Mes = (int)Session["Mes"]; 
+            @ViewBag.NroIngresos = "0";
+            @ViewBag.NroEgresos = "0";
+            @ViewBag.NroReintegros = "0";
+            @ViewBag.NroDeudas = "0";
+            if (db.Movimiento.Where(a => a.TipoComprobanteID == 1).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroIngresos = db.Movimiento.Where(a => a.TipoComprobanteID == 1).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            if (db.Movimiento.Where(a => a.TipoComprobanteID == 2).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroEgresos = db.Movimiento.Where(a => a.TipoComprobanteID == 2).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            if (db.Movimiento.Where(a => a.TipoComprobanteID == 3).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroReintegros = db.Movimiento.Where(a => a.TipoComprobanteID == 3).Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            if (db.DeudaPendiente.Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Count() > 0)
+            {
+                @ViewBag.NroDeudas = db.DeudaPendiente.Where(a => a.Periodo == periodo).Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.NumeroComprobante);
+            }
+            return View(); 
+        }
         public ActionResult Correlativos(int state = 0)
         {
             ViewBag.Mensaje = string.Empty;
@@ -79,6 +182,8 @@ namespace SAG2.Controllers
 
             return View(proyecto2.ToList());
         }
+       
+
         public ActionResult CierresExcel(int periodo = 0, int proyectoID = 0)
         {
             ViewBag.Mensaje = string.Empty;
@@ -216,8 +321,6 @@ namespace SAG2.Controllers
 
             return RedirectToAction("Correlativos");
         }
-
-
 
         public ActionResult ReiniciarProyecto(int proyectoID, int ingreso, int egreso, int reintegro, int deuda, int? monto)
         {

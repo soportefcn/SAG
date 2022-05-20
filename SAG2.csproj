@@ -90,6 +90,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comun\ControlLog.cs" />
     <Compile Include="Controllers\AsignacionController.cs" />
     <Compile Include="Controllers\BajasController.cs" />
     <Compile Include="Controllers\BienAutorizacionController.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Models\BienSubFamilia.cs" />
     <Compile Include="Models\chequesNo.cs" />
     <Compile Include="Models\CInformeCierre.cs" />
+    <Compile Include="Models\ControlFlujo.cs" />
     <Compile Include="Models\cuentaGrupo.cs" />
     <Compile Include="Models\CuentasPadres.cs" />
     <Compile Include="Models\detalleInformes.cs" />
@@ -1906,6 +1908,7 @@
     <Content Include="Views\Informes\HonorariosFiltros.cshtml" />
     <Content Include="Views\Bodega\TraspasoSaldos.cshtml" />
     <Content Include="Views\Bodega\trasladoBodega.cshtml" />
+    <Content Include="Views\Administracion\Apertura.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uploads\" />

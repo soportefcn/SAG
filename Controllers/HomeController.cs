@@ -64,7 +64,7 @@ namespace SAG2.Controllers
             
             @ViewBag.CuentaCorriente = db.CuentaCorriente.Find(cuentacorrienteID);
             @ViewBag.Proyecto = db.Proyecto.Find(proyectoID);
-            @ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.ProyectoID == proyectoID).Where(r => r.TipoRolID != 9).ToList();
+            @ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.ProyectoID == proyectoID).Where(r => r.TipoRolID != 9).OrderBy( r => r.TipoRol.Nombre).ToList()   ;
             @ViewBag.Auditorias = db.IndicadorCalidad.Where(d=> d.ProyectoID == proyectoID).Where(d => d.Periodo == periodo).Where(d => d.Tipo == 2).OrderByDescending(d => d.FechaInforme).ToList();
             @ViewBag.Supervisiones = db.IndicadorCalidad.Where(d => d.ProyectoID == proyectoID).Where(d => d.Periodo == periodo).Where(d => d.Tipo == 1).OrderByDescending(d => d.FechaInforme).ToList(); // Supervision.OrderByDescending(a => a.Fecha).ToList();
           //  Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 1).Sum(d => d.GastoObjetado);

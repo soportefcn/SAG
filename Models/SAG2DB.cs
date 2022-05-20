@@ -158,7 +158,8 @@ namespace SAG2.Models
         public DbSet<CInformeCierre> CinformeCierre { get; set; }
         public DbSet<ParametroInforme> ParametroInforme { get; set; }
 
-        public DbSet<Referencia> Referencia { get; set; }  
+        public DbSet<Referencia> Referencia { get; set; }
+        public DbSet<ControlFlujo> ControlFlujo { get; set; }
        
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -304,7 +305,8 @@ namespace SAG2.Models
             modelBuilder.Entity<GinformeCierre>().ToTable("GinformeCierre");
             modelBuilder.Entity<CInformeCierre>().ToTable("CinformeCierre");
             modelBuilder.Entity<ParametroInforme>().ToTable("ParametroInforme");
-            modelBuilder.Entity<Referencia>().ToTable("Referencia");     
+            modelBuilder.Entity<Referencia>().ToTable("Referencia");
+            modelBuilder.Entity<ControlFlujo>().ToTable("Control");
         }
         public System.Data.Entity.DbSet<SAG2.Models.DetalleInformes> DetalleInformes { get; set; }
         public System.Data.Entity.DbSet<SAG2.Models.CuentasPadres> CuentasPadres { get; set; }

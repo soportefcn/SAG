@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Apertura Periodo";
+
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+
+    int Periodo = @ViewBag.Periodo;
+    int Mes = @ViewBag.Mes;
+}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+      $(".js-autocomplete").select2();
+    });
+</script>
+
+
+<div class="blog-post">
+<br />
+<br />
+@Html.Raw(ViewBag.Mensaje)
+@using (Html.BeginForm())
+{
+    <h3>Apertura Periodo Sag.</h3>
+    <h3> Proy. @ViewBag.Proyecto</h3>
+    <div class="row">
+ <div class ="col-md-6">
+    <fieldset>
+    <h3>Período activo</h3>
+   <div class="form-inline" >
+    <div class="form-group" style="margin-right: 15px;">
+        @Html.Label("Año")
+    </div>
+    <div class="form-group">
+        <input name="PeriodoAnio" value="@Html.Raw(Session["Periodo"].ToString())" readonly="readonly" size="10" class ="form-control" style="width: 150px;"/>
+    </div>
+  
+     
+    <div class="form-group" style="margin-right: 15px;">
+        @Html.Label("Mes")
+    </div>
+    <div class="form-group">
+        <input name="PeriodoMes" value="@Html.Raw(@Meses[((int)Session["Mes"]) - 1])" readonly="readonly" size="10" class ="form-control" style="width: 150px;" />
+    </div>
+            </div>
+</fieldset>
+     </div>
+    <div class ="col-md-6">
+        <h3> Apertura Periodo</h3>
+    
+    <div class="form-inline" >
+          <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>Mes</label>
+          </div>
+          <div class="form-group">
+              <select name="MesApertura" id="Mesapertura" class="form-control">
+                  @for (var i = 0; i < 12; i++)
+                  {
+                      <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.Mes == (i + 1))
+                                                                     { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw(@Meses[@i])
+                  </option>
+                  }
+              </select>
+          </div>
+          <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>Año</label>
+          </div>
+          <div class="form-group" style="margin-right: 50px">
+              <select name="PeriodoApertura" id="PeriodoApertura" class="form-control">
+                  @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                  {
+                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                                                                 { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw((@i).ToString())
+                  </option>
+                  }
+              </select>
+          </div>
+    </div> 
+
+    </div> </div>
+    <br />
+<fieldset>
+    <h3>Correlativos de comprobantes</h3>
+    <table style="width: 100%;" class ="table table-hover">
+        <tr>
+            <td style="width: 25%;">
+                INGRESOS
+            </td>
+            <td style="width: 25%;" align="right">
+                <strong>@ViewBag.NroIngresos</strong>
+            </td>
+            <td>
+                EGRESOS
+            </td>
+            <td style="width: 25%;" align="right">
+                <strong>@ViewBag.NroEgresos</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                REINTEGROS
+            </td>
+            <td align="right">
+                <strong>@ViewBag.NroReintegros</strong>
+            </td>
+            <td>
+                DEUDAS PENDIENTES
+            </td>
+            <td align="right">
+                <strong>@ViewBag.NroDeudas</strong>
+            </td>
+        </tr>
+    </table><br />
+</fieldset>
+
+    
+<fieldset>
+     <div class="form-inline" >
+    <p style="margin:0;">
+        <input type="button" value="Procesar" id="Procesar" class="btn btn-primary" />
+    </p>
+         </div> 
+</fieldset>
+    <br />
+<br />
+}
+</div>
+<script>
+    $(document).ready(function () {
+        $("#Procesar").click(function () {
+                
+        Swal.fire({
+            title: '¿Esta Seguro?',
+            text: "Esto es irreversible!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si , Desea Apertura !',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            $("form").submit();
+        Swal.fire(
+          'Apertura del Periodo !',
+          'Apertura del Periodo se procedio',
+          'success'
+        )
+    }
+    })
+
+    });
+    });
+</script> 
