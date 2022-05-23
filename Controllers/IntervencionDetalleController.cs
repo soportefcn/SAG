@@ -1,6 +1,7 @@
 ﻿using LumenWorks.Framework.IO.Csv;
 using SAG2.Classes;
 using SAG2.Models;
+using SAG2.Comun; 
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +19,7 @@ namespace SAG2.Controllers
         private SAG2DB db = new SAG2DB();
         private Constantes ctes = new Constantes();
         private Util utils = new Util();
-
+        private ControlLog logReg = new ControlLog();
         // GET: IntervencionDetalle
         public ActionResult Index()
         {
@@ -427,52 +428,87 @@ namespace SAG2.Controllers
             return View(model);
         }
 
+        public ActionResult eliminarIntervencion(int id)
+        {
+            Persona Persona = (Persona)Session["Persona"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            int periodo = (int)Session["Periodo"];
+           int Mes = (int)Session["Mes"];
+            IntervencionResumen model = db.IntervencionResumen.Find(id);
+
+            int ProyectoID = model.ProyectoID;
+            string Descripcion = "Se procede a eliminar Intervencion";
+            int CLog = logReg.RegistraControl("Intervencion", Descripcion, periodo, Mes, usuario.ID, ProyectoID);
+
+            string strsql = "insert into intervencion_resumenLog SELECT ProyectoID, RegionID, ComunaID, Anio, Mes, Uss, UssQ, Valor, Monto, Plaza,PlazaConvenio , Tipo, Descripcion, EstadoID, NumDocumento, CompIngreso, FechaIngreso, " + CLog + "";
+            strsql = strsql + " FROM intervencion_resumen  WHERE ID = " + id;
+
+            db.Database.ExecuteSqlCommand(strsql);
+            db.Database.ExecuteSqlCommand("DELETE FROM intervencion_detalle WHERE ResumenID = " + id);
+            db.Database.ExecuteSqlCommand("DELETE FROM intervencion_resumen WHERE ID = " + id);
+            
+           
+ 
+            // Guardar en Log
+
+            // Eliminar Intervencion !!!
+
+   
+            return RedirectToAction("ResumenAtenciones");
+
+        }
+
         public ActionResult ResumenAtenciones()
         {
-            var q3 = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Persona persona = (Persona)Session["Persona"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            if (usuario.esAdministrador)
             {
-                Text = "Seleccione Un Proyecto",
-                Value = "0"
-            });
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
 
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
             }
-            ViewBag.listadoproyecto = listproyecto;
-
-            return View();
+            else
+            {
+                if (usuario.esSupervisor)
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+            }  
+            List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == Proyecto.ID).OrderByDescending(a => a.ID ).ToList();
+            ViewBag.ProyectoID = Proyecto.ID;
+            return View(model);
         }
 
         [HttpPost]
         public ActionResult ResumenAtenciones(int ProyectoID)
         {
-            var q3 = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Persona persona = (Persona)Session["Persona"];
+            ViewBag.ProyectoID = ProyectoID;
+            if (usuario.esAdministrador)
             {
-                Text = "Seleccione Un Proyecto",
-                Value = "0"
-            });
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
 
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
             }
-            ViewBag.listadoproyecto = listproyecto;
+            else
+            {
+                if (usuario.esSupervisor)
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
 
-            List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == ProyectoID).ToList();
-
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+            }   
+           List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == ProyectoID).ToList();
 
             return View(model);
         }
@@ -594,9 +630,6 @@ namespace SAG2.Controllers
             db.Entry(model).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("ResumenAtenciones2", new { idProyecto = model.ProyectoID  });
-
-
-
 
         }
 

@@ -161,10 +161,11 @@ namespace SAG2.Models
         public DbSet<Referencia> Referencia { get; set; }
         public DbSet<ControlFlujo> ControlFlujo { get; set; }
         public DbSet<PeriodoLog> PeriodoLog { get; set; }
-        public DbSet<IntervencionLog> IntervencionLog { get; set; }  
+        public DbSet<IntervencionLog> IntervencionLog { get; set; } 
+        public DbSet <IntervencionResumenLog> IntervencionResumenLog { get; set; } 
        
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
+        {          
             modelBuilder.Entity<Estandarvalores>().ToTable("Estandarvalores"); 
             modelBuilder.Entity<InventarioCorrelativo>().ToTable("InventarioCorrelativo");
             modelBuilder.Entity<EspecieCuenta>().ToTable("EspecieCuenta");
@@ -310,7 +311,8 @@ namespace SAG2.Models
             modelBuilder.Entity<Referencia>().ToTable("Referencia");
             modelBuilder.Entity<ControlFlujo>().ToTable("Control");
             modelBuilder.Entity<IntervencionLog>().ToTable("IntervencionesLog");
-            modelBuilder.Entity<PeriodoLog>().ToTable("PeriodoLog");    
+            modelBuilder.Entity<PeriodoLog>().ToTable("PeriodoLog");
+            modelBuilder.Entity<IntervencionResumenLog>().ToTable("intervencionresumenLog"); 
         }
         public System.Data.Entity.DbSet<SAG2.Models.DetalleInformes> DetalleInformes { get; set; }
         public System.Data.Entity.DbSet<SAG2.Models.CuentasPadres> CuentasPadres { get; set; }

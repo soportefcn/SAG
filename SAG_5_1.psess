@@ -19,8 +19,8 @@
       <PdhCountersEnabled>false</PdhCountersEnabled>
       <PdhCountersRate>500</PdhCountersRate>
       <PdhCounters>
-        <PdhCounter>\Disco f&amp;#237;sico(_Total)\Longitud promedio de la cola de disco</PdhCounter>
-        <PdhCounter>\Memoria\P&amp;#225;ginas/s</PdhCounter>
+        <PdhCounter>\Disco f&amp;amp;amp;#237;sico(_Total)\Longitud promedio de la cola de disco</PdhCounter>
+        <PdhCounter>\Memoria\P&amp;amp;amp;#225;ginas/s</PdhCounter>
         <PdhCounter>\Procesador(_Total)\% de tiempo de procesador</PdhCounter>
       </PdhCounters>
     </PdhSettings>

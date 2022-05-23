@@ -1,8 +1,15 @@
 ﻿@model IEnumerable<SAG2.Models.IntervencionResumen>
 @{
     ViewBag.Title = "Estado de Pago de Atenciones";
+    SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+    int proyectoID = ViewBag.ProyectoID;
 }
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".js-autocomplete").select2();
+        });
+    </script>
+ <div id="Detalle">
 <div class="panel-heading">
     <h3>Estado de Pago de Atenciones</h3>
 </div>
@@ -16,7 +23,21 @@
                 @Html.Label("Proyecto:")
             </div>
             <div class="form-group" style="margin-right: 50px;">
-                @Html.DropDownList("ProyectoID", new SelectList(ViewBag.listadoproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete", required = "required" })
+               
+                        <select name="ProyectoID" id="ProyectoID" class="js-autocomplete" >
+            <option value="-1"> - Seleccione proyecto</option>
+            @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+            {
+                if (proyectoID == Proyecto.ID)
+                {
+                    <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                }
+                else
+                {
+                    <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                }
+            }
+        </select>
             </div>
 
 
@@ -46,10 +67,11 @@
                 foreach (var item in Model)
                 {
                     string estado = "";
-                    if(item.EstadoID == 1)
+                    if (item.EstadoID == 1)
                     {
                         estado = "Pagado";
-                    }else
+                    }
+                    else
                     {
                         estado = "Pendiente";
                     }
@@ -63,7 +85,7 @@
                         <td>$@item.Monto.ToString("#,##0")</td>
                         <td>
 
-                            @if(item.EstadoID == 1)
+                            @if (item.EstadoID == 1)
                             {
                                <a disabled class="btn btn-info" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/IntervencionDetalle/IngresarMonto/@item.ID">Realizar Ingreso</a>
                             }
@@ -72,6 +94,21 @@
                                 <a  class="btn btn-info" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/IntervencionDetalle/IngresarMonto/@item.ID">Realizar Ingreso</a>
 
                             }
+
+                               @if (Usuario.esAdministrador)
+                             {
+                                if (item.EstadoID == 1)
+                                {
+                                    <button disabled type="button" class="InterEli btn btn-danger"  id="@item.ID" IDintervencion="@item.ID">
+                                        Eliminar Intervencion
+                                    </button>
+                                 }
+                                 else
+                                 {
+                                   <button  type="button" class="InterEli btn btn-danger"  id="@item.ID" IDintervencion="@item.ID">
+                                     Eliminar Intervencion
+                                    </button>
+                             }}
                         </td>
                     </tr>
                 }
@@ -80,7 +117,7 @@
         </table>
     </div>
 }
-
+</div>
 @if (TempData["Message"] != null)
 {
     @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
@@ -148,4 +185,37 @@
             }
         }
     }
+
+    $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+        $(".InterEli").click(function () {
+            var IDintervencion = $(this).attr("IDintervencion");
+            var url = "@Url.Action("eliminarIntervencion", "IntervencionDetalle", new { id = "id_cambiar" })";
+            url = url.replace("&amp;", "&");
+            url = url.replace("id_cambiar", IDintervencion);
+            Swal.fire({
+                title: '¿Esta Seguro?',
+                text: "Esto es irreversible!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si , Desea eliminar la Intervencion !',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                
+            $("#Detalle").load(url);
+            $("form").submit();
+            Swal.fire('Intervencion !',
+              'Intervencion se procedio a Eliminar',
+              'success'
+            )
+        }})
+        });
+        });
+
+ 
+		   
 </script>
