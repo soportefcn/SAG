@@ -514,49 +514,55 @@ namespace SAG2.Controllers
         }
         public ActionResult AsignarPagos()
         {
-            var q3 = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Persona persona = (Persona)Session["Persona"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int ProyectoID = Proyecto.ID;
+            if (usuario.esAdministrador)
             {
-                Text = "Seleccione Un Proyecto",
-                Value = "0"
-            });
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
 
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
             }
-            ViewBag.listadoproyecto = listproyecto;
-
-            return View();
+            else
+            {
+                if (usuario.esSupervisor)
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+            }
+            List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.EstadoPago == 0).ToList();
+            ViewBag.ProyectoID = ProyectoID;
+            return View(model);
         }
 
         [HttpPost]
         public ActionResult AsignarPagos(int ProyectoID)
         {
-            var q3 = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Persona persona = (Persona)Session["Persona"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            if (usuario.esAdministrador)
             {
-                Text = "Seleccione Un Proyecto",
-                Value = "0"
-            });
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
 
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
             }
-            ViewBag.listadoproyecto = listproyecto;
+            else
+            {
+                if (usuario.esSupervisor)
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+            }  
             List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.EstadoPago == 0).ToList();
-
+            ViewBag.ProyectoID = ProyectoID;
             return View(model);
         }
 

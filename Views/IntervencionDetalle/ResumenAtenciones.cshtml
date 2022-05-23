@@ -22,22 +22,21 @@
             <div class="form-group" style="margin-right: 30px;">
                 @Html.Label("Proyecto:")
             </div>
-            <div class="form-group" style="margin-right: 50px;">
-               
-                        <select name="ProyectoID" id="ProyectoID" class="js-autocomplete" >
-            <option value="-1"> - Seleccione proyecto</option>
-            @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
-            {
-                if (proyectoID == Proyecto.ID)
-                {
-                    <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
-                }
-                else
-                {
-                    <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
-                }
-            }
-        </select>
+            <div class="form-group" style="margin-right: 50px;">               
+                <select name="ProyectoID" id="ProyectoID" class="js-autocomplete" >
+                 <option value="-1"> - Seleccione proyecto</option>
+                    @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+                    {
+                        if (proyectoID == Proyecto.ID)
+                        {
+                            <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                        }
+                        else
+                        {
+                            <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                        }
+                    }
+            </select>
             </div>
 
 
