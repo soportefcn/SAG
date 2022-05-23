@@ -468,6 +468,10 @@
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/MovimientosBodega/movimientoentrada">Entrada a Bodega</a></li>
                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/MovimientosBodega/movimientosalida">Salida de Bodega</a></li>
                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Bodega/Saldos">Saldos</a></li>
+                            	  @if (Usuario.esAdministrador)
+                             {
+                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Bodega/trasladoBodega">Traslado de Bodega</a></li>
+                            }
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/MovimientosBodega/listarMovimientosMes">Listado de Movimientos</a></li>
 						</ul>
 					</li>
@@ -485,6 +489,7 @@
                     {
 					<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Control/Intervenciones">Intervenciones por Progr.</a></li>
                     }
+                    
                  <li class="dropdown-submenu">
                      <a href="javascript:void();">Intervenciones</a>
                       <ul class="dropdown-menu">
@@ -494,6 +499,7 @@
                                         <!--<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Administracion/CambiarPeriodo">Cambiar Períodos</a></li>-->
                        </ul>
                   </li>
+                         
                      	@if (Usuario.esAdministrador)
                         {
                         <li class="dropdown-submenu">
@@ -606,6 +612,7 @@
 					<!--<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Secciones/Create">Secciones</a></li>
 					<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Permisos">Permisos</a></li>-->
                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Administracion/Correlativos">Correlativos</a></li>
+                      <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Administracion/Apertura">Apertura de Mes</a></li>   
                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Administracion/Cierres">Cierre Períodos</a></li>
                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Banco/ConciliacionMasiva">Conciliación Masiva</a></li>
                      <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ProgramaAnualAuditorias/ListadoAuditoria">Listado de Auditorias</a></li>

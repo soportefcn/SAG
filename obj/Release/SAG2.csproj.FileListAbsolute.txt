@@ -38,6 +38,5 @@ C:\Users\Desarrollo\Desktop\Desarrollo\SAG_5\bin\LumenWorks.Framework.IO.dll
 C:\Users\Desarrollo\Desktop\Desarrollo\SAG_5\bin\Microsoft.QualityTools.Testing.Fakes.dll
 C:\Users\Desarrollo\Desktop\Desarrollo\SAG_5\bin\LumenWorks.Framework.IO.pdb
 C:\Users\Desarrollo\Desktop\Desarrollo\SAG_5\bin\LumenWorks.Framework.IO.xml
-C:\Users\Desarrollo\Desktop\Desarrollo\SAG_5\obj\Release\SAG2.csprojResolveAssemblyReference.cache
 C:\Users\Desarrollo\Desktop\Desarrollo\SAG_5\obj\Release\SAG2.dll
 C:\Users\Desarrollo\Desktop\Desarrollo\SAG_5\obj\Release\SAG2.pdb

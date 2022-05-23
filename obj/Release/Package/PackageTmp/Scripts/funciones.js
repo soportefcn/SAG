@@ -1947,7 +1947,15 @@ $(document).ready(function () {
         }
         return false;
     });
-
+    $(".BuscarPopUpBH").click(function () {
+        var PRID = $("#ProyectoID").val();
+        if ($(".tipobeneficiario #tipoBeneficiario").val() == "1") {
+            window.open("/SAG_5/Personal/PopUp?ProyectoID=" + PRID, 'BuscarPersona', 'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');
+        } else if ($(".tipobeneficiario #tipoBeneficiario").val() == "2") {
+            window.open("/SAG_5/Proveedores/PopUp", 'BuscarProveedor', 'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');
+        }
+        return false;
+    });
     $(".tipobeneficiario #DVBuscar").focusout(function(){
         $("#PersonaID").val("0");
         $("#ProveedorID").val("0");

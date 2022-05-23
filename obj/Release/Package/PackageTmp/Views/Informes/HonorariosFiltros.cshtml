@@ -33,6 +33,7 @@
     <div class="panel panel-default">
     <div class="panel-body">
       <h3>Filtros</h3> 
+        
       <div class="form-inline form-group">
           <div class="form-group" style="margin-right: 10px;margin-left:8px">
               <label>Tipo Programa</label>
@@ -49,32 +50,60 @@
 
           </div>
           </div>
-@*        <div class="form-inline form-group">
-          <div class="form-group" style="margin-right: 10px;margin-left:8px">
-              <label>Periodo</label>
+        <div class ="form-inline form-group">
+            <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>N° Boleta</label>
           </div>
-          <div class="form-group" style="margin-right: 50px">
-              <select name="Periodo" id="Periodo" class="form-control">
-                  @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
-                  {
-                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i) { @Html.Raw("selected=\"selected\"") }>
-                          @Html.Raw((@i).ToString())
-                  </option>
-              }
-              </select>
+          <div class="form-group">
+              <input name="Nboleta" id="Nboleta" class="form-control" value="@Html.Raw(@ViewBag.Nboleta)" maxlength="10" style="margin-right: 20px;" />
           </div>
-             <div class="form-group" style="margin-right: 10px;margin-left:8px">
-              <label>Numero Boleta </label>
-          </div>
-          <input id="NroBoleta" class="form-control" type="text" value="" name="NroBoleta">
-           <div class="form-group" style="margin-right: 10px;margin-left:8px">
-              <label>Rut Beneficiario</label>
-          </div>
-          <input id="Rut" class="form-control" type="text" value="" name="Rut">
+                </div>
+        <div class ="form-inline form-group">
+            <div class="form-group tipobeneficiario">
+            <select class="form-control" name="tipoBeneficiario" id="tipoBeneficiario">
+                <option selected="selected" value="0"></option>
+                @{ if (ViewBag.tipoBeneficiario == 0  ){
+                    <option selected="selected" value="0"></option>
+                   }else{
+                        <option  value="0"></option>
+                   }
+                  if (ViewBag.tipoBeneficiario == 1  ){
+                    <option selected="selected" value="1">Personal</option>
+                                }
+                                else
+                                {
+                        <option value="1">Personal</option>
+                                }
+                    if (ViewBag.tipoBeneficiario == 2 ){
+                        <option selected="selected" value="2">Proveedores</option>
+                    }
+                    else
+                    {
+                      <option value="2">Proveedores</option>
+                    }  
+                    if (ViewBag.tipoBeneficiario == 3 ){
+                        <option selected="selected" value="3">Otro</option>
+                     }
+                      else
+                       {
+                       <option value="3">Otro</option>
+                     }              
+                   }
+         
+            </select>
+               
+                     <input id="PersonaID" name="PersonaID" type="hidden" value="System.Web.Mvc.SelectList">
+                    <input id="ProveedorID" name="ProveedorID" type="hidden" value="System.Web.Mvc.SelectList">
+              
+              
+            <span id="InfoBeneficiario">
+                <input class="form-control" id="Rut" maxlength="8" name="Rut" style="width: 100px;" type="text" value="@ViewBag.rut">-<input class="form-control" id="DVBuscar" maxlength="1" name="DV" style="width: 70px;" type="text" value="@ViewBag.dv"> 
+                <img src="/SAG_5/Content/Images/Buscar2.png" class="BuscarPopUpBH" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;">
+                <input class="form-control" id="Beneficiario" name="Beneficiario" readonly="readonly" style="width: 350px;" type="text" value="@ViewBag.nombre">
+            </span>
+        </div>
+        </div>
 
-
-
-      </div>*@
         <div class="form-inline form-group">
                       <div class="form-group">
               <input type="submit" value="Ver resultados!" class="btn btn-primary" />

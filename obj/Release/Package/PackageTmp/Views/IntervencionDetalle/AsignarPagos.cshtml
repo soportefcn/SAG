@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<SAG2.Models.IntervencionDetalle>
 @{
-    ViewBag.Title = "IntervencionDetalle";
+    ViewBag.Title = "Asignar Pagos ";
+    int proyectoID = ViewBag.ProyectoID; 
 }
 
 <div class="panel-heading">
@@ -16,7 +17,20 @@
                 @Html.Label("Proyecto:")
             </div>
             <div class="form-group" style="margin-right: 50px;">
-                @Html.DropDownList("ProyectoID", new SelectList(ViewBag.listadoproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete", required = "required" })
+                  <select name="ProyectoID" id="ProyectoID" class="js-autocomplete" >
+                 <option value="-1"> - Seleccione proyecto</option>
+                    @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
+                    {
+                        if (proyectoID == Proyecto.ID)
+                        {
+                            <option selected="selected" value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                        }
+                        else
+                        {
+                            <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
+                        }
+                        }
+                        </select>
             </div>
 
 

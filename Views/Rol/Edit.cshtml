@@ -30,7 +30,7 @@ input[type="text"], textarea
             @Html.LabelFor(model => model.PersonaID, "Persona")
         </div>
         <div class="form-group">
-            @Html.DropDownList("PersonaID", String.Empty)
+            @Html.DropDownList("PersonaID", null, new { @class = "form-control"})
         </div>
           </div>
         <div class="form-group form-inline">
@@ -38,14 +38,14 @@ input[type="text"], textarea
             @Html.LabelFor(model => model.TipoRolID, "Rol")
         </div>
         <div class="form-group">
-            @Html.DropDownList("TipoRolID", String.Empty)
+            @Html.DropDownList("TipoRolID", null, new { @class = "form-control"})
         </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Comentarios)
         </div>
         <div form-group>
-            @Html.TextAreaFor(model => model.Comentarios)
+            @Html.TextAreaFor(model => model.Comentarios, new { @class = "form-control"})
             @Html.ValidationMessageFor(model => model.Comentarios)
                       <style type="text/css">
         #Comentarios { 

@@ -477,8 +477,9 @@ namespace SAG2.Controllers
                 }
                 else
                 {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
                 }
+
             }  
             List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == Proyecto.ID).OrderByDescending(a => a.ID ).ToList();
             ViewBag.ProyectoID = Proyecto.ID;
@@ -531,7 +532,7 @@ namespace SAG2.Controllers
                 }
                 else
                 {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
                 }
             }
             List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.EstadoPago == 0).ToList();
@@ -558,7 +559,7 @@ namespace SAG2.Controllers
                 }
                 else
                 {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
                 }
             }  
             List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.EstadoPago == 0).ToList();

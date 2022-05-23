@@ -41,7 +41,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.PersonaID = new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreLista");
             /*ViewBag.ProyectoID = new SelectList(db.Proyecto, "ID", "NombreLista");*/
-            ViewBag.TipoRolID = new SelectList(db.TipoRol, "ID", "Nombre");
+            ViewBag.TipoRolID = new SelectList(db.TipoRol.OrderBy(r => r.Nombre).ToList() , "ID", "Nombre");
             return View();
         } 
 
@@ -71,7 +71,7 @@ namespace SAG2.Controllers
 
             ViewBag.PersonaID = new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreLista", rol.PersonaID);
             /*ViewBag.ProyectoID = new SelectList(db.Proyecto, "ID", "NombreLista");*/
-            ViewBag.TipoRolID = new SelectList(db.TipoRol, "ID", "Nombre", rol.TipoRolID);
+            ViewBag.TipoRolID = new SelectList(db.TipoRol.OrderBy(r => r.Nombre).ToList(), "ID", "Nombre");
             return View(rol);
         }
         
@@ -84,7 +84,7 @@ namespace SAG2.Controllers
             Rol rol = db.Rol.Find(id);
             ViewBag.PersonaID = new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreLista", rol.PersonaID);
             /*ViewBag.ProyectoID = new SelectList(db.Proyecto, "ID", "NombreLista");*/
-            ViewBag.TipoRolID = new SelectList(db.TipoRol, "ID", "Nombre", rol.TipoRolID);
+            ViewBag.TipoRolID = new SelectList(db.TipoRol.OrderBy(r => r.Nombre).ToList(), "ID", "Nombre",rol.TipoRolID );
             return View(rol);
         }
 
@@ -106,7 +106,7 @@ namespace SAG2.Controllers
             }
             ViewBag.PersonaID = new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreLista", rol.PersonaID);
             /*ViewBag.ProyectoID = new SelectList(db.Proyecto, "ID", "NombreLista");*/
-            ViewBag.TipoRolID = new SelectList(db.TipoRol, "ID", "Nombre", rol.TipoRolID);
+            ViewBag.TipoRolID = new SelectList(db.TipoRol.OrderBy(r => r.Nombre).ToList(), "ID", "Nombre");
             return View(rol);
         }
 
