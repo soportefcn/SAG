@@ -21,11 +21,12 @@ namespace SAG2.Controllers
             int largoCodigoSename = 7;
             ViewBag.Proyec = db.Proyecto.Where(p => p.CodSename.Length != largoCodigoSename && p.Cerrado == null && p.Eliminado == null);
             ViewBag.Proy = db.Proyecto.Where(p => p.CodSename.Length == null && p.Cerrado == null && p.Eliminado == null);
+            ViewBag.TipoSename = db.TipoSename.ToList() ;
             return View();
         }
 
         [HttpPost]
-        public ActionResult ExportarArchivo(int periodo, int mes)
+        public ActionResult ExportarArchivo(int periodo, int mes, int TipoSename )
         {
             /*int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];*/
@@ -38,7 +39,7 @@ namespace SAG2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Exportar(int periodo, int mes)
+        public ActionResult Exportar(int periodo, int mes, int TipoSename)
         {
             ViewBag.mes = mes;
             ViewBag.periodo = periodo;
@@ -46,8 +47,8 @@ namespace SAG2.Controllers
 
             // Largo del codigo de Sename
             int largoCodigoSename = 7;
-
-            var Proyectos = db.Proyecto.Where(p => p.Cerrado == null && p.Eliminado == null && p.CodSename != null && !p.CodSename.Equals("") && p.CodSename.Length == largoCodigoSename).OrderBy(p => p.ID);
+            // agregar filtro segun corresponda
+            var Proyectos = db.Proyecto.Where(p => p.Cerrado == null && p.Eliminado == null && p.CodSename != null && !p.CodSename.Equals("") && p.CodSename.Length == largoCodigoSename && p.TipoProyecto.LineaAtencion.Sigla   == "LPD" ).OrderBy(p => p.ID);
            // var Proyectos = db.Proyecto.Where(p => p.ID == 148);
             return View(Proyectos.ToList());
         }

@@ -25,4 +25,9 @@ namespace SAG2.Models
 
         public virtual LineasAtencion LineaAtencion { get; set; }
     }
+    public class TipoSename {
+        public int ID { get; set; }
+        public string NOMBRE { get; set; }
+        public string Sigla { get; set; }
+    }
 }

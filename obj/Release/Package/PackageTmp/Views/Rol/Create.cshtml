@@ -29,7 +29,7 @@ input[type="text"], textarea
             @Html.LabelFor(model => model.PersonaID, "Persona")
         </div>
         <div class="form-group">
-            @Html.DropDownList("PersonaID", String.Empty)
+            @Html.DropDownList("PersonaID",  null, "  ", new { @class = "form-control"})
            </div>
            </div>
 
@@ -38,7 +38,7 @@ input[type="text"], textarea
             @Html.LabelFor(model => model.TipoRolID, "Rol")
         </div>
         <div class="form-group">
-            @Html.DropDownList("TipoRolID", String.Empty)
+            @Html.DropDownList("TipoRolID",null , " ", new { @class = "form-control"})
         </div>
         </div>
 

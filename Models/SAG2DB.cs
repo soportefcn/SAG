@@ -162,8 +162,9 @@ namespace SAG2.Models
         public DbSet<ControlFlujo> ControlFlujo { get; set; }
         public DbSet<PeriodoLog> PeriodoLog { get; set; }
         public DbSet<IntervencionLog> IntervencionLog { get; set; } 
-        public DbSet <IntervencionResumenLog> IntervencionResumenLog { get; set; } 
-       
+        public DbSet <IntervencionResumenLog> IntervencionResumenLog { get; set; }
+        public DbSet<TipoSename > TipoSename { get; set; } 
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {          
             modelBuilder.Entity<Estandarvalores>().ToTable("Estandarvalores"); 
@@ -312,7 +313,8 @@ namespace SAG2.Models
             modelBuilder.Entity<ControlFlujo>().ToTable("Control");
             modelBuilder.Entity<IntervencionLog>().ToTable("IntervencionesLog");
             modelBuilder.Entity<PeriodoLog>().ToTable("PeriodoLog");
-            modelBuilder.Entity<IntervencionResumenLog>().ToTable("intervencionresumenLog"); 
+            modelBuilder.Entity<IntervencionResumenLog>().ToTable("intervencionresumenLog");
+            modelBuilder.Entity<TipoSename>().ToTable("TipoSename");   
         }
         public System.Data.Entity.DbSet<SAG2.Models.DetalleInformes> DetalleInformes { get; set; }
         public System.Data.Entity.DbSet<SAG2.Models.CuentasPadres> CuentasPadres { get; set; }
