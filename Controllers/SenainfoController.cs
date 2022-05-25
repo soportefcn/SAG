@@ -44,11 +44,11 @@ namespace SAG2.Controllers
             ViewBag.mes = mes;
             ViewBag.periodo = periodo;
             ViewBag.Movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Periodo == periodo).Where(m => m.Mes == mes).Where(a => a.Temporal == null && a.Eliminado == null && ((a.CuentaID != 1 && a.CuentaID != 6) || a.CuentaID == null)).OrderBy(m => m.ProyectoID).ThenBy(m => m.TipoComprobanteID).ThenBy(m => m.NumeroComprobante).ToList();
-
+            ViewBag.sigla = db.TipoSename.Where(m => m.ID == TipoSename).FirstOrDefault().Sigla;    
             // Largo del codigo de Sename
             int largoCodigoSename = 7;
             // agregar filtro segun corresponda
-            var Proyectos = db.Proyecto.Where(p => p.Cerrado == null && p.Eliminado == null && p.CodSename != null && !p.CodSename.Equals("") && p.CodSename.Length == largoCodigoSename && p.TipoProyecto.LineaAtencion.Sigla   == "LPD" ).OrderBy(p => p.ID);
+            var Proyectos = db.Proyecto.Where(p => p.Cerrado == null && p.Eliminado == null && p.CodSename != null && !p.CodSename.Equals("") && p.CodSename.Length == largoCodigoSename && p.TipoProyecto.LineaAtencion.TipoSenameID == TipoSename).OrderBy(p => p.ID);
            // var Proyectos = db.Proyecto.Where(p => p.ID == 148);
             return View(Proyectos.ToList());
         }

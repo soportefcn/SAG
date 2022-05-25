@@ -10,6 +10,7 @@ namespace SAG2.Models
         public int ID { get; set; }
         public string Sigla { get; set; }
         public string Nombre { get; set; }
+        public int TipoSenameID { get; set; }
 
         public virtual string NombreLista 
         {

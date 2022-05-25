@@ -6,7 +6,7 @@
     Response.ContentType = "text/plain; charset=UTF-8";
     Response.Charset = "UTF-8";
     Response.ContentEncoding = System.Text.Encoding.UTF8;
-    Response.AddHeader("content-disposition", "attachment;filename=rendicion-senainfo-" + @ViewBag.periodo + "-" + @ViewBag.mes + "-" + string.Format("{0:yyyyMMdd}", DateTime.Today) + ".txt");
+    Response.AddHeader("content-disposition", "attachment;filename=rendicion-senainfo-" + @ViewBag.periodo + "-" + @ViewBag.mes + "-" + ViewBag.sigla + "-" + string.Format("{0:yyMMdd}", DateTime.Today) + ".txt");
     Response.Clear();
     List<Movimiento> Movimientos = (List<Movimiento>)@ViewBag.Movimientos;
 
