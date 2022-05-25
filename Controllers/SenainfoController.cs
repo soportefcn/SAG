@@ -48,8 +48,10 @@ namespace SAG2.Controllers
             // Largo del codigo de Sename
             int largoCodigoSename = 7;
             // agregar filtro segun corresponda
-            var Proyectos = db.Proyecto.Where(p => p.Cerrado == null && p.Eliminado == null && p.CodSename != null && !p.CodSename.Equals("") && p.CodSename.Length == largoCodigoSename && p.TipoProyecto.LineaAtencion.TipoSenameID == TipoSename).OrderBy(p => p.ID);
-           // var Proyectos = db.Proyecto.Where(p => p.ID == 148);
+        //    var Proyectos = db.Proyecto.Where(p => p.Cerrado == null && p.Eliminado == null && p.CodSename != null && !p.CodSename.Equals("") && p.CodSename.Length == largoCodigoSename && p.TipoProyecto.LineaAtencion.TipoSenameID == TipoSename).OrderBy(p => p.ID);
+            var Proyectos = db.Proyecto.Where(p => p.Cerrado == null && p.Eliminado == null && p.CodSename != null && !p.CodSename.Equals("") && p.CodSename.Length == largoCodigoSename).OrderBy(p => p.ID);
+           
+            // var Proyectos = db.Proyecto.Where(p => p.ID == 148);
             return View(Proyectos.ToList());
         }
 
