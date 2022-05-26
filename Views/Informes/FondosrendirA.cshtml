@@ -7,6 +7,11 @@
     SAG2.Classes.Util utils = new SAG2.Classes.Util();
     var ProyectoSelected = (SAG2.Models.Proyecto)Session["Proyecto"];
 }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".js-autocomplete").select2();
+        });
+    </script>
 <div id="SAGBox">
     <h2>Informe de Fondos a Rendir</h2>
 @using (Html.BeginForm())

@@ -359,8 +359,11 @@ namespace SAG_5.Controllers
         }
         public ActionResult ReporteProgramaCC()
         {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-            ViewBag.Proyectos = new SelectList(db.Proyecto.Where(d => d.estado == 1), "ID", "NombreLista");
+            ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista",Proyecto.ID);
+            ViewBag.periodo = (int)Session["Periodo"];
+            ViewBag.Mes = (int)Session["Mes"];
             return View();
         }
         [HttpPost]
@@ -1701,8 +1704,9 @@ namespace SAG_5.Controllers
 
         public ActionResult ReporteLineaEstandarCC()
         {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-            ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.estado == 1), "ID", "NombreLista");
+            ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
             ViewBag.Linea = new SelectList(db.LineasAtencion.ToList(), "ID", "Sigla");
             return View();
         }
