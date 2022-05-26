@@ -176,13 +176,13 @@
        <th class="encabezado" >Variable</th>
        <th class="encabezado" >Indicador</th>
        <th class="encabezado">Estandar</th>
-       <th class="encabezado";>Base de Medición</th>
-       <th class="encabezado">1° Trimestre </th>
-       <th class="encabezado">2° Trimestre</th>
-       <th class="encabezado">1° Semestre</th>
-       <th class="encabezado">3° Trimestre</th>
-       <th class="encabezado">4° Trimestre</th>
-       <th class="encabezado">2° Semestre</th>
+       <th class="encabezado";>Base de Medici&oacute;n</th>
+       <th class="encabezado">@System.Web.HttpUtility.UrlDecode("1° Trimestre") </th>
+       <th class="encabezado">@System.Web.HttpUtility.UrlDecode("2° Trimestre")</th>
+       <th class="encabezado">@System.Web.HttpUtility.UrlDecode("1° Semestre")</th>
+       <th class="encabezado">@System.Web.HttpUtility.UrlDecode("3° Trimestre")</th>
+       <th class="encabezado">@System.Web.HttpUtility.UrlDecode("4° Trimestre")</th>
+       <th class="encabezado">@System.Web.HttpUtility.UrlDecode("2° Semestre")</th>
       
 </thead>
 
@@ -1105,7 +1105,7 @@
     </tr>
        <tr>
          <td class="ajustarFactor"> Observaciones Sename</td>
-        <td class="ajustarFactor">N° Observaciones</td>
+        <td class="ajustarFactor">@System.Web.HttpUtility.UrlDecode("N° Observaciones")</td>
         <td class="ajustarFactor">@observacionessename</td>
         <td class="ajustarFactor">Semestral</td>
         <td  class="active"></td><td  class="active"></td><td class="ajustarFactor"> @((Observaciones_1s).ToString("#,##0"))</td><td  class="active"></td><td  class="active"></td><td class="ajustarFactor"> @((Observaciones_2s).ToString("#,##0"))</td>
@@ -1130,15 +1130,15 @@
     </tr>
         <tr>
          <td class="ajustarFactor"> Observaciones Codeni</td>
-        <td class="ajustarFactor">N° Observaciones </td>
+        <td class="ajustarFactor">@System.Web.HttpUtility.UrlDecode("N° Observaciones")</td>
         <td class="ajustarFactor">@observacionescodeni</td>
         <td class="ajustarFactor">Semestral</td>
         <td class="active"></td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_1sCodeni).ToString("#,##0"))</td><td class="active"></td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_2sCodeni).ToString("#,##0"))</td>
 
     </tr>
        <tr>
-         <td class="ajustarFactor"> Retención de Impuestos</td>
-        <td class="ajustarFactor">N° Observaciones</td>
+         <td class="ajustarFactor"> Retenci&oacute;n de Impuestos</td>
+        <td class="ajustarFactor">@System.Web.HttpUtility.UrlDecode("N° Observaciones")</td>
         <td class="ajustarFactor">@retenciones</td>
         <td class="ajustarFactor">Trimestral</td>
         <td class="ajustarFactor">  @((retencion_1_2).ToString("#,##0"))</td><td class="ajustarFactor"> @(( retencion_2_2).ToString("#,##0"))</td><td class="ajustarFactor">  @((retencion_5).ToString("#,##0"))</td><td class="ajustarFactor"> @((retencion_3_2).ToString("#,##0"))</td><td class="ajustarFactor">  @((retencion_4_2).ToString("#,##0"))</td><td class="ajustarFactor">  @((retencion_6).ToString("#,##0")) </td>
@@ -1146,7 +1146,7 @@
     </tr>
         <tr>
          <td class="ajustarFactor"> Inventario General</td>
-        <td class="ajustarFactor">N° Observaciones </td>
+        <td class="ajustarFactor">@System.Web.HttpUtility.UrlDecode("N° Observaciones")</td>
         <td class="ajustarFactor">@inventarioestandar</td>
         <td class="ajustarFactor">Semestral</td>
         <td class="active"></td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_1sCodeniInventario).ToString("#,##0"))</td><td class="active"> </td><td class="active"></td><td class="ajustarFactor"> @((Observaciones_2sCodeniInventario).ToString("#,##0"))</td>
@@ -1160,7 +1160,7 @@
             }catch{}
         }
         <td class="ajustarFactor" rowspan="7" >Productividad / Eficiencia</td>
-        <td class="ajustarFactor"> Aporte subvención </td>
+        <td class="ajustarFactor"> Aporte subvenci&oacute;n </td>
         <td class="ajustarFactor"> Transferencia Mensual al Proy. Administración Centralizada </td>
         <td  class="ajustarFactor">@prodefiestandar.ToString("0.#0") %</td>
         <td class="ajustarFactor"> Trimestal</td>
@@ -1356,7 +1356,7 @@
         <tr>
        
         <td class="ajustarFactor"> Saldo Banco </td>
-        <td class="ajustarFactor"> Saldo Banco Ultimo día del Trimestre </td>
+        <td class="ajustarFactor"> Saldo Banco Ultimo d&iacute;a del Trimestre </td>
         <td class="moneda">$ @prosaldo.ToString("#,##0")</td>
         <td class="ajustarFactor"> Trimestal</td>
             @{
@@ -1591,8 +1591,8 @@
 
             }
         }
-        <td class="ajustarFactor">Desviación Presupuesto </td>
-        <td class="ajustarFactor"> Desviación (+/-) de los Ingresos Operacionales </td>
+        <td class="ajustarFactor">Desviaci&oacute;n Presupuesto </td>
+        <td class="ajustarFactor"> Desviaci&oacute;n (+/-) de los Ingresos Operacionales </td>
         <td class="ajustarFactor">@desviacionpestandar.ToString("0.#0") %</td>
         <td class="ajustarFactor"> Semestral </td>
         @{
@@ -1675,8 +1675,8 @@
 
          }
      }
-        <td class="ajustarFactor">Desviación Presupuesto </td>
-        <td class="ajustarFactor"> Desviación (+/-) de los Gastos Operacionales </td>
+        <td class="ajustarFactor">Desviaci&oacute;n Presupuesto </td>
+        <td class="ajustarFactor"> Desviaci&oacute;n (+/-) de los Gastos Operacionales </td>
         <td class="ajustarFactor">@desviacionestandar2.ToString("0.#0") %</td>
         <td class="ajustarFactor"> Semestral </td>
         <td class="active"></td><td class="active"></td>
@@ -1764,8 +1764,8 @@
 
            }
        }
-        <td class="ajustarFactor">Costo Niño/Mes</td>
-        <td class="ajustarFactor">Total Gastos Operacionales Trim. / Nº de Intervenciones  Trim.)/ Valor de la Subvención</td>
+        <td class="ajustarFactor">Costo Ni&ntilde;o/Mes</td>
+        <td class="ajustarFactor">Total Gastos Operacionales Trim. / N&#186; de Intervenciones  Trim.)/ Valor de la Subvenci&oacute;n</td>
         <td class="ajustarFactor"> @totgastoestandar.ToString("0.#0") %</td>
         <td class="ajustarFactor">Trimestral</td>
 
