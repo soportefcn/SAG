@@ -24,44 +24,17 @@ namespace SAG2.Controllers
             List<Proyecto> proyecto = new List<Proyecto>();
             Persona Persona = (Persona)Session["Persona"];
 
-            //if (usuario.esAdministrador)
-            //{
+
                 if (q != "")
                 {
-                int q2 = int.Parse(q);
-                    proyecto = db.Proyecto.OrderBy(a => a.Nombre).Where(a => a.ID == q2).ToList();
+               
+                    proyecto = db.Proyecto.OrderBy(a => a.Nombre).Where(a => a.Nombre.Contains(q)).ToList();
                 }
                 else
                 {
                     proyecto = db.Proyecto.OrderBy(p => p.Nombre).ToList();
                 }
 
-
-            //}
-            //else if (usuario.esSupervisor)
-            //{
-            //    if (q != "")
-            //    {
-            //        proyecto = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).Where(a => a.Nombre.Contains(q)).OrderBy(p => p.CodCodeni).Distinct().ToList();
-            //    }
-            //    else
-            //    {
-            //        db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).Where(a => a.Nombre.Contains(q)).OrderBy(p => p.CodCodeni).Distinct().ToList();
-
-            //    }
-            //}
-            //else
-            //{
-            //    if (q != "")
-            //    {
-            //        proyecto = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).Where(a => a.Nombre.Contains(q)).OrderBy(p => p.CodCodeni).Distinct().ToList();
-            //    }
-            //    else
-            //    {
-            //        db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).Where(a => a.Nombre.Contains(q)).OrderBy(p => p.CodCodeni).Distinct().ToList();
-
-            //    }
-            //}
             ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
 
             return View(proyecto.ToList());
