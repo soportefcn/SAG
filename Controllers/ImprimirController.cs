@@ -122,13 +122,13 @@ namespace SAG2.Controllers
         }
 
         [HttpGet]
-        public ActionResult InformeIngreso(string Desde = "", string Hasta = "")
+        public ActionResult InformeIngreso(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(sn => sn.ID == ProyectoID).FirstOrDefault();  
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Desde = Desde;
             @ViewBag.Hasta = Hasta;
-            @ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            @ViewBag.CodSename = Proyecto.CodSename;
 
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
@@ -143,9 +143,9 @@ namespace SAG2.Controllers
             return null;
         }
         [HttpGet]
-        public ActionResult Informefondorendir(string Desde = "", string Hasta = "")
+        public ActionResult Informefondorendir(string Desde = "", string Hasta = "",int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();   
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.CodSename = Proyecto.CodSename;   
             @ViewBag.Desde = Desde;
@@ -169,13 +169,13 @@ namespace SAG2.Controllers
 
 
         [HttpGet]
-        public ActionResult InformeEgreso(string Desde = "", string Hasta = "")
+        public ActionResult InformeEgreso(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(sn => sn.ID == ProyectoID).FirstOrDefault(); 
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Desde = Desde;
             @ViewBag.Hasta = Hasta;
-            @ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            @ViewBag.CodSename = Proyecto.CodSename;
 
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
@@ -194,13 +194,13 @@ namespace SAG2.Controllers
         }
 
         [HttpGet]
-        public ActionResult InformeReintegro(string Desde = "", string Hasta = "")
+        public ActionResult InformeReintegro(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault()  ;
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Desde = Desde;
             @ViewBag.Hasta = Hasta;
-            @ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            @ViewBag.CodSename = Proyecto.CodSename;
 
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
@@ -216,9 +216,9 @@ namespace SAG2.Controllers
         }
 
         [HttpGet]
-        public ActionResult InformeFondoFijo(int Mes = 0, int Periodo = 0, int Grupo = 0)
+        public ActionResult InformeFondoFijo(int Mes = 0, int Periodo = 0, int Grupo = 0,int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();   
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Mes = Mes;
             @ViewBag.Periodo = Periodo;
@@ -258,9 +258,9 @@ namespace SAG2.Controllers
         }
 
         [HttpGet]
-        public ActionResult InformeDeuda(string Desde = "", string Hasta = "")
+        public ActionResult InformeDeuda(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();  
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Desde = Desde;
             @ViewBag.Hasta = Hasta;

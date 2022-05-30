@@ -345,8 +345,17 @@ namespace SAG2.Controllers
         [HttpGet]
         public ActionResult Ingresos(int Periodo = 0, int Mes = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.PrID = Proyecto.ID.ToString() ;
             if (Periodo != 0 && Mes != 0)
             {
                 int mes = Mes;
@@ -356,7 +365,7 @@ namespace SAG2.Controllers
                 DateTime Fin = new DateTime(año, mes, numberOfDays);
                 ViewBag.Desde = Inicio.ToShortDateString();
                 ViewBag.Hasta = Fin.ToShortDateString();
-
+                
                 ViewBag.Rendicion = "Rendicion";
                 var ingresos = db.Movimiento.Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
                 return View(ingresos.ToList());
@@ -376,17 +385,27 @@ namespace SAG2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Ingresos(string Desde = "", string Hasta = "")
+        public ActionResult Ingresos(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.PrID = ProyectoID.ToString();
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
                 DateTime Inicio = DateTime.Parse(Desde);
                 DateTime Fin = DateTime.Parse(Hasta);
                 ViewBag.Desde = Desde;
                 ViewBag.Hasta = Hasta;
-                var ingresos = db.Movimiento.Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
+                var ingresos = db.Movimiento.Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == ProyectoID).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
                 return View(ingresos.ToList());
             }
             else
@@ -407,8 +426,20 @@ namespace SAG2.Controllers
 
         public ActionResult Reintegros(int Periodo = 0, int Mes = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            
+            ViewBag.PrID = Proyecto.ID.ToString();
             if (Periodo != 0 && Mes != 0)
             {
                 int mes = Mes;
@@ -437,17 +468,28 @@ namespace SAG2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Reintegros(string Desde = "", string Hasta = "")
+        public ActionResult Reintegros(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+
+            ViewBag.PrID = ProyectoID.ToString();
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
                 DateTime Inicio = DateTime.Parse(Desde);
                 DateTime Fin = DateTime.Parse(Hasta);
                 ViewBag.Desde = Desde;
                 ViewBag.Hasta = Hasta;
-                var ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
+                var ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == ProyectoID).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
                 return View(ingresos.ToList());
             }
             else
@@ -468,6 +510,7 @@ namespace SAG2.Controllers
 
         public ActionResult Cuentas()
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             int mes = (int)Session["Mes"];
             int año = (int)Session["Periodo"];
             int numberOfDays = DateTime.DaysInMonth(año, mes);
@@ -475,6 +518,17 @@ namespace SAG2.Controllers
             DateTime Fin = new DateTime(año, mes, numberOfDays);
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             var pr_id = Proyecto.ID;
+
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            
+            ViewBag.PrID = Proyecto.ID.ToString();
             ViewBag.Entrada = 0;
             ViewBag.Desde = Inicio.ToShortDateString();
             ViewBag.Hasta = Fin.ToShortDateString();
@@ -487,10 +541,24 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Cuentas(FormCollection form)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             ViewBag.Entrada = 1;
             List<movcuenta> mcuenta = new List<movcuenta>();
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            int pr_id = Proyecto.ID;
+           // Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int pr_id = int.Parse(form["ProyectoID"].ToString());
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == pr_id).FirstOrDefault();
+
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+
+            ViewBag.PrID = Proyecto.ID.ToString();
+            ViewBag.PrCod = Proyecto.CodCodeni ;
             DateTime Inicio = DateTime.Parse(form["desde"].ToString());
             DateTime Fin = DateTime.Parse(form["hasta"].ToString());
             int CuentaID = Int32.Parse(form["CuentaID"].ToString());
@@ -601,15 +669,17 @@ namespace SAG2.Controllers
             return View(mcuenta.OrderByDescending(a => a.Fecha).ToList());
         }
 
-        public ActionResult CuentasExcel(DateTime Hasta, DateTime Desde, int Cuenta )
+        public ActionResult CuentasExcel(DateTime Hasta, DateTime Desde, int Cuenta, int ProyectoID )
         {
             ViewBag.Entrada = 1;
             List<movcuenta> mcuenta = new List<movcuenta>();
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault() ;
             int pr_id = Proyecto.ID;
             DateTime Inicio = Desde;
             DateTime Fin =Hasta;
             int CuentaID = Cuenta;
+            ViewBag.Proyectonombre = Proyecto.NombreLista;
+   
             ViewBag.Cuenta = CuentaID;
             ViewBag.Desde = Inicio.ToShortDateString();
             ViewBag.Hasta = Fin.ToShortDateString();
@@ -1494,8 +1564,18 @@ namespace SAG2.Controllers
         /*Revisa como se producen*/
         public ActionResult Egresos(int Periodo = 0, int Mes = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.PrID = Proyecto.ID.ToString();
             if (Periodo != 0 && Mes != 0)
             {
                 int mes = Mes;
@@ -1530,17 +1610,27 @@ namespace SAG2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Egresos(string Desde = "", string Hasta = "")
+        public ActionResult Egresos(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.PrID = ProyectoID.ToString() ;
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
                 DateTime Inicio = DateTime.Parse(Desde);
                 DateTime Fin = DateTime.Parse(Hasta);
                 ViewBag.Desde = Desde;
                 ViewBag.Hasta = Hasta;
-                var movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
+                var movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == ProyectoID).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
                 return View(movimientos.ToList());
                 //var egresos = db.DetalleEgreso.Where(m => m.Egreso.Fecha >= Inicio).Where(m => m.Egreso.Fecha <= Fin).Where(m => m.Egreso.ProyectoID == Proyecto.ID).OrderBy(m => m.ID);
                 //return View(egresos.ToList());
@@ -1567,7 +1657,19 @@ namespace SAG2.Controllers
         /*Revisa como se producen*/
         public ActionResult Fondosrendir(int Periodo = 0, int Mes = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            
+            ViewBag.PrID = Proyecto.ID.ToString();
             if (Periodo != 0 && Mes != 0)
             {
                 int mes = Mes;
@@ -1603,9 +1705,21 @@ namespace SAG2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Fondosrendir(string Desde = "", string Hasta = "")
+        public ActionResult Fondosrendir(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();
+
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+
+            ViewBag.PrID = ProyectoID.ToString();
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
                 DateTime Inicio = DateTime.Parse(Desde);
@@ -2247,7 +2361,17 @@ namespace SAG2.Controllers
         }
         public ActionResult DeudasPendientes(int Periodo = 0, int Mes = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.PrID = Proyecto.ID.ToString();
             ViewBag.Clasificacion = "Todos";
             if (Periodo != 0 && Mes != 0)
             {
@@ -2270,9 +2394,19 @@ namespace SAG2.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeudasPendientes(string Desde = "", string Hasta = "", string Clasificacion = "Todos")
+        public ActionResult DeudasPendientes(string Desde = "", string Hasta = "", string Clasificacion = "Todos", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();   
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", ProyectoID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == ProyectoID), "ID", "NombreLista", ProyectoID);
+            }
+            ViewBag.PrID = ProyectoID.ToString();
             ViewBag.Clasificacion = Clasificacion;
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
@@ -2581,6 +2715,7 @@ namespace SAG2.Controllers
 
         public ActionResult FondoFijo(int Periodo = 0, int Mes = 0)
         {
+            Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             if (Periodo != 0 && Mes != 0)
             {
@@ -2591,7 +2726,15 @@ namespace SAG2.Controllers
                 Periodo = (int)Session["Periodo"];
                 Mes = (int)Session["Mes"];
             }
-
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.PrID = Proyecto.ID.ToString();
             ViewBag.Periodo = Periodo;
             ViewBag.Mes = Mes;
             var ff = db.FondoFijo.Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == Proyecto.ID).OrderBy(m => m.ID);
@@ -2599,28 +2742,38 @@ namespace SAG2.Controllers
         }
 
         [HttpPost]
-        public ActionResult FondoFijo(int Periodo = 0, int Mes = 0, int flag = 1)
+        public ActionResult FondoFijo(int Periodo = 0, int Mes = 0, int flag = 1, int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();   
             if (Periodo == 0 && Mes == 0)
             {
                 Periodo = (int)Session["Periodo"];
                 Mes = (int)Session["Mes"];
             }
-
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.PrID = Proyecto.ID.ToString();
             ViewBag.Periodo = Periodo;
             ViewBag.Mes = Mes;
             var ff = db.FondoFijo.Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == Proyecto.ID).OrderBy(m => m.ID);
             return View(ff.ToList());
         }
 
-        public ActionResult ExcelIngresos(string Desde = "", string Hasta = "")
+        public ActionResult ExcelIngresos(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+
+            Proyecto Proyecto = db.Proyecto.Where(p => p.ID == ProyectoID).FirstOrDefault();   
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Desde = Desde;
             @ViewBag.Hasta = Hasta;
-            @ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            @ViewBag.CodSename = Proyecto.CodSename;
 
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
@@ -2635,13 +2788,13 @@ namespace SAG2.Controllers
             return null;
         }
 
-        public ActionResult ExcelReintegros(string Desde = "", string Hasta = "")
+        public ActionResult ExcelReintegros(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where( d => d.ID == ProyectoID).FirstOrDefault()   ;
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Desde = Desde;
             @ViewBag.Hasta = Hasta;
-            @ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            @ViewBag.CodSename = Proyecto.CodSename;
 
             if (!Desde.Equals("") && !Hasta.Equals(""))
             {
@@ -2656,24 +2809,24 @@ namespace SAG2.Controllers
             return null;
         }
 
-        public ActionResult ExcelEgresos(string Desde = "", string Hasta = "")
+        public ActionResult ExcelEgresos(string Desde = "", string Hasta = "",int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();   
             DateTime Inicio = DateTime.Parse(Desde);
             DateTime Fin = DateTime.Parse(Hasta);
             @ViewBag.Proyecto = Proyecto.NombreLista;
             ViewBag.Desde = Desde;
             ViewBag.Hasta = Hasta;
-            ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            ViewBag.CodSename = Proyecto.CodSename;
             var movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
             return View(movimientos.ToList());
             //var egresos = db.DetalleEgreso.Where(m => m.Egreso.Fecha >= Inicio).Where(m => m.Egreso.Fecha <= Fin).Where(m => m.Egreso.ProyectoID == Proyecto.ID).OrderBy(m => m.ID);
             //return View(egresos.ToList());
         }
         
-        public ActionResult Excelfondorendir(string Desde = "", string Hasta = "")
+        public ActionResult Excelfondorendir(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault()    ;
             DateTime Inicio = DateTime.Parse(Desde);
             DateTime Fin = DateTime.Parse(Hasta);
             @ViewBag.Proyecto = Proyecto.NombreLista;
@@ -2686,9 +2839,9 @@ namespace SAG2.Controllers
         }
 
 
-        public ActionResult ExcelFondoFijo(int Mes = 0, int Periodo = 0)
+        public ActionResult ExcelFondoFijo(int Mes = 0, int Periodo = 0, int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();  
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Mes = Mes;
             @ViewBag.Periodo = Periodo;
@@ -2797,9 +2950,9 @@ namespace SAG2.Controllers
             return View(bh.ToList());
         }
 
-        public ActionResult ExcelDeudasPendientes(string Desde = "", string Hasta = "")
+        public ActionResult ExcelDeudasPendientes(string Desde = "", string Hasta = "", int ProyectoID = 0)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();    
             @ViewBag.Proyecto = Proyecto.NombreLista;
             @ViewBag.Desde = Desde;
             @ViewBag.Hasta = Hasta;

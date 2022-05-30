@@ -1876,9 +1876,9 @@ $(document).ready(function () {
         var tipo = $(this).attr("tipo");
 
         if ($("#Desde").val() == undefined && $("#Hasta").val() == undefined) {
-            window.open('/SAG_5/Informes/Excel' + tipo + '?Mes=' + $("#Mes").val() + '&Periodo=' + $("#Periodo").val(), '', '');
+            window.open('/SAG_5/Informes/Excel' + tipo + '?Mes=' + $("#Mes").val() + '&Periodo=' + $("#Periodo").val() + '&ProyectoID=' + $("#ProyectoID").val(), '', '');
         } else {
-            window.open('/SAG_5/Informes/Excel' + tipo + '?Desde=' + $("#Desde").val() + '&Hasta=' + $("#Hasta").val(), '', '');
+            window.open('/SAG_5/Informes/Excel' + tipo + '?Desde=' + $("#Desde").val() + '&Hasta=' + $("#Hasta").val() + '&ProyectoID=' + $("#ProyectoID").val(), '', '');
         }
 
         return false;

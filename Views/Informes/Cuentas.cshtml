@@ -15,14 +15,22 @@
    @using (Html.BeginForm())
    {
 
-      <h3>Periodo</h3> 
+          <div class="form-inline form-group">
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+           <label>Proyecto</label>
+        </div>
+                 @Html.DropDownList("ProyectoID", null, htmlAttributes: new { @class = "form-control js-autocomplete" })
+      </div> 
      <div class="row">
-      <div class="col-sm-4">
-          Cuenta
-             <select id="CuentaID" name="CuentaID" class ="js-autocomplete form-control">
+      <div class="col-md-4">
+           <div class="form-inline">
+                 <div class="form-group" style="margin-right: 10px;margin-left:8px">
+          <label>Cuenta</label><br />
+             <select id="CuentaID" name="CuentaID" class ="js-autocomplete form-control" style="width: 302px;">
       <option></option>
                 @Html.Raw(ViewBag.Arbol)
             </select>
+                     </div></div>
       </div>
          <div class="col-sm-6">
              <div class="form-inline">
@@ -39,7 +47,7 @@
                  <div class="form-group">
                      <br />
                      <input type="submit" value="Ver resultados!" class="btn btn-primary" />
-                     @Html.ActionLink("Excel", "CuentasExcel", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta }, new { @class = "btn btn-success" })
+                     @Html.ActionLink("Excel", "CuentasExcel", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta, ProyectoID = @ViewBag.PrID  }, new { @class = "btn btn-success" })
                  </div>
                  <div class="form-group">
                  
@@ -60,6 +68,7 @@
     
         <table class ="table table-striped table-bordered">
         <tr>
+            <th>cod</th>
         <th>Tipo Movimiento</th>
         <th>N° Comprobante</th>
         <th>Fecha</th>
@@ -75,6 +84,7 @@
     {
 
         <tr>
+            <td>@ViewBag.PrCod</td>
             <td align="center">
                 @{ 
                     if( item.TipoComprobanteID == 1){
