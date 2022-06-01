@@ -171,7 +171,7 @@ namespace SAG2.Controllers
 
             }
 
-            List<Movimiento> Ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID != ctes.tipoEgreso).Where(m => m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null).ToList();
+            List<Movimiento> Ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID != ctes.tipoEgreso).Where(m => m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null && m.Nulo == null).ToList();
             List<Movimiento> Egresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoEgreso).Where(m => m.Temporal == null && m.Eliminado == null && ((m.CuentaID != 6 || m.CuentaID == null) || m.CuentaID == null)).ToList();
             List<Movimiento> Egresost = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoEgreso).Where(m => m.Temporal == null && m.Eliminado == null && m.Nulo == null && ((m.CuentaID != 6 || m.CuentaID == null) || m.CuentaID == null)).ToList();
             @ViewBag.Ingresos_Reintegros = Ingresos;
@@ -192,7 +192,7 @@ namespace SAG2.Controllers
                 //int egresos = db.Movimiento.Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.Nulo == null && m.Temporal == null && m.Eliminado == null && ((m.CuentaID != 6 || m.CuentaID == null) || m.CuentaID == null)).Sum(m => m.Monto_Egresos);
                 //Movimiento mv = db.Movimiento.Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.Nulo == null).Where(a => a.Temporal == null).OrderBy(m => m.ID).Take(1).Single();
 
-                List<Movimiento> Ingresos_t = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicioTmp).Where(m => m.Fecha < inicio).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID != ctes.tipoEgreso).Where(m => m.Nulo == null && m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null).ToList();
+                List<Movimiento> Ingresos_t = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicioTmp).Where(m => m.Fecha < inicio).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID != ctes.tipoEgreso).Where(m => m.Nulo == null && m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null && m.Nulo == null ).ToList();
                 List<Movimiento> Egresos_t = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicioTmp).Where(m => m.Fecha < inicio).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoEgreso).Where(m => m.Nulo == null && m.Temporal == null && m.Eliminado == null && ((m.CuentaID != 6 || m.CuentaID == null) || m.CuentaID == null)).ToList();
 
 
@@ -272,7 +272,7 @@ namespace SAG2.Controllers
                 ViewBag.Hasta = fin.ToShortDateString();
             }
 
-            List<Movimiento> Ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID != ctes.tipoEgreso).Where(m => m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null).ToList();
+            List<Movimiento> Ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID != ctes.tipoEgreso).Where(m => m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null && m.Nulo == null).ToList();
             List<Movimiento> Egresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoEgreso).Where(m => m.Temporal == null && m.Eliminado == null && ((m.CuentaID != 6 || m.CuentaID == null) || m.CuentaID == null)).ToList();
             List<Movimiento> Egresost = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= inicio).Where(m => m.Fecha <= fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == ctes.tipoEgreso).Where(m => m.Temporal == null && m.Eliminado == null && m.Nulo == null && ((m.CuentaID != 6 || m.CuentaID == null) || m.CuentaID == null)).ToList();
             @ViewBag.Ingresos_Reintegros = Ingresos;
@@ -329,7 +329,7 @@ namespace SAG2.Controllers
             try
             {
 
-                int ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha < inicio && m.Periodo == periodo && m.Mes == mes).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.Nulo == null && m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null).Sum(m => m.Monto_Ingresos);
+                int ingresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha < inicio && m.Periodo == periodo && m.Mes == mes).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.Nulo == null && m.CuentaID != 1 && m.Eliminado == null && m.Temporal == null && m.Nulo == null).Sum(m => m.Monto_Ingresos);
                 int egresos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha < inicio && m.Periodo == periodo && m.Mes == mes).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.Nulo == null && m.Temporal == null && m.Eliminado == null && ((m.CuentaID != 6 || m.CuentaID == null) || m.CuentaID == null)).Sum(m => m.Monto_Egresos);
                 ViewBag.SaldoPeriodo = ingresos - egresos + db.Saldo.Where(m => m.CuentaCorrienteID == CuentaCorriente.ID).Where(m => m.Periodo == periodo).Where(m => m.Mes == mes).Single().SaldoInicialCartola;
             }

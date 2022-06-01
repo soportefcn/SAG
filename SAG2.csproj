@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comun\ControlLog.cs" />
+    <Compile Include="Comun\Correo.cs" />
     <Compile Include="Controllers\AsignacionController.cs" />
     <Compile Include="Controllers\BajasController.cs" />
     <Compile Include="Controllers\BienAutorizacionController.cs" />

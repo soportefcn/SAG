@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
 using SAG2.Classes;
+using SAG2.Comun; 
 using System.Web.Security;
 using System.Web.Script.Serialization;
 
@@ -202,6 +203,7 @@ namespace SAG2.Controllers
 
         public ActionResult Proyecto()
         {
+            
             if (Session["Logueado"] == null || (bool)Session["Logueado"] != true)
             {
                 Response.Redirect(FormsAuthentication.LoginUrl, true);

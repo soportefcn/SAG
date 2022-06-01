@@ -4723,7 +4723,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).Where( c => c.Estado == 1).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4859,7 +4859,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.Estado == 1).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 

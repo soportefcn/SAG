@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
 using SAG2.Classes;
+using SAG2.Comun; 
 using System.Web.Script.Serialization;
 
 namespace SAG2.Controllers
@@ -16,6 +17,7 @@ namespace SAG2.Controllers
         private SAG2DB db = new SAG2DB();
         private Util utils = new Util();
         private Constantes ctes = new Constantes();
+        private Correo envioCorreo = new Correo();
 
         //
         // GET: /Egresos/
@@ -1109,7 +1111,14 @@ namespace SAG2.Controllers
 
                 db.Autorizacion.Add(autorizacion);
                 db.SaveChanges();
+                // 20220601 - Aqui Enviar correo Autorizacion Supervisor
+               string MensajeCorreo = "Se Solicita Autorizacion <br> Para : ";
+               MensajeCorreo = MensajeCorreo + "<table><tr><td><td>Proyecto</td><td>" + movimiento.Proyecto.NombreLista + "</td>";
+               MensajeCorreo = MensajeCorreo + "<td>Tipo Comp.</td><td>Egreso</td><td># Comp</td><td>" + movimiento.NumeroComprobante + "</td>";
+               MensajeCorreo = MensajeCorreo + "<td>Solicitado Por </td><td>" + persona.NombreCompleto + "</td><td>tipo</td><td>Anulacion</td> </table>"; 
+          //  Correo.enviarCorreo("pherrera@ciudaddelnino.cl" 
 
+                //
                 return RedirectToAction("Edit", new { id = @id, mensaje = "La anulación ha sido solicitada al Supervisor." });
             }
 
