@@ -19,6 +19,7 @@ namespace SAG2.Comun
 
         public static string enviarCorreo(string destinatario, string mensaje, string asunto)
         {
+
             MailMessage correos = new MailMessage();
             SmtpClient envios = new SmtpClient();
             try
@@ -58,6 +59,7 @@ namespace SAG2.Comun
                string  a = e.Message;
                 return "NOK";
             }
+
         }
     }
 }

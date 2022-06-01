@@ -26,7 +26,6 @@ namespace SAG2.Comun
                     Datos.PeriodoSistema = periodo;
                     Datos.UsuarioID = UsuarioID;
                     Datos.ProyectoID = ProyectoID;
-
                     d.ControlFlujo.Add(Datos);
                     d.SaveChanges();
                     return Datos.ID; 

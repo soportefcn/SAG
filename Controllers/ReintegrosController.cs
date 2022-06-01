@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
+using SAG2.Comun;
 using SAG2.Classes;
 
 namespace SAG2.Controllers
@@ -448,10 +449,21 @@ namespace SAG2.Controllers
                 autorizacion.SolicitaID = persona.ID;
                 autorizacion.Tipo = "Anulación";
                 autorizacion.FechaSolicitud = DateTime.Now;
-
                 db.Autorizacion.Add(autorizacion);
                 db.SaveChanges();
 
+                string MensajeCorreo = "Se Solicita Autorizacion <br> Para : ";
+                MensajeCorreo = MensajeCorreo + "<table><tr><td><td>Proyecto</td><td>" + movimiento.Proyecto.NombreLista + "</td>";
+                MensajeCorreo = MensajeCorreo + "<td>Tipo Comp.</td><td>Reintegro</td><td># Comp</td><td>" + movimiento.NumeroComprobante + "</td>";
+                MensajeCorreo = MensajeCorreo + "<td>Solicitado Por </td><td>" + persona.NombreCompleto + "</td><td>tipo</td><td>Anulacion</td> </table>";
+                int prmov = movimiento.ProyectoID;
+                var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 4 && d.ProyectoID == prmov).ToList();
+                foreach (var Scorreo in supervisorCorreo)
+                {
+                    string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
+
+                    Correo.enviarCorreo(CorreoSup, MensajeCorreo, "Autorizacion anulacion");
+                }
       
                 return RedirectToAction("Edit2", new { id = @id, mensaje = "La anulación ha sido solicitada al Supervisor." });
             }
