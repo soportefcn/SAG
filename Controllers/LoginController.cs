@@ -213,7 +213,7 @@ namespace SAG2.Controllers
             {
                 Response.Redirect(FormsAuthentication.LoginUrl, true);
             }
-
+           // Correo.enviarCorreo("saeta75@gmail.com", "aqui va texto", "Autorizacion anulacion");
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona Persona = (Persona) Session["Persona"];
             ViewBag.Administrador = usuario.esAdministrador;

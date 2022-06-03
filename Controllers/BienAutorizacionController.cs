@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
-
+using SAG2.Comun; 
 
 
 namespace SAG2.Controllers
@@ -314,7 +314,6 @@ namespace SAG2.Controllers
 
 
             BienMovimiento bien = db.BienMovimiento.Find(id);
-
             BienModInventario bienInv = db.BienModInventario.Find(bien.BienID);
 
             var proyectoUbicacion = db.Dependencia.Find(int.Parse(bien.NuevaUbicacion));
@@ -331,9 +330,7 @@ namespace SAG2.Controllers
             //{
 
             Usuario usuario = (Usuario)Session["Usuario"];
-
             bien.AutorizacionAuditor = 1;
-
             bien.AuditorID = usuario.ID;
 
             var proyectoIDAn = bienInv.ProyectoAnteriorID.HasValue ? bienInv.ProyectoAnteriorID.Value : 0;
@@ -344,118 +341,48 @@ namespace SAG2.Controllers
             {
 
                 BienModInventario bienTraspaso = new BienModInventario();
-
                 bienTraspaso.ID = bien.BienID;
-
                 bienTraspaso.Fecha = bienInv.Fecha;
-
                 bienTraspaso.FamiliaID = bienInv.FamiliaID;
-
                 bienTraspaso.SubFamiliaID = bienInv.SubFamiliaID;
-
                 bienTraspaso.ProcedenciaID = bienInv.ProcedenciaID;
-
                 bienTraspaso.DescripcionBien = bienInv.DescripcionBien;
-
                 bienTraspaso.Cantidad = bien.Cantidad;
-
                 bienTraspaso.Monto = bienInv.Monto;
-
                 bienTraspaso.Ubicacion = bien.NuevaUbicacion;
-
                 bienTraspaso.EstadoID = 3;
-
                 bienTraspaso.ProyectoAnteriorID = bienInv.ProyectoID;
-
                 bienTraspaso.ProyectoID = proyectoUbicacion.ProyectoID;
-
                 bienTraspaso.UsuarioID = usuario.ID;
-
                 bienTraspaso.EgresoID = bienInv.EgresoID;
-
                 bienTraspaso.CondicionID = bienInv.CondicionID;
-
                 bienTraspaso.ReintegroID = bienInv.ReintegroID;
-
                 bienTraspaso.MovimientoID = bienInv.MovimientoID;
 
 
 
                 BienMovimiento mov = new BienMovimiento();
-
                 int ultimaID = db.BienModInventario.ToList().Last().ID;
-
                 mov.EstadoID = 1;
-
                 mov.Detalle = bien.Detalle;
-
                 mov.Cantidad = bien.Cantidad;
-
                 mov.NuevaUbicacion = bien.NuevaUbicacion;
-
                 mov.FechaMovimiento = DateTime.Now;
-
                 mov.UsuarioID = bien.UsuarioID;
-
                 mov.CondicionID = bien.CondicionID;
-
                 mov.BienID = ultimaID + 1;
-
                 if (db.BienMovimiento.ToList().Where(z => z.BienID == bienTraspaso.ID).Count() > 1)
                 {
-
                     bienTraspaso.ID = ultimaID + 1;
-
                     mov.BienID = bienTraspaso.ID;
-
                 }
 
                 mov.ComentarioAuditor = "";
-
                 mov.AutorizacionAuditor = 1;
-
                 mov.AuditorID = 1;
-
                 mov.RutaArchivo = bien.RutaArchivo;
-
                 mov.bienAnteriorID = bien.BienID;
-
-                //BienModInventario bienAlta = new BienModInventario();
-
-                //bienAlta.ID = bien.BienID;
-
-                //bienAlta.Fecha = bienInv.Fecha;
-
-                //bienAlta.FamiliaID = bienInv.FamiliaID;
-
-                //bienAlta.SubFamiliaID = bienInv.SubFamiliaID;
-
-                //bienAlta.ProcedenciaID = bienInv.ProcedenciaID;
-
-                //bienAlta.DescripcionBien = bienInv.DescripcionBien;
-
-                //bienAlta.Cantidad = bien.Cantidad;
-
-                //bienAlta.Monto = bienInv.Monto;
-
-                //bienAlta.Ubicacion = bien.NuevaUbicacion;
-
-                //bienAlta.EstadoID = 1;
-
-                //bienAlta.ProyectoID = bienInv.ProyectoID;
-
-                //bienAlta.UsuarioID = usuario.ID;
-
-                //bienAlta.EgresoID = bienInv.EgresoID;
-
-                //bienAlta.CondicionID = bienInv.CondicionID;
-
-                //bienAlta.ReintegroID = bienInv.ReintegroID;
-
-                //bienAlta.MovimientoID = bienInv.MovimientoID;
-
                 db.BienMovimiento.Add(mov);
-
                 db.BienModInventario.Add(bienTraspaso);
 
             }
@@ -463,7 +390,19 @@ namespace SAG2.Controllers
             // db.Entry(bien).State = EntityState.Modified;
 
             db.SaveChanges();
+            // correo 
+            var Proyecto = db.Proyecto.Where(d => d.ID == bienInv.ProyectoID).FirstOrDefault().NombreLista;
+            string MensajeCorreo = "El Bien se  Aprobado Correctamente <br> Para : ";
+            MensajeCorreo = MensajeCorreo + "<table style='border: 1px solid black;'><tr><td>Proyecto</td><td>" + Proyecto + "</td></tr>";
+            MensajeCorreo = MensajeCorreo + "<tr><td>Bien</td><td>" + bien.Detalle + "</td></tr> </table>";
 
+
+            var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 9 && d.ProyectoID == bienInv.ProyectoID).ToList();
+            foreach (var Scorreo in supervisorCorreo)
+            {
+                string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
+                Correo.enviarCorreo(CorreoSup, MensajeCorreo, "Autorizacion Modificación");
+            }
             TempData["Message"] = "Bien Aprobado Correctamente";
 
             //}
@@ -654,7 +593,7 @@ namespace SAG2.Controllers
 
                 db.SaveChanges();
 
-
+                // correo
 
                 TempData["Message"] = "Bien Anulado Correctamente";
 

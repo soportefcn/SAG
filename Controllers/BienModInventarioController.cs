@@ -1,20 +1,13 @@
 ﻿using System;
-
 using System.Collections.Generic;
-
 using System.Data;
-
 using System.Data.Entity;
-
 using System.Linq;
-
 using System.Web;
-
 using System.Web.Mvc;
-
 using SAG2.Models;
-
 using System.IO;
+using SAG2.Comun;
 
 
 
@@ -32,11 +25,6 @@ namespace SAG2.Controllers
             BienModInventarioVM model = new BienModInventarioVM();
 
             model.lista = new List<BienModInventarioVM>();
-
-
-
-
-
             try
             {
 
@@ -675,7 +663,18 @@ namespace SAG2.Controllers
                     db.BienMovimiento.Add(mov);
                     db.SaveChanges();
 
+                    // Enviar correo
+                    string mensajeCorreo = "Existe un bien por autorizar ";
+                    mensajeCorreo = mensajeCorreo + "<table><tr><td>Proyecto<td><td>" + proyecto.NombreLista +"</td></tr>";
+                    mensajeCorreo = mensajeCorreo + "<tr><td>Detalle</td><td>" + model.Detalle + "</td></tr>";
+                    mensajeCorreo = mensajeCorreo + "<tr><td>Bien</td><td>" + model.DescripcionBien + "</td></tr> </table>";
 
+                    var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 4 && d.ProyectoID == proyecto.ID).ToList();
+                    foreach (var Scorreo in supervisorCorreo)
+                    {
+                        string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
+                        Correo.enviarCorreo(CorreoSup, mensajeCorreo, "Autorizacion Bien  Inventario");
+                    }
 
                     TempData["Message"] += "Creado con exito " + model.DescripcionBien;
 
