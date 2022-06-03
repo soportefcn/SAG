@@ -46,7 +46,7 @@
                  </div>
                  <div class="form-group">
                      <br />
-                     <input type="submit" value="Ver resultados!" class="btn btn-primary" />
+                     <input type="button" id="Procesar" value="Ver resultados!" class="btn btn-primary" />
                      @Html.ActionLink("Excel", "CuentasExcel", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta, ProyectoID = @ViewBag.PrID  }, new { @class = "btn btn-success" })
                  </div>
                  <div class="form-group">
@@ -91,7 +91,7 @@
                         <a href="@Url.Action("Edit", "Ingresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Ingreso  <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /> </a>
                    }
                     if (item.TipoComprobanteID == 2) { 
-                        <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                         <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
                     }
                     if (item.TipoComprobanteID == 3) { 
                     <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
@@ -122,3 +122,30 @@
 
 
 </div>
+<script>
+    $(document).ready(function () {
+        $("#Procesar").click(function () {
+            var mensaje = "";
+            var cuentaID = $('#CuentaID').val();
+            var desde = $('#Desde').val();
+            var Hasta = $('#Hasta').val();
+            if (cuentaID == "") {
+                mensaje =  "Falta Seleccionar Cuenta";               
+            }
+            if (desde == "") {
+                mensaje = mensaje + "</br>" +  "Falta fecha desde";
+            }
+            if (Hasta == "") {
+                mensaje = mensaje + "</br>" +  "Falta Fecha Hasta";
+            }
+            if (mensaje == "") {
+                $("form").submit();
+            }
+            else {
+
+                Swal.fire(mensaje)
+            }
+
+        });
+    });
+</script> 
