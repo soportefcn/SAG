@@ -1,13 +1,16 @@
 ﻿using System;
+using SAG2.Comun;
+using SAG2.Classes;
+using SAG2.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using SAG2.Models;
+using System.Web.Script.Serialization;
 using System.Data;
-using SAG2.Classes;
 using System.Data.Entity;
-using SAG2.Comun; 
+
+
 
 namespace SAG2.Controllers
 {
@@ -20,7 +23,71 @@ namespace SAG2.Controllers
 
         //
         // GET: /Administracion/
+        public string ProgramaRegionTipo(int id, int RegionID)
+        {
+           
+            if (id != 0 && RegionID != 0)
+            {
+                var Proyectos = (from p in db.Proyecto
+                                 join d in db.Direccion on p.DireccionID  equals d.ID
+                                 join c in db.Comuna on d.ComunaID equals c.ID 
+                                 where (p.TipoProyectoID == id) && (p.Eliminado == null) && (c.RegionID == RegionID)
+                                 orderby p.CodCodeni, p.Nombre
+                                 select new
+                                 {
+                                     Value = p.ID,
+                                     Text = (p.CodCodeni + " - " + p.Nombre)
+                                 }).ToList();
 
+                return new JavaScriptSerializer().Serialize(Proyectos);
+            }
+            if (id == 0 && RegionID != 0)
+            {
+                var Proyectos = (from p in db.Proyecto
+                                 join d in db.Direccion on p.DireccionID equals d.ID
+                                 join c in db.Comuna on d.ComunaID equals c.ID
+                                 where  (p.Eliminado == null) && (c.RegionID == RegionID)
+                                 orderby p.CodCodeni, p.Nombre
+                                 select new
+                                 {
+                                     Value = p.ID,
+                                     Text = (p.CodCodeni + " - " + p.Nombre)
+                                 }).ToList();
+
+                return new JavaScriptSerializer().Serialize(Proyectos);
+            }
+            if (id != 0 && RegionID == 0)
+            {
+                var Proyectos = (from p in db.Proyecto
+                                 join d in db.Direccion on p.DireccionID equals d.ID
+                                 join c in db.Comuna on d.ComunaID equals c.ID
+                                 where (p.Eliminado == null) && (p.TipoProyectoID == id)
+                                 orderby p.CodCodeni, p.Nombre
+                                 select new
+                                 {
+                                     Value = p.ID,
+                                     Text = (p.CodCodeni + " - " + p.Nombre)
+                                 }).ToList();
+
+                return new JavaScriptSerializer().Serialize(Proyectos);
+            }
+            if (id == 0 && RegionID == 0)
+            {
+                var Proyectos = (from p in db.Proyecto
+                                 join d in db.Direccion on p.DireccionID equals d.ID
+                                 join c in db.Comuna on d.ComunaID equals c.ID
+                                 where (p.Eliminado == null) 
+                                 orderby p.CodCodeni, p.Nombre
+                                 select new
+                                 {
+                                     Value = p.ID,
+                                     Text = (p.CodCodeni + " - " + p.Nombre)
+                                 }).ToList();
+
+                return new JavaScriptSerializer().Serialize(Proyectos);
+            }
+            return new JavaScriptSerializer().Serialize("");
+        }
         public ActionResult Index()
         {
             return View();
@@ -41,28 +108,37 @@ namespace SAG2.Controllers
 
             //  Borrar_Intervenciones()
             Intervencion DatosIntervencion = db.Intervencion.Where(d => d.Mes == MesApertura && d.Periodo == PeriodoApertura && d.ProyectoID == Proyecto.ID).FirstOrDefault();
-            IntervencionLog DInteLog = new IntervencionLog();
-            DInteLog.Periodo = DatosIntervencion.Periodo;
-            DInteLog.Mes = DatosIntervencion.Mes;
-            DInteLog.ProyectoID = DatosIntervencion.ProyectoID;
-            DInteLog.Cobertura = DatosIntervencion.Cobertura;
-            DInteLog.Atenciones = DatosIntervencion.Atenciones;           
-            DInteLog.ControlID = CLog;
-            db.IntervencionLog.Add(DInteLog);
-            db.SaveChanges();
+            try
+            {
+                IntervencionLog DInteLog = new IntervencionLog();
+                DInteLog.Periodo = DatosIntervencion.Periodo;
+                DInteLog.Mes = DatosIntervencion.Mes;
+                DInteLog.ProyectoID = DatosIntervencion.ProyectoID;
+                DInteLog.Cobertura = DatosIntervencion.Cobertura;
+                DInteLog.Atenciones = DatosIntervencion.Atenciones;
+                DInteLog.ControlID = CLog;
+                db.IntervencionLog.Add(DInteLog);
+                db.SaveChanges();
+            }
+            catch (Exception){ }
             db.Entry(DatosIntervencion).State = EntityState.Deleted;
             db.SaveChanges();
             // Borrar_Periodos()
             Periodo DatosPeriodo = db.Periodo.Where(d => d.Mes == MesApertura && d.Ano == PeriodoApertura && d.ProyectoID == Proyecto.ID).FirstOrDefault();
             PeriodoLog DPlog = new PeriodoLog();
-            DPlog.Periodo  = DatosPeriodo.Ano;
-            DPlog.Mes = DatosPeriodo.Mes;
-            DPlog.PersonalID  = DatosPeriodo.PersonaID;
-            DPlog.ProyectoID = DatosPeriodo.ProyectoID;
-            DPlog.Fecha = DatosPeriodo.Fecha;
-            DPlog.Indemnizacion = DatosPeriodo.Indemnizacion;
-            DPlog.ControlID = CLog;
-            db.PeriodoLog.Add(DPlog);
+            try
+            {
+                DPlog.Periodo = DatosPeriodo.Ano;
+                DPlog.Mes = DatosPeriodo.Mes;
+                DPlog.PersonalID = DatosPeriodo.PersonaID;
+                DPlog.ProyectoID = DatosPeriodo.ProyectoID;
+                DPlog.Fecha = DatosPeriodo.Fecha;
+                DPlog.Indemnizacion = DatosPeriodo.Indemnizacion;
+                DPlog.ControlID = CLog;
+                db.PeriodoLog.Add(DPlog);
+                db.SaveChanges();
+            }
+            catch (Exception) { }
             db.Entry(DatosPeriodo).State = EntityState.Deleted;
             db.SaveChanges();
             ViewBag.MesApertura = MesApertura;
@@ -173,10 +249,13 @@ namespace SAG2.Controllers
             return View(proyecto.ToList());
         }
 
-        public ActionResult Cierres(int periodo = 0, int proyectoID = 0)
+        public ActionResult Cierres(int periodo = 0, int? proyectoID = 0)
         {
             ViewBag.Mensaje = string.Empty;
-
+            if (proyectoID < 1) {
+                ViewBag.PrID = 0;
+                proyectoID = 0;
+            }
             if (periodo == 0)
             {
                 ViewBag.periodo = DateTime.Now.Year;
@@ -200,7 +279,7 @@ namespace SAG2.Controllers
             }
             if (proyectoID != 0)
             {
-
+                ViewBag.PrID = proyectoID;
                 ViewBag.Seleccion = proyectoID;
                 proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.ID == proyectoID).OrderBy(p => p.CodCodeni).ToList();
                 ViewBag.proyecto = proyecto.Find(p => p.ID == proyectoID).NombreLista;
