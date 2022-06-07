@@ -221,7 +221,7 @@
 		
 			@if (DateTime.Now.Year > Proyecto.PeriodoInicio || (DateTime.Now.Month >= Proyecto.MesInicio && DateTime.Now.Year >= Proyecto.PeriodoInicio) || Proyecto.MesInicio == null)
    {
-       // Si el proyecto no se ha iniciado no se pueden igresar movimientos
+       // Si el proyecto no se ha iniciado no se pueden ingresar movimientos
 			<li><a href="javascript:void();" id="MenuRendicion">Rendición de cuentas</a>
 				<ul class="menu dropdown dropdown-menu">
                     @if (!Proyecto.estaCerrado)
@@ -499,7 +499,11 @@
      {
 					<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BoletasHonorarios/Reporte">Reporte Honorarios</a></li>
      }
-                    <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/HonorariosFiltros">Busqueda Honorarios</a></li>
+                   @if (Usuario.esAdministrador)
+                    {
+                    <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/HonorariosFiltros">Busqueda x Honorarios</a></li>
+                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/CuentaConsolidado">Busqueda x Cuentas</a></li>
+                       }
 				</ul>
 			</li>
    }
