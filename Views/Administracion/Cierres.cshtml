@@ -6,7 +6,7 @@
     SAG2DB db = new SAG2DB();
     int periodo = @ViewBag.periodo;
     var pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
-    int proyectoID = 0;
+    int proyectoID = ViewBag.PrID;
   }
         <script type="text/javascript">
             $(document).ready(function () {

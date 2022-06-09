@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace SAG2.Controllers
 {
@@ -15,7 +16,19 @@ namespace SAG2.Controllers
 
         //
         // GET: /Graficos/
+        public string ProyectoTipo(int id)
+        {
+            var Proyectos = (from c in db.Proyecto
+                             where (c.TipoProyectoID == id) && (c.Eliminado == null)
+                             orderby c.CodCodeni, c.Nombre
+                             select new
+                             {
+                                 Value = c.ID,
+                                 Text = (c.CodCodeni + " - " + c.Nombre)
+                             }).ToList();
 
+            return new JavaScriptSerializer().Serialize(Proyectos);
+        }
         public ActionResult Index()
         {
             return View();
