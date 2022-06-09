@@ -1,6 +1,7 @@
 ﻿using LumenWorks.Framework.IO.Csv;
 using SAG2.Classes;
 using SAG2.Models;
+using SAG2.Comun;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,6 +23,7 @@ namespace SAG2.Controllers
         private SAG2DB db = new SAG2DB();
         private Constantes ctes = new Constantes();
         private Util utils = new Util();
+        private ControlLog logReg = new ControlLog();
 
         [HttpGet, ActionName("DeleteParametro")]
         public ActionResult DeleteParametroConfirmed(int id)
@@ -397,6 +399,23 @@ namespace SAG2.Controllers
             int periodo = Periodo;
             var Datos = db.SaldosCorporativos.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();
             return View(Datos);
+        }
+        public ActionResult InformeSaldoEliminar(int Periodo, int Mes)
+        {
+            Usuario usuario = (SAG2.Models.Usuario)Session["Usuario"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int periodosistema = (int)Session["Periodo"];
+            int Messistema = (int)Session["Mes"];
+            ViewBag.DesdeMes = Periodo;
+            ViewBag.DesdePeriodo = Mes;
+            int mes = Mes;
+            int periodo = Periodo;
+            string Descripcion = " Saldo Corporativo Eliminar Mes : " + Mes + " Periodo : " + Periodo ;
+            int CLog = logReg.RegistraControl("SaldoCorporativo", Descripcion, periodosistema, Messistema, usuario.ID, Proyecto.ID);
+
+            db.Database.ExecuteSqlCommand("DELETE FROM SaldosCorporativos WHERE Periodo = " + periodo + " and Mes = " + mes + " ");
+            var Datos = db.SaldosCorporativos.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();
+            return RedirectToAction("InformeSaldo"); 
         }
          [HttpPost]
         public ActionResult InformeSaldo(FormCollection Form)
