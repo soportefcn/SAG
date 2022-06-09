@@ -1,5 +1,133 @@
-﻿@{
-    ViewBag.Title = "FondosrendirConsolidadoExcel";
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = null;
+    ViewBag.Title = "Informe de Fondos a Rendir";
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Inf.Egresos.SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
+    var total = 0;
+    var totReintegro = 0;
 }
+<style type="text/css" media="all">
+    body {
+        font-family: Arial;
+    }
 
-<h2>FondosrendirConsolidadoExcel</h2>
+    th {
+        font-weight: bold;
+    }
+
+    td, th {
+        white-space: nowrap;
+        font-size: 12px;
+    }
+</style>
+<table>
+    <tr>
+        <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
+    </tr>
+
+</table>
+<h2>@ViewBag.Title</h2>
+Entre Fechas Desde :  @ViewBag.Desde Hasta :@ViewBag.Hasta
+
+<table cellpadding="5" border="1" style="width: 100%;">
+    <tr>
+        <th>Tipo</th>
+        <th>Region</th>
+        <th>CC</th>
+        <th>@System.Web.HttpUtility.UrlDecode("N° Egreso")</th>
+        <th>Fecha</th>
+        <th>Fecha</th>
+        <th>Beneficiario</th>
+        <th>Monto $</th>
+        <th>Monto Reintegro$</th>
+        <th>Glosa</th>
+        <th>Cta. Cte.</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+
+        SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+        List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).Where(d => d.CuentaID == 60).ToList();
+        foreach (var detalle in detalles)
+        {
+            total = total + detalle.Monto;
+            int valor_reintegros = 0;
+            SAG2.Models.SAG2DB db2 = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.Movimiento> Reintegrosrev = db.Movimiento.Where(d => d.auto == 0).Where(d => d.DetalleEgresoID == detalle.ID).Where(d => d.TipoComprobanteID == 3).ToList();
+            foreach (var Reintegro in Reintegrosrev)
+            {
+
+                try
+                {
+                    valor_reintegros = detalle.Monto;
+                }
+                catch (Exception)
+                {
+                    valor_reintegros = 0;
+                }
+            }
+            totReintegro = totReintegro + valor_reintegros;
+
+            <tr>
+               <td align="center">
+                    @detalle.Egreso.Proyecto.TipoProyecto.Sigla    
+                </td>
+                  <td align="center">
+                    @detalle.Egreso.Proyecto.Direccion.Comuna.Region.Nombre     
+                </td>
+                         <td align="center">
+                    @detalle.Egreso.Proyecto.CodCodeni  
+                </td>
+                <td align="center">
+                    @detalle.Egreso.NumeroComprobante
+                </td>
+                <td>
+                    @detalle.Egreso.Fecha.Value.ToShortDateString()
+                </td>
+                <td>
+                    @detalle.FechaEmision.ToShortDateString()
+                </td>
+                <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @System.Web.HttpUtility.UrlDecode(detalle.Egreso.Persona.NombreCompleto)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @System.Web.HttpUtility.UrlDecode(detalle.Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    {
+                        @System.Web.HttpUtility.UrlDecode(detalle.Egreso.Beneficiario)
+                    }
+                </td>
+                <td align="right">
+                    <strong>
+                        $@detalle.Monto.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="right">
+                    <strong>
+                        $@valor_reintegros.ToString("#,##0")
+                    </strong>
+                </td>
+            <td>
+                @System.Web.HttpUtility.UrlDecode(detalle.Glosa)
+            </td>
+            <td>
+                @detalle.Egreso.CuentaCorriente.Numero
+            </td>
+        </tr>
+    }
+
+}
+    <tr></tr>
+    @{ var resultado = total - totReintegro;
+
+    }
+    <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Total</td><td>$@total.ToString("#,##0")</td><td>$@totReintegro.ToString("#,##0")</td><td>$@resultado.ToString("#,##0")</td></tr>
+</table>

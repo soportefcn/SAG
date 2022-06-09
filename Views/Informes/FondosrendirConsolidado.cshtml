@@ -51,9 +51,8 @@
              <input type="submit" value="Ver resultados!" class="btn btn-primary"  />
         </div>
           <div class="form-group">
-             <a  data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="fondorendir" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
-                  <span class ="fa fa-file-excel-o  fa-2x"></span>
-             </a>
+                 @Html.ActionLink("Excel", "FondosrendirConsolidadoExcel", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta, ProyectoID = @ViewBag.PrID, tipoProyectoID = @ViewBag.tpID, RegionID = @ViewBag.RegID  }, new { @class = "btn btn-success" })
+                    
          </div>
         
       
@@ -294,11 +293,7 @@
          @using (Html.BeginForm())
         {
           
-              <div class="form-group" >
-               <a class="btn btn-default imprimirInformePeriodo" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../Imprimir/Informefondorendir?Desde=@Html.Raw(@ViewBag.Desde)&Hasta=@Html.Raw(@ViewBag.Hasta)&ProyectoID=@Html.Raw(@ViewBag.PrID)" >
-                       <span class ="fa fa-print fa-2x"></span>  
-                </a>
-        </div>
+
         
         <div class="form-group form-inline">
             <div class="form-group" style="margin-right:10px" >
