@@ -2077,7 +2077,156 @@ namespace SAG2.Controllers
             }
         }
 
+        public ActionResult FondosrendirConsolidadoExcel(string Desde = "", string Hasta = "", int ProyectoID = 0, int tipoproyectoID, int regionID)
+        {
+            Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();
+            DateTime Inicio = DateTime.Parse(Desde);
+            DateTime Fin = DateTime.Parse(Hasta);
+            @ViewBag.Proyecto = Proyecto.NombreLista;
+            ViewBag.Desde = Desde;
+            ViewBag.Hasta = Hasta;
+            var movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == Proyecto.ID).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
+            return View(movimientos.ToList());
+            //var egresos = db.DetalleEgreso.Where(m => m.Egreso.Fecha >= Inicio).Where(m => m.Egreso.Fecha <= Fin).Where(m => m.Egreso.ProyectoID == Proyecto.ID).OrderBy(m => m.ID);
+            //return View(egresos.ToList());
+        }
+
+        public ActionResult FondosrendirConsolidado(int Periodo = 0, int Mes = 0)
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+            ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+            ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+
+            ViewBag.PrID = Proyecto.ID.ToString();
+            if (Periodo != 0 && Mes != 0)
+            {
+                int mes = Mes;
+                int año = Periodo;
+                int numberOfDays = DateTime.DaysInMonth(año, mes);
+                DateTime Inicio = new DateTime(año, mes, 1);
+                DateTime Fin = new DateTime(año, mes, numberOfDays);
+                ViewBag.Desde = Inicio.ToShortDateString();
+                ViewBag.Hasta = Fin.ToShortDateString();
+                ViewBag.Rendicion = "Rendicion";
+                ViewBag.CodSename = Proyecto.CodSename;
+                 var movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == Proyecto.ID).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
+                return View(movimientos.ToList());
+
+            }
+            else
+            {
+                int mes = (int)Session["Mes"];
+                int año = (int)Session["Periodo"];
+                int numberOfDays = DateTime.DaysInMonth(año, mes);
+                DateTime Inicio = new DateTime(año, mes, 1);
+                DateTime Fin = new DateTime(año, mes, numberOfDays);
+                ViewBag.Desde = Inicio.ToShortDateString();
+                ViewBag.Hasta = Fin.ToShortDateString();
+                var movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.ProyectoID == Proyecto.ID).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante);
+                return View(movimientos.ToList());
+             }
+        }
+
+        [HttpPost]
+        public ActionResult FondosrendirConsolidado(FormCollection form)
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            int ProyectoID = 1;
+            if (form["ProyectoID"].ToString() != "")
+            {
+                ProyectoID = int.Parse(form["ProyectoID"].ToString());
+                
+            }
+           
+            DateTime Desde = DateTime.Parse(form["desde"].ToString());
+            DateTime Hasta = DateTime.Parse(form["hasta"].ToString());
+
+            ViewBag.Desde = Desde.ToShortDateString();
+            ViewBag.Hasta = Hasta.ToShortDateString();
+            ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+            ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+
+            int RegionId = 0;
+            int tipoProyectoID = 0;
+            if (form["regionID"].ToString() != "")
+            {
+                RegionId = int.Parse(form["regionID"].ToString());
+                ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre", RegionId);
+            }
+            if (form["TipoProgramaID"].ToString() != "")
+            {
+                tipoProyectoID = int.Parse(form["TipoProgramaID"].ToString());
+                ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla", tipoProyectoID);
+            }
+            ViewBag.tpID = tipoProyectoID;
+            ViewBag.RegID = RegionId;
         
+           // Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();
+
+            if (usuario.esAdministrador)
+            {
+                if (ProyectoID != 1)
+                {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", ProyectoID);
+                }
+                else {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista");
+                }
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == ProyectoID), "ID", "NombreLista", ProyectoID);
+            }
+
+            ViewBag.PrID = ProyectoID.ToString();
+
+                int Periodo = (int)Session["Periodo"];
+                int Mes = (int)Session["Mes"];
+                int mes = Mes;
+                int año = Periodo;
+                int numberOfDays = DateTime.DaysInMonth(año, mes);
+                DateTime Inicio = new DateTime(año, mes, 1);
+                DateTime Fin = new DateTime(año, mes, numberOfDays);
+                ViewBag.Desde = Inicio.ToShortDateString();
+                ViewBag.Hasta = Fin.ToShortDateString();
+                List<Movimiento> movimientos = new List<Movimiento>();
+
+
+                if (ProyectoID != 1)
+                    movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante).ToList();
+                else
+                    if ((RegionId != 0) && (tipoProyectoID ==0))
+                    {
+                        movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.Proyecto.Direccion.Comuna.RegionID == RegionId).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Proyecto.CodCodeni  ).ThenBy(a => a.NumeroComprobante).ToList();
+       
+                    }
+                if ((RegionId == 0) && (tipoProyectoID != 0))
+                {
+                    movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.Proyecto.TipoProyectoID == tipoProyectoID).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Proyecto.CodCodeni  ).ThenBy(a => a.NumeroComprobante).ToList();
+
+                }
+                if ((RegionId != 0) && (tipoProyectoID != 0))
+                {
+                    movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Mes == Mes).Where(m => m.Periodo == Periodo).Where(m => m.Proyecto.TipoProyectoID == tipoProyectoID && m.Proyecto.Direccion.Comuna.RegionID == RegionId).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Proyecto.CodCodeni).ThenBy(a => a.NumeroComprobante).ToList();
+
+                }
+                
+                return View(movimientos.ToList());
+
+            
+        }
+
+
         /*Revisa como se producen*/
         public ActionResult Fondosrendir(int Periodo = 0, int Mes = 0)
         {

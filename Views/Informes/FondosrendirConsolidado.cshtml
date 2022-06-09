@@ -1,0 +1,495 @@
+﻿@model IEnumerable<SAG2.Models.Movimiento>
+@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Fondos a Rendir";
+    var total = 0;
+    var totReintegro = 0;
+    int numCapa = 1;
+    string ncapa;
+    string btndr;
+    SAG2.Classes.Util utils = new SAG2.Classes.Util();
+}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".js-autocomplete").select2();
+        });
+    </script>
+<div id="SAGBox">
+    <h2>Informe de Fondos a Rendir</h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+         <fieldset>
+     <div class="panel panel-default">
+    <div class="panel-body">
+       <table class="table table-striped">
+           <tr><td>
+               <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
+               <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+               <div class="col-md-4">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+           </td></tr> 
+       </table>
+     <div class="form-inline form-group">
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Desde</label>
+            </div>
+        <div class="form-group">
+            @{DateTime date1 = DateTime.Parse(@ViewBag.Desde);}
+            <input type="date" name="Desde" id="Desde" class="calendario form-control" value="@date1.ToString("yyyy-MM-dd")" maxlength="10" />
+        </div>
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Hasta</label>
+           </div>
+        <div class="form-group">
+            @{DateTime date = DateTime.Parse(@ViewBag.Hasta);}
+            @*@DateTime.Parse(@ViewBag.Hasta, "yyyy-MM-dd")*@
+            
+            <input name="Hasta" type="date" id="Hasta" class="calendario form-control" value="@date.ToString("yyyy-MM-dd")"  maxlength="10" style="margin-right: 20px;" />
+        </div>
+         <div class ="form-group">
+             <input type="submit" value="Ver resultados!" class="btn btn-primary"  />
+        </div>
+          <div class="form-group">
+             <a  data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="fondorendir" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
+                  <span class ="fa fa-file-excel-o  fa-2x"></span>
+             </a>
+         </div>
+        
+      
+     </div>
+  </div>
+
+</div>
+                       
+</fieldset>
+          
+    }
+}
+   
+  
+
+    <div style="height: 280px; overflow: scroll;">
+    <table class="table table-bordered">
+         <tr>
+             <th style="width: auto;">Tipo</th>
+             <th style="width: auto;">Region</th>
+             <th style="width: auto;">CC</th>
+            <th style="width: auto;">Nº E.</th>
+            <th  style="width: auto;">Fecha</th>
+            <th style="width: auto;">Nº Cheque</th>
+            <th style="width: auto;">Documento</th>
+            <th style="width: auto;">Nº Doc.</th>
+            <th style="width: auto;">Fecha</th>
+            <th style="width: auto;">Rut </th>
+            <th style="width: auto;">Beneficiario</th>
+            <th style="width: auto;">Monto $</th>
+            <th style="width: auto;">Monto Reintegro$</th>
+            <th style="width: auto;">Cuenta</th>
+            <th>Glosa</th>
+            <th style="width: 90px;">Cta. Cte.</th>
+        </tr>
+    @foreach (var item in Model)
+    {
+
+            SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).Where(d=> d.CuentaID == 60).ToList();
+            foreach (var detalle in detalles)
+            {
+                total = total + detalle.Monto;
+                int valor_reintegros = 0;
+                SAG2.Models.SAG2DB db2 = new SAG2.Models.SAG2DB();
+                  List<SAG2.Models.Movimiento> Reintegrosrev = db.Movimiento.Where(d => d.auto == 0).Where(d => d.DetalleEgresoID == detalle.ID).Where(d => d.TipoComprobanteID == 3).ToList();
+                  foreach (var Reintegro in Reintegrosrev)
+                  {
+                     
+                      try
+                      {
+                          valor_reintegros = detalle.Monto;
+                      }
+                      catch (Exception)
+                      {
+                          valor_reintegros = 0;
+                      }
+                  }
+                totReintegro = totReintegro + valor_reintegros;
+                
+                
+                
+            <tr detalleid="@detalle.ID">
+                    <td align="center">
+                    @item.Proyecto.TipoProyecto.Sigla   
+                </td>
+                    <td align="center">
+                    @item.Proyecto.Direccion.Comuna.Region.Nombre     
+                </td>
+                    <td align="center">
+                    @item.Proyecto.CodCodeni  
+                </td>
+                <td align="center">
+                    @item.NumeroComprobante
+                </td>
+                <td>
+                    @detalle.Egreso.Fecha.Value.ToShortDateString()
+                </td>
+                <td align="right">
+                    @detalle.Egreso.Cheque
+                </td>
+                <td>
+                    @if (@detalle.Documento != null)
+                    {
+                        @detalle.Documento.Nombre
+                    }
+                </td>
+                <td>
+                    @detalle.NDocumento
+                </td>
+                <td>
+                    @detalle.FechaEmision.ToShortDateString()
+                </td>
+                  <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Persona.RutDV)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.RutDV)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@detalle.Egreso.Rut)
+                    }
+                </td>
+                <td>
+                    @if (detalle.Egreso.Persona != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Persona.NombreCompleto)
+                    }
+                    else if (detalle.Egreso.Proveedor != null)
+                    {
+                        @Html.DisplayFor(modelItem => detalle.Egreso.Proveedor.Nombre)
+                    }
+                    else
+                    { 
+                        @Html.Raw(@detalle.Egreso.Beneficiario)
+                    }
+                </td>
+                <td align="right">
+                    <strong>
+                    $@detalle.Monto.ToString("#,##0")
+                    </strong>
+                </td>
+                   <td align="right">
+                    <strong>
+                    $@valor_reintegros.ToString("#,##0")
+                    </strong>
+                </td>
+                <td align="left">@if (@detalle.Cuenta != null)
+                                 { @Html.Raw(utils.cuentaPadre(@detalle.Cuenta)) }</td>
+                <td>
+                    @detalle.Glosa
+                </td>
+                <td>
+                    @detalle.Egreso.CuentaCorriente.Numero
+                </td>
+            </tr>
+      
+            if (valor_reintegros != 0){
+                ncapa = "ncapa_" + numCapa;
+                btndr = "btnDR_" + numCapa;
+
+            <tr>
+
+                <td colspan="13" style="background:#e2e0e0">
+                    <button id="@btndr" class="btn btn-primary" >Detalle Reintegros</button>
+                    <div id="@ncapa" style ="display:none;">
+                    
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: auto;">Nº Comp.</th>
+                            <th style="width: auto;">Fecha</th>
+                            <th style="width: auto;">Monto $</th>
+                            <th style="width: auto;">Nº Doc.</th>
+                            <th style="width: auto;">Cta. Cte.</th>
+                            <th style="width: auto;">Glosa</th>                        
+               
+                        </tr>
+            @{
+            SAG2.Models.SAG2DB db3 = new SAG2.Models.SAG2DB();
+            numCapa = numCapa +1;
+            List<SAG2.Models.Movimiento> Reintegros = db.Movimiento.Where(d => d.auto == 0).Where(d => d.DetalleEgresoID == detalle.ID).Where(d => d.TipoComprobanteID == 3).ToList();
+            foreach (var Reintegro in Reintegros)
+            {
+                <tr>
+                   <td align="center">
+                @Reintegro.NumeroComprobante
+            </td>
+            <td>
+                @Reintegro.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="right">
+                <strong>
+                $@Reintegro.Monto_Ingresos.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                @Reintegro.Cheque
+            </td>
+            <td>
+                @Reintegro.CuentaCorriente.Numero
+            </td>
+            <td>
+                @Reintegro.Descripcion
+            </td>
+            </tr>
+                // buscar detalle reintegro aqui !!!!
+             int idreintegro = Reintegro.ID;    
+            SAG2.Models.SAG2DB db4 = new SAG2.Models.SAG2DB();
+            List<SAG2.Models.DetalleReintegro> DReintegros = db.DetalleReintegro.Where(d => d.MovimientoID == idreintegro).ToList();  //Movimiento.Where(d => d.auto == 0).Where(d => d.DetalleEgresoID == detalle.ID).Where(d => d.TipoComprobanteID == 3).ToList();
+            foreach (var DReintegro in DReintegros)
+            {
+                               <tr>
+                                <td align="center">
+                @DReintegro.NDocumento
+            </td>
+            <td>
+                @DReintegro.Documento.Nombre;
+            </td>
+            <td align="right">
+                <strong>
+                $@DReintegro.Monto.ToString("#,##0")
+                </strong>
+            </td>
+            <td align="right">
+                 @Html.Raw(db4.Cuenta.Find(@DReintegro.CuentaIDD).NombreLista)
+            </td>
+ 
+</tr> 
+                
+            }
+                
+            }
+            }
+                     </table>
+                        <script>
+                            $("#@btndr").click(function () {
+                                $("#@ncapa").toggle();
+                            });
+                        </script>
+            </div>
+                </td>
+            </tr>
+    }
+    
+   
+            }
+        }
+    
+         </table>
+    </div>
+   
+    <br />
+     <div class="form-group form-inline">
+         @using (Html.BeginForm())
+        {
+          
+              <div class="form-group" >
+               <a class="btn btn-default imprimirInformePeriodo" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../Imprimir/Informefondorendir?Desde=@Html.Raw(@ViewBag.Desde)&Hasta=@Html.Raw(@ViewBag.Hasta)&ProyectoID=@Html.Raw(@ViewBag.PrID)" >
+                       <span class ="fa fa-print fa-2x"></span>  
+                </a>
+        </div>
+        
+        <div class="form-group form-inline">
+            <div class="form-group" style="margin-right:10px" >
+                 <label>Total Egresos</label>
+            </div><br />
+            <div class="form-group" style="margin-right:10px" >
+                <b><input class="form-control" value="$@total.ToString("#,###")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+            </div>
+            </div>
+          <div class="form-group form-inline ">
+          <div class="form-group" style="margin-right:10px" >
+              <label>Total Reintegros</label>
+            </div><br />
+          <div class="form-group" style="margin-right:10px" >
+           <b><input class="form-control" value="$@totReintegro.ToString("#,###")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+        </div></div>
+             
+               <div class="form-group form-inline ">
+          <div class="form-group" style="margin-right:10px" >
+              <label>Total Saldo</label>
+            </div><br />
+          <div class="form-group" style="margin-right:10px" >
+              @{ var resultado = total - totReintegro;
+                  
+                  }
+           <b><input class="form-control" value="$@resultado.ToString("#,###")" readonly="readonly" style="text-align: right; width: 150px;" /></b>
+        </div></div>
+          }
+        </div>
+</div>
+<script>
+    $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+
+
+
+        $("#ExcelCC").click(function () {
+            alert("hola");
+            var mensaje = "";
+            var cuentaID = $('#CuentaID').val();
+            var desde = $('#Desde').val();
+            var Hasta = $('#Hasta').val();
+            var TipoProgramaID = $('#TipoProgramaID').val();
+            var ProyectoID = $('#ProyectoID').val();
+            var regionID = $('#regionID').val();
+            var url = '@Url.Action("CuentaExcelConsolidado", "Informes", new { Hasta = "Hasta_cambiar", Desde = "Desde_cambiar", Cuenta = "cuenta_cambiar", ProyectoID = "ProyectoID_cambiar", tipoProyectoID = "tipoProyectoID_cambiar", RegionID = "RegionID_cambiar" })';
+
+            if (regionID == "") {
+                regionID = 0;
+            }
+            if (ProyectoID == "") {
+                ProyectoID = 0;
+            }
+            if (TipoProgramaID == "") {
+                TipoProgramaID = 0;
+            }
+            if (cuentaID == "") {
+                mensaje = "Falta Seleccionar Cuenta";
+            }
+            if (desde == "") {
+                mensaje = mensaje + "</br>" + "Falta fecha desde";
+            }
+            if (Hasta == "") {
+                mensaje = mensaje + "</br>" + "Falta Fecha Hasta";
+            }
+            if (mensaje == "") {
+                url = url.replace("&amp;", "&");
+                url = url.replace("Hasta_cambiar", Hasta);
+                url = url.replace("&amp;", "&");
+                url = url.replace("Desde_cambiar", desde);
+                url = url.replace("&amp;", "&");
+                url = url.replace("cuenta_cambiar", cuentaID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("ProyectoID_cambiar", ProyectoID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("tipoProyectoID_cambiar", TipoProgramaID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("RegionID_cambiar", regionID);
+                $("#Detalle").load(url);
+            }
+            else {
+
+                Swal.fire(mensaje)
+            }
+
+        });
+
+        $("#Procesar").click(function () {
+            var mensaje = "";
+            var cuentaID = $('#CuentaID').val();
+            var desde = $('#Desde').val();
+            var Hasta = $('#Hasta').val();
+            if (cuentaID == "") {
+                mensaje = "Falta Seleccionar Cuenta";
+            }
+            if (desde == "") {
+                mensaje = mensaje + "</br>" + "Falta fecha desde";
+            }
+            if (Hasta == "") {
+                mensaje = mensaje + "</br>" + "Falta Fecha Hasta";
+            }
+            if (mensaje == "") {
+                $("form").submit();
+            }
+            else {
+
+                Swal.fire(mensaje)
+            }
+
+        });
+
+        $('#TipoProgramaID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+            var Tprograma = $('#TipoProgramaID').val();
+            if (Tprograma == "") {
+                Tprograma = 0;
+            }
+            var Tregion = $('#regionID').val();
+            if (Tregion == "") {
+                Tregion = 0;
+            }
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    id: Tprograma,
+                    RegionID: Tregion
+                },
+                success: function (agrupaciones, textStatus, xhr) {
+                    var comunas = agrupaciones;
+                    var ddlComunas = $('#ProyectoID');
+                    $('#ProyectoID > option').remove();
+                    if (comunas.length == 0) {
+                        ddlComunas.append($("<option />").val("1").text("Sin información"));
+                    } else {
+                        ddlComunas.append($("<option />").val("1").text("Todos"));
+                        for (i = 0; i < comunas.length; i++) {
+                            ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                        }
+                    }
+
+                },
+                error: function (request, status, error) {
+                    alert("error");
+                }
+            });
+        });
+
+        $('#regionID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+            var Tprograma = $('#TipoProgramaID').val();
+            if (Tprograma == "") {
+                Tprograma = 0;
+            }
+            var Tregion = $('#regionID').val();
+            if (Tregion == "") {
+                Tregion = 0;
+            }
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    id: Tprograma,
+                    RegionID: Tregion
+                },
+                success: function (agrupaciones, textStatus, xhr) {
+                    var comunas = agrupaciones;
+                    var ddlComunas = $('#ProyectoID');
+                    $('#ProyectoID > option').remove();
+                    if (comunas.length == 0) {
+                        ddlComunas.append($("<option />").val("1").text("Sin información"));
+                    } else {
+                        ddlComunas.append($("<option />").val("1").text("Todos"));
+                        for (i = 0; i < comunas.length; i++) {
+                            ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                        }
+                    }
+
+                },
+                error: function (request, status, error) {
+                    alert("error");
+                }
+            });
+
+        });
+
+
+    });
+</script>
