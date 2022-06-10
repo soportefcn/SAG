@@ -204,8 +204,14 @@ namespace SAG2.Controllers
 
             @ViewBag.Proyecto = Proyecto.NombreLista;
             int periodo = (int)Session["Periodo"];
-            ViewBag.MesApertura = (int)Session["Mes"];
+            int xmes = (int)Session["Mes"] - 1;
+            ViewBag.MesApertura = xmes;
             ViewBag.PeriodoApertura = periodo;
+            if (xmes == 0) {
+                ViewBag.MesApertura = 12;
+                ViewBag.PeriodoApertura = periodo - 1;
+            }
+            
             ViewBag.Periodo = periodo;
             ViewBag.Mes = (int)Session["Mes"]; 
             @ViewBag.NroIngresos = "0";
