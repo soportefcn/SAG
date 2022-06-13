@@ -528,17 +528,17 @@ namespace SAG2.Controllers
                 db.Autorizacion.Add(autorizacion);
                 db.SaveChanges();
 
-                string MensajeCorreo = "Se Solicita Autorizacio&oacute;n <br> Para : ";
-                MensajeCorreo = MensajeCorreo + "<table style='border: 1px solid black;'><tr><td>Proyecto</td><td>" + Proyecto.NombreLista  + "</td></tr>";
-                MensajeCorreo = MensajeCorreo + "<tr><td>Tipo Comp.</td><td>Egreso</td></tr><tr><td># Comp</td><td>" + egreso.NumeroComprobante + "</td></tr>";
-                MensajeCorreo = MensajeCorreo + "<tr><td>Solicitado Por </td><td>" + persona.NombreCompleto + "</td></tr><tr><td>Tipo</td><td>Modificaci&oacute;n</td></tr> </table>";
+                //string MensajeCorreo = "Se Solicita Autorizacio&oacute;n <br> Para : ";
+                //MensajeCorreo = MensajeCorreo + "<table style='border: 1px solid black;'><tr><td>Proyecto</td><td>" + Proyecto.NombreLista  + "</td></tr>";
+                //MensajeCorreo = MensajeCorreo + "<tr><td>Tipo Comp.</td><td>Egreso</td></tr><tr><td># Comp</td><td>" + egreso.NumeroComprobante + "</td></tr>";
+                //MensajeCorreo = MensajeCorreo + "<tr><td>Solicitado Por </td><td>" + persona.NombreCompleto + "</td></tr><tr><td>Tipo</td><td>Modificaci&oacute;n</td></tr> </table>";
              
-                var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 4 && d.ProyectoID == egreso.ProyectoID).ToList();
-                foreach (var Scorreo in supervisorCorreo)
-                {
-                    string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
-                    Correo.enviarCorreo(CorreoSup, MensajeCorreo, "Autorizacion Modificación");
-                }
+                //var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 4 && d.ProyectoID == egreso.ProyectoID).ToList();
+                //foreach (var Scorreo in supervisorCorreo)
+                //{
+                //    string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
+                //   // Correo.enviarCorreo(CorreoSup, MensajeCorreo, "Autorizacion Modificación");
+                //}
 
 
                 ViewBag.Mensaje = utils.mensajeAdvertencia("La modificación ha sido solicitada al Supervisor.");
@@ -1122,7 +1122,7 @@ namespace SAG2.Controllers
                 autorizacion.FechaSolicitud = DateTime.Now;
                 db.Autorizacion.Add(autorizacion);
                 db.SaveChanges();
-                // 20220601 - Aqui Enviar correo Autorizacion Supervisor
+                /* 20220601 - Aqui Enviar correo Autorizacion Supervisor
                 string MensajeCorreo = "Se Solicita Autorizaci&oacute;n <br> Para : ";
                MensajeCorreo = MensajeCorreo + "<table><tr><td>Proyecto</td><td>" + movimiento.Proyecto.NombreLista + "</td></tr>";
                MensajeCorreo = MensajeCorreo + "<tr><td>Tipo Comp.</td><td>Egreso</td></tr><tr><td># Comp</td><td>" + movimiento.NumeroComprobante + "</td></tr>";
@@ -1134,7 +1134,7 @@ namespace SAG2.Controllers
 
                     Correo.enviarCorreo(CorreoSup, MensajeCorreo, "Autorizacion Anulacion");  
                 }
-                //
+                */
                 return RedirectToAction("Edit", new { id = @id, mensaje = "La anulación ha sido solicitada al Supervisor." });
             }
 
