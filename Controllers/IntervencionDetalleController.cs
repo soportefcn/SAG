@@ -665,12 +665,12 @@ namespace SAG2.Controllers
                     cuentaID = 3;
                 }
 
-                int CuentaCorrienteID = int.Parse(Session["CuentaCorriente"].ToString()); 
+                int CuentaCorrienteID = ((CuentaCorriente)Session["CuentaCorriente"]).ID; 
                 int saldoFinal = 0;
                 int periodo = (int)Session["Periodo"];
-                int ProyectoID = int.Parse(Session["Proyecto"].ToString()); 
+                int ProyectoID = ((Proyecto)Session["Proyecto"]).ID ;
                 Session.Remove("DetalleIngreso");
-
+                ViewBag.ProyectoID = ProyectoID;
                 int NroComprobante = 1;
 
                 if (db.Movimiento.Where(m => m.ProyectoID == ProyectoID).Where(a => a.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Periodo == periodo).Count() > 0)
@@ -748,9 +748,112 @@ namespace SAG2.Controllers
             }
             
             }
-             return View("ResumenAtenciones");
+            return RedirectToAction("ResumenAtenciones");
         }
 
+      
+        public ActionResult RealizarIngresoIntervencion(int IDintervencion, string Descripcion, int Monto)
+        {
+            IntervencionResumen inter = db.IntervencionResumen.Find(IDintervencion);
+
+            if (inter.EstadoID == 2)
+            {
+                int cuentaID = 0;
+                if (inter.Tipo == 1)
+                {
+                    cuentaID = 5;
+                }
+                else
+                {
+                    cuentaID = 3;
+                }
+
+                int CuentaCorrienteID = ((CuentaCorriente)Session["CuentaCorriente"]).ID;
+                int saldoFinal = 0;
+                int periodo = (int)Session["Periodo"];
+                int ProyectoID = ((Proyecto)Session["Proyecto"]).ID;
+                Session.Remove("DetalleIngreso");
+                ViewBag.ProyectoID = ProyectoID;
+                int NroComprobante = 1;
+
+                if (db.Movimiento.Where(m => m.ProyectoID == ProyectoID).Where(a => a.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Periodo == periodo).Count() > 0)
+                {
+                    NroComprobante = db.Movimiento.Where(m => m.ProyectoID == ProyectoID).Where(a => a.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Periodo == periodo).Max(a => a.NumeroComprobante) + 1;
+                }
+
+                Movimiento movimiento = new Movimiento();
+                DateTime fecha = DateTime.Today;
+
+                string cheque = String.Format("{0}{1}{2}", fecha.Day, fecha.Month, fecha.Year);
+
+                movimiento.Descripcion = Descripcion;
+                movimiento.Fecha = fecha;
+                movimiento.ProyectoID = ProyectoID;
+                movimiento.CuentaCorrienteID = CuentaCorrienteID;
+                movimiento.Mes = (int)Session["Mes"];
+                movimiento.Periodo = (int)Session["Periodo"];
+                movimiento.PersonaID = null;
+                movimiento.DetalleEgresoID = null;
+                movimiento.ProveedorID = null;
+                movimiento.TipoComprobanteID = ctes.tipoIngreso;
+                movimiento.CuentaID = cuentaID;
+                movimiento.Monto_Ingresos = Monto;
+                movimiento.Cheque = int.Parse(cheque);
+                movimiento.Saldo = saldoFinal;
+                movimiento.NDocumento = 0;
+                movimiento.NumeroComprobante = NroComprobante;
+
+                try
+                {
+                    Usuario Usuario = (Usuario)Session["Usuario"];
+                    movimiento.UsuarioID = Usuario.ID;
+                    movimiento.FechaCreacion = DateTime.Now;
+
+                    if (ModelState.IsValid)
+                    {
+                        db.Movimiento.Add(movimiento);
+                        db.SaveChanges();
+
+                        inter.CompIngreso = movimiento.ID;
+                        inter.Monto = Monto + inter.Monto;
+                        if ((inter.Valor - inter.Monto) <= 0)
+                        {
+                            inter.EstadoID = 1;
+                        }
+                        else
+                        {
+                            inter.EstadoID = 2;
+                        }
+
+                        //inter.EstadoID = 1;
+
+                        db.Entry(inter).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        if (utils.ingresarSaldoIngreso(movimiento, ModelState))
+                        {
+                            @ViewBag.Mensaje = utils.mensajeOK("Ingreso registrado con éxito!");
+                        }
+                        else
+                        {
+                            throw new Exception("Ocurrio un error al actualiza el saldo de la cuenta corriente.");
+                        }
+                        TempData["Message"] = "Ingreso Creado Con éxito!";
+                    }
+                    else
+                    {
+                        utils.erroresState(ModelState);
+                        throw new Exception("Ocurrió un error al registrar el ingreso");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["Message"] = "Error" + ex.Message;
+                }
+
+            }
+            return RedirectToAction("ResumenAtenciones");
+        }
 
 
         [HttpPost]
