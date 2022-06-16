@@ -247,7 +247,7 @@ namespace SAG2.Controllers
                 Periodo = (int)Session["Periodo"];
                 Mes = (int)Session["Mes"];
             }
-
+            ViewBag.ListadoProyecto = db.Proyecto.ToList();   
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.NombreProyecto = Proyecto.NombreLista;
             ViewBag.CodSename = Proyecto.CodSename;

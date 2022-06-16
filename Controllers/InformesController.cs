@@ -252,9 +252,13 @@ namespace SAG2.Controllers
             ViewBag.Entrada = 1;
             List<movcuentatr> mcuenta = new List<movcuentatr>();
             // Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            int pr_id = int.Parse(form["ProyectoID"].ToString());
+            int pr_id = 1;
             int RegionId = 0;
             int tipoProyectoID = 0;
+            if (form["ProyectoID"].ToString() != "")
+            {
+                pr_id = int.Parse(form["ProyectoID"].ToString());
+            }
             if (form["regionID"].ToString() != "") {
                 RegionId = int.Parse(form["regionID"].ToString());
             }
@@ -313,6 +317,15 @@ namespace SAG2.Controllers
             }
             else
             {
+                if (RegionId == 0 && tipoProyectoID == 0)
+                {
+                    Ingresos = db.Movimiento.Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(m => m.CuentaID == CuentaID).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante).ToList();
+                    Reintegros = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(m => m.CuentaID == CuentaID).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante).ToList();
+                    ReintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Fecha >= Inicio).Where(m => m.Reintegro.Fecha <= Fin).Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(m => m.CuentaIDD == CuentaID).OrderBy(m => m.CuentaIDD).ToList();
+                    Egresos = db.DetalleEgreso.Where(m => m.Egreso.Fecha >= Inicio).Where(m => m.Egreso.Fecha <= Fin).Where(m => m.CuentaID == CuentaID).Where(m => m.Nulo == null && m.Egreso.Eliminado == null && m.Egreso.Temporal == null).OrderBy(m => m.Cuenta.Orden).ToList();
+                    ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+                    ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre", RegionId);
+                }
                 if (RegionId != 0 && tipoProyectoID == 0)
                 {
                     Ingresos = db.Movimiento.Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(m => m.CuentaID == CuentaID).Where(a => a.Temporal == null && a.Eliminado == null && a.CuentaID != 1).Where(a => a.Proyecto.Direccion.Comuna.RegionID == RegionId).OrderByDescending(a => a.Periodo).ThenBy(a => a.NumeroComprobante).ToList();
@@ -2227,6 +2240,10 @@ namespace SAG2.Controllers
                 }
                 else
                 {
+                    if ((RegionId == 0) && (tipoProyectoID == 0))
+                    {
+                        movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Proyecto.CodCodeni).ThenBy(a => a.NumeroComprobante).ToList();
+                    }
                     if ((RegionId != 0) && (tipoProyectoID == 0))
                     {
                         movimientos = db.Movimiento.Where(m => m.auto == 0).Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin).Where(m => m.Proyecto.Direccion.Comuna.RegionID == RegionId).Where(m => m.TipoComprobanteID == 2).Where(a => a.Temporal == null && a.Eliminado == null && (a.CuentaID != 6 || a.CuentaID == null)).OrderByDescending(a => a.Proyecto.CodCodeni).ThenBy(a => a.NumeroComprobante).ToList();

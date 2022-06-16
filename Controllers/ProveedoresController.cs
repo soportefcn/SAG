@@ -46,6 +46,23 @@ namespace SAG2.Controllers
 
         //    return View(proveedor.OrderBy(p => p.Nombre).ToList());
         //}
+         [HttpPost]
+        public ViewResult PopUp(Proveedor dato)
+        {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            string buscar = "";
+            try
+            {
+                buscar = Request.Form["busqueda"].ToString();
+            }
+            catch (Exception)
+            { }
+            var rol = db.RolProveedor.Include(r => r.Proveedor).Where(r => r.ProyectoID == Proyecto.ID && r.Proveedor.Nombre.Contains(buscar));
+            var proveedor = from r in rol
+                            select r.Proveedor;
+
+            return View(proveedor.OrderBy(p => p.Nombre).ToList());
+        }
         public ViewResult PopUp()
         {
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];

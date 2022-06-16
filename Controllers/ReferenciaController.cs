@@ -66,6 +66,7 @@ namespace SAG2.Controllers
  
         public ActionResult Edit(int id)
         {
+            ViewBag.grupo = "Tasa de Impuestos de Honorarios";
             Referencia referencia = db.Referencia.Find(id);
             return View(referencia);
         }
@@ -78,6 +79,7 @@ namespace SAG2.Controllers
         {
             if (ModelState.IsValid)
             {
+                referencia.GRUPO = "PORCENTAJE"; 
                               
                 referencia.ESTADO = 1;
                 if (referencia.PREDETERMINADO == 1){
