@@ -1,7 +1,25 @@
 ﻿@model IEnumerable<SAG2.Models.IntervencionDetalle>
 @{
     ViewBag.Title = "Asignar Pagos ";
-    int proyectoID = ViewBag.ProyectoID; 
+    int proyectoID = ViewBag.ProyectoID;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+
+    int Periodo = @ViewBag.Periodo;
+    int Mes = @ViewBag.Mes;
 }
 
 <div class="panel-heading">
@@ -11,12 +29,37 @@
 @using (Html.BeginForm("AsignarPagos", "IntervencionDetalle", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     <div class="panel-body">
-
-        <div class="form-inline">
+            <div class="form-inline" >
+          <div class="form-group" style="margin-right: 0px;margin-left:8px">
+              <label>Mes</label><br />
+                            <select name="MesApertura" id="Mesapertura" class="form-control">
+                  @for (var i = 0; i < 12; i++)
+                  {
+                      <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.Mes == (i + 1))
+                                                                     { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw(@Meses[@i])
+                  </option>
+                  }
+              </select>
+ 
+          </div>
+          <div class="form-group" style="margin-right: 30px;margin-left:8px">
+              <label>Año</label><br />
+        
+              <select name="PeriodoApertura" id="PeriodoApertura" class="form-control">
+                  @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                  {
+                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                                                                 { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw((@i).ToString())
+                  </option>
+                  }
+              </select>
+          </div>
+  
             <div class="form-group" style="margin-right: 30px;">
-                @Html.Label("Proyecto:")
-            </div>
-            <div class="form-group" style="margin-right: 50px;">
+                @Html.Label("Proyecto:") <br />
+         
                   <select name="ProyectoID" id="ProyectoID" class="js-autocomplete" >
                  <option value="-1"> - Seleccione proyecto</option>
                     @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
@@ -33,10 +76,13 @@
                         </select>
             </div>
 
-
-            <div class="form-group" style="margin-right: 20px;">
+      
+           <div class="form-group" style="margin-right: 20px;">
+               <br />
                 <input type="submit" value="Listar" class="btn btn-primary" />
             </div>
+    
+         
 
         </div>
 

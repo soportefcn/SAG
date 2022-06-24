@@ -57,7 +57,7 @@
         {
             string ProyectTraspasado = "";
             if (movimiento.ProyectoIDTraspaso != null) {
-                ProyectTraspasado ="Traspasado " + dp.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().Nombre;   
+                ProyectTraspasado ="Traspasado desde  " + dp.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().Nombre;   
             }
         <tr>
             <td nowrap="nowrap" align="center">@movimiento.Fecha.ToShortDateString()</td>
@@ -67,7 +67,7 @@
             @if (@movimiento.Entrada > 0)
             {
             <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
-            <td nowrap="nowrap">" "</td>
+            <td nowrap="nowrap"> </td>
             }
             else
             {

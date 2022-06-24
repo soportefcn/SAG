@@ -17,6 +17,9 @@
     List<SAG2.Models.Bodega> dp = new List<SAG2.Models.Bodega>();
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
 
+    List<SAG2.Models.Proyecto> ProyectoLista = new List<SAG2.Models.Proyecto>();
+    ProyectoLista = (List<SAG2.Models.Proyecto>)@ViewBag.ListadoProyecto;
+
     var Meses = new string[12]
 {
         "Enero",
@@ -89,6 +92,12 @@
     </thead>
     @foreach (var movimiento in Model)
     {
+        string ProyectTraspasado = "";
+        if (movimiento.ProyectoIDTraspaso != null)
+        {
+            ProyectTraspasado = "Trapaso desde CC : " +  ProyectoLista.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().CodCodeni;
+        }
+        
         if (arti != movimiento.Articulo.Nombre)
         {
             if (arti != "")
@@ -201,9 +210,16 @@
                     {@movimiento.Salida}
                 </td>
                 <td></td>
-                <td style="text-align: center;">@movimiento.Observaciones</td>
+                <td style="text-align: center;">                    @if (ProyectTraspasado == "")
+                                                                    {
+                    @movimiento.Observaciones.ToUpper();
+                                                                    }
+                                                                    else
+                                                                    {
+                    @ProyectTraspasado;
+                                                                    } </td>
             </tr>
-}
+    }
     @if (arti != "")
     {
 

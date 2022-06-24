@@ -51,8 +51,45 @@
     <div class="panel-body">
         @if (Model.Count() > 0)
         {
+                    <div style="align-content:center;">
+            <table class="table table-bordered table-striped ">
+                <tr>
+                    <th style="align-content:center;" colspan="3"><h3>Resumen Montos</h3></th>
+                </tr>
+                <tr>
+                    <th style="align-content:center;"><strong>Tipo</strong></th>
+                    <th style="align-content:center;"><strong>N° Intervenciones</strong></th>
+                    <th style="align-content:center;"><strong>Total</strong></th>
+                </tr>
+                
+                <tr>
+                    <td><strong>Medida de protección</strong></td>
+                    @{
+                        int totalPagar = Model.Sum(a => a.TotalIntervencionesAPagar);
+                        int totBis = Model.Where(d => d.TotalIntervencionesAPagar == 1).Sum(a => a.Bis);
+                        int totmedida = totalPagar - totBis;
+                    }
+                    <td><strong>@totmedida</strong></td>
+                    <td><strong>$ @((@Model.Sum(a => a.TotalPagar) - Model.Sum(a => a.TotalPagarBis)).ToString("#,##0"))</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>80 - bis</strong></td>
+                    <td><strong>@(Model.Where(d => d.TotalIntervencionesAPagar == 1 ).Sum(a => a.Bis))</strong></td>
+                    <td><strong>$ @Model.Sum(a => a.TotalPagarBis).ToString("#,##0")</strong></td>
+         
+
+                </tr>
+            </table>
+                           <div style="float :right;display:inline-block;margin-bottom: 10px;">
+            <input type="submit" value="Guardar" class="btn btn-primary" />
+                               <br />
+        </div>
+        </div>
             <table class="table table-bordered table-striped table-responsive">
-                <thead>
+              
+                  <tr>
+                    <th style="align-content:center;" colspan="10"><h3>Detalle Intervenciones</h3></th>
+                </tr>
                     <tr>
                         <th style=" width:auto;">Cód. Sename</th>
                         <th style=" width:auto;">Nombre Completo</th>
@@ -65,8 +102,7 @@
                         <th style=" width:auto;">Total</th>
                         <th style=" width:auto;">Tipo</th>
                     </tr>
-                </thead>
-                <tbody>
+              
                     @foreach (var item in Model)
                     {
                         string nombre = String.Format("{0} {1} {2}", item.Nombre, item.ApellidoPaterno, item.ApellidoMaterno);
@@ -107,7 +143,7 @@
                     </tr>
 
                     }
-                </tbody>
+               
             </table>
         }
         else
@@ -116,45 +152,11 @@
         }
 
 
-        <div style="align-content:center;">
-            <table class="table table-bordered table-striped ">
-                <tr>
-                    <th style="align-content:center;" colspan="3"><h3>Resumen Montos</h3></th>
-                </tr>
-                <tr>
-                    <th style="align-content:center;"><strong>Tipo</strong></th>
-                    <th style="align-content:center;"><strong>N° Intervenciones</strong></th>
-                    <th style="align-content:center;"><strong>Total</strong></th>
-                </tr>
-                
-                <tr>
-                    <td><strong>Medida de protección</strong></td>
-                    @{
-                        int totalPagar = Model.Sum(a => a.TotalIntervencionesAPagar);
-                        int totBis = Model.Where(d => d.TotalIntervencionesAPagar == 1).Sum(a => a.Bis);
-                        int totmedida = totalPagar - totBis;
-                    }
-                    <td><strong>@totmedida</strong></td>
-                    <td><strong>$ @((@Model.Sum(a => a.TotalPagar) - Model.Sum(a => a.TotalPagarBis)).ToString("#,##0"))</strong></td>
-                </tr>
-                <tr>
-                    <td><strong>80 - bis</strong></td>
-                    <td><strong>@(Model.Where(d => d.TotalIntervencionesAPagar == 1 ).Sum(a => a.Bis))</strong></td>
-                    <td><strong>$ @Model.Sum(a => a.TotalPagarBis).ToString("#,##0")</strong></td>
-         
 
-                </tr>
-            </table>
-        </div>
     </div>
 
 
 
-    <div class="panel-footer" style="height:55px;">
-        <div style="float :right;display:inline-block">
-            <input type="submit" value="Guardar" class="btn btn-primary" />
-        </div>
-    </div>
 
     if (TempData["Message"] != null)
     {

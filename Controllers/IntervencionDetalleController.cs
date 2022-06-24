@@ -146,7 +146,6 @@ namespace SAG2.Controllers
        // [ValidateAntiForgeryToken]
         public ActionResult Upload(IntervencionDetalle model, HttpPostedFileBase upload, int ParametroUSSID, int ProgramaQID, int ValorPorcZona)
         {
-
             try
             {
                 List<IntervencionDetalle> lista = new List<IntervencionDetalle>();
@@ -159,7 +158,6 @@ namespace SAG2.Controllers
                 double Q = ProgramaQ.Valor;
                 int PeriodoI = int.Parse(model.FechaIngreso.Year.ToString());
                 int TotConvenio = db.Convenio.Where(d => d.ProyectoID == model.ProyectoID && d.Periodo == PeriodoI).FirstOrDefault().NroPlazas;          
-
                 double valorIntervencion = ((VALORUSS*Q)/100)*(100+ValorPorcZona);
 
                 if (ModelState.IsValid)
@@ -176,7 +174,6 @@ namespace SAG2.Controllers
                                     string _path = Path.Combine(Server.MapPath("~/Archivos"), name);
                                     upload.SaveAs(_path);
                                     System.Threading.Thread.Sleep(1000);
-
                                     pathX = _path;
                                 }
                             }
@@ -185,17 +182,7 @@ namespace SAG2.Controllers
                                 TempData["Message"] = "Error, FALLO GUARDADO." + ex.Message;
                             }
                             StreamReader reader = new StreamReader(pathX, Encoding.GetEncoding("iso-8859-1"));
-                            List<string> list1 = new List<String>();
-                            List<string> list2 = new List<String>();
-                            List<string> list3 = new List<String>();
-                            List<string> list4 = new List<String>();
-                            List<string> list5 = new List<String>();
-                            List<string> list6 = new List<String>();
-                            List<string> list7 = new List<String>();
-                            List<string> list8 = new List<String>();
-                            List<string> list9 = new List<String>();
-                            List<string> list10 = new List<String>();
-                            List<string> list11 = new List<String>();
+
                             //string vara1, vara2, vara3, vara4;
                             int linea = 0;
                             while (!reader.EndOfStream)
@@ -204,95 +191,73 @@ namespace SAG2.Controllers
                                 if (!String.IsNullOrWhiteSpace(line))
                                 {
                                     if (linea > 0) { 
-                                    IntervencionDetalle inter = new IntervencionDetalle();
-                                    inter.FechaIngreso = model.FechaIngreso;
-                                    inter.ProyectoID = model.ProyectoID;
-                                    inter.Anio = inter.FechaIngreso.Year;
-                                    inter.Mes = inter.FechaIngreso.Month;
-                                    inter.Proyecto = db.Proyecto.Find(inter.ProyectoID);
-                                    inter.EstadoPago = 0;
-                                    inter.ResumenID = 0;
-                                    inter.Uss = VALORUSS;
-                                    inter.UssQ = Q;
-
-                                    string[] values = line.Split(';');
-                                    if (values.Length == 11)
-                                    {
-                                       //string  tipoArchivo = "Mensual";
-                                        list1.Add(values[0]); //Cod ingreso
-                                        list2.Add(values[1]); //Apellido Paterno
-                                        list3.Add(values[2]); //Apellido Materno
-                                        list4.Add(values[3]); // Nombres
-                                        list5.Add(values[4]); // Fecha ingreso
-                                        list6.Add(values[5]); // Días Atentidos
-                                        list7.Add(values[6]); // Numero Intervenciones no pagables
-                                        list8.Add(values[7]); // numero intervenciones pagables
-                                        list9.Add(values[8]); // calidad Juridica 80 bis                                   
-                                        list10.Add(values[9]); // a pagar                                     
-                                        list11.Add(values[10]); //Estado revisión
-                                        inter.CodigoSename = values[0];
-                                        inter.ApellidoPaterno = values[1];
-                                        inter.ApellidoMaterno = values[2];
-                                        inter.Nombre = values[3];
-                                        inter.DiasAtencion = int.Parse(values[5]);
-                                        inter.DiasAusente = int.Parse(values[7]);
-                                        inter.NumInter = int.Parse(values[8]);
-                                        inter.TotalIntervencionesAPagar = int.Parse(values[9]);
-                                        inter.Bis = int.Parse(values[8]);
-                                        inter.BisArch = int.Parse(values[8]);
-                                        if (inter.Bis > 0 && inter.TotalIntervencionesAPagar > 0)
+                                        IntervencionDetalle inter = new IntervencionDetalle();                                  
+                                        inter.FechaIngreso = model.FechaIngreso;
+                                        inter.ProyectoID = model.ProyectoID;
+                                        inter.Anio = inter.FechaIngreso.Year;
+                                        inter.Mes = inter.FechaIngreso.Month;
+                                        inter.Proyecto = db.Proyecto.Find(inter.ProyectoID);
+                                        inter.EstadoPago = 0;
+                                        inter.ResumenID = 0;
+                                        inter.Uss = VALORUSS;
+                                        inter.UssQ = Q;
+                                        string[] values = line.Split(';');
+                                        if (values.Length == 11)
                                         {
-                                            inter.Tipo = 2;
-                                        }
-                                        else if (inter.Bis > 0 && inter.TotalIntervencionesAPagar < 1)
-                                        {
-                                            inter.Tipo = 1;
-                                        }
-                                        else
-                                        {
-                                            inter.Tipo = 0;
+                                            inter.CodigoSename = values[0];
+                                            inter.ApellidoPaterno = values[1];
+                                            inter.ApellidoMaterno = values[2];
+                                            inter.Nombre = values[3];
+                                            inter.DiasAtencion = int.Parse(values[5]);
+                                            inter.DiasAusente = int.Parse(values[7]);
+                                            inter.NumInter = int.Parse(values[8]);
+                                            inter.TotalIntervencionesAPagar = int.Parse(values[9]);
+                                            inter.Bis = int.Parse(values[8]);
+                                            inter.BisArch = int.Parse(values[8]);
+                                            if (inter.Bis > 0 && inter.TotalIntervencionesAPagar > 0)
+                                            {
+                                                inter.Tipo = 2;
+                                            }
+                                            else if (inter.Bis > 0 && inter.TotalIntervencionesAPagar < 1)
+                                            {
+                                                inter.Tipo = 1;
+                                            }
+                                            else
+                                            {
+                                                inter.Tipo = 0;
+                                            }
+                                            inter.TotalPagar = (int)((inter.TotalIntervencionesAPagar) * valorIntervencion);
+                                            inter.TotalPagarBis = (int)(inter.Bis * valorIntervencion);
+                                            inter.TotalPagarNoBis = (int)(inter.TotalIntervencionesAPagar * valorIntervencion);
+                                            listaAux.Add(inter);
                                         }
 
-                                        inter.TotalPagar = (int)((inter.TotalIntervencionesAPagar) * valorIntervencion);
-                                        inter.TotalPagarBis = (int)(inter.Bis * valorIntervencion);
-                                        inter.TotalPagarNoBis = (int)(inter.TotalIntervencionesAPagar * valorIntervencion);
-                                        listaAux.Add(inter);
-                                    }
-                                    if(values.Length == 9)
-                                    {
-                                      //  string tipoArchivo = "DAM";
-                                        list1.Add(values[0]);
-                                        list2.Add(values[1]);
-                                        list3.Add(values[2]);
-                                        list4.Add(values[3]);
-                                        list5.Add(values[4]);
-                                        list6.Add(values[5]);
-                                        list7.Add(values[6]);
-                                        list8.Add(values[7]);
-                                        list9.Add(values[8]);
-                                    }
                                         }
                                     linea++;
                                 }
                             }
 
-                           
-  
+                            
                                 int TotIntervenciones = listaAux.Sum(d => d.TotalIntervencionesAPagar);
                                 int TotBis = listaAux.Where(d => d.TotalIntervencionesAPagar == 1).Sum(d => d.Bis);
                                 int TotNobis = TotIntervenciones - TotBis;
                                 int TbisP = TotIntervenciones - TotConvenio;
                                 int Nnovis = 0;
                                 int j = 1;
+                               
                                 if (TotBis > TbisP)
                                 {
                                     Nnovis = TotBis - TbisP;
                                 }
-
+                                int ii = 0;
                                 var x2 = listaAux.Where(d => d.Bis == 0 && d.TotalIntervencionesAPagar == 1).ToList();
                                 foreach (var dato2 in x2)
                                 {
-                                    lista.Add(dato2);
+                                    if (TotConvenio > ii)
+                                    {
+                                        lista.Add(dato2);
+                                    }
+                                    ii++;
                                 } 
 
                                 var x = listaAux.Where(d => d.Bis == 1 && d.TotalIntervencionesAPagar == 1).ToList();
@@ -464,6 +429,8 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona persona = (Persona)Session["Persona"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int periodo = (int)Session["Periodo"];
+
             if (usuario.esAdministrador)
             {
                 ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
@@ -481,13 +448,14 @@ namespace SAG2.Controllers
                 }
 
             }  
-            List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == Proyecto.ID).OrderByDescending(a => a.ID ).ToList();
+            List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == Proyecto.ID && a.Anio == periodo ).OrderByDescending(a => a.ID ).ToList();
             ViewBag.ProyectoID = Proyecto.ID;
+            ViewBag.Periodo = periodo;
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult ResumenAtenciones(int ProyectoID)
+        public ActionResult ResumenAtenciones(int PeriodoApertura,int ProyectoID)
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona persona = (Persona)Session["Persona"];
@@ -508,9 +476,9 @@ namespace SAG2.Controllers
                 {
                     ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
                 }
-            }   
-           List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == ProyectoID).ToList();
-
+            }
+            List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == ProyectoID && a.Anio == PeriodoApertura).OrderByDescending(a => a.ID).ToList();
+            ViewBag.Periodo = PeriodoApertura;
             return View(model);
         }
         public ActionResult AsignarPagos()
@@ -518,6 +486,9 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona persona = (Persona)Session["Persona"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
+
             int ProyectoID = Proyecto.ID;
             if (usuario.esAdministrador)
             {
@@ -535,17 +506,21 @@ namespace SAG2.Controllers
                     ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
                 }
             }
-            List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.EstadoPago == 0).ToList();
+            List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.Anio == periodo && a.Mes == mes).ToList();
             ViewBag.ProyectoID = ProyectoID;
+            ViewBag.Periodo = periodo;
+            ViewBag.Mes = mes;
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult AsignarPagos(int ProyectoID)
+        public ActionResult AsignarPagos(int MesApertura, int PeriodoApertura, int ProyectoID)
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona persona = (Persona)Session["Persona"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            ViewBag.Periodo = PeriodoApertura;
+            ViewBag.Mes = MesApertura;
             if (usuario.esAdministrador)
             {
                 ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
@@ -561,8 +536,8 @@ namespace SAG2.Controllers
                 {
                     ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
                 }
-            }  
-            List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.EstadoPago == 0).ToList();
+            }
+            List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.Anio == PeriodoApertura && a.Mes == MesApertura).ToList();
             ViewBag.ProyectoID = ProyectoID;
             return View(model);
         }
@@ -889,6 +864,11 @@ namespace SAG2.Controllers
                 IMedPro.NumDocumento = 0;
                 IMedPro.Uss = model[0].Uss;
                 IMedPro.UssQ = model[0].UssQ;
+                db.IntervencionResumen.Add(IMedPro);
+                db.SaveChanges();
+                int idXMedPro = IMedPro.ID;
+// 
+
 
                 IntervencionResumen IBis = new IntervencionResumen();
 
@@ -912,8 +892,9 @@ namespace SAG2.Controllers
 
                 db.IntervencionResumen.Add(IBis);
                 db.SaveChanges();
-                db.IntervencionResumen.Add(IMedPro);
-                db.SaveChanges();
+                int IDxIBis = IBis.ID;
+
+            
                 List<IntervencionResumen> lista = db.IntervencionResumen.Where(a => a.ProyectoID == id).ToList();
 
                 IntervencionResumen IbisSave = lista.Where(a => a.Tipo == 1).LastOrDefault();
@@ -924,12 +905,12 @@ namespace SAG2.Controllers
 
                     if(item.Tipo == 0)
                     {
-                        item.ResumenID = IMedProSave.ID; ;
+                        item.ResumenID = idXMedPro;
                     }
 
                     if (item.Tipo == 1)
                     {
-                        item.ResumenID = IbisSave.ID;
+                        item.ResumenID = IDxIBis;
                     }
 
                     db.IntervencionDetalle.Add(item);

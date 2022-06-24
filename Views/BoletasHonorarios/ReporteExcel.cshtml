@@ -46,7 +46,7 @@ td, th
 
 <table cellpadding="5" border="1" style="width: 100%;">
     <tr>
-        <th style="width: 50px;">Per&iacute;odo</th>
+        <th style="width: 50px;">Período</th>
         <th style="width: 75px;">Fecha</th>
         <th style="width: 68px;">Proyecto</th>
         <th style="width: 65px;">Boleta</th>
@@ -56,7 +56,7 @@ td, th
         <th style="width: 80px;text-align:center" >Rut</th>
         <th style="text-align:left">DV</th>
         <th nowrap>Monto $</th>
-        <th nowrap>Retenci&oacute;n $</th>
+        <th nowrap>Retención $</th>
     </tr>
     </table>
 <div style="height: 300px; overflow: scroll;">
@@ -100,9 +100,7 @@ td, th
                 }
                 else
                 {
-                    try{
                     @Html.Raw(@detalle.Beneficiario.ToUpper())
-                }catch(Exception ){} 
                 }
             </td>
             <td>

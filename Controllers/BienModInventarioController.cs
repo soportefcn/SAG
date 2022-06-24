@@ -676,6 +676,12 @@ namespace SAG2.Controllers
                         Correo.enviarCorreo(CorreoSup, mensajeCorreo, "Autorizacion Bien  Inventario");
                     }
 
+                    supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 7 && d.ProyectoID == proyecto.ID).ToList();
+                    foreach (var Scorreo in supervisorCorreo)
+                    {
+                        string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
+                        Correo.enviarCorreo(CorreoSup, mensajeCorreo, "Autorizacion Bien  Inventario");
+                    }
                     TempData["Message"] += "Creado con exito " + model.DescripcionBien;
 
 

@@ -98,7 +98,7 @@
               
             <span id="InfoBeneficiario">
                 <input class="form-control" id="Rut" maxlength="8" name="Rut" style="width: 100px;" type="text" value="@ViewBag.rut">-<input class="form-control" id="DVBuscar" maxlength="1" name="DV" style="width: 70px;" type="text" value="@ViewBag.dv"> 
-                <img src="/SAG_5/Content/Images/Buscar2.png" class="BuscarPopUpBH" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;">
+                <img src="/SAG_5_desarrollo/Content/Images/Buscar2.png" class="BuscarPopUpBH" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;">
                 <input class="form-control" id="Beneficiario" name="Beneficiario" readonly="readonly" style="width: 350px;" type="text" value="@ViewBag.nombre">
             </span>
         </div>
@@ -245,7 +245,7 @@
 <script>
     $(document).ready(function () {
         $('#TipoProgramaID').change(function () {
-            $.get('/SAG_5/Informes/ProyectoTipo/' + $(this).val(), function (response) {
+            $.get('/SAG_5_desarrollo/Informes/ProyectoTipo/' + $(this).val(), function (response) {
                 var comunas = $.parseJSON(response);
                 var ddlComunas = $('#ProyectoID');
                 $('#ProyectoID > option').remove();

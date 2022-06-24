@@ -43,12 +43,13 @@ namespace SAG2.Controllers
 
         public ActionResult ListarMovimientosPeriodo(int mes = 0, int periodo = 0, int mesInicio = 0, int anioInicio = 0, int mesHasta = 0, int aniohasta = 0)
         {
-
+            ViewBag.ListadoProyecto = db.Proyecto.ToList();
             if (periodo == 0)
             {
                 periodo = (int)Session["Periodo"];
                 mes = (int)Session["Mes"];
             }
+
             ViewBag.Periodo = periodo;
             ViewBag.PeriodoInicio = anioInicio;
             ViewBag.Mes = mes;
@@ -88,7 +89,7 @@ namespace SAG2.Controllers
         }
         public ActionResult ListarMovimientosMes(int mes = 0 , int periodo = 0, int mesInicio = 0, int anioInicio = 0, int mesHasta = 0, int aniohasta = 0)
         {
-
+            ViewBag.ListadoProyecto = db.Proyecto.ToList();
             if (periodo == 0)
             {
                 periodo = (int)Session["Periodo"];
@@ -136,7 +137,7 @@ namespace SAG2.Controllers
         }
         public ActionResult ListarMovimientosCategoria(int mes = 0, int periodo = 0)
         {
-
+            ViewBag.ListadoProyecto = db.Proyecto.ToList();
             if (periodo == 0)
             {
                 periodo = (int)Session["Periodo"];
@@ -157,7 +158,7 @@ namespace SAG2.Controllers
         }
         public ActionResult ListaMovimientoCategoriaEX(int mes = 0, int periodo = 0)
         {
-
+            ViewBag.ListadoProyecto = db.Proyecto.ToList();
             if (periodo == 0)
             {
                 periodo = (int)Session["Periodo"];
@@ -296,6 +297,7 @@ namespace SAG2.Controllers
             ViewBag.Periodo = Periodo;
             ViewBag.PeriodoInicio = anioInicio;
             ViewBag.Mes = Mes;
+            ViewBag.ListadoProyecto = db.Proyecto.ToList();   
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.nombreProyecto = Proyecto.NombreLista;
             ViewBag.CodSename = Proyecto.CodSename;
