@@ -90,7 +90,7 @@
 
                     var IntervencionID = $('#ID').val()
                     var Monto =  $('#Monto').val();
-                    var Observacion = $('#asd').val();
+                    var Observacion = "'" + $('#Descripcion').val() + "'";
                   
                     var url = '@Url.Action("RealizarIngresoIntervencion", "IntervencionDetalle", new { IDintervencion = "IDintervencion_cambiar" , Descripcion = "Descripcion_cambiar" , Monto = "Monto_cambiar"  })';
                             url = url.replace("&amp;", "&");
@@ -99,16 +99,18 @@
                             url = url.replace("Descripcion_cambiar", Observacion);
                             url = url.replace("&amp;", "&");
                             url = url.replace("Monto_cambiar", Monto);
-                            $("#Procesar").load(url);
+
+                            window.open(url, "_self");
 
                             Swal.fire({
-                                position: 'top-end',
+                                position: 'center',
                                 icon: 'success',
                                 title: 'Procesando',
                                 showConfirmButton: false,
                                 timer: 1000
                             })
-                            window.open("/SAG_5/IntervencionDetalle/ResumenAtenciones/", "_self");
+                           
+                           
                 });
             })
 

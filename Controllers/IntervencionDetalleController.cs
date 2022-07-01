@@ -743,10 +743,11 @@ namespace SAG2.Controllers
                     cuentaID = 3;
                 }
 
-                int CuentaCorrienteID = ((CuentaCorriente)Session["CuentaCorriente"]).ID;
+                
                 int saldoFinal = 0;
                 int periodo = (int)Session["Periodo"];
-                int ProyectoID = ((Proyecto)Session["Proyecto"]).ID;
+                int ProyectoID = inter.ProyectoID ;
+                int CuentaCorrienteID = db.CuentaCorriente.Where(d => d.ProyectoID == ProyectoID).FirstOrDefault().ID;  
                 Session.Remove("DetalleIngreso");
                 ViewBag.ProyectoID = ProyectoID;
                 int NroComprobante = 1;
