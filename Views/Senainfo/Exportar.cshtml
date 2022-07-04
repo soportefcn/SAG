@@ -1,16 +1,13 @@
-﻿
-@model IEnumerable<SAG2.Models.Proyecto>
+﻿@model IEnumerable<SAG2.Models.Proyecto>
 @using SAG2.Models;
-
 @{
     Layout = null;
     SAG2DB db = new SAG2DB();
     Response.ContentType = "text/plain; charset=UTF-8";
     Response.Charset = "UTF-8";
     Response.ContentEncoding = System.Text.Encoding.UTF8;
-    Response.AddHeader("content-disposition", "attachment;filename=rendicion-senainfo-" + @ViewBag.periodo + "-" + @ViewBag.mes + "-" + ViewBag.sigla + "-" + string.Format("{0:yyMMdd}", DateTime.Today) + ".txt");
+    Response.AddHeader("content-disposition", "attachment;filename=rendicion-senainfo-" + @ViewBag.periodo + "-" + @ViewBag.mes + "-" + string.Format("{0:yyyyMMdd}", DateTime.Today) + ".txt");
     Response.Clear();
-        
     List<Movimiento> Movimientos = (List<Movimiento>)@ViewBag.Movimientos;
 
     foreach (Proyecto Proyecto in Model)
@@ -153,6 +150,7 @@
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
+
                     try
                     {
                         descripcion = descripcion.Substring(0, 20).Trim();
@@ -269,6 +267,8 @@
                     try
                     {
                         string descripcion = @item.Descripcion.ToUpper().Trim();
+                        descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"\s+", " ");
+                        descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"\s+", " ");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ñ", "N");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Á", "A");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "É", "E");
@@ -276,9 +276,10 @@
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ú", "U");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, ",", " ");
-                        descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", " ");
+                        descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
+
                         if (descripcion.Length > 20)
                         {
                             descripcion = descripcion.Substring(0, 20);
@@ -326,7 +327,8 @@
                     catch (Exception)
                     { }
 
-                    destino = destino.Trim();                   
+                    destino = destino.Trim();
+                    destino = System.Text.RegularExpressions.Regex.Replace(destino, @"\s+", " ");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ñ", "N");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "Á", "A");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "É", "E");
@@ -334,10 +336,10 @@
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ó", "O");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ú", "U");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, ",", " ");
-                    destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", " ");
+                    destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", "");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "°", "");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "%", "");
-                    destino = System.Text.RegularExpressions.Regex.Replace(destino, @"\s+", " ");
+
                     if (destino.Length > 40)
                     {
                         destino = destino.Substring(0, 40);
@@ -413,7 +415,6 @@
                         catch (Exception)
                         {
                             @Html.Raw("00-00-0000");
-
                         }
 
                         // 8	Nulo	int	1		Comprobantes 1 = Nulo, 0 = NO Nulo
@@ -461,6 +462,8 @@
                         try
                         {
                             string descripcion = @item.Descripcion.ToUpper().Trim();
+                            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"\s+", " ");
+                            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"\s+", " ");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ñ", "N");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Á", "A");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "É", "E");
@@ -471,8 +474,7 @@
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
-                            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, @"\s+", " ");
-                            
+
                             if (descripcion.Length > 20)
                             {
                                 descripcion = descripcion.Substring(0, 20);
@@ -526,6 +528,7 @@
                         { }
 
                         destino = destino.Trim();
+                        destino = System.Text.RegularExpressions.Regex.Replace(destino, @"\s+", " ");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ñ", "N");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "Á", "A");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "É", "E");
@@ -536,9 +539,6 @@
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "°", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "%", "");
-                        destino = System.Text.RegularExpressions.Regex.Replace(destino, @"\s+", " ");
-                        
-
                         if (destino.Length > 40)
                         {
                             destino = destino.Substring(0, 40);
@@ -668,11 +668,9 @@
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ú", "U");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, ",", " ");
-                            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", " ");
+                            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
-
-
                             if (descripcion.Length > 20)
                             {
                                 descripcion = descripcion.Substring(0, 20);
@@ -735,7 +733,7 @@
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ó", "O");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ú", "U");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, ",", " ");
-                        destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", " ");
+                        destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "°", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "%", "");
                         if (destino.Length > 40)

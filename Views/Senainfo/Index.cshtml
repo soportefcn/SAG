@@ -19,11 +19,6 @@
 	    "Diciembre"
 	};
 }
-<script type="text/javascript">
-                       $(document).ready(function () {
-                           $(".js-autocomplete").select2();
-                       });
-    </script>
 <div class="inicio">
 @using (Html.BeginForm("Exportar", "SenaInfo"))
 {
@@ -36,19 +31,6 @@
     <div class="form-group" style="margin-right: 30px;">
         <label>Seleccione período a exportar</label>
     </div>
-           <div class="form-group form-inline">
-           <label>Tipo Archivo</label>
-
-                   <select name="TipoSename" id="TipoSename" class="js-autocomplete" >
-            <option value="-1"> - Seleccione proyecto</option>
-            @foreach (var TipoSename in ViewBag.TipoSename)
-            {
-         
-                    <option selected="selected" value="@TipoSename.ID">@TipoSename.NOMBRE</option>
-
-            }
-        </select>
-        </div>
       <div class ="form-group form-inline">
        <div class="form-group" style="margin-right: 10px;margin-left: 7px">
           <label>Mes</label>
