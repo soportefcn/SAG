@@ -75,7 +75,7 @@
         <tr class="warning"> 
             <td colspan="3"> </td>
              <td colspan="7">Caratula Rendicion de Cuentas </td>
-            <td colspan="6">Cuadraturas de Saldos </td>
+            <td colspan="7">Cuadraturas de Saldos </td>
             @{
                 int grupo = 0;
                 int contgrupo = 0;
@@ -155,6 +155,7 @@
        <td>Provisión Indemnizacion</td>
        <td>Saldo Real</td>
        <td>Saldo Libro Banco</td>
+       <td>Despósitos no consignados en cartola</td>
        <td>Saldo Libro Banco Conciliación Bancaria</td>
        <td>Cheques Girados y No Cobrados</td>
        <td>Saldo Final de la Cartola Cta. Cte. (Banco)</td>
@@ -253,13 +254,19 @@
         }
         No1 = No1 + No2;
         double ValorConciliacion = 0;
+        double DepositosNoconsignados = 0;
+        double GastoConciliacion = 0;
         try
         {
             ValorConciliacion = Conciliacion.Where(d => d.ProyectoID == xProyectoID).FirstOrDefault().SaldoCartola;
+            DepositosNoconsignados = Conciliacion.Where(d => d.ProyectoID == xProyectoID).FirstOrDefault().Depositos;
+            GastoConciliacion = Conciliacion.Where(d => d.ProyectoID == xProyectoID).FirstOrDefault().Gastos;
+            ValorConciliacion = Saldocta + DepositosNoconsignados + GastoConciliacion;
         }
         catch (Exception e)
         {
             ValorConciliacion = 0;
+            DepositosNoconsignados = 0;
         }
         // Total Ingresos
         double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
@@ -315,6 +322,7 @@
        <td>@Provi.ToString("#,##0")</td>
        <td>@SaldoReal.ToString("#,##0")</td>
        <td>@Saldocta.ToString("#,##0")</td>
+       <td>@DepositosNoconsignados.ToString("#,##0")</td>
        <td>@ValorConciliacion.ToString("#,##0")</td>
        <td>@No1.ToString("#,##0")</td>
        <td>@SaldoCuentaBanco.ToString("#,##0")</td>

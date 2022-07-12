@@ -130,7 +130,7 @@ namespace SAG2.Controllers
             ViewBag.Cta = db.CuentaCorriente.ToList();
             ViewBag.rol = db.Rol.Where(d => d.TipoRolID == 4 || d.TipoRolID == 7).ToList();
             ViewBag.per = db.Persona.ToList();
-            ViewBag.ingresos = db.Movimiento.Where(m => m.Mes == mes && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null).ToList();
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Mes == mes && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.TipoComprobanteID == 1).ToList();
             ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Mes == mes && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
             ViewBag.reintegros = db.Movimiento.Where(m => m.Mes == mes).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
             ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Mes == mes).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
@@ -185,13 +185,13 @@ namespace SAG2.Controllers
 
             ViewBag.saldo = db.Saldo.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();
             ViewBag.Cuentas = db.Cuenta.ToList();
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null ).OrderBy(p => p.CodCodeni).ToList();
             ViewBag.SaldosCorpo = db.SaldosCorporativos.Where(p => p.Mes == mes && p.Periodo == periodo ).ToList();
             ViewBag.InformeCuenta = db.CinformeCierre.OrderBy(p => p.GinformeID).ThenBy(p => p.CuentaID).ToList();
             ViewBag.Cta = db.CuentaCorriente.ToList();
             ViewBag.rol = db.Rol.Where(d => d.TipoRolID == 4 || d.TipoRolID == 7).ToList();
             ViewBag.per = db.Persona.ToList();
-            ViewBag.ingresos = db.Movimiento.Where(m => m.Mes == mes && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null).ToList();
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Mes == mes && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.TipoComprobanteID == 1).ToList();
             ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Mes == mes && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
             ViewBag.reintegros = db.Movimiento.Where(m => m.Mes == mes).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
             ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Mes == mes).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
@@ -251,7 +251,7 @@ namespace SAG2.Controllers
             ViewBag.Cta = db.CuentaCorriente.ToList();
             ViewBag.rol = db.Rol.Where(d => d.TipoRolID == 4 || d.TipoRolID == 7).ToList();
             ViewBag.per = db.Persona.ToList();
-            ViewBag.ingresos = db.Movimiento.Where(m => m.Mes == mes && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null).ToList();
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Mes == mes && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.TipoComprobanteID == 1).ToList();
             ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Mes == mes && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();               
             ViewBag.reintegros = db.Movimiento.Where(m => m.Mes  == mes).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
             ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Mes == mes).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();

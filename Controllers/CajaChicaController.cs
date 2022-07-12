@@ -133,6 +133,7 @@ namespace SAG2.Controllers
             ViewBag.FondoFijoGrupoID = ffg.ID;
             ViewBag.Arbol = utils.generarSelectHijos(db.Cuenta.Find(30));
             ViewBag.ProyectoID = new SelectList(db.Proyecto, "ID", "NombreLista");
+            ViewBag.ProyId = ProyectoID;
 
             // Detalle del FF
 
