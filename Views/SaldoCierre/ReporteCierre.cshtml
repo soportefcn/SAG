@@ -141,7 +141,7 @@
              {
                  if (grupo == tgrupo)
                  {
-                     
+     
                          contgrupo++;                       
                     
                  }
@@ -156,6 +156,9 @@
                      catch (Exception e)
                      {
                          NGrupo = "No Definido";
+                     }
+                     if (grupo == 7){
+                         tot = tot + 2;
                      }
                      grupo = tgrupo;
                      contgrupo = contgrupo + tot; 
@@ -213,14 +216,23 @@
          {
              string nombreCuenta = Cuentas.Where(d => d.ID == Nombrecuenta.CuentaID).FirstOrDefault().NombreLista;
              int xGrup = Nombrecuenta.CTotal;
-         
+
+             if (Nombrecuenta.CuentaID == 60) {
+                 xGrup = Nombrecuenta.CTotal;
+             }
              if (xGrup != tot){
                  tot = 0;
                  
                  <td>Ingreso Total</td>  
              }
-               
+               if (Nombrecuenta.CuentaID != 60) {
              <td>@nombreCuenta</td> 
+         }else{
+               <td>@nombreCuenta A</td> 
+             <td>@nombreCuenta B</td> 
+             <td>@nombreCuenta C</td> 
+             
+               }
          }
         <td>Supervisor</td>
     </tr>
@@ -380,7 +392,7 @@
          @foreach (var Nombrecuenta in ViewBag.InformeCuenta)
          {
              string xParametro = " ";
-             if (Nombrecuenta.CuentaID == 127 )
+             if (Nombrecuenta.CuentaID == 60 )
              {
                 xParametro = " ";
            }
@@ -495,9 +507,15 @@
                  xParametro = "";
              }
              
-
+           if (Nombrecuenta.CuentaID != 60) {
            
                     <td class="@xParametro">@MostrarValor.ToString("#,##0")</td> 
+         }else{
+            <td >@VEgresos.ToString("#,##0")</td> 
+              <td>@vReintegrosE.ToString("#,##0")</td> 
+              <td >@vGastosReintegros.ToString("#,##0")</td> 
+           
+           }
         
          }
         <td>@nombre</td>

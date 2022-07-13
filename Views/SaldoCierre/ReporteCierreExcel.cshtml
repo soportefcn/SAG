@@ -112,6 +112,10 @@
                      {
                          NGrupo = "No Definido";
                      }
+                     if (grupo == 7)
+                     {
+                         tot = tot + 2;
+                     }
                      grupo = tgrupo;
                      contgrupo = contgrupo + tot; 
                     
@@ -175,7 +179,14 @@
                  <td>Ingreso Total</td>  
              }
                
+        if (Nombrecuenta.CuentaID != 60) {
              <td>@nombreCuenta</td> 
+         }else{
+               <td>@nombreCuenta A</td> 
+             <td>@nombreCuenta B</td> 
+             <td>@nombreCuenta C</td> 
+             
+               }
          }
         <td>Supervisor</td>
     </tr>
@@ -450,8 +461,15 @@
              }
              
 
+                      if (Nombrecuenta.CuentaID != 60) {
            
                     <td class="@xParametro">@MostrarValor.ToString("#,##0")</td> 
+         }else{
+            <td >@VEgresos.ToString("#,##0")</td> 
+              <td>@vReintegrosE.ToString("#,##0")</td> 
+              <td >@vGastosReintegros.ToString("#,##0")</td> 
+           
+           }
         
          }
         <td>@nombre</td>
