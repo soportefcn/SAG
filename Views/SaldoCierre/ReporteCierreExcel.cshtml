@@ -114,7 +114,7 @@
                      }
                      if (grupo == 7)
                      {
-                         tot = tot + 2;
+                         tot = tot + 3;
                      }
                      grupo = tgrupo;
                      contgrupo = contgrupo + tot; 
@@ -182,10 +182,10 @@
         if (Nombrecuenta.CuentaID != 60) {
              <td>@nombreCuenta</td> 
          }else{
-               <td>@nombreCuenta A</td> 
-             <td>@nombreCuenta B</td> 
-             <td>@nombreCuenta C</td> 
-             
+               <td>@nombreCuenta Reintegros</td> 
+             <td>@nombreCuenta Egresos</td> 
+             <td>@nombreCuenta Gastos Reintegros</td> 
+              <td>@nombreCuenta </td>
                }
          }
         <td>Supervisor</td>
@@ -461,14 +461,14 @@
              }
              
 
-                      if (Nombrecuenta.CuentaID != 60) {
+            if (Nombrecuenta.CuentaID != 60) {
            
                     <td class="@xParametro">@MostrarValor.ToString("#,##0")</td> 
          }else{
-            <td >@VEgresos.ToString("#,##0")</td> 
-              <td>@vReintegrosE.ToString("#,##0")</td> 
+                 <td>@vReintegrosE.ToString("#,##0")</td> 
+            <td >@VEgresos.ToString("#,##0")</td>              
               <td >@vGastosReintegros.ToString("#,##0")</td> 
-           
+           <td class="@xParametro">@MostrarValor.ToString("#,##0")</td>
            }
         
          }

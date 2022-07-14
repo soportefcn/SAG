@@ -286,6 +286,7 @@ namespace SAG2.Controllers
                 {
                     ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
                     ViewBag.PrCod = Proyecto.CodCodeni;
+                    ViewBag.PrID = Proyecto.ID;
                     
                 }
                 else {
@@ -299,6 +300,7 @@ namespace SAG2.Controllers
             {
                 ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
                 ViewBag.PrCod = Proyecto.CodCodeni;
+                ViewBag.PrID = Proyecto.ID;
             }
 
            
