@@ -356,7 +356,10 @@
              double VEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == xProyectoID && (e.CuentaID == Nombrecuenta.CuentaID)).Sum(m => m.Monto).ToString());
              double vReintegrosE = double.Parse(reintegros.Where(e => (e.CuentaID == Nombrecuenta.CuentaID)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
              double vGastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == Nombrecuenta.CuentaID)).Where(d => d.Reintegro.ProyectoID == xProyectoID).Sum(d => d.Monto).ToString());
+             double valor_reintegrosgastos = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.Reintegro.ProyectoID == xProyectoID).Sum(d => d.Monto).ToString());
              double valorCuenta = (VEgresos + vGastosReintegros) - (vReintegrosE + Ingresos);
+             double valorCuentaG = (VEgresos + vGastosReintegros) - (vReintegrosE + valor_reintegrosgastos);
+             double vReintegrosE2 = vReintegrosE + valor_reintegrosgastos;
              double MostrarValor = 0;
              if (TipoCuenta.Trim() == "I")
              {
@@ -467,8 +470,8 @@
          }else{
                  <td>@vReintegrosE.ToString("#,##0")</td> 
             <td >@VEgresos.ToString("#,##0")</td>              
-              <td >@vGastosReintegros.ToString("#,##0")</td> 
-           <td class="@xParametro">@MostrarValor.ToString("#,##0")</td>
+              <td >@vReintegrosE2.ToString("#,##0")</td> 
+           <td class="@xParametro">@valorCuentaG.ToString("#,##0")</td>
            }
         
          }

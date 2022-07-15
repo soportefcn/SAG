@@ -245,7 +245,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.saldo = db.Saldo.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();     
             ViewBag.Cuentas = db.Cuenta.ToList();
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null ).OrderBy(p => p.CodCodeni).ToList();
             ViewBag.SaldosCorpo = db.SaldosCorporativos.Where(p => p.Mes == mes && p.Periodo == periodo ).ToList();
             ViewBag.InformeCuenta = db.CinformeCierre.OrderBy(p => p.GinformeID).ThenBy(p => p.CuentaID).ToList();  
             ViewBag.Cta = db.CuentaCorriente.ToList();
