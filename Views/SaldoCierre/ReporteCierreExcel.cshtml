@@ -280,7 +280,10 @@
             DepositosNoconsignados = 0;
         }
         // Total Ingresos
-        double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+        double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 20 || m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+
+        double valor_ReintegrosIngresos = double.Parse(reintegros.Where(e => (e.CuentaID == 20 || e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12 || e.CuentaID == 158)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
+        valorIngresos = valorIngresos + valor_ReintegrosIngresos;
         // Inversion
         double valorInversion = 0;
 

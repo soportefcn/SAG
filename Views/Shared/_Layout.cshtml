@@ -150,10 +150,7 @@
                                     }
 
                                 </ul>
-
                             </li>
-
-
 
                             <li class="dropdown-submenu">
 
@@ -508,7 +505,8 @@
 	            @if (Usuario.esAdministrador)
                     {                   
                      <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/CuentaConsolidado">Informe de Cuentas</a></li>
-                       <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/FondosrendirConsolidado">Informe de Fondos a Rendir </a></li>
+                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/FondosrendirConsolidado">Informe de Fondos a Rendir </a></li>
+                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/Honorariosfiltros">Informe de Honorarios </a></li>
                  }                 
 				</ul>
 			</li>

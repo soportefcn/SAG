@@ -21,6 +21,11 @@
         "Diciembre"
     };
 }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".js-autocomplete").select2();
+        });
+    </script>
 <div id="SAGBox">
     <h2>Busqueda de Honorarios </h2>
 @using (Html.BeginForm())
@@ -36,30 +41,24 @@
         
       <div class="form-inline form-group">
           <div class="form-group" style="margin-right: 10px;margin-left:8px">
-              <label>Tipo Programa</label>
-          </div>
-          <div class="form-group">
-               @Html.DropDownList("TipoProgramaID",null, " " , new { @class = "form-control"} )
-
+              <label>Tipo Programa</label><br />
+               @Html.DropDownList("TipoProgramaID",null, "Todos" , new { @class = "form-control"} )
           </div>
           <div class="form-group" style="margin-right: 10px;margin-left:8px">
-              <label>Proyecto</label>
+              <label>Proyecto</label> <br />    
+               @Html.DropDownList("ProyectoID",null, "Todos " , new { @class = "form-control"} )
           </div>
-          <div class="form-group">
-               @Html.DropDownList("ProyectoID",null, "Seleccione " , new { @class = "form-control"} )
+           <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>N° Boleta</label><br />
 
-          </div>
-          </div>
-        <div class ="form-inline form-group">
-            <div class="form-group" style="margin-right: 10px;margin-left:8px">
-              <label>N° Boleta</label>
-          </div>
-          <div class="form-group">
               <input name="Nboleta" id="Nboleta" class="form-control" value="@Html.Raw(@ViewBag.Nboleta)" maxlength="10" style="margin-right: 20px;" />
           </div>
-                </div>
+
+        </div>
+
         <div class ="form-inline form-group">
             <div class="form-group tipobeneficiario">
+                <label>Beneficiario</label><br />
             <select class="form-control" name="tipoBeneficiario" id="tipoBeneficiario">
                 <option selected="selected" value="0"></option>
                 @{ if (ViewBag.tipoBeneficiario == 0  ){
@@ -98,7 +97,7 @@
               
             <span id="InfoBeneficiario">
                 <input class="form-control" id="Rut" maxlength="8" name="Rut" style="width: 100px;" type="text" value="@ViewBag.rut">-<input class="form-control" id="DVBuscar" maxlength="1" name="DV" style="width: 70px;" type="text" value="@ViewBag.dv"> 
-                <img src="/SAG_5_desarrollo/Content/Images/Buscar2.png" class="BuscarPopUpBH" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;">
+                <img src="/SAG_5/Content/Images/Buscar2.png" class="BuscarPopUpHfiltro" alt="Buscar" title="Buscar" style="vertical-align: middle; cursor:pointer;">
                 <input class="form-control" id="Beneficiario" name="Beneficiario" readonly="readonly" style="width: 350px;" type="text" value="@ViewBag.nombre">
             </span>
         </div>
@@ -108,14 +107,7 @@
                       <div class="form-group">
               <input type="submit" value="Ver resultados!" class="btn btn-primary" />
           </div>
-          @*@{ if (Usuario.esAdministrador)
-              {
-                  <div class="form-group" style="margin-right: 10px;">
-                      <a data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="Honorarios" class="excelBotonPeriodo btn btn-success" style="height: 100%;">
-                          <span class="fa fa-file-excel-o  fa-2x"></span>
-                      </a>
-                  </div>
-              }}*@
+
             </div>
   </div>
 
@@ -245,7 +237,11 @@
 <script>
     $(document).ready(function () {
         $('#TipoProgramaID').change(function () {
-            $.get('/SAG_5_desarrollo/Informes/ProyectoTipo/' + $(this).val(), function (response) {
+            var Tprograma = $(this).val();
+            if (Tprograma == "") {
+                Tprograma = 0;
+            }
+            $.get('/SAG_5/Informes/ProyectoTipo/' + Tprograma, function (response) {
                 var comunas = $.parseJSON(response);
                 var ddlComunas = $('#ProyectoID');
                 $('#ProyectoID > option').remove();
@@ -259,6 +255,33 @@
                 }
             });
         });
+        $(".BuscarPopUpHfiltro").click(function () {
+            var PRID = $("#ProyectoID").val();
+            var TPRID = $("#TipoProgramaID").val();
+            if (PRID == "1") {
+                PRID = 0;
+            }
+            if (TPRID == "") {
+                TPRID = 0;
+            }
 
+           
+            if ($(".tipobeneficiario #tipoBeneficiario").val() == "1") {
+                var url = '@Url.Action("PopUpTipoPrograma", "Personal", new { ProyectoID = "ProyectoID_cambiar",TipoProgramaID = "TipoProyectoID_cambiar" })';
+                url = url.replace("&amp;", "&");
+                url = url.replace("ProyectoID_cambiar", PRID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("TipoProyectoID_cambiar", TPRID);
+                window.open(url, 'BuscarPersona', 'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');
+            } else if ($(".tipobeneficiario #tipoBeneficiario").val() == "2") {
+                var url = '@Url.Action("PopUpTipoPrograma", "Proveedores", new { ProyectoID = "ProyectoID_cambiar",TipoProgramaID = "TipoProyectoID_cambiar" })';
+                url = url.replace("&amp;", "&");
+                url = url.replace("ProyectoID_cambiar", PRID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("TipoProyectoID_cambiar", TPRID);
+                window.open(url, 'BuscarProveedor', 'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');
+            }
+            return false;
+        });
     });
 </script>

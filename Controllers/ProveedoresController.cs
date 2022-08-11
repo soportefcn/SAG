@@ -72,7 +72,25 @@ namespace SAG2.Controllers
 
             return View(proveedor.OrderBy(p => p.Nombre).ToList());
         }
+        public ViewResult PopUpTipoPrograma(int? ProyectoID = 0, int? TipoProgramaID = 0)
+        {
+           
+            var rol = db.RolProveedor.Include(r => r.Proveedor);
+            if (ProyectoID != 0)
+            {
+                rol = rol.Where(r => r.ProyectoID == ProyectoID);
+            }
+            else {
+                if (TipoProgramaID != 0)
+                {
+                    rol = rol.Where(r => r.Proyecto.TipoProyectoID == TipoProgramaID);
+                }
+            }
+            var proveedor = from r in rol
+                            select r.Proveedor;
 
+            return View(proveedor.OrderBy(p => p.Nombre).ToList());
+        }
         //
         // GET: /Proveedores/Details/5
 

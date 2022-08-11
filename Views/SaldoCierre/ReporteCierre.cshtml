@@ -326,7 +326,10 @@
             DepositosNoconsignados = 0;
         }
         // Total Ingresos
-        double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+        double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 20 || m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+
+        double valor_ReintegrosIngresos = double.Parse(reintegros.Where(e => (e.CuentaID == 20 || e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12 || e.CuentaID == 158)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
+        valorIngresos = valorIngresos + valor_ReintegrosIngresos;
         // Inversion
         double valorInversion = 0;
 
@@ -537,7 +540,7 @@
              window.open("/SAG_5_desarrollo/SaldoCierre/ReporteCierreExcel?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
              return false;
          });
-    $('#data').after('<div id="nav"></div>');
+   $('#data').after('<div id="nav"></div>');
     var rowsShown = 10;
     var rowsTotal = $('#data tbody tr').length;
     var numPages = rowsTotal/rowsShown;
@@ -558,6 +561,7 @@
         $('#data tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
         css('display','table-row').animate({opacity:1}, 300);
     });
+
      });
     
  </script>

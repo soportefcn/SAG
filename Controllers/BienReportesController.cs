@@ -1093,7 +1093,7 @@ namespace SAG2.Controllers
                 @ViewBag.CodigoCodeni = proy.NombreEstado;
                 @ViewBag.FechaActualizacion = new DateTime(1990, 01, 01);
 
-                List<BienMovimiento> listaTodos = db.BienMovimiento.Where(a => a.EstadoID == 1 && a.AutorizacionAuditor == 1 /*&& a.NuevaUbicacion == dependencia*/).ToList();
+                List<BienMovimiento> listaTodos = db.BienMovimiento.Where(a => a.EstadoID == 1 && a.AutorizacionAuditor == 1 && a.NuevaUbicacion == dependencia).ToList();
 
                // hasta.AddDays(1);
 

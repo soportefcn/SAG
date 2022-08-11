@@ -3088,6 +3088,15 @@ namespace SAG2.Controllers
                                Value = c.ID,
                                Text = (c.CodCodeni + " - " + c.Nombre) 
                            }).ToList();
+            if (id == 0) {
+                Proyectos = (from c in db.Proyecto
+                             orderby c.CodCodeni, c.Nombre
+                             select new
+                             {
+                                 Value = c.ID,
+                                 Text = (c.CodCodeni + " - " + c.Nombre)
+                             }).ToList();
+            }
 
             return new JavaScriptSerializer().Serialize(Proyectos);
         }
@@ -3123,19 +3132,27 @@ namespace SAG2.Controllers
             int nPersona = 0;
             int nProveedor = 0;
             int ntipoBeneficiario = 0;
-            int ProyectoID = Int32.Parse(datos["ProyectoID"].ToString());
-            int TipoProyectoID = Int32.Parse(datos["TipoProgramaID"].ToString());
+            int ProyectoID = 0;
+            int TipoProyectoID = 0;
             string nRut = "";
             string ndv = "";
             string nbeneficiario = "";
+
+
             try
             {
 
+                ProyectoID = Int32.Parse(datos["ProyectoID"].ToString());
             }
-            catch (Exception) { 
-            
-            
+            catch {
+                ProyectoID = 0;
             }
+            if (datos["TipoProgramaID"].ToString() != "")
+            {
+                TipoProyectoID = Int32.Parse(datos["TipoProgramaID"].ToString());
+            }
+
+
 
             // Por Boleta
             try
@@ -3193,22 +3210,31 @@ namespace SAG2.Controllers
 
 
 
-            var bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID).OrderBy(m => m.ID); 
+            var bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo); 
+
+            if (TipoProyectoID != 0) {
+                bh = bh.Where(m => m.Proyecto.TipoProyectoID == TipoProyectoID); 
+            }
+            if (ProyectoID != 0) {
+                bh = bh.Where(m => m.ProyectoID == ProyectoID);
+            }
+
             if (nboleta != 0)
             {
-                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.NroBoleta == nboleta).OrderBy(m => m.ID);
+                bh = bh.Where(m => m.NroBoleta == nboleta); 
             }
             if (nPersona != 0)
             {
-                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.PersonaID == nPersona).OrderBy(m => m.ID);
+                bh = bh.Where(m => m.PersonaID == nPersona); 
             }
             if (nProveedor != 0)
             {
-                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.ProveedorID == nProveedor).OrderBy(m => m.ID);
+                bh = bh.Where(m => m.ProveedorID == nProveedor);
             }
             if (ntipoBeneficiario == 3) {
-                bh = db.BoletaHonorario.Where(m => m.Periodo == Periodo).Where(m => m.ProyectoID == ProyectoID && m.Rut == nRut).OrderBy(m => m.ID);
+                bh = bh.Where(m =>  m.Rut == nRut);
             }
+            bh = bh.OrderBy(m => m.ID);
 
             ViewBag.tipoBeneficiario = ntipoBeneficiario;
 

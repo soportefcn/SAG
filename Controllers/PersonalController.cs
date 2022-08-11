@@ -38,6 +38,27 @@ namespace SAG2.Controllers
                           select r.Persona;
             return View(persona.OrderBy(p => p.Nombres).ThenBy(p => p.ApellidoParterno).ThenBy(p => p.ApellidoMaterno).ToList());
         }
+        public ViewResult PopUpTipoPrograma(int? ProyectoID = 0, int? TipoProgramaID = 0)
+        {
+            var rol = db.Rol.Include(r => r.Persona).Include(r => r.TipoRol);
+            if (ProyectoID != 0)
+            {
+
+                rol = rol.Where(r => r.ProyectoID == ProyectoID);
+            }
+            else
+            {
+                if (TipoProgramaID != 0)
+                {
+
+                    rol = rol.Where(r => r.Proyecto.TipoProyectoID == TipoProgramaID);
+                }
+            }
+                var persona = from r in rol
+                              select r.Persona ;
+            
+            return View(persona.OrderBy(p => p.Nombres).ThenBy(p => p.ApellidoParterno).ThenBy(p => p.ApellidoMaterno).ToList());
+        }
         public ViewResult PopUpBH(int ProyectoID)
         {
             Usuario Usuario = (Usuario)Session["Usuario"];
