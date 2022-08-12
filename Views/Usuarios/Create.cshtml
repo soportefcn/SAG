@@ -11,6 +11,11 @@ input[type="text"], textarea
     text-transform: uppercase;
 }
 </style>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".js-autocomplete").select2();
+            });
+        </script>
 <div id="SAGBox">
     <h3>Usuarios</h3>
     <div id="controles">
@@ -29,7 +34,7 @@ input[type="text"], textarea
                     @Html.LabelFor(model => model.PersonaID, "Persona")
                 </div>
                 <div class="form-group">
-                    @Html.DropDownList("PersonaID", String.Empty)
+                    @Html.DropDownList("PersonaID", null, "-- SELECCIONE PERSONAL --",new { @class = "form-control js-autocomplete"})
                 </div>
             </div>
             <div class="form-inline form-group">
