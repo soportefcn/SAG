@@ -797,9 +797,16 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             if (usuario.esAdministrador)
             {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+                if (filtro == 1)
+                {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+                }
+                else {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
+                }
             }
             else {
                 ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
@@ -839,9 +846,17 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
+            int filtro = int.Parse(Session["Filtro"].ToString());
             if (usuario.esAdministrador)
             {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+                if (filtro == 1)
+                {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+                }
+                else
+                {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Cerrado == null || p.Cerrado == "S" ), "ID", "NombreLista", Proyecto.ID);
+                }
             }
             else
             {

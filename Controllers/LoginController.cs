@@ -74,7 +74,7 @@ namespace SAG2.Controllers
                 Session.Add("Persona", Persona);
                 Session.Add("Usuario", usuario);
                 Session.Add("Logueado", true);
-
+                Session.Add("Filtro", 1);
                 Rol Rol = new Rol();
                 if (usuario.esAdministrador)
                 {

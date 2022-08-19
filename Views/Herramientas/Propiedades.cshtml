@@ -21,16 +21,19 @@
 	    "Noviembre",
 	    "Diciembre"
 	};
+    int filtro = int.Parse(Session["Filtro"].ToString()); 
 }
 <div class="blog-post">
-<br />
-<br />
+
 @Html.Raw(ViewBag.Mensaje)
 @using (Html.BeginForm())
 {
     var ProyectoSelected = (SAG2.Models.Proyecto)Session["Proyecto"];
- <fieldset>
     <h3>Información del Proyecto</h3>
+    <div class="row form-group">
+        <div class="col-md-6">
+ <fieldset>
+    
     <div class="form-group">
        Nombre
     </div>
@@ -39,12 +42,26 @@
             <option> - Seleccione proyecto</option>
             @foreach (SAG2.Models.Proyecto Proye in ViewBag.Proyectos)
             { 
-            <option value="@Proye.ID" @if (@Proye.ID.Equals(ProyectoSelected.ID)) { @Html.Raw("selected=\"selected\"") }>@Proye.NombreEstado</option>
+            <option value="@Proye.ID" @if (@Proye.ID.Equals(ProyectoSelected.ID))
+                                      { @Html.Raw("selected=\"selected\"") }>@Proye.NombreEstado</option>
             }
         </select>
     </div>
     </fieldset>
+            </div>
+        <div class="col-md-6">
+            <fieldset>
+    <p style="margin:0;">
+        <br /> 
+        <input type="submit" value="Guardar cambios" class="btn btn-primary" />
+    </p>
+</fieldset>
+        </div>
+</div>
+     <div class="row form-group">
+       <div class="col-md-4">
 
+         
     <fieldset>
     <h3>Período activo</h3>
    <div class="form-inline" >
@@ -65,7 +82,8 @@
     </div>
             </div>
 </fieldset>
-    <br />
+    </div>
+           <div class="col-md-6">
 <fieldset>
     <h3>Correlativos de comprobantes (Proy. @ViewBag.Proyecto)</h3>
     <table style="width: 100%;" class ="table table-hover">
@@ -97,15 +115,58 @@
                 <strong>@ViewBag.NroDeudas</strong>
             </td>
         </tr>
-    </table><br />
+    </table>
 </fieldset>
+               </div>
+         </div>
 
-<fieldset>
-    <p style="margin:0;">
-        <input type="submit" value="Guardar cambios" class="btn btn-primary" />
-    </p>
-</fieldset>
-    <br />
-<br />
 }
+    <hr />
+    <div>
+@*@using (Html.BeginForm("AplicarFiltro", "Herramientas", null, FormMethod.Post, new { id = "recoverform" }))
+{
+<div class=""form-group">
+    <label>Filtro de Sistema </label><br />
+            <select name="filtroSistema" id="filtroSistema"  class="js-autocomplete" style="width: 400px;">
+                   
+                <option value="1" @if (filtro == 1)
+                                {@Html.Raw(" selected=\"selected\"")}> Vigentes</option>
+
+                <option value="2" @if (filtro == 2)
+                                {@Html.Raw(" selected=\"selected\"")}> Vigentes y Cerrados</option>
+    </select>
+</div>
+            <div class="form-group text-center m-t-20">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info  btn-block text-uppercase waves-effect waves-light" type="submit">Aplicar Filtro</button>
+                    </div>
+                </div>
+}  *@
+                 @using (Html.BeginForm("AplicarFiltro", "Herramientas", null, FormMethod.Post, new { id = "recoverform" }))
+                {
+                    <div class="form-group ">
+                        <div class="col-xs-12">
+                            <h3>Filtro de Sistema</h3>
+                           
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-xs-6">
+                  <select name="filtroSistema" id="filtroSistema"  class="js-autocomplete" style="width: 400px;">
+                                      <option value="1" @if (filtro == 1)
+                                {@Html.Raw(" selected=\"selected\"")}> Vigentes</option>
+
+                <option value="2" @if (filtro == 2)
+                                {@Html.Raw(" selected=\"selected\"")}> Vigentes y Cerrados</option>
+                      </select>
+                        </div>
+                    
+                    
+                        <div class="col-xs-3">
+                            <button class="btn btn-info  btn-block text-uppercase waves-effect waves-light" type="submit">Aplicar Filtro</button>
+                        </div>
+                    </div>
+                }
+
+        </div>
 </div>

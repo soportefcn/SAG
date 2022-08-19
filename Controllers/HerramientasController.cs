@@ -177,6 +177,13 @@ namespace SAG2.Controllers
             return View();
         }
 
+
+        public ActionResult Aplicarfiltro(FormCollection form) {
+            int filtro = Int32.Parse(form["filtroSistema"]);
+            Session.Add("Filtro", filtro);
+            return RedirectToAction("Propiedades");
+        
+        }
         public string CuentaCorriente(int id)
         {
             var CuentasCorrientes = (from c in db.CuentaCorriente
