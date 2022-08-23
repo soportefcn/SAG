@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using SAG2.Comun;
 using SAG2.Models;
 using SAG2.Classes;
 
@@ -14,7 +15,7 @@ namespace SAG2.Controllers
     {
         private SAG2DB db = new SAG2DB();
         private Util utils = new Util();
-
+        private ControlLog logReg = new ControlLog();
         //
         // GET: /Proyectos/
 
@@ -39,7 +40,17 @@ namespace SAG2.Controllers
 
             return View(proyecto.ToList());
         }
+        public ViewResult ListadoProyectos()
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            List<Proyecto> proyecto = new List<Proyecto>();
+            Persona Persona = (Persona)Session["Persona"];
 
+            ViewBag.Periodo = db.Periodo.ToList();   
+            proyecto = db.Proyecto.OrderBy(p => p.CodCodeni).ToList();
+
+            return View(proyecto.ToList());
+        }
         //
         // GET: /Proyectos/Details/5
 
@@ -421,7 +432,60 @@ namespace SAG2.Controllers
             db.SaveChanges();
             return RedirectToAction("Create");
         }
+         [HttpGet, ActionName("Habilitar")]
+        public ActionResult HabilitarListado(int id)
+        {
+            try
+            {
+                Usuario usuario = (Usuario)Session["Usuario"];
+                Proyecto proyecto = db.Proyecto.Find(id);
+                proyecto.Eliminado = null;
+                proyecto.Cerrado = null;
+                db.Entry(proyecto).State = EntityState.Modified;
+                db.SaveChanges();
 
+                int periodo = DateTime.Now.Year;
+                int Mes = DateTime.Now.Month;
+                int CLog = 0;
+                string Descripcion = " Habilitar Proyecto Mes : " + Mes + " Periodo : " + periodo;
+                CLog = logReg.RegistraControl("Habilitar", Descripcion, periodo, Mes, usuario.ID, proyecto.ID);
+
+            }catch(Exception){
+
+            }
+            return RedirectToAction("ListadoProyectos");
+        }
+        public ActionResult CerrarProyectoListado(int id)
+        {
+
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Proyecto proyecto = db.Proyecto.Find(id);
+            proyecto.Cerrado = "S";
+            db.Entry(proyecto).State = EntityState.Modified;
+            db.SaveChanges();
+            int periodo = DateTime.Now.Year;
+            int Mes = DateTime.Now.Month;
+            int CLog = 0;
+            string Descripcion = " Cierre Proyecto Mes : " + Mes + " Periodo : " + periodo;
+            CLog = logReg.RegistraControl("Cierre", Descripcion, periodo, Mes, usuario.ID, proyecto.ID);
+            return RedirectToAction("ListadoProyectos");
+        }
+        public ActionResult EliminarListado(int id)
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+
+            Proyecto proyecto = db.Proyecto.Find(id);
+            proyecto.Eliminado = "S";
+            db.Entry(proyecto).State = EntityState.Modified;
+            db.SaveChanges();
+
+            int periodo = DateTime.Now.Year;
+            int Mes = DateTime.Now.Month;
+            int CLog = 0;
+            string Descripcion = " Eliminar Proyecto Mes : " + Mes + " Periodo : " + periodo;
+            CLog = logReg.RegistraControl("Eliminar", Descripcion, periodo, Mes, usuario.ID, proyecto.ID);
+            return RedirectToAction("ListadoProyectos");
+        }
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

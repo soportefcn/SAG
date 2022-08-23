@@ -137,10 +137,18 @@ namespace SAG2.Controllers
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             Usuario usuario = (Usuario)Session["Usuario"];
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             
             if (usuario.esAdministrador)
             {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList() ;
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList() ;
+                }
             }
             else if (usuario.esSupervisor)
             {

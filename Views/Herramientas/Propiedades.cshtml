@@ -123,26 +123,11 @@
 }
     <hr />
     <div>
-@*@using (Html.BeginForm("AplicarFiltro", "Herramientas", null, FormMethod.Post, new { id = "recoverform" }))
-{
-<div class=""form-group">
-    <label>Filtro de Sistema </label><br />
-            <select name="filtroSistema" id="filtroSistema"  class="js-autocomplete" style="width: 400px;">
-                   
-                <option value="1" @if (filtro == 1)
-                                {@Html.Raw(" selected=\"selected\"")}> Vigentes</option>
-
-                <option value="2" @if (filtro == 2)
-                                {@Html.Raw(" selected=\"selected\"")}> Vigentes y Cerrados</option>
-    </select>
-</div>
-            <div class="form-group text-center m-t-20">
-                    <div class="col-xs-12">
-                        <button class="btn btn-info  btn-block text-uppercase waves-effect waves-light" type="submit">Aplicar Filtro</button>
-                    </div>
-                </div>
-}  *@
-                 @using (Html.BeginForm("AplicarFiltro", "Herramientas", null, FormMethod.Post, new { id = "recoverform" }))
+   @{
+       SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+   if (Usuario.esAdministrador)
+                            {
+                 using (Html.BeginForm("AplicarFiltro", "Herramientas", null, FormMethod.Post, new { id = "recoverform" }))
                 {
                     <div class="form-group ">
                         <div class="col-xs-12">
@@ -167,6 +152,7 @@
                         </div>
                     </div>
                 }
-
+  }
+  }
         </div>
 </div>

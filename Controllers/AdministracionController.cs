@@ -25,51 +25,102 @@ namespace SAG2.Controllers
         // GET: /Administracion/
         public string ProgramaRegionTipo(int id, int RegionID)
         {
-           
+            int filtro = int.Parse(Session["Filtro"].ToString());    
             if (id != 0 && RegionID != 0)
             {
-                var Proyectos = (from p in db.Proyecto
-                                 join d in db.Direccion on p.DireccionID  equals d.ID
-                                 join c in db.Comuna on d.ComunaID equals c.ID 
-                                 where (p.TipoProyectoID == id) && (p.Eliminado == null) && (c.RegionID == RegionID)
-                                 orderby p.CodCodeni, p.Nombre
-                                 select new
-                                 {
-                                     Value = p.ID,
-                                     Text = (p.CodCodeni + " - " + p.Nombre)
-                                 }).ToList();
+                if (filtro == 1)
+                {
+                    var Proyectos = (from p in db.Proyecto
+                                     join d in db.Direccion on p.DireccionID equals d.ID
+                                     join c in db.Comuna on d.ComunaID equals c.ID
+                                     where (p.TipoProyectoID == id) && (p.Eliminado == null && p.Cerrado == null) && (c.RegionID == RegionID)
+                                     orderby p.CodCodeni, p.Nombre
+                                     select new
+                                     {
+                                         Value = p.ID,
+                                         Text = (p.CodCodeni + " - " + p.Nombre)
+                                     }).ToList();
 
-                return new JavaScriptSerializer().Serialize(Proyectos);
+                    return new JavaScriptSerializer().Serialize(Proyectos);
+                }
+                else {
+                    var Proyectos = (from p in db.Proyecto
+                                     join d in db.Direccion on p.DireccionID equals d.ID
+                                     join c in db.Comuna on d.ComunaID equals c.ID
+                                     where (p.TipoProyectoID == id) && (p.Eliminado == null ) && (c.RegionID == RegionID)
+                                     orderby p.CodCodeni, p.Nombre
+                                     select new
+                                     {
+                                         Value = p.ID,
+                                         Text = (p.CodCodeni + " - " + p.Nombre)
+                                     }).ToList();
+
+                    return new JavaScriptSerializer().Serialize(Proyectos);
+                }
             }
             if (id == 0 && RegionID != 0)
             {
-                var Proyectos = (from p in db.Proyecto
-                                 join d in db.Direccion on p.DireccionID equals d.ID
-                                 join c in db.Comuna on d.ComunaID equals c.ID
-                                 where  (p.Eliminado == null) && (c.RegionID == RegionID)
-                                 orderby p.CodCodeni, p.Nombre
-                                 select new
-                                 {
-                                     Value = p.ID,
-                                     Text = (p.CodCodeni + " - " + p.Nombre)
-                                 }).ToList();
+                if (filtro == 1)
+                {
+                    var Proyectos = (from p in db.Proyecto
+                                     join d in db.Direccion on p.DireccionID equals d.ID
+                                     join c in db.Comuna on d.ComunaID equals c.ID
+                                     where (p.Eliminado == null) && (c.RegionID == RegionID) && (p.Cerrado == null)
+                                     orderby p.CodCodeni, p.Nombre
+                                     select new
+                                     {
+                                         Value = p.ID,
+                                         Text = (p.CodCodeni + " - " + p.Nombre)
+                                     }).ToList();
 
-                return new JavaScriptSerializer().Serialize(Proyectos);
+                    return new JavaScriptSerializer().Serialize(Proyectos);
+                }
+                else {
+                    var Proyectos = (from p in db.Proyecto
+                                     join d in db.Direccion on p.DireccionID equals d.ID
+                                     join c in db.Comuna on d.ComunaID equals c.ID
+                                     where (p.Eliminado == null) && (c.RegionID == RegionID) 
+                                     orderby p.CodCodeni, p.Nombre
+                                     select new
+                                     {
+                                         Value = p.ID,
+                                         Text = (p.CodCodeni + " - " + p.Nombre)
+                                     }).ToList();
+
+                    return new JavaScriptSerializer().Serialize(Proyectos);
+                }
             }
             if (id != 0 && RegionID == 0)
             {
-                var Proyectos = (from p in db.Proyecto
-                                 join d in db.Direccion on p.DireccionID equals d.ID
-                                 join c in db.Comuna on d.ComunaID equals c.ID
-                                 where (p.Eliminado == null) && (p.TipoProyectoID == id)
-                                 orderby p.CodCodeni, p.Nombre
-                                 select new
-                                 {
-                                     Value = p.ID,
-                                     Text = (p.CodCodeni + " - " + p.Nombre)
-                                 }).ToList();
+                if (filtro == 1)
+                {
+                    var Proyectos = (from p in db.Proyecto
+                                     join d in db.Direccion on p.DireccionID equals d.ID
+                                     join c in db.Comuna on d.ComunaID equals c.ID
+                                     where (p.Eliminado == null) && (p.TipoProyectoID == id) && (p.Cerrado == null)
+                                     orderby p.CodCodeni, p.Nombre
+                                     select new
+                                     {
+                                         Value = p.ID,
+                                         Text = (p.CodCodeni + " - " + p.Nombre)
+                                     }).ToList();
 
-                return new JavaScriptSerializer().Serialize(Proyectos);
+                    return new JavaScriptSerializer().Serialize(Proyectos);
+                }
+                else {
+                    var Proyectos = (from p in db.Proyecto
+                                     join d in db.Direccion on p.DireccionID equals d.ID
+                                     join c in db.Comuna on d.ComunaID equals c.ID
+                                     where (p.Eliminado == null) && (p.TipoProyectoID == id) 
+                                     orderby p.CodCodeni, p.Nombre
+                                     select new
+                                     {
+                                         Value = p.ID,
+                                         Text = (p.CodCodeni + " - " + p.Nombre)
+                                     }).ToList();
+
+                    return new JavaScriptSerializer().Serialize(Proyectos);
+                }
             }
             if (id == 0 && RegionID == 0)
             {

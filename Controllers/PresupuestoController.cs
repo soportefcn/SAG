@@ -4575,6 +4575,8 @@ namespace SAG2.Controllers
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona Persona = (Persona)Session["Persona"];
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
+
             if (pr_id == 0)
             {
                 Proyecto Proyecto = (Proyecto)Session["Proyecto"];
@@ -4586,7 +4588,15 @@ namespace SAG2.Controllers
             }
             if (usuario.esAdministrador)
             {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList() ;
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList();
+                }
+            //ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
 
             }
             else
@@ -4732,11 +4742,39 @@ namespace SAG2.Controllers
         {
             int pr_id;
             int Periodo = 0;
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            Persona Persona = (Persona)Session["Persona"];
+             Usuario usuario = (Usuario)Session["Usuario"];
             if (Periodo == 0)
             {
                 Periodo = Int32.Parse(form["periodoBalance"].ToString()); ;
             }
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+
+            if (usuario.esAdministrador)
+            {
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList();
+                }
+                //ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+
+            }
+            else
+            {
+                if (usuario.esSupervisor)
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                }
+            }
             ViewBag.Periodo_Inicio = Periodo.ToString();
             ViewBag.Mes_Inicio = "1";
             ViewBag.pr_id = Int32.Parse(form["Proyectos2"].ToString());
@@ -5321,9 +5359,17 @@ namespace SAG2.Controllers
             int Linea = Int32.Parse(form["TProyecto"].ToString());
             int mes = desde.Month;
             int periodo = desde.Year;
+            int filtro = int.Parse(Session["Filtro"].ToString());   
 
             var movimientos = db.Movimiento.Where(m => m.Fecha >= desde).Where(m => m.Fecha <= hasta).Where(m => m.Proyecto.TipoProyectoID == Linea).Where(a => a.Temporal == null && a.Eliminado == null && a.Nulo == null && ((a.CuentaID != 1 && a.CuentaID != 6) || a.CuentaID == null)).OrderBy(m => m.ProyectoID).ThenBy(m => m.NumeroComprobante);
-
+            if (filtro == 1)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList();
+            }
             ViewBag.Egresos = db.DetalleEgreso.Where(m => m.Egreso.Fecha >= desde).Where(m => m.Egreso.Fecha <= hasta).Where(m => m.Egreso.Proyecto.TipoProyectoID == Linea).Where(m => m.CuentaID != null).Where(m => m.Nulo == null && m.Egreso.Eliminado == null).OrderBy(m => m.Cuenta.Orden).ToList();
             ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.TipoProyectoID == Linea && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
             ViewBag.TipoProyecto = db.TipoProyecto.ToList();
@@ -5340,7 +5386,7 @@ namespace SAG2.Controllers
         {
             int periodo = (int)Session["Periodo"];
             int Mes = (int)Session["Mes"];
-
+            int filtro = int.Parse(Session["Filtro"].ToString());   
             int año = periodo;
             int Linea = 1;
 
@@ -5348,7 +5394,15 @@ namespace SAG2.Controllers
             var movimientos = db.Movimiento.Where(m => m.Periodo == periodo).Where(m => m.Proyecto.TipoProyectoID == Linea).Where(a => a.Temporal == null && a.Eliminado == null && a.Nulo == null && ((a.CuentaID != 1 && a.CuentaID != 6) || a.CuentaID == null)).OrderBy(m => m.ProyectoID).ThenBy(m => m.NumeroComprobante);
 
             ViewBag.Egresos = db.DetalleEgreso.Where(m => m.Egreso.Periodo == periodo).Where(m => m.CuentaID != null).Where(m => m.Nulo == null && m.Egreso.Eliminado == null).OrderBy(m => m.Cuenta.Orden).ToList();
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.TipoProyectoID == Linea && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+            if (filtro == 1)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.TipoProyectoID == Linea).OrderBy(p => p.CodCodeni).ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.TipoProyectoID == Linea).OrderBy(p => p.CodCodeni).ToList();
+            }
+           // ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.TipoProyectoID == Linea && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
             ViewBag.TipoProyecto = db.TipoProyecto.ToList();
             ViewBag.Saldos = db.Saldo.Where(m => m.Periodo == periodo).ToList();
             //ViewBag.Mes = mes;
@@ -5363,13 +5417,22 @@ namespace SAG2.Controllers
             // DateTime desde = DateTime.Parse(form["desde"].ToString());
             // DateTime hasta = DateTime.Parse(form["hasta"].ToString());
             int Linea = Int32.Parse(form["TProyecto"].ToString());
-            // int mes = desde.Month;
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             int periodo = Int32.Parse(form["anual"].ToString());
 
             var movimientos = db.Movimiento.Where(m => m.Periodo == periodo).Where(m => m.Proyecto.TipoProyectoID == Linea).Where(a => a.Temporal == null && a.Eliminado == null && a.Nulo == null && ((a.CuentaID != 1 && a.CuentaID != 6) || a.CuentaID == null)).OrderBy(m => m.ProyectoID).ThenBy(m => m.NumeroComprobante);
 
             ViewBag.Egresos = db.DetalleEgreso.Where(m => m.Egreso.Periodo == periodo).Where(m => m.Egreso.Proyecto.TipoProyectoID == Linea).Where(m => m.CuentaID != null).Where(m => m.Nulo == null && m.Egreso.Eliminado == null).OrderBy(m => m.Cuenta.Orden).ToList();
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.TipoProyectoID == Linea && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+
+
+            if (filtro == 1)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.TipoProyectoID == Linea).OrderBy(p => p.CodCodeni).ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.TipoProyectoID == Linea).OrderBy(p => p.CodCodeni).ToList();
+            }
             ViewBag.TipoProyecto = db.TipoProyecto.ToList();
             ViewBag.Saldos = db.Saldo.Where(m => m.Periodo == periodo).ToList();
             // ViewBag.Mes = mes;
@@ -5405,16 +5468,23 @@ namespace SAG2.Controllers
         }
         public ActionResult LineaProyectoExcelAnual(int anual, int Linea)
         {
-
-            //int Linea = Int32.Parse(form["TProyecto"].ToString());
-            // int mes = desde.Month;
+            int filtro = int.Parse(Session["Filtro"].ToString());   
             int periodo = anual;
 
 
             var movimientos = db.Movimiento.Where(m => m.Periodo == periodo).Where(m => m.Proyecto.TipoProyectoID == Linea).Where(a => a.Temporal == null && a.Eliminado == null && a.Nulo == null && ((a.CuentaID != 1 && a.CuentaID != 6) || a.CuentaID == null)).OrderBy(m => m.ProyectoID).ThenBy(m => m.NumeroComprobante);
 
             ViewBag.Egresos = db.DetalleEgreso.Where(m => m.Egreso.Periodo == periodo).Where(m => m.Egreso.Proyecto.TipoProyectoID == Linea).Where(m => m.CuentaID != null).Where(m => m.Nulo == null && m.Egreso.Eliminado == null).OrderBy(m => m.Cuenta.Orden).ToList();
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.TipoProyectoID == Linea && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+           
+           
+            if (filtro == 1)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.TipoProyectoID == Linea).OrderBy(p => p.CodCodeni).ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.TipoProyectoID == Linea).OrderBy(p => p.CodCodeni).ToList();
+            }
             ViewBag.TipoProyecto = db.TipoProyecto.ToList();
             ViewBag.Saldos = db.Saldo.Where(m => m.Periodo == periodo).ToList();
             // ViewBag.Mes = mes;

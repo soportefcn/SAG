@@ -211,6 +211,10 @@
 						<ul class="dropdown-menu"> 
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/Create">Programas</a></li>
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Contratos/Create">Contratos</a></li>
+                            @if (Usuario.esAdministrador)
+                            {
+	                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/ListadoProyectos">Listado Programas</a></li>
+	                         }
 						</ul>
 					</li>
 					<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proveedores/Create">Proveedores</a></li>
