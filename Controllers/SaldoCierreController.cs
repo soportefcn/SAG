@@ -94,6 +94,7 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Parametro(ParametroInforme datos )
         {
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             var xdatos = db.ParametroInforme.Where(d => d.ProyectoID  == datos.ProyectoID  && d.CInformeID  == datos.CInformeID ).Count();
             if (xdatos == 0)
             {
@@ -101,16 +102,32 @@ namespace SAG2.Controllers
                 db.SaveChanges();
             }
             int ProyectoID = datos.ProyectoID;
-
-            ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni), "ID", "NombreLista", ProyectoID);
+            if (filtro == 1)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", ProyectoID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", ProyectoID);
+            }
+        
             ViewBag.CInformeID = new SelectList(db.CinformeCierre, "ID", "Nombrecuenta" );
             return View();
         }
 
         public ActionResult Parametro()
         {
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni), "ID", "NombreLista", Proyecto.ID);
+            if (filtro == 1)
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
+            }
+
             ViewBag.CInformeID = new SelectList(db.CinformeCierre, "ID", "Nombrecuenta"); 
             return View(); 
         }

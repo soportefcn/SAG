@@ -8,16 +8,29 @@
 }
 
 <h2>Listado Programas</h2>
+   <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form.group">
+                    <label>Estado</label>
+                    
+                 <select id="Estadofiltro" name="Estadofiltro" style="width: 126px;" class="form-control">
+                          <option value="0">Todos</option>
+                            <option value="1">Vigentes</option>
+                            <option value="2">Cerrados</option>
+                <option value="3">Eliminados</option>
+</select>
+                </div>
 
+                </div></div>
 <table id="ResultadoTable" class="table table-responsive table-bordered">
     <thead>
         <tr class="label-info">
             <th> Nombre</th>
             <th> Cod.Sename </th>
-             <th>Estado </th>
-            <th>Periodo Inicio </th>
+             <th>Periodo Inicio </th>
+            <th>Periodo </th>
             <th>Estado </th>
-            <th></th>
+            <th>Acciones</th>
      </tr>
       </thead>
   <tbody>
@@ -96,7 +109,7 @@
           }
          @if (item.estaEliminado)
          {
-           <td>  <a class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Eliminar" href="@Url.Action("Habilitar", "Proyectos", new { id = item.ID })" onclick="return confirm('Realmente desea Habilitar este Proyecto?');"><span class ="fa fa-check fa-fw"></span></a>
+           <td><div style="align-items: center;">  <a class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Habilitar" href="@Url.Action("Habilitar", "Proyectos", new { id = item.ID })" onclick="return confirm('Realmente desea Habilitar este Proyecto?');"><span class ="fa fa-check fa-fw"></span></a></div>
         </td>
          }
          else

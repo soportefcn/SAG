@@ -26,6 +26,7 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Control(FormCollection form)
         {
+            int filtro = int.Parse(Session["Filtro"].ToString());
             int pr_id;
             int Periodo = 0;
             if (Periodo == 0)
@@ -37,7 +38,15 @@ namespace SAG2.Controllers
             Persona Persona = (Persona)Session["Persona"];
             if (usuario.esAdministrador)
             {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList(); 
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
 
             }
             else
@@ -167,6 +176,7 @@ namespace SAG2.Controllers
         }
         public ActionResult Control(int Periodo = 0, int pr_id = 0)
         {
+            int filtro = int.Parse(Session["Filtro"].ToString());
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona Persona = (Persona)Session["Persona"];
 
@@ -177,8 +187,15 @@ namespace SAG2.Controllers
             }
             if (usuario.esAdministrador)
             {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-
+               
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
             }
             else
             {

@@ -26,6 +26,7 @@ namespace SAG2.Controllers
         {
             int Mes = 1;
             int pr_id = 0;
+            int filtro = int.Parse(Session["Filtro"].ToString());  
             if (Periodo == 0)
             {
                 Periodo = (int)Session["Periodo"];
@@ -47,7 +48,15 @@ namespace SAG2.Controllers
 
                 ViewBag.Periodo = Periodo;
                 ViewBag.Pidin = pr_id;
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                //ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
                 try
                 {
                     ViewBag.CostosReales = db.IndicadoresCuenta.Where(pp => pp.FACTOR == 1).OrderBy(pp => pp.ID).ToList();
@@ -385,36 +394,91 @@ namespace SAG2.Controllers
 
 
         }
-        public ActionResult Intervenciones(int Periodo = 0, string export = "", string cerrado = "") 
+        public ActionResult Intervenciones() 
         {
-            if (Periodo == 0)
-            { 
-                Periodo = (int)Session["Periodo"];
+            Proyecto proyecto = (Proyecto)Session["Proyecto"];
+        
+             int   Periodo = (int)Session["Periodo"];
+            
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            List<Proyecto> proyectos = new List<Proyecto>();
+
+            proyectos = db.Proyecto.Where(d => d.ID == proyecto.ID).ToList() ;  
+
+            if (filtro == 1)
+            {               
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
             }
-            var proyectos = db.Proyecto.Where(c => c.Cerrado != "S").Where(e => e.Eliminado != "S").OrderBy(p => p.Nombre);
+            else
+            {     
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null ), "ID", "NombreLista", proyecto.ID);
+            }
+
             ViewBag.Exportar = "";
-
-            if (export.Equals("xls")) 
-            {   
-                if (cerrado.Equals("S"))
-                {
-                    ViewBag.Exportar = "xls";
-                    proyectos = db.Proyecto.OrderBy(p => p.Nombre);
-                    ViewBag.Periodo = Periodo;
-
-                }
-                else
-                {
-                    proyectos = db.Proyecto.Where(c => c.Cerrado != "S").Where(e => e.Eliminado != "S").OrderBy(p => p.Nombre);
-                    ViewBag.Exportar = "xls";
-                }
-                
+            ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+            ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+        
+            ViewBag.Periodo = Periodo;
+            return View(proyectos.ToList());
+        }
+        [HttpPost] 
+        public ActionResult Intervenciones(FormCollection form)
+        {
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            int pr_id = 1;
+            int RegionId = 0;
+            int tipoProyectoID = 0;
+            int Periodo = int.Parse(form["Periodo"].ToString()); ;
+            if (form["ProyectoID"].ToString() != "")
+            {
+                pr_id = int.Parse(form["ProyectoID"].ToString());
             }
+            if (form["regionID"].ToString() != "")
+            {
+                RegionId = int.Parse(form["regionID"].ToString());
+            }
+            if (form["TipoProgramaID"].ToString() != "")
+            {
+                tipoProyectoID = int.Parse(form["TipoProgramaID"].ToString());
+            }
+            ViewBag.Exportar = form["exportar"].ToString();
+            List<Proyecto> proyectos = new List<Proyecto>();
+
+           
+            if (filtro == 1)
+            {
+                
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista",pr_id);
+                proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList() ;
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista",pr_id);
+                proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList();
+            }
+            if (pr_id != 1)
+            {
+                proyectos = proyectos.Where(d => d.ID == pr_id).ToList();
+
+            }
+            else {
+
+                if (RegionId != 0) {
+                    proyectos = proyectos.Where(d => d.Direccion.Comuna.RegionID == RegionId).ToList();   
+                }
+
+                if (tipoProyectoID != 0)
+                {
+                    proyectos = proyectos.Where(d => d.TipoProyectoID == tipoProyectoID).ToList();
+                }
+            
+            }
+            ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla",tipoProyectoID );
+            ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre",RegionId );
 
             ViewBag.Periodo = Periodo;
             return View(proyectos.ToList());
         }
-
         public ActionResult ResumenIntervenciones(int Periodo = 0, string export = "")
         {
             if (Periodo == 0)

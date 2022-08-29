@@ -25,8 +25,17 @@ namespace SAG2.Controllers
         }
         public ViewResult ListadoAuditoria()
         {
+            int filtro = int.Parse(Session["Filtro"].ToString());  
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            
+            if (filtro == 1)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            }
             ViewBag.PersonaID = db.Persona.ToList();   //new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreCompleto");
 
             var programaanualauditorias = db.ProgramaAnualAuditorias.Include(p => p.Proyecto).Include(p => p.Auditor).OrderByDescending(i => i.FechaProgramada);
@@ -38,8 +47,17 @@ namespace SAG2.Controllers
         [HttpPost]
         public ViewResult ListadoAuditoria(ProgramaAnualAuditorias frmprogramaanualauditorias)
         {
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+        
+            if (filtro == 1)
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            }
             ViewBag.PersonaID = db.Persona.ToList();   //new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreCompleto");
             
             int Perid = frmprogramaanualauditorias.PersonaID;

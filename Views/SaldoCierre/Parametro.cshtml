@@ -3,7 +3,11 @@
 @{
     ViewBag.Title = "Parametro";
 }
-
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $(".js-autocomplete").select2();
+        });
+    </script>
 <h2>Parametro</h2>
 
 @using (Html.BeginForm()) {
@@ -18,7 +22,7 @@
         </div>
         <div class="editor-field">
          
-             @Html.DropDownList("ProyectoID", null, "-- SELECCIONE PROYECTO --", new { @class = "form-control"} )
+             @Html.DropDownList("ProyectoID", null, "-- SELECCIONE PROYECTO --", new { @class = "form-control js-autocomplete"} )
         </div>
 
         <div class="editor-label">

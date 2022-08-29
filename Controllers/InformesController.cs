@@ -2888,6 +2888,7 @@ namespace SAG2.Controllers
         /*Revisa como se producen*/
         public ActionResult FondosrendirA(int Periodo = 0, int Mes = 0)
         {
+            int filtro = int.Parse(Session["Filtro"].ToString());  
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             Persona Persona = (Persona)Session["Persona"];
 
@@ -2895,7 +2896,14 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
             }
             else if (usuario.esSupervisor)
             {
@@ -3032,6 +3040,7 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult FondosrendirA(string Desde = "", string Hasta = "", int ProyID = 0)
         {
+            int filtro = int.Parse(Session["Filtro"].ToString());  
             //Proyecto Proyecto = db.Proyecto.Where(p => p.ID == ProyID);
             Persona Persona = (Persona)Session["Persona"];
 
@@ -3039,7 +3048,14 @@ namespace SAG2.Controllers
             ViewBag.ProSel = ProyID;
             if (usuario.esAdministrador)
             {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                if (filtro == 1)
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
+                else
+                {
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+                }
             }
             else if (usuario.esSupervisor)
             {
