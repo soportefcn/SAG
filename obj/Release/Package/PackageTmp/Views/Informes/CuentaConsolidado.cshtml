@@ -1,0 +1,292 @@
+﻿@model IEnumerable<SAG2.Models.movcuentatr>
+@{
+    ViewBag.Title = "Cuentas";
+}
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $(".js-autocomplete").select2();
+        });
+    </script>
+<div id="SAGBox">
+    <h2>Informe de Cuenta </h2>
+
+     <div class="panel panel-default">
+    <div class="panel-body">
+   @using (Html.BeginForm())
+   {
+       <table class="table table-striped">
+           <tr><td>
+               <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
+               <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+               <div class="col-md-4">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+           </td></tr> 
+       </table>
+
+     <div class="row">
+      <div class="col-md-4">
+           <div class="form-inline">
+                 <div class="form-group" style="margin-right: 10px;margin-left:8px">
+          <label>Cuenta</label><br />
+             <select id="CuentaID" name="CuentaID" class ="js-autocomplete form-control" style="width: 302px;">
+      <option></option>
+                @Html.Raw(ViewBag.Arbol)
+            </select>
+                     </div></div>
+      </div>
+         <div class="col-sm-6">
+             <div class="form-inline">
+                 <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                     <label>Desde</label><br />
+
+                     <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" style="width: 100px;" />
+                 </div>
+                 <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                     <label>Hasta</label><br />
+
+                     <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" style="margin-right: 20px;width: 100px;" />
+                 </div>
+                 <div class="form-group">
+                     <br />
+                     <input type="button" id="Procesar" value="Ver resultados!" class="btn btn-primary" />
+                          @Html.ActionLink("Excel", "CuentaExcelConsolidado", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta, ProyectoID = @ViewBag.PrID, tipoProyectoID = @ViewBag.tpID, RegionID = @ViewBag.RegID  }, new { @class = "btn btn-success" })
+                      
+                   </div>
+
+
+             </div>
+      </div>
+         
+     </div>
+   }
+  </div>
+
+</div>
+
+    @if (ViewBag.Entrada == 1)
+    {
+    
+        <table class ="table table-striped table-bordered">
+        <tr>
+            <th>Tipo</th>
+            <th>Region</th>
+            <th>CC</th>
+        <th>Tipo Movimiento</th>
+        <th>N° Comprobante</th>
+        <th>Fecha</th>
+       <th>Cuenta </th>
+        <th>N° Cheque</th>
+        <th >Monto</th>
+        <th >Cta Cte </th>
+        <th> Glosa</th>
+
+            
+        </tr>
+    @foreach (var item in Model)
+    {
+
+        <tr>
+             <td>@item.Tipo  </td>
+            <td>@item.Region   </td>
+            <td>@item.codCodeni </td>
+            <td align="center">
+                @{ 
+                    if( item.TipoComprobanteID == 1){
+                        <a href="@Url.Action("Edit", "Ingresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Ingreso  <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /> </a>
+                   }
+                    if (item.TipoComprobanteID == 2) { 
+                         <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    }
+                    if (item.TipoComprobanteID == 3) { 
+                    <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    } 
+                     if (item.TipoComprobanteID == 4) { 
+                    <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Gasto Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    } 
+                 }
+            </td>
+             <td>
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td>
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td>@item.NombreCuenta</td>
+            <td>@item.Cheque</td>
+            <td align="right">
+                @item.Monto.ToString("###,##")
+            </td>
+            <td>@item.CtaCte</td>
+            <td>@item.Glosa</td>
+        </tr>
+    }
+    </table>
+    
+    } 
+
+     <div id="Detalle"></div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+
+
+
+        $("#ExcelCC").click(function () {
+           
+            var mensaje = "";
+            var cuentaID = $('#CuentaID').val();
+            var desde = $('#Desde').val();
+            var Hasta = $('#Hasta').val();
+            var TipoProgramaID = $('#TipoProgramaID').val();
+            var ProyectoID = $('#ProyectoID').val();
+            var regionID = $('#regionID').val();
+            var url = '@Url.Action("CuentaExcelConsolidado", "Informes", new { Hasta = "Hasta_cambiar", Desde = "Desde_cambiar", Cuenta = "cuenta_cambiar", ProyectoID = "ProyectoID_cambiar", tipoProyectoID = "tipoProyectoID_cambiar", RegionID = "RegionID_cambiar" })';
+
+            if (regionID == "") {
+                regionID = 0;
+            }
+            if (ProyectoID == "") {
+                ProyectoID = 0;
+            }
+            if (TipoProgramaID == "") {
+                TipoProgramaID = 0;
+            }
+            if (cuentaID == "") {
+                mensaje = "Falta Seleccionar Cuenta";
+            }
+            if (desde == "") {
+                mensaje = mensaje + "</br>" + "Falta fecha desde";
+            }
+            if (Hasta == "") {
+                mensaje = mensaje + "</br>" + "Falta Fecha Hasta";
+            }
+            if (mensaje == "") {
+                url = url.replace("&amp;", "&");
+                url = url.replace("Hasta_cambiar", Hasta);
+                url = url.replace("&amp;", "&");
+                url = url.replace("Desde_cambiar", desde);
+                url = url.replace("&amp;", "&");
+                url = url.replace("cuenta_cambiar", cuentaID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("ProyectoID_cambiar", ProyectoID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("tipoProyectoID_cambiar", TipoProgramaID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("RegionID_cambiar", regionID);
+                $("#Detalle").load(url);
+            }
+            else {
+
+                Swal.fire(mensaje)
+            }
+
+        });
+
+        $("#Procesar").click(function () {
+            var mensaje = "";
+            var cuentaID = $('#CuentaID').val();
+            var desde = $('#Desde').val();
+            var Hasta = $('#Hasta').val();
+            if (cuentaID == "") {
+                mensaje =  "Falta Seleccionar Cuenta";               
+            }
+            if (desde == "") {
+                mensaje = mensaje + "</br>" +  "Falta fecha desde";
+            }
+            if (Hasta == "") {
+                mensaje = mensaje + "</br>" +  "Falta Fecha Hasta";
+            }
+            if (mensaje == "") {
+                $("form").submit();
+            }
+            else {
+
+                Swal.fire(mensaje)
+            }
+
+        });
+
+        $('#TipoProgramaID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+            var Tprograma = $('#TipoProgramaID').val();
+            if (Tprograma == "") {
+                Tprograma = 0;
+            }
+            var Tregion = $('#regionID').val();
+            if (Tregion == "") {
+                Tregion = 0;
+            }
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    id: Tprograma,
+                    RegionID: Tregion
+                },
+                success: function (agrupaciones, textStatus, xhr) {
+                    var comunas = agrupaciones;
+                    var ddlComunas = $('#ProyectoID');
+                    $('#ProyectoID > option').remove();
+                    if (comunas.length == 0) {
+                        ddlComunas.append($("<option />").val("1").text("Sin información"));
+                    } else {
+                        ddlComunas.append($("<option />").val("1").text("Todos"));
+                        for (i = 0; i < comunas.length; i++) {
+                            ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                        }
+                    }
+
+                },
+                error: function (request, status, error) {
+                    alert("error");
+                }
+            });
+        });
+       
+        $('#regionID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+            var Tprograma = $('#TipoProgramaID').val();
+            if (Tprograma == "") {
+                Tprograma = 0;
+            }
+            var Tregion = $('#regionID').val();
+            if (Tregion == "") {
+                Tregion = 0;
+            }
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    id: Tprograma,
+                    RegionID: Tregion
+                },
+                success: function (agrupaciones, textStatus, xhr) {
+                    var comunas = agrupaciones;
+                    var ddlComunas = $('#ProyectoID');
+                    $('#ProyectoID > option').remove();
+                    if (comunas.length == 0) {
+                        ddlComunas.append($("<option />").val("1").text("Sin información"));
+                    } else {
+                        ddlComunas.append($("<option />").val("1").text("Todos"));
+                        for (i = 0; i < comunas.length; i++) {
+                            ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                        }
+                    }
+
+                },
+                error: function (request, status, error) {
+                    alert("error");
+                }
+            });
+
+            });
+       
+
+    });
+</script> 

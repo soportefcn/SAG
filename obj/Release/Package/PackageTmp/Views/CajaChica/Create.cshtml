@@ -205,7 +205,7 @@ input[type="text"], textarea
         <!--Html.ActionLink("NUEVO", "Create", new { Grupo = ViewBag.FondoFijoGrupoID, class="btn btn-default" })-->
     <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/CajaChica/Create?Grupo=@ViewBag.FondoFijoGrupoID"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
         }
-        <a class="btn btn-default" href="../Imprimir/InformeFondoFijo?Grupo=@ViewBag.FondoFijoGrupoID" class="imprimirInformeMes" onclick="window.open(this.href, 'imprimirInformeMes','width=800,height=600,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-print fa-fw"></span>IMPRIMIR</a>
+        <a class="btn btn-default" href="../Imprimir/InformeFondoFijo?Grupo=@ViewBag.FondoFijoGrupoID&ProyectoID=@ViewBag.ProyId" class="imprimirInformeMes" onclick="window.open(this.href, 'imprimirInformeMes','width=800,height=600,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-print fa-fw"></span>IMPRIMIR</a>
 	</div>
 
   </div>

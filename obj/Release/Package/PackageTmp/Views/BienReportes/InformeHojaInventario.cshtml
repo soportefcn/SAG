@@ -21,11 +21,19 @@
         visibility: hidden !important;
     }
 </style>
-
+    <style media="print" type="text/css">
+        .no-imprimir {
+            display: none;
+        }
+        /*.oculto, .ocultoImpresion, .menu, .pie
+        {
+            display: none;    
+        }*/
+    </style>
 <div id="SAGBox">
     <br />
 
-    <div class="ocultoImpresion">
+    <div class="no-imprimir">
         <input type="button"  value="Imprimir reporte" class="imprimirDirecto boton btn" />
         <a class="btn btn-info" href="@Url.Action("InformeHojaInventarioEX", "BienReportes", new { id = Model.ProyectoID, hasta = Model.Hasta, desde = Model.Desde, dependencia = Model.Ubicacion })">Descargar Excel</a>
     </div>
@@ -59,7 +67,7 @@
             </tr>
             <tr>
                 <th colspan="1">Dependencia:</th>
-                <td>@Model.lista.First().Ubicacion</td>
+                <td></td>
             </tr>
         </table>
 

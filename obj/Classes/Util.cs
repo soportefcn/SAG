@@ -15,7 +15,41 @@ namespace SAG2.Classes
     public class Util
     {
         private Constantes ctes = new Constantes();
-           
+
+        public List<Proyecto> FiltroProyecto(int filtro) {
+            SAG2DB db = new SAG2DB();
+            List<Proyecto> PrFiltro = new List<Proyecto>();
+            if (filtro == 1)
+            {
+                PrFiltro = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList() ;
+            }
+            if (filtro == 2)
+            {
+                PrFiltro = db.Proyecto.Where(p => p.Cerrado.Equals("P")).ToList();
+            }
+            if (filtro == 3)
+            {
+                PrFiltro = db.Proyecto.Where(p => p.Eliminado == null).ToList() ;
+            }
+            return PrFiltro;
+        }
+        public SelectList ProyectoFiltro(int filtro, int PrID) {
+            SAG2DB db = new SAG2DB();
+            SelectList PrFiltro = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", PrID);
+            if (filtro == 1)
+            {
+                PrFiltro = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", PrID);
+            }
+            if (filtro == 2)
+            {
+                PrFiltro = new SelectList(db.Proyecto.Where(p => p.Cerrado.Equals("P")), "ID", "NombreLista");
+            }
+            if (filtro == 3)
+            {
+                PrFiltro = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", PrID);
+            }
+            return PrFiltro;
+        }
         public string nombreAuditor(int Id){
             SAG2DB db = new SAG2DB();
 

@@ -5,8 +5,11 @@
     ViewBag.Title = "Cierres";
     SAG2DB db = new SAG2DB();
     int periodo = @ViewBag.periodo;
-    var pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
-    int proyectoID = 0;
+    List<SAG2.Models.Proyecto> pro = new List<SAG2.Models.Proyecto>();
+    pro = (List<SAG2.Models.Proyecto>)@ViewBag.Proy;
+    
+   //var pro = db.Proyecto.ToList().FindAll(p => p.Eliminado != "S" && p.Cerrado != "S").OrderBy(p => p.CodCodeni).ToList();
+    int proyectoID = ViewBag.PrID;
   }
         <script type="text/javascript">
             $(document).ready(function () {

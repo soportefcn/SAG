@@ -49,14 +49,7 @@ namespace SAG2.Controllers
                 ViewBag.Periodo = Periodo;
                 ViewBag.Pidin = pr_id;
                 //ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-                if (filtro == 1)
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
+                ViewBag.Proyectos = utils.FiltroProyecto(filtro);
                 try
                 {
                     ViewBag.CostosReales = db.IndicadoresCuenta.Where(pp => pp.FACTOR == 1).OrderBy(pp => pp.ID).ToList();
@@ -405,15 +398,15 @@ namespace SAG2.Controllers
 
             proyectos = db.Proyecto.Where(d => d.ID == proyecto.ID).ToList() ;  
 
-            if (filtro == 1)
-            {               
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
-            }
-            else
-            {     
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null ), "ID", "NombreLista", proyecto.ID);
-            }
-
+            //if (filtro == 1)
+            //{               
+            //    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
+            //}
+            //else
+            //{     
+            //    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null ), "ID", "NombreLista", proyecto.ID);
+            //}
+            ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, proyecto.ID);
             ViewBag.Exportar = "";
             ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
             ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
@@ -445,17 +438,19 @@ namespace SAG2.Controllers
             List<Proyecto> proyectos = new List<Proyecto>();
 
            
-            if (filtro == 1)
-            {
-                
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista",pr_id);
-                proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList() ;
-            }
-            else
-            {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista",pr_id);
-                proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList();
-            }
+            //if (filtro == 1)
+            //{
+            //    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista",pr_id);
+            //    proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList() ;
+            //}
+            //else
+            //{
+            //    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista",pr_id);
+            //    proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList();
+            //}
+            ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, pr_id);
+            proyectos = utils.FiltroProyecto(filtro); 
+
             if (pr_id != 1)
             {
                 proyectos = proyectos.Where(d => d.ID == pr_id).ToList();

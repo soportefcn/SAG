@@ -11,14 +11,10 @@
     Response.AddHeader("Content-Disposition", "attachment;filename=Cuentas-" + DateTime.Now.ToShortDateString() + ".xls");
     string FechaSis = DateTime.Now.ToShortDateString();
 }
-    <script type="text/javascript">
-        $(document).ready(function() {
-          $(".js-autocomplete").select2();
-        });
-    </script>
+
 <div id="SAGBox">
     <h2>Informe de Cuenta: @Model.Select(x => x.NombreCuenta).First()</h2>
-
+    <p>@ViewBag.Proyectonombre </p>
      <div class="panel panel-default">
     <div class="panel-body">
    @using (Html.BeginForm())
@@ -34,10 +30,10 @@
        <table class ="table table-striped table-bordered" cellpadding="5" border="1" style="width: 80%;">
         <tr>
         <th>Tipo Movimiento</th>
-        <th>N° Comprobante</th>
+        <th>N&#176; Comprobante</th>
         <th>Fecha</th>
        <th>Cuenta </th>
-        <th>N° Cheque</th>
+        <th>N&#176; Cheque</th>
         <th >Monto</th>
         <th >Cta Cte </th>
         <th> Glosa</th>

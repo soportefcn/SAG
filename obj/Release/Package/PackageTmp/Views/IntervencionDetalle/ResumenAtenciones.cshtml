@@ -19,7 +19,21 @@
     <div class="panel-body">
 
         <div class="form-inline">
-            <div class="form-group" style="margin-right: 30px;">
+           <div class="form-group" style="margin-right: 30px;margin-left:0px">
+              <label>Año : </label>
+          </div>
+          <div class="form-group" style="margin-right: 50px">
+              <select name="PeriodoApertura" id="PeriodoApertura" class="form-control">
+                  @for (var i = DateTime.Now.Year - 4; i <= DateTime.Now.Year + 2; i++)
+                  {
+                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                                                                 { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw((@i).ToString())
+                  </option>
+                  }
+              </select>
+          </div>
+            <div class="form-group" style="margin-right: 30px;margin-left: 0px;">
                 @Html.Label("Proyecto:")
             </div>
             <div class="form-group" style="margin-right: 50px;">               

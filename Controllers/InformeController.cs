@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using SAG2.Classes;
 
 
 namespace SAG_5.Controllers
@@ -15,7 +16,7 @@ namespace SAG_5.Controllers
     public class InformeController : Controller
     {
         private SAG2DB db = new SAG2DB();
-
+        private Util utils = new Util();
 
         public ActionResult ReporteRegionEstandarCC()
         {
@@ -285,15 +286,9 @@ namespace SAG_5.Controllers
             int mes = (int)Session["Mes"];
             int periodo = (int)Session["Periodo"];
             ViewBag.periodo = periodo;
-            ViewBag.mes = mes; 
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", proyecto.ID);
-            }
+            ViewBag.mes = mes;
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
+
             return View();
         }
         [HttpPost]
@@ -301,14 +296,8 @@ namespace SAG_5.Controllers
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyectos);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyectos);
-            }
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
+
             ViewBag.listaCuentas = db.DetalleInformes.Where(d => d.informeID == Informe).OrderBy(d => d.cuentaID).ToList();
             ViewBag.ID = Proyectos;
             ViewBag.Periodo = periodo;
@@ -383,15 +372,8 @@ namespace SAG_5.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());    
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-           
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-            }
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyecto.ID);
+
             
             
             ViewBag.periodo = (int)Session["Periodo"];
@@ -403,14 +385,10 @@ namespace SAG_5.Controllers
         {
             int filtro = int.Parse(Session["Filtro"].ToString());  
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyectos);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyectos);
-            }
+           
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
+
+
             ViewBag.listaCuentas = db.DetalleInformes.Where(d => d.informeID == Informe).OrderBy(d => d.cuentaID).ToList();
             ViewBag.ID = Proyectos;
             ViewBag.Periodo = periodo;
@@ -639,15 +617,8 @@ namespace SAG_5.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString()); 
 
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-           
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", proyecto.ID);
-            }
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
+
             return View();
         }
         public ActionResult ReporteProgramaEstandarCC()
@@ -656,14 +627,9 @@ namespace SAG_5.Controllers
            
             int filtro = int.Parse(Session["Filtro"].ToString());
             Proyecto proyecto = (Proyecto)Session["Proyecto"];
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", proyecto.ID);
-            }
+
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
+
             return View();
         }
 
@@ -754,15 +720,9 @@ namespace SAG_5.Controllers
         {
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
             int filtro = int.Parse(Session["Filtro"].ToString());
-          
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyectos);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyectos);
-            }
+
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
+
             ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.estado == 1), "ID", "NombreLista");
             ViewBag.ID = Proyectos;
             ViewBag.Periodo = periodo;
@@ -980,15 +940,8 @@ namespace SAG_5.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString()); 
 
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-            
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", proyecto.ID);
-            }
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
+
             return View();
         }
         [HttpPost]
@@ -1000,15 +953,9 @@ namespace SAG_5.Controllers
             ViewBag.CuentaFinancimiento = db.cuentaGrupo.Where(d => d.grupo.Equals(1)).ToList();
             ViewBag.CuentaApoyo = db.cuentaGrupo.Where(d => d.grupo.Equals(2)).ToList();
 
-           
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyectos);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyectos);
-            }
+
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
+
             ViewBag.ID = Proyectos;
             ViewBag.Periodo = periodo;
 
@@ -1170,29 +1117,16 @@ namespace SAG_5.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());
             Proyecto proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", proyecto.ID);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", proyecto.ID);
-            }
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
+
             return View();
         }
         [HttpPost]
         public ActionResult ReporteProgramaSintesisCC(int Proyectos, int Mes, int periodo)
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
+            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
 
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyectos);
-            }
-            else
-            {
-                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyectos);
-            }
 
             ViewBag.ID = Proyectos;
             ViewBag.Periodo = periodo;

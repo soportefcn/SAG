@@ -16,6 +16,8 @@
 "Noviembre",
 "Diciembre"
     };
+    List<SAG2.Models.Proyecto> ProyectoLista = new List<SAG2.Models.Proyecto>();
+    ProyectoLista = (List<SAG2.Models.Proyecto>)@ViewBag.ListadoProyecto;
 }
 
 <h3>Consulta de Movimientos</h3>
@@ -83,13 +85,18 @@
                 <th style="text-align: center;">Egreso de Artículos</th>
                 <th style="text-align: center;">Nº Egreso</th>
                 <th style="text-align: center;">Nº Documento</th>
-
+                 <th style="text-align: center;">Traspaso CC</th>
             </tr>
         </thead>
 
         @foreach (var movimiento in Model)
         {
-
+            string ProyectTraspasado = "";
+            if (movimiento.ProyectoIDTraspaso != null)
+            {
+                ProyectTraspasado = ProyectoLista.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().CodCodeni;
+            }
+            
             <tr class="MovimientoBodega" MovimientosBodegaID="@movimiento.ID" Fecha="@movimiento.Fecha.ToShortDateString()" ArticuloID="@movimiento.ArticuloID" Cantidad="@if (@movimiento.Entrada > 0){ @movimiento.Entrada } else { @movimiento.Salida }" tipo_movimiento="@if (@movimiento.Entrada > 0){ @Html.Raw("E") } else { @Html.Raw("S") }" Observaciones="@movimiento.Observaciones" NroDocumento="@movimiento.NroDocumento" style="cursor: pointer;">
                 <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
 
@@ -128,7 +135,14 @@
                     <td align="center" nowrap="nowrap"></td>
                     <td nowrap="nowrap"></td>
                 }
+                <td>                
+                    @if (ProyectTraspasado == ""){
+                    @movimiento.Observaciones.ToUpper();
+                }else{
+                    @ProyectTraspasado;
+                    } 
 
+                </td>
             </tr>
         }
     </table>

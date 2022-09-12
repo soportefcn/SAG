@@ -5,6 +5,7 @@
     var Saldo = 0;
     string Linea1;
     string Linea2;
+    int PeriodoSel = ViewBag.periodo; 
    
     SAG2.Classes.Util utils = new SAG2.Classes.Util();
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
@@ -45,7 +46,7 @@
             @for (int i = DateTime.Now.Year - 2; i < DateTime.Now.Year + 5; i++)
             {
             <option value="@Html.Raw((i).ToString())"@{
-                if (i.ToString().Equals(ViewBag.periodo))
+                if (i == PeriodoSel)
                 {
                     @Html.Raw(" selected=\"selected\"");
                 }

@@ -18,12 +18,11 @@
 
     </div>
     <div id="contenido">
-        @using (Html.BeginForm("RealizarIngreso", "IntervencionDetalle", FormMethod.Post, new { @class = "form-horizontal" }))
-    {
+
         @Html.HiddenFor(model => model.ID)
         @Html.HiddenFor(model => model.Tipo)
 
-        <fieldset>
+  
 
             <div class="panel panel-default">
                 <div class="panel-heading"><h3><b>Confirmar datos Ingreso</b></h3></div>
@@ -58,44 +57,61 @@
                         <div class="form-group" style="margin-left:30px; display: none ">
                             @Html.TextBox("Monto", Model.Valor, new { @class = "form-control", @style = "width:400px;", required = "required",  @value = Model.Valor,  })
                         </div>
-                        @*@{ 
-                            if (Model.Valor - Model.Monto == 0)
-                            {
-                                Model.EstadoID = 1;
-                            }
-                            else
-                            {
-                                Model.EstadoID = 2;
-                            }
 
-                        }*@
                     </div>
                 </div>
                 <div class="panel-footer" style="height: 53px;">
 
                     <div style="float :right; display:inline-block">
-                        <input type="submit" value="Guardar Ingreso" class="btn btn-primary" />
+                        <input id="Procesar" type="button" value="Guardar Ingreso" class="btn btn-primary" />
                     </div>
                 </div>
             </div>
 
-
+       
 
             @if (TempData["Message"] != null)
         {
             @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
     }
-        </fieldset>
-}
+     
+
         <script>
             $(document).ready(function () {
+                baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
                 $('#asd').change(function () {
                     var valor = $('#asd').val();
                     valor = valor.replace(/\./g, '');
                     valor = valor.replace(/\$/g, '');
                     valor = valor.replace(/\,/g, '');
                     $('#Monto').val(valor);
-                })
+                });
+                $("#Procesar").click(function () {
+
+                    var IntervencionID = $('#ID').val()
+                    var Monto =  $('#Monto').val();
+                    var Observacion = "'" + $('#Descripcion').val() + "'";
+                  
+                    var url = '@Url.Action("RealizarIngresoIntervencion", "IntervencionDetalle", new { IDintervencion = "IDintervencion_cambiar" , Descripcion = "Descripcion_cambiar" , Monto = "Monto_cambiar"  })';
+                            url = url.replace("&amp;", "&");
+                            url = url.replace("IDintervencion_cambiar", IntervencionID);
+                            url = url.replace("&amp;", "&");
+                            url = url.replace("Descripcion_cambiar", Observacion);
+                            url = url.replace("&amp;", "&");
+                            url = url.replace("Monto_cambiar", Monto);
+
+                            window.open(url, "_self");
+
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Procesando',
+                                showConfirmButton: false,
+                                timer: 1000
+                            })
+                           
+                           
+                });
             })
 
         </script>

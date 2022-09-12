@@ -10,7 +10,7 @@
     <tr>
         <td colspan="2" style="padding-right: 30px;"><strong>Seleccione un Proyecto:</strong></td>
         <td colspan ="2"style="padding-right: 30px;">
-            @Html.DropDownList("proyecto",  new SelectList(ViewBag.comboproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete"})
+           @Html.DropDownList("comboproyecto",  null, new { @class = "form-control js-autocomplete"})
         </td>
        
     </tr>
@@ -34,15 +34,15 @@
 }
 <br /><br />
 
-
-    @if (Model.ID > 0 && Model.lista.Count() > 0)
+@if( ViewBag.Informe == 1){
+    if (Model.ID > 0 && Model.lista.Count() > 0)
     {
         <table class="table table-bordered table-hover">
             <tbody>
                 <tr>
                     @if (ViewBag.General > 0)
                     {
-                        <td width="20%" style="text-align:center;"><a class="btn btn-info" href="@Url.Action("InformeHojaInventario", "BienReportes", new { id = Model.ID, dependencia = Model.Ubicacion })">Hoja Inventario</a></td>
+                        <td width="20%" style="text-align:center;"><a class="btn btn-info" href="@Url.Action("InformeHojaInventario", "BienReportes", new { comboproyecto = Model.ID, dependencia = Model.Ubicacion })">Hoja Inventario</a></td>
                     }
                     else
                     {
@@ -68,7 +68,7 @@
 
 
     }
-
+    }
     @if (TempData["Message"] != null)
     {
         @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
@@ -78,14 +78,38 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 $(".js-autocomplete").select2();
+                $(window).load(function () {
+                    // executes when complete page is fully loaded, including all frames, objects and images
+                    $("#dependencia").empty();
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetProyectoBien")', // we are calling json method
+                        dataType: 'json',
+                        data: { id: $("#comboproyecto").val() },
+                        // here we are get value of selected country and passing same value
+                        //as inputto json method GetStates.
+                        success: function (dependencia) {
+                            // states contains the JSON formatted list
+                            // of states passed from the controller
+                            $.each(dependencia, function (i, dependencia) {
+                                $("#dependencia").append('<option value="' + dependencia.Value + '">' +
+                                    dependencia.Text + '</option>');
+                            });
+                        },
+                        error: function (ex) {
+                            alert('Error Al Cargar las dependencias' + ex);
+                        }
+                    });
+                });
+ 
 
-            $("#proyecto").change(function () {
+                $("#comboproyecto").change(function () {
             $("#dependencia").empty();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetProyectoBien")', // we are calling json method
                 dataType: 'json',
-                data: { id: $("#proyecto").val() },
+                data: { id: $("#comboproyecto").val() },
                 // here we are get value of selected country and passing same value
                 //as inputto json method GetStates.
                 success: function (dependencia) {

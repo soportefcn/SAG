@@ -1220,8 +1220,8 @@ $(document).ready(function () {
         return false;
     });
     $("#ExcelListaProyectoAnual").click(function () {
-        var desde = $("#anual").val();
-        var hasta = $("#TProyecto").val();
+        var anual = $("#anual").val();
+        var tproyecto = $("#TProyecto").val();
         window.open("/SAG_5/Presupuesto/LineaProyectoExcelAnual?anual=" + anual + '&Linea=' + tproyecto, 'LibroBanco');
         return false;
     });
@@ -1876,9 +1876,9 @@ $(document).ready(function () {
         var tipo = $(this).attr("tipo");
 
         if ($("#Desde").val() == undefined && $("#Hasta").val() == undefined) {
-            window.open('/SAG_5/Informes/Excel' + tipo + '?Mes=' + $("#Mes").val() + '&Periodo=' + $("#Periodo").val(), '', '');
+            window.open('/SAG_5/Informes/Excel' + tipo + '?Mes=' + $("#Mes").val() + '&Periodo=' + $("#Periodo").val() + '&ProyectoID=' + $("#ProyectoID").val(), '', '');
         } else {
-            window.open('/SAG_5/Informes/Excel' + tipo + '?Desde=' + $("#Desde").val() + '&Hasta=' + $("#Hasta").val(), '', '');
+            window.open('/SAG_5/Informes/Excel' + tipo + '?Desde=' + $("#Desde").val() + '&Hasta=' + $("#Hasta").val() + '&ProyectoID=' + $("#ProyectoID").val(), '', '');
         }
 
         return false;
@@ -1956,6 +1956,7 @@ $(document).ready(function () {
         }
         return false;
     });
+
     $(".tipobeneficiario #DVBuscar").focusout(function(){
         $("#PersonaID").val("0");
         $("#ProveedorID").val("0");

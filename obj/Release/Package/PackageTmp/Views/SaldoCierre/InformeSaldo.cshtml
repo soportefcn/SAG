@@ -53,10 +53,11 @@
                             }
                             </select></div>
                        <div class="form-group" style="margin-left: 100px;">
-                       <input type="submit" value="Ver resultados" style="height:100%" class="btn btn-primary"/>            
+                            <input type="submit" value="Ver resultados" style="height:100%" class="btn btn-primary"/>            
                             <input type="button" name="Imprimir" id="ExcelsaldoCorp" value="Excel" class="btn btn-success" />
-                           </div>
-             
+                            <input type="button" name="EliminarSC" id="EliminarSC" value="Eliminar" class="btn btn-danger" />
+                       </div>
+                 </div>
             </fieldset>
         </td>
        
@@ -104,8 +105,33 @@
          $("#ExcelsaldoCorp").click(function () {
              var periodo = $("#Periodo").val();
              var mes = $("#Mes").val();
-             window.open("/SAG_5/SaldoCierre/InformeSaldoExcel?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
+             window.open("/SAG_5_desarrollo/SaldoCierre/InformeSaldoExcel?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
              return false;
+         });
+
+         $("#EliminarSC").click(function () {
+             var periodo = $("#Periodo").val();
+             var mes = $("#Mes").val();
+             Swal.fire({
+                 title: '¿Esta Seguro?',
+                 text: "Esto es irreversible!",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Si , Desea Eliminar !',
+                 cancelButtonText: 'Cancelar'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                window.open("/SAG_5_desarrollo/SaldoCierre/InformeSaldoEliminar?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
+             Swal.fire(
+               'Saldo Corporativo !',
+               'Se procedio a Eliminar mes Seleccionado',
+               'danger'
+             )
+         }
+         })
+             
          });
      });
  </script>

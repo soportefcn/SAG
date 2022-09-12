@@ -91,15 +91,8 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());  
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
 
+            ViewBag.listadoproyecto = utils.ProyectoFiltro(filtro, Proyecto.ID);
 
-            if (filtro == 1)
-            {
-                ViewBag.listadoproyecto = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-            }
-            else
-            {
-                ViewBag.listadoproyecto = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-            }
             string sigla = Proyecto.TipoProyecto.Sigla  ;
 
             var q2 = db.ParametroUss.Where(d => d.Tipo.Equals(sigla)).ToList();
@@ -147,7 +140,8 @@ namespace SAG2.Controllers
                 ParametroUss parametroUSS = db.ParametroUss.Find(ParametroUSSID);
                 ProgramaQ ProgramaQ = db.ProgramaQ.Find(ProgramaQID);
                 string pathX = "";
-
+                int prId = int.Parse(model.ProyectoID.ToString());
+                ViewBag.listadoproyecto = utils.ProyectoFiltro(filtro, prId);
                 double VALORUSS = parametroUSS.uss;
                 double Q = ProgramaQ.Valor;
                 int PeriodoI = int.Parse(model.FechaIngreso.Year.ToString());
@@ -318,23 +312,10 @@ namespace SAG2.Controllers
 
         public ActionResult ListarPagos()
         {
-            var q3 = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
-            {
-                Text = "Seleccione Un Proyecto",
-                Value = "0"
-            });
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
 
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
-            }
-            ViewBag.listadoproyecto = listproyecto;
+            ViewBag.listadoproyecto = utils.ProyectoFiltro(filtro, Proyecto.ID);
 
             return View();
         }
@@ -365,23 +346,11 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult ListarPagos(int ProyectoID)
         {
-            var q3 = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
-            {
-                Text = "Seleccione Un Proyecto",
-                Value = "0"
-            });
+            int filtro = int.Parse(Session["Filtro"].ToString());
 
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
-            }
-            ViewBag.listadoproyecto = listproyecto;
+
+            ViewBag.listadoproyecto = utils.ProyectoFiltro(filtro, ProyectoID);
+
             List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a =>a.ProyectoID == ProyectoID).ToList();
             
             return View(model);
@@ -428,14 +397,8 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
+                ViewBag.Proyectos = utils.FiltroProyecto(filtro);   
+  
 
             }
             else
@@ -465,14 +428,7 @@ namespace SAG2.Controllers
             ViewBag.ProyectoID = ProyectoID;
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
+                ViewBag.Proyectos = utils.FiltroProyecto(filtro);   
 
             }
             else

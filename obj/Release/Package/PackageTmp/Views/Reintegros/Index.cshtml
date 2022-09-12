@@ -6,25 +6,17 @@
 }
 @using (Html.BeginForm())
 {
-    <table>
-     <tr>
-         <td>Periodo</td>
-         <td> <input type="text" class="form-control" placeholder="Busqueda Periodo" id="busqueda" name="busqueda" style="width: 300px;"></td>
-         <td>N° Reintegro</td>
-         <td> <input type="text" class="form-control" placeholder="Busqueda N° Egreso" id="bEgreso" name="begreso" style="width: 300px;"></td>
-     </tr>
-        <tr>
-            <td>Beneficiario</td>
-            <td> <input type="text" class="form-control" placeholder="Busqueda Beneficiario" id="bbene" name="bbene" style="width: 300px;"></td>
 
-        </tr>
-        <tr>
-        <td> <input type="submit" value="Buscar" class="btn btn-success" /></td>
-           </tr>
-    
-        </table>
     
  <div id="contenido_popup">
+     <div class="row">
+         <div class="form-group form-inline">
+             <input type="text" class="form-control" placeholder="Periodo" id="busqueda" name="busqueda" style="width: 100px;">     
+            <input type="text" class="form-control" placeholder="N° Reintegro" id="bEgreso" name="begreso" style="width: 100px;">
+            <label>Beneficiario</label> <input type="text" class="form-control" placeholder="Busqueda Beneficiario" id="bbene" name="bbene" style="width: 300px;">
+             <input type="submit" value="Buscar" class="btn btn-success" />
+         </div>
+     </div><br />
    <table class="table table-bordered table-hover">
     <thead class="fixedHeader">
        <tr class="info">

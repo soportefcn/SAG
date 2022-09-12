@@ -252,7 +252,14 @@ input[type="text"], textarea
             @Html.Label("Tipo Documento")
         </div>
         <div class="editor-field">
+           @{ try
+              {
             @Html.DropDownList("DocumentoIDD", String.Empty)
+              }
+              catch (Exception)
+              {
+              }
+        }
         </div>
             </div>
     

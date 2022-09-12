@@ -75,7 +75,7 @@
         <tr class="warning"> 
             <td colspan="3"> </td>
              <td colspan="7">Caratula Rendicion de Cuentas </td>
-            <td colspan="6">Cuadraturas de Saldos </td>
+            <td colspan="7">Cuadraturas de Saldos </td>
             @{
                 int grupo = 0;
                 int contgrupo = 0;
@@ -111,6 +111,10 @@
                      catch (Exception e)
                      {
                          NGrupo = "No Definido";
+                     }
+                     if (grupo == 7)
+                     {
+                         tot = tot + 3;
                      }
                      grupo = tgrupo;
                      contgrupo = contgrupo + tot; 
@@ -155,6 +159,7 @@
        <td>Provisión Indemnizacion</td>
        <td>Saldo Real</td>
        <td>Saldo Libro Banco</td>
+       <td>Despósitos no consignados en cartola</td>
        <td>Saldo Libro Banco Conciliación Bancaria</td>
        <td>Cheques Girados y No Cobrados</td>
        <td>Saldo Final de la Cartola Cta. Cte. (Banco)</td>
@@ -174,7 +179,14 @@
                  <td>Ingreso Total</td>  
              }
                
+        if (Nombrecuenta.CuentaID != 60) {
              <td>@nombreCuenta</td> 
+         }else{
+               <td>@nombreCuenta Reintegros</td> 
+             <td>@nombreCuenta Egresos</td> 
+             <td>@nombreCuenta Gastos Reintegros</td> 
+              <td>@nombreCuenta </td>
+               }
          }
         <td>Supervisor</td>
     </tr>
@@ -253,16 +265,25 @@
         }
         No1 = No1 + No2;
         double ValorConciliacion = 0;
+        double DepositosNoconsignados = 0;
+        double GastoConciliacion = 0;
         try
         {
             ValorConciliacion = Conciliacion.Where(d => d.ProyectoID == xProyectoID).FirstOrDefault().SaldoCartola;
+            DepositosNoconsignados = Conciliacion.Where(d => d.ProyectoID == xProyectoID).FirstOrDefault().Depositos;
+            GastoConciliacion = Conciliacion.Where(d => d.ProyectoID == xProyectoID).FirstOrDefault().Gastos;
+            ValorConciliacion = Saldocta + DepositosNoconsignados + GastoConciliacion;
         }
         catch (Exception e)
         {
             ValorConciliacion = 0;
+            DepositosNoconsignados = 0;
         }
         // Total Ingresos
-        double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+        double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 20 || m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == xProyectoID).Sum(m => m.Monto_Ingresos).ToString());
+
+        double valor_ReintegrosIngresos = double.Parse(reintegros.Where(e => (e.CuentaID == 20 || e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12 || e.CuentaID == 158)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
+        valorIngresos = valorIngresos + valor_ReintegrosIngresos;
         // Inversion
         double valorInversion = 0;
 
@@ -315,6 +336,7 @@
        <td>@Provi.ToString("#,##0")</td>
        <td>@SaldoReal.ToString("#,##0")</td>
        <td>@Saldocta.ToString("#,##0")</td>
+       <td>@DepositosNoconsignados.ToString("#,##0")</td>
        <td>@ValorConciliacion.ToString("#,##0")</td>
        <td>@No1.ToString("#,##0")</td>
        <td>@SaldoCuentaBanco.ToString("#,##0")</td>
@@ -337,7 +359,10 @@
              double VEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == xProyectoID && (e.CuentaID == Nombrecuenta.CuentaID)).Sum(m => m.Monto).ToString());
              double vReintegrosE = double.Parse(reintegros.Where(e => (e.CuentaID == Nombrecuenta.CuentaID)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
              double vGastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == Nombrecuenta.CuentaID)).Where(d => d.Reintegro.ProyectoID == xProyectoID).Sum(d => d.Monto).ToString());
+             double valor_reintegrosgastos = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.Reintegro.ProyectoID == xProyectoID).Sum(d => d.Monto).ToString());
              double valorCuenta = (VEgresos + vGastosReintegros) - (vReintegrosE + Ingresos);
+             double valorCuentaG = (VEgresos + vGastosReintegros) - (vReintegrosE + valor_reintegrosgastos);
+             double vReintegrosE2 = vReintegrosE + valor_reintegrosgastos;
              double MostrarValor = 0;
              if (TipoCuenta.Trim() == "I")
              {
@@ -442,8 +467,15 @@
              }
              
 
+            if (Nombrecuenta.CuentaID != 60) {
            
                     <td class="@xParametro">@MostrarValor.ToString("#,##0")</td> 
+         }else{
+                 <td>@vReintegrosE.ToString("#,##0")</td> 
+            <td >@VEgresos.ToString("#,##0")</td>              
+              <td >@vReintegrosE2.ToString("#,##0")</td> 
+           <td class="@xParametro">@valorCuentaG.ToString("#,##0")</td>
+           }
         
          }
         <td>@nombre</td>

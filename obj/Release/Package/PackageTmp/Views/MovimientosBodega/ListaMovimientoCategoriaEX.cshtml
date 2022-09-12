@@ -17,7 +17,10 @@
     // list<SAG2.Models.Bodega> ba = new SAG2.Models.Bodega();
     List<SAG2.Models.Bodega> dp = new List<SAG2.Models.Bodega>();
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
-
+    
+    List<SAG2.Models.Proyecto> ProyectoLista = new List<SAG2.Models.Proyecto>();
+    ProyectoLista = (List<SAG2.Models.Proyecto>)@ViewBag.ListadoProyecto;
+    
     Layout = null;
     ViewBag.Title = "Intervenciones por proyecto";
     SAG2.Classes.Util utils = new SAG2.Classes.Util();
@@ -69,6 +72,12 @@
     </thead>
     @foreach (var movimiento in Model)
     {
+        string ProyectTraspasado = "";
+        if (movimiento.ProyectoIDTraspaso != null)
+        {
+            ProyectTraspasado = "Traspasado desde  " + ProyectoLista.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().Nombre;
+        }
+        
         if (arti != movimiento.Articulo.Nombre)
         {
             if (arti != "")
@@ -176,7 +185,12 @@
                 {@movimiento.Salida}
             </td>
             <td></td>
-            <td style="text-align: center;">@movimiento.Observaciones</td>
+            <td style="text-align: center;">      
+                            @if (ProyectTraspasado == ""){
+                    @movimiento.Observaciones.ToUpper();
+                }else{
+                    @ProyectTraspasado;
+                    } </td>
         </tr>
     }
     @if (arti != "")

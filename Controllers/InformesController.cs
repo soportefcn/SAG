@@ -224,6 +224,7 @@ namespace SAG2.Controllers
 
 
         public ActionResult CuentaConsolidado() {
+
             Usuario usuario = (Usuario)Session["Usuario"];
             int mes = (int)Session["Mes"];
             int año = (int)Session["Periodo"];
@@ -238,14 +239,7 @@ namespace SAG2.Controllers
             ViewBag.RegID = 0;
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -267,6 +261,7 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult CuentaConsolidado(FormCollection form)
         {
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             Usuario usuario = (Usuario)Session["Usuario"];
             ViewBag.Entrada = 1;
             List<movcuentatr> mcuenta = new List<movcuentatr>();
@@ -293,13 +288,13 @@ namespace SAG2.Controllers
             {
                 if (pr_id != 1)
                 {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+                    ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
                     ViewBag.PrCod = Proyecto.CodCodeni;
                     ViewBag.PrID = Proyecto.ID;
                     
                 }
                 else {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista");
+                    ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
                     ViewBag.PrCod = "";
                  
                     ViewBag.PrID = 1;
@@ -809,13 +804,7 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString()); 
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                   ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else {
                 ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
@@ -858,21 +847,7 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    if (filtro == 1)
-                    {
-                        ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                    }
-                    else
-                    {
-                        ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                    }
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Cerrado == null || p.Cerrado == "S" ), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -913,14 +888,7 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -964,14 +932,7 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());   
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -1018,14 +979,7 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -1045,6 +999,7 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Cuentas(FormCollection form)
         {
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             Usuario usuario = (Usuario)Session["Usuario"];
             ViewBag.Entrada = 1;
             List<movcuenta> mcuenta = new List<movcuenta>();
@@ -1054,7 +1009,7 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -2074,14 +2029,7 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());   
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -2130,14 +2078,7 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -2219,10 +2160,11 @@ namespace SAG2.Controllers
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
 
             if (usuario.esAdministrador)
             {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -2266,6 +2208,7 @@ namespace SAG2.Controllers
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             int ProyectoID = 1;
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             if (form["ProyectoID"].ToString() != "")
             {
                 ProyectoID = int.Parse(form["ProyectoID"].ToString());
@@ -2302,13 +2245,7 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                if (ProyectoID != 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", ProyectoID);
-                }
-                else {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista");
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, ProyectoID);
             }
             else
             {
@@ -2358,21 +2295,7 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());    
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    if (filtro == 1)
-                    {
-                        ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                    }
-                    else
-                    {
-                        ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                    }
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -2423,14 +2346,7 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -2896,14 +2812,7 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
+                ViewBag.Proyectos = utils.FiltroProyecto(filtro);  
             }
             else if (usuario.esSupervisor)
             {
@@ -3048,14 +2957,7 @@ namespace SAG2.Controllers
             ViewBag.ProSel = ProyID;
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-                }
+                ViewBag.Proyectos = utils.FiltroProyecto(filtro);  
             }
             else if (usuario.esSupervisor)
             {
@@ -3101,14 +3003,7 @@ namespace SAG2.Controllers
 
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -3144,14 +3039,7 @@ namespace SAG2.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());  
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -3507,14 +3395,7 @@ namespace SAG2.Controllers
             }
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {
@@ -3541,14 +3422,7 @@ namespace SAG2.Controllers
             }
             if (usuario.esAdministrador)
             {
-                if (filtro == 1)
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-                }
-                else
-                {
-                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-                }
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
             else
             {

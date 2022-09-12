@@ -6,15 +6,25 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
+using SAG2.Comun;
+using SAG2.Classes;
 
 namespace SAG2.Controllers
 {
     public class BienReportesController : Controller
     {
         private SAG2DB db = new SAG2DB();
-        public ActionResult Index(int? proyecto,DateTime? desde, DateTime? hasta)
+        private Util utils = new Util();
+
+        public ActionResult Index(int? comboproyecto, DateTime? desde, DateTime? hasta)
         {
-            
+            int filtro = int.Parse(Session["Filtro"].ToString());
+
+            if (comboproyecto == null)
+            {
+                Proyecto pr = (Proyecto)Session["Proyecto"];
+                comboproyecto = pr.ID;
+            } 
             BienModInventarioVM model = new BienModInventarioVM();
 
             
@@ -23,36 +33,22 @@ namespace SAG2.Controllers
             ViewBag.CantTraslados = 0;
             ViewBag.General = 0;
 
-            var q3 = db.Proyecto.Where(a => a.Cerrado == null && a.Eliminado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
-            {
-                Text = "Seleccione",
-                Value = "0"
-            });
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
-            }
-            ViewBag.comboproyecto = listproyecto;
-
+            ViewBag.comboproyecto = utils.ProyectoFiltro(filtro, int.Parse(comboproyecto.ToString()) );
 
             try
             {
                 List<BienModInventario> listamodel = new List<BienModInventario>();
-                if (proyecto != null)
+                if (desde != null)
                 {
-                    List<BienMovimiento> listaMov = db.BienMovimiento.ToList();
+                    List<BienMovimiento> listaMov = db.BienMovimiento.Where(d => d.Bien.ProyectoID == comboproyecto).ToList();  
+
+
                     listamodel = new List<BienModInventario>();
 
                     foreach (var item in listaMov)
                     {
 
-                        if (item.Bien.ProyectoID == proyecto && item.AutorizacionAuditor == 1 && item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde)
+                        if (item.Bien.ProyectoID == comboproyecto && item.AutorizacionAuditor == 1 && item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde)
                         {
                             if (item.EstadoID == 1)
                             {
@@ -73,7 +69,7 @@ namespace SAG2.Controllers
                             listamodel.Add(item.Bien);
                         }
 
-                        if (item.Bien.ProyectoAnteriorID == proyecto && item.EstadoID == 3 && item.AutorizacionAuditor == 1 && item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde)
+                        if (item.Bien.ProyectoAnteriorID == comboproyecto && item.EstadoID == 3 && item.AutorizacionAuditor == 1 && item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde)
                         {
                             ViewBag.CantTraslados++;                            
                             listamodel.Add(item.Bien);
@@ -93,11 +89,11 @@ namespace SAG2.Controllers
                 }
 
 
-                model.ID = (int)proyecto;
+                model.ID = (int)comboproyecto;
             }
             catch
             {
-                if (proyecto == null)
+                if (comboproyecto == null)
                 {
 
                 }
@@ -317,7 +313,7 @@ namespace SAG2.Controllers
                 @ViewBag.CodigoCodeni = proy.NombreEstado;
                 @ViewBag.FechaActualizacion = new DateTime(1990, 01, 01);
 
-                List<BienMovimiento> listaTodos = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 1).ToList();
+                List<BienMovimiento> listaTodos = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 1 && a.Bien.ProyectoID == id ).ToList();
 
                 var listaGroup = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 1).GroupBy(z => new { z.Bien }).Select(c => c.Key).ToList();
 
@@ -530,7 +526,7 @@ namespace SAG2.Controllers
                 ViewBag.CCosto = proy.NombreEstado;
             
 
-                List<BienMovimiento> listAltas = db.BienMovimiento.Where(a => a.EstadoID == 1 && a.AutorizacionAuditor == 1).ToList();
+                List<BienMovimiento> listAltas = db.BienMovimiento.Where(a => a.EstadoID == 1 && a.AutorizacionAuditor == 1 && a.Bien.ProyectoID == id ).ToList();
                 foreach (var item in listAltas)
                 {
                     if (item.FechaMovimiento.Date <= hasta.Date && item.FechaMovimiento.Date >= desde.Date)
@@ -592,7 +588,7 @@ namespace SAG2.Controllers
                 model.Desde = desde;
                 model.Hasta = hasta;
 
-                List<BienMovimiento> listAltas = db.BienMovimiento.Where(a => (a.EstadoID == 1 /*|| (a.EstadoID == 3 )*/) && a.AutorizacionAuditor == 1 ).ToList();
+                List<BienMovimiento> listAltas = db.BienMovimiento.Where(a => (a.EstadoID == 1 ) && a.AutorizacionAuditor == 1  && a.Bien.ProyectoID == id ).ToList();
                 foreach (var item in listAltas)
                 {
                     if (item.FechaMovimiento.Date <= hasta.Date && item.FechaMovimiento.Date >= desde.Date)
@@ -962,9 +958,27 @@ namespace SAG2.Controllers
         }
 
 
-        public ActionResult HojaInventario(int? proyecto,  string dependencia)
+        public ActionResult HojaInventario(int? comboproyecto, string dependencia)
         {
-
+            ViewBag.Informe = 1; 
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            if (comboproyecto == null)
+            {
+                Proyecto pr = (Proyecto)Session["Proyecto"];
+                comboproyecto = pr.ID;
+            } 
+            if (filtro == 1)
+            {
+                ViewBag.comboproyecto = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", comboproyecto);
+            }
+            else
+            {
+                ViewBag.comboproyecto = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", comboproyecto);
+            }
+            if (dependencia == null)
+            {
+                ViewBag.Informe = 0; 
+            }
             BienModInventarioVM model = new BienModInventarioVM();
 
 
@@ -973,37 +987,22 @@ namespace SAG2.Controllers
             ViewBag.CantTraslados = 0;
             ViewBag.General = 0;
 
-            var q3 = db.Proyecto.Where(a => a.Cerrado == null && a.Eliminado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
-            {
-                Text = "Seleccione",
-                Value = "0"
-            });
-            foreach (var y in q3)
-            {
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = y.NombreEstado,
-                    Value = y.ID.ToString()
-                });
-            }
-            ViewBag.comboproyecto = listproyecto;
+
 
             try
             {
                 List<BienModInventario> listamodel = new List<BienModInventario>();
-                if (proyecto != null)
+                if (comboproyecto != null)
                 {
-                    List<BienModInventario> listaMov = db.BienModInventario.Where(x => x.ProyectoID == proyecto).ToList();       
+                    List<BienModInventario> listaMov = db.BienModInventario.Where(x => x.ProyectoID == comboproyecto).ToList();       
                     listamodel = new List<BienModInventario>();
 
                     foreach (var itemX in listaMov)
                     {
-                        var item = db.BienMovimiento.Where(p => p.BienID.Equals(itemX.ID)).FirstOrDefault(); 
+                        var item = db.BienMovimiento.Where(p => p.BienID.Equals(itemX.ID)).FirstOrDefault();
 
 
-                        if (item.Bien.ProyectoID == proyecto && item.AutorizacionAuditor == 1) //&& item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde && item.NuevaUbicacion == dependencia)
+                        if (item.Bien.ProyectoID == comboproyecto && item.AutorizacionAuditor == 1) //&& item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde && item.NuevaUbicacion == dependencia)
                         {
                             if (item.EstadoID == 1)
                             {
@@ -1024,7 +1023,7 @@ namespace SAG2.Controllers
                             listamodel.Add(item.Bien);
                         }
 
-                        if (item.Bien.ProyectoAnteriorID == proyecto && item.EstadoID == 3 && item.AutorizacionAuditor == 1 )//&& item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde)
+                        if (item.Bien.ProyectoAnteriorID == comboproyecto && item.EstadoID == 3 && item.AutorizacionAuditor == 1)//&& item.FechaMovimiento.Date <= hasta && item.FechaMovimiento.Date >= desde)
                         {
                             ViewBag.CantTraslados++;
                             listamodel.Add(item.Bien);
@@ -1043,13 +1042,13 @@ namespace SAG2.Controllers
                     model.lista.Add(obj);
                 }
 
-             
 
-                model.ID = (int)proyecto;
+
+                model.ID = (int)comboproyecto;
             }
             catch
             {
-                if (proyecto == null)
+                if (comboproyecto == null)
                 {
 
                 }
@@ -1059,60 +1058,52 @@ namespace SAG2.Controllers
                 }
             }
 
-            //model.Egreso = new DetalleEgreso();
-            //try
-            //{
-            //    model.Egreso.FechaEmision = (DateTime)desde;
-            //    model.Egreso.FechaVencimiento = (DateTime)hasta;
-            //}
-            //catch
-            //{
 
-            //}
             model.Ubicacion = dependencia;
             return View(model);
 
         }
 
-        public ActionResult InformeHojaInventario(int id, string dependencia)
+        public ActionResult InformeHojaInventario(int comboproyecto, string dependencia)
         {
             BienModInventarioVM model = new BienModInventarioVM();
             try
             {
-                Proyecto proy = db.Proyecto.Find(id);
-                model.ClaseProyecto = proy;
-                model.lista = new List<BienModInventarioVM>();
-
-                model.ProyectoID = id;
-                model.Proyecto = proy.Nombre;
-             //   model.Desde = desde;
-           //     model.Hasta = hasta;
-                model.Ubicacion = dependencia;
-                @ViewBag.Institucion = proy.Institucion;
-                @ViewBag.CodigoSename = proy.CodSename;
-                @ViewBag.CodigoCodeni = proy.NombreEstado;
-                @ViewBag.FechaActualizacion = new DateTime(1990, 01, 01);
-
-                List<BienMovimiento> listaTodos = db.BienMovimiento.Where(a => a.EstadoID == 1 && a.AutorizacionAuditor == 1 && a.NuevaUbicacion == dependencia).ToList();
-
-               // hasta.AddDays(1);
-
-                foreach (var item in listaTodos)
+                if (dependencia != null)
                 {
-                   // if (item.FechaMovimiento.Date >= desde.Date && item.FechaMovimiento.Date <= hasta.Date)
-                  //  {
+                    Proyecto proy = db.Proyecto.Find(comboproyecto);
+                    model.ClaseProyecto = proy;
+                    model.lista = new List<BienModInventarioVM>();
+
+                    model.ProyectoID = comboproyecto;
+                    model.Proyecto = proy.Nombre;
+
+                    model.Ubicacion = dependencia;
+                    @ViewBag.Institucion = proy.Institucion;
+                    @ViewBag.CodigoSename = proy.CodSename;
+                    @ViewBag.CodigoCodeni = proy.NombreEstado;
+                    @ViewBag.FechaActualizacion = new DateTime(1990, 01, 01);
+
+                    List<BienMovimiento> listaTodos = db.BienMovimiento.Where(a => a.EstadoID == 1 && a.AutorizacionAuditor == 1 && a.NuevaUbicacion == dependencia).ToList();
+
+                    // hasta.AddDays(1);
+
+                    foreach (var item in listaTodos)
+                    {
+                        // if (item.FechaMovimiento.Date >= desde.Date && item.FechaMovimiento.Date <= hasta.Date)
+                        //  {
                         BienModInventario bien = db.BienModInventario.Find(item.BienID);
 
                         int cantidadBaja = 0;
                         try
                         {
-                            List<BienMovimiento> listBajas = db.BienMovimiento.Where(a => (a.BienID == bien.ID || a.bienAnteriorID == bien.ID) && a.EstadoID == 2 && a.AutorizacionAuditor == 1 ).ToList();
+                            List<BienMovimiento> listBajas = db.BienMovimiento.Where(a => (a.BienID == bien.ID || a.bienAnteriorID == bien.ID) && a.EstadoID == 2 && a.AutorizacionAuditor == 1).ToList();
                             foreach (var item2 in listBajas)
                             {
-                          //      if (item2.FechaMovimiento.Date >= desde.Date && item2.FechaMovimiento.Date <= hasta.Date)
-                              //  {
-                                    cantidadBaja += item2.Cantidad;
-                               // }
+                                //      if (item2.FechaMovimiento.Date >= desde.Date && item2.FechaMovimiento.Date <= hasta.Date)
+                                //  {
+                                cantidadBaja += item2.Cantidad;
+                                // }
                             }
                         }
                         catch { }
@@ -1123,10 +1114,10 @@ namespace SAG2.Controllers
                             List<BienMovimiento> listTras = db.BienMovimiento.Where(a => a.EstadoID == 3).ToList();
                             foreach (var item3 in listTras.Where(x => x.bienAnteriorID == item.BienID || x.BienID == bien.ID))
                             {
-                        //        if (item3.FechaMovimiento.Date >= desde.Date && item3.FechaMovimiento.Date <= hasta.Date)
-                          //      {
-                                    cantidadTras += item3.Cantidad;
-                            //    }
+                                //        if (item3.FechaMovimiento.Date >= desde.Date && item3.FechaMovimiento.Date <= hasta.Date)
+                                //      {
+                                cantidadTras += item3.Cantidad;
+                                //    }
                             }
                         }
                         catch
@@ -1136,60 +1127,60 @@ namespace SAG2.Controllers
 
                         //if ((item.Cantidad - cantidadBaja - cantidadTras) > 0)
                         //{
-                            BienModInventarioVM obj = new BienModInventarioVM();
-                            obj.Familia = bien.SubFamilia.Nombre;
-                            obj.Estado = item.Estado.Nombre;
-                    if (bien.ProyectoAnteriorID.HasValue == true)
-                    {
-                        obj.ProyectoAnteriorID = bien.ProyectoAnteriorID.Value;
-                    }
-                    if (bien.ProyectoAnteriorID.HasValue == false)
-                    {
-                        obj.ProyectoAnteriorID = 0;
-                    }
-                    else if (bien.ProyectoAnteriorID == id)
-                    {
-                        obj.Cantidad = item.Cantidad - cantidadBaja - cantidadTras;
-                    }
-                    else if (bien.ProyectoID == id)
-                    {
-                        obj.Cantidad = item.Cantidad;// - cantidadBaja - cantidadTras;
-                    }
+                        BienModInventarioVM obj = new BienModInventarioVM();
+                        obj.Familia = bien.SubFamilia.Nombre;
+                        obj.Estado = item.Estado.Nombre;
+                        if (bien.ProyectoAnteriorID.HasValue == true)
+                        {
+                            obj.ProyectoAnteriorID = bien.ProyectoAnteriorID.Value;
+                        }
+                        if (bien.ProyectoAnteriorID.HasValue == false)
+                        {
+                            obj.ProyectoAnteriorID = 0;
+                        }
+                        else if (bien.ProyectoAnteriorID == comboproyecto)
+                        {
+                            obj.Cantidad = item.Cantidad - cantidadBaja - cantidadTras;
+                        }
+                        else if (bien.ProyectoID == comboproyecto)
+                        {
+                            obj.Cantidad = item.Cantidad;// - cantidadBaja - cantidadTras;
+                        }
 
 
-                            obj.Detalle = item.Detalle;
-                            obj.DescripcionBien = bien.DescripcionBien;
-                            obj.Movimiento = db.Movimiento.Find(bien.MovimientoID);
-                            obj.Egreso = db.DetalleEgreso.Find(bien.EgresoID);
-                            obj.Reintegro = db.DetalleReintegro.Find(bien.ReintegroID);
-                            obj.CondicionText = item.Condicion.Nombre;
-                            obj.Fecha = item.FechaMovimiento;
-                            obj.ID = bien.ID;
-                            obj.CondicionText = item.Condicion.Nombre;
-                            var ubicacionID = int.Parse(bien.Ubicacion);
-                            var w = db.Dependencia.Where(x => x.ID == ubicacionID).First();
-                            Dependencia model2 = w;
-                            obj.Ubicacion = model2.Nombre;
-                            obj.Ubicacion = bien.Ubicacion;
-                            obj.Usuario = item.Usuario.Persona.NombreCompleto;
-                            obj.Proyecto = bien.Proyecto.Nombre;
-                            obj.Procedencia = bien.Procedencia.Nombre;
-                            obj.MontoInt = bien.Monto;
-                    if (item.bienAnteriorID.HasValue == false)
-                    {
-                        obj.MovimientoBienID = 0;
-                    }
-                    else
-                    {
-                        obj.MovimientoBienID = item.bienAnteriorID.Value;
+                        obj.Detalle = item.Detalle;
+                        obj.DescripcionBien = bien.DescripcionBien;
+                        obj.Movimiento = db.Movimiento.Find(bien.MovimientoID);
+                        obj.Egreso = db.DetalleEgreso.Find(bien.EgresoID);
+                        obj.Reintegro = db.DetalleReintegro.Find(bien.ReintegroID);
+                        obj.CondicionText = item.Condicion.Nombre;
+                        obj.Fecha = item.FechaMovimiento;
+                        obj.ID = bien.ID;
+                        obj.CondicionText = item.Condicion.Nombre;
+                        var ubicacionID = int.Parse(bien.Ubicacion);
+                        var w = db.Dependencia.Where(x => x.ID == ubicacionID).First();
+                        Dependencia model2 = w;
+                        obj.Ubicacion = model2.Nombre;
+                        obj.Ubicacion = bien.Ubicacion;
+                        obj.Usuario = item.Usuario.Persona.NombreCompleto;
+                        obj.Proyecto = bien.Proyecto.Nombre;
+                        obj.Procedencia = bien.Procedencia.Nombre;
+                        obj.MontoInt = bien.Monto;
+                        if (item.bienAnteriorID.HasValue == false)
+                        {
+                            obj.MovimientoBienID = 0;
+                        }
+                        else
+                        {
+                            obj.MovimientoBienID = item.bienAnteriorID.Value;
 
-                    }
-                    obj.ProyectoID = id;
-                    
-                            if (bien.Ubicacion == dependencia)
-                            {
-                                model.lista.Add(obj);
-                            }
+                        }
+                        obj.ProyectoID = comboproyecto;
+
+                        if (bien.Ubicacion == dependencia)
+                        {
+                            model.lista.Add(obj);
+                        }
 
                         //}
                         if (item.FechaMovimiento > ViewBag.FechaActualizacion)
@@ -1197,7 +1188,11 @@ namespace SAG2.Controllers
                             @ViewBag.FechaActualizacion = item.FechaMovimiento;
                         }
                     }
-            //    }
+                    //    }
+                }
+                else { 
+                
+                }
             }
             catch
             {
@@ -1318,10 +1313,14 @@ namespace SAG2.Controllers
         }
         public ActionResult InventarioGeneralPrin(int? proyecto)
         {
-
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            if (proyecto == null) {
+                Proyecto ProyectoActual = (Proyecto)Session["Proyecto"];
+                proyecto = ProyectoActual.ID;  
+            }
             BienModInventarioVM model = new BienModInventarioVM();
 
-
+            ViewBag.proyecto = utils.ProyectoFiltro(filtro, int.Parse(proyecto.ToString()));
             ViewBag.CantAltas = 0;
             ViewBag.CantBajas = 0;
             ViewBag.CantTraslados = 0;
@@ -1333,7 +1332,7 @@ namespace SAG2.Controllers
                 List<BienModInventario> listamodel = new List<BienModInventario>();
                 if (proyecto != null)
                 {
-                    List<BienMovimiento> listaMov = db.BienMovimiento.ToList();
+                    List<BienMovimiento> listaMov = db.BienMovimiento.Where(d => d.Bien.ProyectoID == proyecto).ToList();  
                     listamodel = new List<BienModInventario>();
 
                     foreach (var item in listaMov)
@@ -1377,23 +1376,23 @@ namespace SAG2.Controllers
                     model.lista.Add(obj);
                 }
 
-                var q3 = db.Proyecto.Where(a => a.Cerrado == null && a.Eliminado == null).OrderBy(a => a.CodCodeni).ToList();
-                List<SelectListItem> listproyecto = new List<SelectListItem>();
-                listproyecto.Add(new SelectListItem
-                {
-                    Text = "Seleccione",
-                    Value = "0"
-                });
-                foreach (var y in q3)
-                {
-                    listproyecto.Add(new SelectListItem
-                    {
-                        Text = y.NombreEstado,
-                        Value = y.ID.ToString()
-                    });
-                }
-                ViewBag.comboproyecto = listproyecto;
-
+                //var q3 = db.Proyecto.Where(a => a.Cerrado == null && a.Eliminado == null).OrderBy(a => a.CodCodeni).ToList();
+                //List<SelectListItem> listproyecto = new List<SelectListItem>();
+                //listproyecto.Add(new SelectListItem
+                //{
+                //    Text = "Seleccione",
+                //    Value = "0"
+                //});
+                //foreach (var y in q3)
+                //{
+                //    listproyecto.Add(new SelectListItem
+                //    {
+                //        Text = y.NombreEstado,
+                //        Value = y.ID.ToString()
+                //    });
+                //}
+                //ViewBag.comboproyecto = listproyecto;
+               
                 model.ID = (int)proyecto;
             }
             catch
@@ -1431,7 +1430,7 @@ namespace SAG2.Controllers
                 @ViewBag.CodigoCodeni = proy.NombreEstado;
                 @ViewBag.FechaActualizacion = new DateTime(1990, 01, 01);
 
-                var listaTodos = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 1 ).ToList();
+                var listaTodos = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 1 && a.Bien.ProyectoID == id ).ToList();
 
                // var listaGroup = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 1).GroupBy(z => new {z.Bien} ).Select(c => c.Key).ToList();
 
@@ -1448,48 +1447,15 @@ namespace SAG2.Controllers
                        
                         BienModInventario bien = db.BienModInventario.Find(item.BienID);
 
-                        //int cantidadBaja = 0;
-                        //try
-                        //{
-                        //    List<BienMovimiento> listBajas = db.BienMovimiento.Where(a => a.BienID == bien.ID && a.EstadoID == 2 && a.AutorizacionAuditor == 1).ToList();
-                        //    foreach (var item2 in listBajas)
-                        //    {
-                        //            cantidadBaja += item2.Cantidad;
-                        //    }
-                        //}
-                        //catch { }
-
-                        //int cantidadTras = 0;
-                        //try
-                        //{
-                        //    List<BienMovimiento> listTras = db.BienMovimiento.Where(a => ((a.BienID == bien.ID /*|| a.bienAnteriorID != null*/) && a.EstadoID == 3) ).ToList();
-                        //    foreach (var item3 in listTras)
-                        //    {
-                        //            cantidadTras += item3.Cantidad;
-                        //    }
-                        //}
-                        //catch
-                        //{
-
-                        //}
-
-                        //if ((item.Cantidad - cantidadBaja - cantidadTras) > 0)
-                        //{
+      
                             BienModInventarioVM obj = new BienModInventarioVM();
 
                             obj.Familia = bien.SubFamilia.Nombre;
                             obj.Estado = item.Estado.Nombre;
-                    //if (item.EstadoID == 1)
-                    //{
-                    //    obj.Cantidad = item.Cantidad - cantidadBaja - cantidadTras;
-                    //}
-                    //if(item.EstadoID == 3)
-                    //{
-                    //    obj.Cantidad = item.Cantidad ;
-                    //}
+
 
                             obj.Detalle = item.Detalle;
-                    obj.Cantidad = item.Cantidad;
+                            obj.Cantidad = item.Cantidad;
                             obj.DescripcionBien = bien.DescripcionBien;
                             obj.Movimiento = db.Movimiento.Find(bien.MovimientoID);
                             obj.Egreso = db.DetalleEgreso.Find(bien.EgresoID);
@@ -1525,15 +1491,10 @@ namespace SAG2.Controllers
                             @ViewBag.FechaActualizacion = item.FechaMovimiento;
                         }
                     }
-         //   }
-         //   catch
-          //  {
 
-           // }
             return View("InformeGeneralPrin",model);
         }
 
-        //InventarioGeneralPrin
 
     }
 }

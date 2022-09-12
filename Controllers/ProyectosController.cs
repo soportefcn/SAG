@@ -51,6 +51,29 @@ namespace SAG2.Controllers
 
             return View(proyecto.ToList());
         }
+         [HttpPost]
+        public ViewResult ListadoProyectos(FormCollection form)
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            List<Proyecto> proyecto = new List<Proyecto>();
+            Persona Persona = (Persona)Session["Persona"];
+            int EstadoFiltro = int.Parse(form["Estadofiltro"].ToString());
+            ViewBag.Periodo = db.Periodo.ToList();
+            
+            proyecto = db.Proyecto.OrderBy(p => p.CodCodeni).ToList();
+            if (EstadoFiltro == 1) {
+                proyecto = proyecto.Where(d => d.Cerrado == null && d.Eliminado == null).ToList();  
+            }
+            if (EstadoFiltro == 2)
+            {
+                proyecto = proyecto.Where(d => d.Cerrado != null).ToList();
+            }
+            if (EstadoFiltro == 3)
+            {
+                proyecto = proyecto.Where(d => d.Eliminado != null).ToList();
+            }
+            return View(proyecto.ToList());
+        }
         //
         // GET: /Proyectos/Details/5
 

@@ -5,6 +5,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using SAG2.Comun;
+using SAG2.Classes;
 using SAG2.Models;
 
 namespace SAG2.Controllers
@@ -12,7 +14,7 @@ namespace SAG2.Controllers
     public class ProgramaAnualAuditoriasController : Controller
     {
         private SAG2DB db = new SAG2DB();
-
+        private Util utils = new Util();
         //
         // GET: /ProgramaAnualAuditorias/
 
@@ -27,15 +29,8 @@ namespace SAG2.Controllers
         {
             int filtro = int.Parse(Session["Filtro"].ToString());  
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
-            }
-            else
-            {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-            }
+
+            ViewBag.Proyectos = utils.FiltroProyecto(filtro);  
             ViewBag.PersonaID = db.Persona.ToList();   //new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreCompleto");
 
             var programaanualauditorias = db.ProgramaAnualAuditorias.Include(p => p.Proyecto).Include(p => p.Auditor).OrderByDescending(i => i.FechaProgramada);
@@ -49,15 +44,8 @@ namespace SAG2.Controllers
         {
             int filtro = int.Parse(Session["Filtro"].ToString()); 
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-        
-            if (filtro == 1)
-            {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
-            }
-            else
-            {
-                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-            }
+
+            ViewBag.Proyectos = utils.FiltroProyecto(filtro);  
             ViewBag.PersonaID = db.Persona.ToList();   //new SelectList(db.Rol.Where(r => r.ProyectoID == Proyecto.ID).Select(r => r.Persona).OrderBy(p => p.Nombres).Distinct().ToList(), "ID", "NombreCompleto");
             
             int Perid = frmprogramaanualauditorias.PersonaID;

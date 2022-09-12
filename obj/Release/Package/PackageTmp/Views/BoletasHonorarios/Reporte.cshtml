@@ -129,8 +129,10 @@
                     @detalle.Proveedor.Nombre.ToUpper()
                 }
                 else
-                { 
+                { try{
                     @Html.Raw(@detalle.Beneficiario.ToUpper())
+                }catch (Exception){
+                }
                 }
             </td>
             <td>

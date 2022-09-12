@@ -7,15 +7,26 @@
         $(".js-autocomplete").select2();
     });
 </script>
+    <style media="print" type="text/css">
+        .no-imprimir {
+            display: none;
+        }
+        /*.oculto, .ocultoImpresion, .menu, .pie
+        {
+            display: none;    
+        }*/
+    </style>
 <h2>Reportes</h2>
 
 @using (Html.BeginForm("InventarioGeneralPrin", "BienReportes", FormMethod.Post, new { @class = "form-horizontal" }))
 {
+   
 <table style="width: 70%">
     <tr>
         <td colspan="2" style="padding-right: 30px;"><strong>Seleccione un Proyecto:</strong></td>
         <td colspan ="2"style="padding-right: 30px;">
-            @Html.DropDownList("proyecto",  new SelectList(ViewBag.comboproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete"})
+            @*@Html.DropDownList("proyecto",  new SelectList(ViewBag.comboproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete"})*@
+              @Html.DropDownList("proyecto",  null, new { @class = "form-control js-autocomplete"})
         </td>
         <td rowspan="2"><button type="submit" class="btn btn-default">Filtrar</button></td>
     </tr>
@@ -26,6 +37,7 @@
 
     @if (Model.ID > 0 && Model.lista.Count() > 0)
     {
+        <div class="no-imprimir" >
         <table class="table table-bordered table-hover">
             <tbody>
                 <tr>
@@ -41,6 +53,7 @@
                 </tr>
             </tbody>
         </table>
+            </div>
     }
     else
     {

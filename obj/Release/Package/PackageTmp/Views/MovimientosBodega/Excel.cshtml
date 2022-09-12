@@ -16,7 +16,9 @@
 	    "Noviembre",
 	    "Diciembre"
 	};
-
+    List<SAG2.Models.Proyecto> dp = new List<SAG2.Models.Proyecto>();
+    dp = (List<SAG2.Models.Proyecto>)@ViewBag.ListadoProyecto;
+    
     Response.Clear();
     Response.Buffer = true;
     Response.ContentType = "application/vnd.ms-excel";
@@ -53,6 +55,10 @@
         </tr>
         @foreach (var movimiento in Model)
         {
+            string ProyectTraspasado = "";
+            if (movimiento.ProyectoIDTraspaso != null) {
+                ProyectTraspasado ="Traspasado desde  " + dp.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().Nombre;   
+            }
         <tr>
             <td nowrap="nowrap" align="center">@movimiento.Fecha.ToShortDateString()</td>
             <td nowrap="nowrap">@movimiento.Articulo.Nombre.ToUpper() (@movimiento.Articulo.UnidadMedida.Descripcion)</td>
@@ -61,7 +67,7 @@
             @if (@movimiento.Entrada > 0)
             {
             <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
-            <td nowrap="nowrap">" "</td>
+            <td nowrap="nowrap"> </td>
             }
             else
             {
@@ -71,7 +77,11 @@
             <td nowrap="nowrap">
                 @try
                 {
-                    @movimiento.Observaciones.ToUpper()
+                    if (ProyectTraspasado == ""){
+                    @movimiento.Observaciones.ToUpper();
+                }else{
+                    @ProyectTraspasado;
+                    } 
                 }
                 catch (Exception)
                 {

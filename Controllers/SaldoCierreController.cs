@@ -102,14 +102,8 @@ namespace SAG2.Controllers
                 db.SaveChanges();
             }
             int ProyectoID = datos.ProyectoID;
-            if (filtro == 1)
-            {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", ProyectoID);
-            }
-            else
-            {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", ProyectoID);
-            }
+            ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, ProyectoID);
+  
         
             ViewBag.CInformeID = new SelectList(db.CinformeCierre, "ID", "Nombrecuenta" );
             return View();
@@ -119,14 +113,8 @@ namespace SAG2.Controllers
         {
             int filtro = int.Parse(Session["Filtro"].ToString()); 
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            if (filtro == 1)
-            {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyecto.ID);
-            }
-            else
-            {
-                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyecto.ID);
-            }
+
+            ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
 
             ViewBag.CInformeID = new SelectList(db.CinformeCierre, "ID", "Nombrecuenta"); 
             return View(); 
@@ -195,6 +183,7 @@ namespace SAG2.Controllers
         public ActionResult ReporteCierre(FormCollection form)
         {
             // ViewBag.cinforme = db.CinformeCierre.ToList();
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             ViewBag.DesdeMes = int.Parse(form["DMes"].ToString());
             ViewBag.DesdePeriodo = int.Parse(form["DPeriodo"].ToString());
             int mes = int.Parse(form["DMes"].ToString());
@@ -202,7 +191,8 @@ namespace SAG2.Controllers
 
             ViewBag.saldo = db.Saldo.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();
             ViewBag.Cuentas = db.Cuenta.ToList();
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null ).OrderBy(p => p.CodCodeni).ToList();
+          //  ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null ).OrderBy(p => p.CodCodeni).ToList();
+            ViewBag.Proyectos = utils.FiltroProyecto(filtro);
             ViewBag.SaldosCorpo = db.SaldosCorporativos.Where(p => p.Mes == mes && p.Periodo == periodo ).ToList();
             ViewBag.InformeCuenta = db.CinformeCierre.OrderBy(p => p.GinformeID).ThenBy(p => p.CuentaID).ToList();
             ViewBag.Cta = db.CuentaCorriente.ToList();
@@ -255,6 +245,7 @@ namespace SAG2.Controllers
         public ActionResult ReporteCierre()
         {
            // ViewBag.cinforme = db.CinformeCierre.ToList();
+            int filtro = int.Parse(Session["Filtro"].ToString()); 
             ViewBag.DesdeMes = DateTime.Now.Month - 1;
             ViewBag.DesdePeriodo = DateTime.Now.Year;
             int mes = DateTime.Now.Month - 1;
@@ -262,7 +253,9 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.saldo = db.Saldo.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();     
             ViewBag.Cuentas = db.Cuenta.ToList();
-            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+           //ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            ViewBag.Proyectos = utils.FiltroProyecto(filtro);
+
             ViewBag.SaldosCorpo = db.SaldosCorporativos.Where(p => p.Mes == mes && p.Periodo == periodo ).ToList();
             ViewBag.InformeCuenta = db.CinformeCierre.OrderBy(p => p.GinformeID).ThenBy(p => p.CuentaID).ToList();  
             ViewBag.Cta = db.CuentaCorriente.ToList();

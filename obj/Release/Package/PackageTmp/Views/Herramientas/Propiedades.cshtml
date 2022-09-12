@@ -21,53 +21,116 @@
 	    "Noviembre",
 	    "Diciembre"
 	};
+    int filtro = int.Parse(Session["Filtro"].ToString()); 
 }
 <div class="blog-post">
-<br />
-<br />
+ <h3>Información del Proyecto</h3>
 @Html.Raw(ViewBag.Mensaje)
+    <div>
+   @{
+   SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+   if (Usuario.esAdministrador)
+   {
+        using (Html.BeginForm("AplicarFiltro", "Herramientas", null, FormMethod.Post, new { id = "recoverform" }))
+        {
+        <div class="form-group ">
+            <div class="col-xs-12">
+                <h5>Filtro de Sistema</h5>
+            </div>
+        </div>
+         <div class="form-group">
+            <div class="col-md-6">
+                  <select name="filtroSistema" id="filtroSistema"  class="js-autocomplete" style="width: 400px;">
+                                      <option value="1" @if (filtro == 1)
+                                {@Html.Raw(" selected=\"selected\"")}> Vigentes</option>
+
+                <option value="2" @if (filtro == 2)
+                                {@Html.Raw(" selected=\"selected\"")}>  Proceso de Cierre</option>
+
+                        <option value="3" @if (filtro == 3)
+                                {@Html.Raw(" selected=\"selected\"")}> Vigentes y Cerrados</option>
+                      </select>
+              </div>
+                    
+                    
+                        <div class="col-md-6">
+                            <button class="btn btn-info  " type="submit" style="width: 131px;">Aplicar Filtro</button>
+                        </div>
+         </div>
+<hr />
+        }
+   }
+  }
+        
+        </div>
+  <div>  
 @using (Html.BeginForm())
 {
     var ProyectoSelected = (SAG2.Models.Proyecto)Session["Proyecto"];
- <fieldset>
-    <h3>Información del Proyecto</h3>
+           <div class="form-group ">
+            <div class="col-xs-12">
+                <h5>Cambiar Programa</h5>
+            </div>
+        </div>
     <div class="form-group">
-       Nombre
-    </div>
+        <div class="col-md-6">
+ <fieldset>
+    
     <div class="form-group">
         <select name="Proyecto" id="Proyecto"  class="js-autocomplete" style="width: 400px;">
             <option> - Seleccione proyecto</option>
             @foreach (SAG2.Models.Proyecto Proye in ViewBag.Proyectos)
             { 
-            <option value="@Proye.ID" @if (@Proye.ID.Equals(ProyectoSelected.ID)) { @Html.Raw("selected=\"selected\"") }>@Proye.NombreEstado</option>
+            <option value="@Proye.ID" @if (@Proye.ID.Equals(ProyectoSelected.ID))
+                                      { @Html.Raw("selected=\"selected\"") }>@Proye.NombreEstado</option>
             }
         </select>
     </div>
     </fieldset>
-
-    <fieldset>
-    <h3>Período activo</h3>
-   <div class="form-inline" >
-    <div class="form-group" style="margin-right: 15px;">
-        @Html.Label("Año")
-    </div>
-    <div class="form-group">
-        <input name="PeriodoAnio" value="@Html.Raw(Session["Periodo"].ToString())" readonly="readonly" size="10" class ="form-control" style="width: 150px;"/>
-    </div>
-   </div>
-        <br /><br />
-        <div class="form-inline" >
-    <div class="form-group" style="margin-right: 15px;">
-        @Html.Label("Mes")
-    </div>
-    <div class="form-group">
-        <input name="PeriodoMes" value="@Html.Raw(@Meses[((int)Session["Mes"]) - 1])" readonly="readonly" size="10" class ="form-control" style="width: 150px;" />
-    </div>
             </div>
+        <div class="col-md-6">
+            <fieldset>
+    <p style="margin:0;">
+
+        <input type="submit" value="Guardar cambios" class="btn btn-primary" />
+    </p>
 </fieldset>
-    <br />
-<fieldset>
-    <h3>Correlativos de comprobantes (Proy. @ViewBag.Proyecto)</h3>
+        </div>
+</div>
+}
+      <hr />
+    <div>
+
+      <div class="form-group">
+       <div class="col-md-12">
+
+         
+            <h5>Período activo</h5>
+           <div class="form-inline" >
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.Label("Año")
+            </div>
+            <div class="form-group">
+                <input name="PeriodoAnio" value="@Html.Raw(Session["Periodo"].ToString())" readonly="readonly" size="10" class ="form-control" style="width: 150px;"/>
+            </div>
+           </div>
+               <br />
+                <div class="form-inline" >
+            <div class="form-group" style="margin-right: 15px;">
+                @Html.Label("Mes")
+            </div>
+            <div class="form-group">
+                <input name="PeriodoMes" value="@Html.Raw(@Meses[((int)Session["Mes"]) - 1])" readonly="readonly" size="10" class ="form-control" style="width: 150px;" />
+            </div>
+                    </div>
+
+    </div>
+         
+          <div class="form-group"  >
+  <hr />
+              <div class="col-md-12" style="top: 20px;">
+
+    <h5>Correlativos de comprobantes (Proy. @ViewBag.Proyecto)</h5>
     <table style="width: 100%;" class ="table table-hover">
         <tr>
             <td style="width: 25%;">
@@ -97,15 +160,12 @@
                 <strong>@ViewBag.NroDeudas</strong>
             </td>
         </tr>
-    </table><br />
-</fieldset>
+    </table>
 
-<fieldset>
-    <p style="margin:0;">
-        <input type="submit" value="Guardar cambios" class="btn btn-primary" />
-    </p>
-</fieldset>
-    <br />
-<br />
-}
+               </div>
+         </div></div>
+</div>
+
+ </div>   
+
 </div>

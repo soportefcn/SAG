@@ -50,8 +50,10 @@
 	    "Dic."
 	};
 }
+
 <script type="text/javascript" language="javascript">
     $(document).ready(function () {
+        $(".js-autocomplete").select2();
         $("#imprimirProgramaSemanal").click(function () {
             $(".cuenta_I").show();
             $(".cuenta_E").show();
@@ -176,7 +178,7 @@
         @using (Html.BeginForm())
         {
              <strong>Proyecto <br />
-             <select name="Proyectos2" id="Proyectos2" >
+             <select name="Proyectos2" id="Proyectos2" class="js-autocomplete" >
             <option value="-1"> - Seleccione proyecto</option>
             @foreach (SAG2.Models.Proyecto Proyectos2 in ViewBag.Proyectos)
             {
@@ -191,8 +193,9 @@
             }
         </select>
                </strong>
+            
           <input class="btn btn-primary" type="submit" value="Procesar" />
-                   <br />
+                   <br /><br />
                
                <label>Concepto</label>
         <select name="TipoCuenta" id="TipoCuenta" class="TipoCuenta">

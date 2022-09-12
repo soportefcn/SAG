@@ -28,15 +28,16 @@ namespace SAG2.Comun
                 correos.To.Clear();
                 correos.Body = "";
                 correos.Subject = "";
-
+                mensaje.Replace("Ñ", "N"); 
                 string textofinal = "";
                 textofinal = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><meta name='language' content='es'>";
 	            textofinal = textofinal + "<title>" + asunto + "</title></head>";
+                textofinal = textofinal + "<style> table, th, td { border: 1px solid black; border-collapse: collapse; border-color: #96D4D4;}</style>";
                 textofinal = textofinal + "<body><div style='padding:10px; border-radius:5px; border: 1px solid #d8d8d8;'>";
-                textofinal = textofinal + "<div>" + mensaje + "</div> "; 
-                textofinal = textofinal + "<div> <p style='font-weight:bold; text-align:left;'>Saludos<br>Fundacion Ciudad del Niño </p> <p style='text-align:left;'>Por favor, No responder este correo electr&oacute;nico</p> </div>";
-                textofinal = textofinal + "<table><tbody><tr><td><img src='https://sag.ciudaddelnino.cl/SAG_5/Content/Images/SAG2.png' style='Width: 150px;'></td>";
-                textofinal = textofinal + "<td>Sistema SAG</td></tr></tbody></table></div></body></html>";
+                textofinal = textofinal + "<div>" + "para" +   mensaje + "</div> ";
+                textofinal = textofinal + "<div> <p style='font-weight:bold; text-align:left;'>Saludos<br>Fundacion Ciudad del Ni&ntilde;o </p> <p style='text-align:left;'>Por favor, No responder este correo electr&oacute;nico</p> </div>";
+                textofinal = textofinal + "<a href='https://sag.ciudaddelnino.cl/SAG_5/Login/'>Sistema SAG</a>";
+
         
 
                 correos.Body = textofinal;
