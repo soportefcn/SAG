@@ -77,7 +77,7 @@ namespace SAG2.Controllers
                     ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -235,7 +235,7 @@ namespace SAG2.Controllers
                     ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -410,7 +410,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -567,7 +567,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -728,7 +728,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -840,7 +840,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Presupuesto.Periodo_Inicio.ToString();
                     ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = Presupuesto.Mes_Inicio;
                     int periodo = Presupuesto.Periodo_Inicio;
@@ -945,8 +945,17 @@ namespace SAG2.Controllers
             {
                 Periodo = DateTime.Now.Year;
             }
-
+           
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+
+            DateTime FechaTermino = DateTime.Parse(Proyecto.Convenio.FechaTermino.ToString());
+            int PeriodoTermino = FechaTermino.Year;  
+            int MesTermino = FechaTermino.Month;
+            if (PeriodoTermino > Periodo)
+            {
+                MesTermino = 12;
+            }
+            ViewBag.MesTermino = MesTermino; 
             ViewBag.PresupuestoID = string.Empty;
             ViewBag.Periodo_Inicio = Periodo.ToString();
             ViewBag.Mes_Inicio = "1";
@@ -960,8 +969,19 @@ namespace SAG2.Controllers
                 ViewBag.Periodo_Inicio = Periodo.ToString();
                 ViewBag.Mes_Inicio = "1";
                 ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-
-                dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                // desde Saldo
+                int PeriodoAnt = Periodo - 1;
+                int SaldoInicial = 0;
+                try
+                {
+                   SaldoInicial = db.Saldo.Where(d => d.Mes == 12 && d.Periodo == PeriodoAnt && d.CuentaCorriente.ProyectoID == Proyecto.ID).FirstOrDefault().SaldoFinal;
+                }
+                catch (Exception)
+                {
+                    SaldoInicial = 0;
+                }
+                ViewBag.SaldoInicial = SaldoInicial;
+                dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
             }
             catch (Exception)
             {
@@ -970,7 +990,7 @@ namespace SAG2.Controllers
             }
 
             ViewBag.Detalle = dp;
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.Presupuesto == 1).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -1128,7 +1148,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Presupuesto.Periodo_Inicio.ToString();
                     ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = Presupuesto.Mes_Inicio;
                     int periodo = Presupuesto.Periodo_Inicio;
@@ -1258,7 +1278,7 @@ namespace SAG2.Controllers
                     ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
                     ViewBag.NomProyecto = db.Proyecto.Where(a => a.ID == pr_id).Take(1).Single().NombreLista;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = Presupuesto.Mes_Inicio;
                     int periodo = Presupuesto.Periodo_Inicio;
@@ -1421,7 +1441,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1 ).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -1589,7 +1609,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1  ).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -1755,7 +1775,7 @@ namespace SAG2.Controllers
 
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -1920,7 +1940,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -2083,7 +2103,7 @@ namespace SAG2.Controllers
                 {
                     ViewBag.SaldoInicial = db.Presupuesto.Where(m => m.Proyecto.TipoProyectoID == Linea && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).Sum(m => m.SaldoInicial);
 
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -2248,7 +2268,7 @@ namespace SAG2.Controllers
                     ViewBag.SaldoInicial = db.Presupuesto.Where(m => m.Proyecto.TipoProyectoID == Linea && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).Sum(m => m.SaldoInicial);
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -2413,7 +2433,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -2579,7 +2599,7 @@ namespace SAG2.Controllers
 
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -2745,7 +2765,7 @@ namespace SAG2.Controllers
 
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -2911,7 +2931,7 @@ namespace SAG2.Controllers
                     //  ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     // ViewBag.SaldoInicial = 0;
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -3075,7 +3095,7 @@ namespace SAG2.Controllers
                     ViewBag.SaldoInicial = db.Presupuesto.Where(m => m.Proyecto.TipoProyectoID == Linea && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).Sum(m => m.SaldoInicial);
 
 
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -3239,7 +3259,7 @@ namespace SAG2.Controllers
                     ViewBag.SaldoInicial = db.Presupuesto.Where(m => m.Proyecto.TipoProyectoID == Linea && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).Sum(m => m.SaldoInicial);
 
 
-                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.Presupuesto.Proyecto.TipoProyectoID == Linea && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -3437,7 +3457,7 @@ namespace SAG2.Controllers
                     //ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.Mes_Inicio = 7;
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     //int mes = Presupuesto.Mes_Inicio;
                     int mes = 7;
@@ -3624,7 +3644,7 @@ namespace SAG2.Controllers
                     //ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.Mes_Inicio = 1;
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     //int mes = Presupuesto.Mes_Inicio;
                     int mes = 1;
@@ -3763,7 +3783,7 @@ namespace SAG2.Controllers
                     //ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.Mes_Inicio = 1;
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     //int mes = Presupuesto.Mes_Inicio;
                     int mes = 1;
@@ -3911,7 +3931,7 @@ namespace SAG2.Controllers
                     //ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.Mes_Inicio = 1;
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     //int mes = Presupuesto.Mes_Inicio;
                     int mes = 1;
@@ -4031,7 +4051,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Presupuesto.Periodo_Inicio.ToString();
                     ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = Presupuesto.Mes_Inicio;
                     int periodo = Presupuesto.Periodo_Inicio;
@@ -4161,7 +4181,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Presupuesto.Periodo_Inicio.ToString();
                     ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = Presupuesto.Mes_Inicio;
                     int periodo = Presupuesto.Periodo_Inicio;
@@ -4294,7 +4314,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Presupuesto.Periodo_Inicio.ToString();
                     ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = Presupuesto.Mes_Inicio;
                     int periodo = Presupuesto.Periodo_Inicio;
@@ -4478,7 +4498,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Presupuesto.Periodo_Inicio.ToString();
                     ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = Presupuesto.Mes_Inicio;
                     int periodo = Presupuesto.Periodo_Inicio;
@@ -4643,7 +4663,7 @@ namespace SAG2.Controllers
                     ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -4798,7 +4818,7 @@ namespace SAG2.Controllers
                     ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -4974,7 +4994,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Periodo.ToString();
                     ViewBag.Mes_Inicio = "1";
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     List<int> IngresosPre = new List<int>();
                     List<int> EgresosPre = new List<int>();
@@ -5114,7 +5134,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Periodo.ToString();
                     ViewBag.Mes_Inicio = "1";
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     List<int> IngresosPre = new List<int>();
                     List<int> EgresosPre = new List<int>();
@@ -5259,7 +5279,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Periodo.ToString();
                     ViewBag.Mes_Inicio = "1";
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     List<int> IngresosPre = new List<int>();
                     List<int> EgresosPre = new List<int>();
@@ -5555,7 +5575,7 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Periodo.ToString();
                     ViewBag.Mes_Inicio = "1";
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     List<int> IngresosPre = new List<int>();
                     List<int> EgresosPre = new List<int>();
@@ -5688,7 +5708,8 @@ namespace SAG2.Controllers
                     ViewBag.Periodo_Inicio = Periodo.ToString();
                     ViewBag.Mes_Inicio = "1";
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID).ToList();
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
+
 
                     List<int> IngresosPre = new List<int>();
                     List<int> EgresosPre = new List<int>();

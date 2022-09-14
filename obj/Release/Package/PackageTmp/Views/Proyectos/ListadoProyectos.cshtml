@@ -111,6 +111,8 @@
                 <td>  <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar" href="@Url.Action("EliminarListado", "Proyectos", new { id = item.ID })" onclick="return confirm('Realmente desea borrar este Proyecto, se borrara toda la información de la Base de Datos?');"><span class ="fa fa-trash-o fa-fw"></span></a>
                </td><td>
                      <a class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Cerrar" href="@Url.Action("CerrarProyectoListado", "Proyectos", new { id = item.ID })" onclick="return confirm('Al cerrar este Proyecto no podrá realizar más modificaciones, desea continuar?');"><span class ="fa fa-exclamation-triangle fa-fw"></span></a> 
+          </td><td>
+                     <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Cerrar en Proceso" href="@Url.Action("CerrarProyectoListado2", "Proyectos", new { id = item.ID })" onclick="return confirm('Al cerrar este Proyecto no podrá realizar más modificaciones, desea continuar?');"><span class ="fa fa-exclamation-triangle fa-fw"></span></a> 
           </td>
           }
           }

@@ -40,6 +40,23 @@ namespace SAG2.Controllers
 
             return View(proyecto.ToList());
         }
+
+        public ViewResult ListadoProyectosPresupuesto()
+        {
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            int periodo = (int)Session["Periodo"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            List<Proyecto> proyecto = new List<Proyecto>();
+            Persona Persona = (Persona)Session["Persona"];
+
+            ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
+            ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
+
+            ViewBag.Periodo = db.Periodo.ToList();
+            proyecto = utils.FiltroProyecto(filtro);
+            return View(proyecto.ToList());
+
+        }
         public ViewResult ListadoProyectos()
         {
             Usuario usuario = (Usuario)Session["Usuario"];
@@ -61,6 +78,7 @@ namespace SAG2.Controllers
             ViewBag.Periodo = db.Periodo.ToList();
             
             proyecto = db.Proyecto.OrderBy(p => p.CodCodeni).ToList();
+
             if (EstadoFiltro == 1) {
                 proyecto = proyecto.Where(d => d.Cerrado == null && d.Eliminado == null).ToList();  
             }
@@ -484,6 +502,21 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto proyecto = db.Proyecto.Find(id);
             proyecto.Cerrado = "S";
+            db.Entry(proyecto).State = EntityState.Modified;
+            db.SaveChanges();
+            int periodo = DateTime.Now.Year;
+            int Mes = DateTime.Now.Month;
+            int CLog = 0;
+            string Descripcion = " Cierre Proyecto Mes : " + Mes + " Periodo : " + periodo;
+            CLog = logReg.RegistraControl("Cierre", Descripcion, periodo, Mes, usuario.ID, proyecto.ID);
+            return RedirectToAction("ListadoProyectos");
+        }
+        public ActionResult CerrarProyectoListado2(int id)
+        {
+
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Proyecto proyecto = db.Proyecto.Find(id);
+            proyecto.Cerrado = "P";
             db.Entry(proyecto).State = EntityState.Modified;
             db.SaveChanges();
             int periodo = DateTime.Now.Year;

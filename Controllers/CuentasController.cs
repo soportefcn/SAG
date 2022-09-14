@@ -5,17 +5,98 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using SAG2.Comun;
 using SAG2.Models;
+using SAG2.Classes;
 
 namespace SAG2.Controllers
 { 
     public class CuentasController : Controller
     {
         private SAG2DB db = new SAG2DB();
+        private ControlLog logReg = new ControlLog();
 
         //
         // GET: /Cuentas/
+        public ActionResult CuentasPresupuesto() {
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            return View(cuenta.ToList()); 
+        }
+        public void HabilitarHijo(int idPadre)
+        {
+            var Hijo = db.Cuenta.Where(d => d.CuentaID == idPadre).ToList();
+            foreach (Cuenta items in Hijo)
+            {
+                items.Presupuesto = 1;
+                db.Entry(items).State = EntityState.Modified;
+                db.SaveChanges();
+                HabilitarHijo(items.ID);
+            }
 
+        } 
+        public ActionResult Habilitar(int id)
+        {
+            Proyecto proyecto = (Proyecto)Session["Proyecto"];
+            try
+            {
+                Usuario usuario = (Usuario)Session["Usuario"];
+                Cuenta Datos = db.Cuenta.Find(id);
+                Datos.Presupuesto = 1;
+                db.Entry(Datos).State = EntityState.Modified;
+                db.SaveChanges();
+
+                HabilitarHijo(id);
+
+                int periodo = DateTime.Now.Year;
+                int Mes = DateTime.Now.Month;
+                int CLog = 0;
+                string Descripcion = " Habilitar Cuenta de Propuesta Presupuesto" + Datos.NombreLista;
+                CLog = logReg.RegistraControl("quitar Presupuesto", Descripcion, periodo, Mes, usuario.ID, proyecto.ID);
+
+            }
+            catch (Exception)
+            {
+
+            }
+            return RedirectToAction("CuentasPresupuesto");
+        }
+        public void QuitarHijo(int  idPadre)
+        {
+            var Hijo = db.Cuenta.Where(d => d.CuentaID == idPadre).ToList();
+            foreach (Cuenta items in Hijo ){
+                items.Presupuesto = 0;
+                db.Entry(items).State = EntityState.Modified;
+                db.SaveChanges();
+                QuitarHijo(items.ID);           
+            }
+  
+        } 
+        public ActionResult Quitar(int id)
+        {
+            Proyecto proyecto = (Proyecto)Session["Proyecto"];
+            try
+            {
+                Usuario usuario = (Usuario)Session["Usuario"];
+                Cuenta Datos = db.Cuenta.Find(id);
+                Datos.Presupuesto = 0;
+                db.Entry(Datos).State = EntityState.Modified;
+                db.SaveChanges();
+                
+                QuitarHijo(id);
+
+                int periodo = DateTime.Now.Year;
+                int Mes = DateTime.Now.Month;
+                int CLog = 0;
+                string Descripcion = " Quitar Cuenta de Propuesta Presupuesto" + Datos.NombreLista;
+                CLog = logReg.RegistraControl("quitar Presupuesto", Descripcion, periodo, Mes, usuario.ID, proyecto.ID);
+
+            }
+            catch (Exception)
+            {
+
+            }
+            return RedirectToAction("CuentasPresupuesto");
+        }
         public ViewResult Index(string q = "")
         {
             var cuenta = db.Cuenta.Include(c => c.Padre).Where(c => !c.Codigo.Equals("0")).Where(c => c.Nombre.Contains(q)).OrderBy(c => c.Orden);
@@ -125,6 +206,7 @@ namespace SAG2.Controllers
 
             if (ModelState.IsValid)
             {
+                cuenta.Presupuesto = 1; 
                 cuenta.Estado = 1;
                 db.Cuenta.Add(cuenta);
                 

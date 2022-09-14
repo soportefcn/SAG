@@ -137,17 +137,6 @@ namespace SAG2.Controllers
             return View(cuentacorriente);
         }
 
-        //
-        // GET: /CuentaCorriente/Delete/5
-        /*
-        public ActionResult Delete()
-        {
-            CuentaCorriente cuentacorriente = db.CuentaCorriente.Find(id);
-            return View(cuentacorriente);
-        }
-        */
-        //
-        // POST: /CuentaCorriente/Delete/5
 
         [HttpGet, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
@@ -156,6 +145,11 @@ namespace SAG2.Controllers
             db.CuentaCorriente.Remove(cuentacorriente);
             db.SaveChanges();
             return RedirectToAction("Create");
+        }
+        public ActionResult cuentaPresupuesta() {
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            return View(cuenta.ToList());
+
         }
 
        

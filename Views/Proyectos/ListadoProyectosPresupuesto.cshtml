@@ -1,0 +1,73 @@
+﻿@model IEnumerable<SAG2.Models.Proyecto>
+
+@{
+    ViewBag.Title = "ProyectosPresupuesto";
+    List<SAG2.Models.DetallePresupuesto> DPresupuesto = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.DetallePresupuesto;
+    List<SAG2.Models.Presupuesto> EPresupuesto = (List<SAG2.Models.Presupuesto>)@ViewBag.Presupuestos;
+}
+
+<h2>Proyectos Presupuesto</h2>
+
+<table id="ResultadoTable" class="table table-responsive table-bordered">
+    <thead>
+        <tr class="label-info">
+            <th> Nombre</th>
+            <th> Cod.Sename </th>
+             <th>Periodo Inicio </th>
+            <th>Saldo Inicial</th>
+            <th>Estado </th>
+            <th>Acciones</th>
+     </tr>
+      </thead>
+  <tbody>
+@foreach (var item in Model) {
+    int SaldoInicial = 0;
+    string  Presupuesto = "Sin Presupuesto";
+    int Pres = 0;
+    try {
+        int PrID = item.ID;
+        SaldoInicial = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().SaldoInicial;
+        Presupuesto = "Con Presupuesto";
+        Pres = 1;   
+    }
+    catch (Exception e) { 
+        
+    }
+    
+    
+    <tr >
+         <td>
+             <table><tr><td>
+               @Html.DisplayFor(modelItem => item.NombreLista )
+            </td></tr></table>
+        </td>
+
+        <td>
+           <table><tr><td>
+            @Html.DisplayFor(modelItem => item.CodSename)
+               </td></tr></table>
+        </td>
+        <td>
+            <table><tr><td>
+            @item.PeriodoInicio / @item.MesInicio 
+                </td></tr></table>
+        </td>
+        <td>
+            @SaldoInicial.ToString("#,##0")  
+        </td>
+         <td  @if (Pres == 0){@Html.Raw(" style='background-color: Red;color:white'");}>
+              @if (Pres == 0){
+                  @Html.Raw(Presupuesto); 
+              }else{
+                  @Html.Raw(Presupuesto); 
+              }
+        </td>
+            <td>
+
+            </td>
+        
+    </tr>
+}
+ </tbody>
+
+</table>

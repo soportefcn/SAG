@@ -1,0 +1,38 @@
+﻿@model IEnumerable<SAG2.Models.Cuenta>
+@{
+    ViewBag.Title = "Cuentas Formulacion Presupuesto";
+}
+
+<h2>Cuentas Formulacion Presupuesto</h2>
+
+<table class="table table-bordered table-hover">
+        <thead>
+        <tr class="label-info">
+            <th> Tipo</th>
+            <th> Cod Cuenta </th>
+             <th>Accion</th>          
+     </tr>
+        </thead>
+      <tbody>
+          @foreach (var item in Model)
+          {
+              <tr @if (item.Hijos.Count > 0){@Html.Raw(" style='background-color: Silver;'");}>
+                  <td>@item.Tipo </td>
+                  <td>@item.NombreLista  </td>
+                  <td> 
+                      @if (item.Presupuesto == 1) {
+                       <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Quitar" href="@Url.Action("Quitar", "Cuentas", new { id = item.ID })" onclick="return confirm('Realmente desea borrar esta Cuenta de la Formulacion de Presupuestos?');"><span class ="fa fa-minus-circle"></span></a>
+                      } else { 
+                       <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Habilitar" href="@Url.Action("Habilitar", "Cuentas", new { id = item.ID })" onclick="return confirm('Realmente desea Agregar esta Cuenta a la Formulacion de Presupuestos?');"><span class ="fa fa-plus-circle"></span></a>
+                      }
+                           
+                           
+                  </td>
+              </tr>
+
+          }
+          
+      </tbody>
+
+
+</table>

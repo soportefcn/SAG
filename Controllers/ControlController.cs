@@ -438,16 +438,6 @@ namespace SAG2.Controllers
             List<Proyecto> proyectos = new List<Proyecto>();
 
            
-            //if (filtro == 1)
-            //{
-            //    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista",pr_id);
-            //    proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList() ;
-            //}
-            //else
-            //{
-            //    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista",pr_id);
-            //    proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList();
-            //}
             ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, pr_id);
             proyectos = utils.FiltroProyecto(filtro); 
 

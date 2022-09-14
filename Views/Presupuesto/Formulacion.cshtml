@@ -87,7 +87,7 @@
             }
         </tr>
         <tr>
-            <th align="right">Saldo Inicial: <input type="text" name="SaldoInicial" id="SaldoInicial" value="@ViewBag.SaldoInicial" size="7" style="text-align: right;" /></th>
+            <th align="right">Saldo Inicial: <input type="text" name="SaldoInicial" id="SaldoInicial" value="@ViewBag.SaldoInicial.ToString("#,##0")" size="7" style="text-align: right;" disabled /></th>
             <th colspan="12"></th>
         </tr>
         @foreach (var cuenta in Model)
@@ -160,3 +160,19 @@
     </table>
 }
 </div>
+<script>
+    $(document).ready(function () {
+        $(".ReplicarValor").click(function () {
+            var cuentaID = $(this).attr("cuenta");
+            var valor = $("#Presupuesto_1_" + cuentaID).val();
+
+            if (valor != "") {
+                for (var i = 2; i < 13; i++) {
+                    $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
+                }
+            }
+        });
+
+
+    });
+</script>

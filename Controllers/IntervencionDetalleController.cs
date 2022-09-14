@@ -145,7 +145,7 @@ namespace SAG2.Controllers
                 double VALORUSS = parametroUSS.uss;
                 double Q = ProgramaQ.Valor;
                 int PeriodoI = int.Parse(model.FechaIngreso.Year.ToString());
-                int TotConvenio = db.Convenio.Where(d => d.ProyectoID == model.ProyectoID && d.Periodo == PeriodoI).FirstOrDefault().NroPlazas;          
+                int TotConvenio = db.Convenio.Where(d => d.ProyectoID == model.ProyectoID && d.Periodo == PeriodoI).OrderByDescending(d => d.ID).FirstOrDefault().NroPlazas;          
                 double valorIntervencion = ((VALORUSS*Q)/100)*(100+ValorPorcZona);
 
                 if (ModelState.IsValid)
