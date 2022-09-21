@@ -1692,16 +1692,7 @@ $(document).ready(function () {
     });
 
     // Replicar primer valor
-    $(".ReplicarValor").click(function () {
-        var cuentaID = $(this).attr("cuenta");
-        var valor = $("#Presupuesto_1_" + cuentaID).val();
 
-        if (valor != "") {
-            for (var i = 2; i < 13; i++) {
-                $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
-            }
-        }
-    });
 
     $("#TipoCuenta").change(function () {
         $(".cuenta_I").hide();

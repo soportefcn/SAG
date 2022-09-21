@@ -1220,8 +1220,8 @@ $(document).ready(function () {
         return false;
     });
     $("#ExcelListaProyectoAnual").click(function () {
-        var desde = $("#anual").val();
-        var hasta = $("#TProyecto").val();
+        var anual = $("#anual").val();
+        var tproyecto = $("#TProyecto").val();
         window.open("/SAG_5/Presupuesto/LineaProyectoExcelAnual?anual=" + anual + '&Linea=' + tproyecto, 'LibroBanco');
         return false;
     });
@@ -1692,16 +1692,7 @@ $(document).ready(function () {
     });
 
     // Replicar primer valor
-    $(".ReplicarValor").click(function () {
-        var cuentaID = $(this).attr("cuenta");
-        var valor = $("#Presupuesto_1_" + cuentaID).val();
 
-        if (valor != "") {
-            for (var i = 2; i < 13; i++) {
-                $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
-            }
-        }
-    });
 
     $("#TipoCuenta").change(function () {
         $(".cuenta_I").hide();
@@ -1956,6 +1947,7 @@ $(document).ready(function () {
         }
         return false;
     });
+
     $(".tipobeneficiario #DVBuscar").focusout(function(){
         $("#PersonaID").val("0");
         $("#ProveedorID").val("0");

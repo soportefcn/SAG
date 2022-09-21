@@ -613,13 +613,88 @@ namespace SAG_5.Controllers
 
         public ActionResult ReporteProgramaEstandar()
         {
-            Proyecto proyecto = (Proyecto)Session["Proyecto"];
-            int filtro = int.Parse(Session["Filtro"].ToString()); 
-
+            int filtro = int.Parse(Session["Filtro"].ToString());
+           int Mes = (int)Session["Mes"];
+            int periodo = (int)Session["Periodo"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int Proyectos = Proyecto.ID; 
+            ViewBag.entrada = 1;
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
-            ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
 
-            return View();
+            if (filtro == 1)
+            {
+                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", Proyectos);
+            }
+            else
+            {
+                ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyectos);
+            }
+            ViewBag.ID = Proyectos;
+            ViewBag.Periodo = periodo;
+            ViewBag.CuentaFinancimiento = db.cuentaGrupo.Where(d => d.grupo.Equals(1)).ToList();
+            ViewBag.CuentaApoyo = db.cuentaGrupo.Where(d => d.grupo.Equals(2)).ToList();
+            ViewBag.Mes = Mes;
+
+            var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
+            ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            if (Mes < 13)
+            {
+                ViewBag.GrupoMeses = new int[1] {
+                Mes,
+                };
+            }
+            else if (Mes == 13)
+            {
+                ViewBag.GrupoMeses = new int[6] {
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+                };
+
+            }
+            else if (Mes == 14)
+            {
+                ViewBag.GrupoMeses = new int[6] {
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+                };
+
+            }
+            else if (Mes == 15)
+            {
+
+                ViewBag.GrupoMeses = new int[12] {
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12 };
+            }
+
+            //if (periodo == null)
+            //{
+
+            //}
+            //else
+            //{
+            //    ViewBag.PresupuestoID = db.Presupuesto.Where(p => p.ProyectoID == Proyectos && p.Periodo == periodo);
+            //}
+            return View(); 
+
         }
         public ActionResult ReporteProgramaEstandarCC()
         {
@@ -637,7 +712,7 @@ namespace SAG_5.Controllers
         public ActionResult ReporteProgramaEstandar( int Proyectos, int Mes, int? periodo)
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
-
+            ViewBag.entrada = 2; 
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
             
             if (filtro == 1)

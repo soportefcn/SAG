@@ -51,7 +51,7 @@ namespace SAG2.Controllers
 
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
-
+            ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
             ViewBag.Periodo = db.Periodo.ToList();
             proyecto = utils.FiltroProyecto(filtro);
             return View(proyecto.ToList());

@@ -941,19 +941,38 @@ namespace SAG2.Controllers
 
         public ActionResult Formulacion(int Periodo = 0)
         {
+            int mes = 0;
             if (Periodo == 0)
             {
                 Periodo = DateTime.Now.Year;
+                mes = DateTime.Now.Month;   
             }
            
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-
-            DateTime FechaTermino = DateTime.Parse(Proyecto.Convenio.FechaTermino.ToString());
-            int PeriodoTermino = FechaTermino.Year;  
-            int MesTermino = FechaTermino.Month;
+            int PeriodoTermino =0;
+            int MesTermino = 0;
+            try
+            {
+                DateTime FechaTermino = DateTime.Parse(Proyecto.Convenio.FechaTermino.ToString());
+                MesTermino = FechaTermino.Month + 1;
+                PeriodoTermino = FechaTermino.Year; 
+            }
+            catch (Exception) {
+                PeriodoTermino = 0;
+                MesTermino = 0;
+            }  
+           
             if (PeriodoTermino > Periodo)
             {
                 MesTermino = 12;
+            }
+            else
+            {
+                if (PeriodoTermino < Periodo)
+                {
+                    MesTermino = 0;
+                }
+          
             }
             ViewBag.MesTermino = MesTermino; 
             ViewBag.PresupuestoID = string.Empty;
@@ -975,6 +994,7 @@ namespace SAG2.Controllers
                 try
                 {
                    SaldoInicial = db.Saldo.Where(d => d.Mes == 12 && d.Periodo == PeriodoAnt && d.CuentaCorriente.ProyectoID == Proyecto.ID).FirstOrDefault().SaldoFinal;
+          
                 }
                 catch (Exception)
                 {
@@ -985,8 +1005,7 @@ namespace SAG2.Controllers
             }
             catch (Exception)
             {
-                //Response.Write(e.StackTrace);
-                //Response.End();
+                ViewBag.SaldoInicial = 0;
             }
 
             ViewBag.Detalle = dp;
