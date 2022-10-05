@@ -93,7 +93,12 @@
                         <td>@item.Familia - @item.SubFamilia</td>
                         <td>@item.DescripcionBien</td>
                         <td>@item.Procedencia[0]</td>
-                        <td>@item.Movimiento.NumeroComprobante</td>
+                        <td>@{try{
+                                @item.Movimiento.NumeroComprobante;
+                              }catch(Exception){}
+                            }
+
+                        </td>
 
 
                         @if (item.Egreso != null)
@@ -102,7 +107,11 @@
                         }
                         else
                         {
-                            <td>@item.Reintegro.NDocumento</td>
+                            <td>@{try{
+                                @item.Reintegro.NDocumento
+                            }catch(Exception ){}
+                                  }
+                                </td>
                         }
                         <td>@item.Cantidad.ToString("#,##0")</td>
                         <td>$@item.MontoInt.ToString("#,##0")</td>

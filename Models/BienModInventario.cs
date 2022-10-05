@@ -130,4 +130,28 @@ namespace SAG2.Models
 
     }
 
+    public class BienModDonacion
+    {
+        public int ID { get; set; }
+
+        public string RutaArchivo { get; set; }
+        public HttpPostedFileBase Archivo { get; set; }
+        public int FamiliaID { get; set; }
+        public int UsuarioID { get; set; }
+        public int CondicionID { get; set; }
+        public int? EstadoID { get; set; }
+        public int Cantidad { get; set; }
+        public int MontoInt { get; set; }
+        public DateTime Fecha { get; set; }
+        public string Detalle { get; set; }
+        public string DescripcionBien { get; set; }
+    
+        public string Ubicacion { get; set; }
+
+
+        public int SubFamiliaID { get; set; }
+      
+
+
+    }
 }

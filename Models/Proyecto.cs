@@ -33,6 +33,7 @@ namespace SAG2.Models
         public int? PeriodoInicio { get; set; }
         public int? MesInicio { get; set; }
         public int estado { get; set; }
+        
 
         public virtual Direccion Direccion { get; set; }
         public virtual SistemaAsistencial SistemaAsistencial { get; set; }

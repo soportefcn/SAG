@@ -48,13 +48,26 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             List<Proyecto> proyecto = new List<Proyecto>();
             Persona Persona = (Persona)Session["Persona"];
+            Proyecto Proto = (Proyecto)Session["Proyecto"];
 
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
             ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
             ViewBag.Periodo = db.Periodo.ToList();
             proyecto = utils.FiltroProyecto(filtro);
-            return View(proyecto.ToList());
+            ViewBag.Proyectos = proyecto.ToList();
+            //
+            if (usuario.esAdministrador)
+            {
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proto.ID), "ID", "NombreLista", Proto.ID);
+            }
+            ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+            ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+            return View();
 
         }
         public ViewResult ListadoProyectos()

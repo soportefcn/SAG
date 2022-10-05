@@ -1,0 +1,184 @@
+﻿@model SAG2.Models.BienModDonacion
+@{
+    ViewBag.Title = "Ingresar Registro";
+    List<SAG2.Models.Dependencia> deps = new List<SAG2.Models.Dependencia>().ToList();
+    SAG2.Models.Dependencia dependencias = new SAG2.Models.Dependencia();
+    int Proyecto = ((SAG2.Models.Proyecto)Session["Proyecto"]).ID;
+    ViewBag.Dependencia = new SelectList(deps, "ID", "Nombre", Proyecto);
+
+    using (SAG2.Models.SAG2DB depen = new SAG2.Models.SAG2DB())
+    {
+        var ListaDepen = new SelectList(depen.Dependencia.ToList().Where(p=> p.ProyectoID == Proyecto), "ID", "Nombre");
+        ViewData["ListaDependencia"] = ListaDepen;
+    }
+    //ViewBag.ESTADO_ID = new SelectList(db.ESTADO, "ID_ESTADO", "ESTADO1", sOLICITUD.ESTADO_ID);
+
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<style>
+    /* Conversion a mayusculas */
+    input[type="text"], textarea {
+        text-transform: uppercase;
+    }
+</style>
+
+<div id="SAGBox">
+
+    <h3>Control de Inventario</h3>
+
+        @using (Html.BeginForm("SaveDonacion", "BienModInventario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(true)
+            <fieldset>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3><b>Ingreso de Donacion a inventario</b></h3></div>
+                    <div class="panel-body">
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 93px;">
+                                <label>Nº Bien:</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 280px;">
+                                @Html.TextBoxFor(model => model.ID , new { @class = "form-control", required = "required", @Value = @ViewBag.NroBien, size = @ViewBag.NroBien.ToString().Length, @readonly = "readonly" })
+
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 30px;">
+                                @Html.Label("Categoría del Bien:")
+                            </div>
+                            <div class="form-group">                            
+                                @Html.DropDownList("FamiliaID", null , "-- SELECCIONE UNA FAMILIA --", new { @class = "form-control js-autocomplete", @style = "width: 150px;", required = "required"} )
+                            </div>
+                            <div class="form-group">
+                                @Html.DropDownList("SubFamiliaID", null , "-- SELECCIONE UNA FAMILIA --", new { @class = "form-control js-autocomplete", @style = "width: 150px;", required = "required"} )
+                            </div>
+
+
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 70px;">
+                                @Html.Label("Monto Bien:")
+                            </div>
+                            <div class="form-group">
+                                <input name="MontoInt" id="MontoInt" class="form-control" size="13" placeholder="MONTO BIEN" required="required" type="number" min="1"/>
+                            </div>
+                             <div class="form-group" style="margin-left: 56px; margin-right:5px">
+                                @Html.Label("Cantidad:")
+                            </div>
+                            <div class="form-group" style="margin-left: 22px;">
+                                @Html.TextBoxFor(model => model.Cantidad, new { @class = "form-control", placeholder = "Cantidad", required = "required", type = "number", min = "1" })
+                            </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 8px;">
+                                @Html.Label("Detalle de movimiento:")
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.Detalle, new { @class = "form-control", min = "1", @style = "width: 321px;", placeholder = "Detalle movimiento", required = "required" })
+                            </div>              
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 7px;">
+                                @Html.Label("Dependencia:")
+                            </div>
+                            <div class="form-group"style="margin-left: 50px;" id="ListaDependencia">
+                                @Html.DropDownListFor(model=> model.Ubicacion, (IEnumerable<SelectListItem>)ViewData["ListaDependencia"], new { @style = "width: 200px;", @class = "form-control js-autocomplete", required = "required" })
+                            </div>
+         
+                            <div class="form-group" style="margin-right: 25px;">
+                                @Html.Label("Responsable de la")
+                                <br />
+                                @Html.Label("dependencia:")
+                            </div>
+                            <div class="form-group">
+                                 @Html.DropDownList("UsuarioID", null , "-- SELECCIONE UNA FAMILIA --", new { @class = "form-control js-autocomplete", @style = "width: 150px;", required = "required"} )
+                            </div>
+                        </div>
+
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 26px;">
+                                @Html.Label("Condición del Bien:")
+                            </div>
+                            <div class="form-group">
+                                 @Html.DropDownList("CondicionID", null , "-- SELECCIONE UNA FAMILIA --", new { @class = "form-control js-autocomplete", @style = "width: 150px;", required = "required"} )
+                            </div>
+                        </div>
+
+
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 85px;">
+                                <label>Adjuntar:</label>
+                            </div>
+                            <div class="form-group" style="margin-right: 40px;">
+                                @Html.TextBox("archivo", null, new { @style = "width: 400px;", @class = "form-control", @type = "file", required = "required", accept ="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf, image/*"})
+                            </div>
+                        </div>
+                        <div class="form-group form-inline">
+                            <div class="form-group" style="margin-right: 18px;">
+                                @Html.Label("Descripción del bien:")
+                            </div>
+                            <div class="form-group">
+                                @Html.TextAreaFor(model => model.DescripcionBien, new { @class = "form-control", @style = "width: 500px;", placeholder = "Descripción bien", required = "required", rows = "3", length = "300" })
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <div style="width: 400px ; display:inline-block">
+                                <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=1200,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class="fa fa-search fa-fw"></span>BUSCAR</a>
+                                <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Create"><span class="fa fa-file-o  fa-fw"></span>NUEVO</a>
+                            </div>
+                            <div style="float :right;display:inline-block">
+                                <input type="submit" value="Guardar" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (TempData["Message"] != null)
+                {
+                    @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
+                }
+            </fieldset>
+        }
+    </div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        $(".js-autocomplete").select2();
+        //formateo fecha
+        jQuery.validator.methods["date"] = function (value, element) { return true; }
+        $("#FamiliaID").change(function () {
+            $("#SubFamiliaID").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetSubFamilia")', // we are calling json method
+                dataType: 'json',
+                data: { id: $("#FamiliaID").val() },
+                // here we are get value of selected country and passing same value
+                //as inputto json method GetStates.
+                success: function (subfamilia) {
+                    // states contains the JSON formatted list
+                    // of states passed from the controller
+                    $.each(subfamilia, function (i, subfamilia) {
+                        $("#SubFamiliaID").append('<option value="' + subfamilia.Value + '">' +
+                            subfamilia.Text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Error Al Cargar Las Sub Familias' + ex);
+                }
+            });
+            return false;
+        })
+    });
+</script>
+

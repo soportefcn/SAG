@@ -218,6 +218,7 @@
                             @if (Usuario.esAdministrador)
                             {
 	                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/ListadoProyectos">Listado Programas</a></li>
+                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/ListadoProyectosPresupuesto">Listado Programas Presupuesto</a></li>
 	                         }
 						</ul>
 					</li>
@@ -340,6 +341,7 @@
                                     <a href="javascript:void();">Inventario</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Create">Ingresar Bienes</a></li>
+                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/CreateDonacion">Donacion de  Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Baja">Baja de Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Traslado">Traslado de Bienes</a></li>                                        
                                         @if (Usuario.esAdministrador)

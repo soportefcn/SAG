@@ -93,7 +93,13 @@
                     <td colspan="2">@item.Familia</td>
                     <td colspan="2">@item.DescripcionBien</td>
                     <td colspan="1">@item.Procedencia[0]</td>
-                    <td colspan="2">@item.Movimiento.NumeroComprobante</td>
+                    <td colspan="2">@{
+                        try{
+                        @item.Movimiento.NumeroComprobante
+                    }catch(Exception){}
+                            }
+
+                    </td>
 
                     @if (item.Egreso != null)
                     {
@@ -101,14 +107,23 @@
                     }
                     else
                     {
-                        <td colspan="2">@item.Reintegro.NDocumento</td>
+                        <td colspan="2">@{
+                            try{
+                            @item.Reintegro.NDocumento
+                        }catch(Exception){}
+                            }</td>
                     }
 
 
                     @*<td colspan="2"></td>*@
 
                     @{
-                        string fecha = @item.Movimiento.Fecha.ToString();
+                        string fecha = "";
+                         try{
+                            fecha = @item.Movimiento.Fecha.ToString();
+                         }catch(Exception){
+                            fecha = @item.Fecha.ToString();  
+                        }
                         string fechafinal = fecha.Substring(0, Math.Min(fecha.Length, 10));
 
                         <td colspan="2">@fechafinal</td>

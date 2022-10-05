@@ -60,18 +60,21 @@
     
     <table class="table table-bordered" >
         <tr><th style="text-align: left;">
-                @if(mes_Termino == 0)
-    {
+      @if (mes_Termino == 0)
+      {
     <label class="alert alert-warning">
 <strong > La fecha de Termino del convenio caduco</strong>
 </label>
-    }
-     @if(mes_Termino < mes_actual)
-    {
+      }
+      else
+      {
+      if (mes_Termino < mes_actual)
+     {
     <label class="alert alert-warning">
 <strong > La fecha de Termino del convenio caduco</strong>
 </label>
-    }
+     }
+      }
             </th>
             <th style="text-align: right;">
                 <label> <input class="btn btn-primary"  type="submit" value="Guardar" id="GuardarPresupuesto" />

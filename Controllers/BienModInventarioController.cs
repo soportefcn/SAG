@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
-using System.IO;
+using SAG2.Classes;
 using SAG2.Comun;
 
 
@@ -18,6 +19,7 @@ namespace SAG2.Controllers
     {
 
         private SAG2DB db = new SAG2DB();
+        private Util utils = new Util();
 
         public ActionResult Index()
         {
@@ -43,20 +45,12 @@ namespace SAG2.Controllers
 
                     List<BienModInventario> listaModel = new List<BienModInventario>();
 
-
-
-
-
                     foreach (var item in listaMov)
                     {
 
                         List<BienMovimiento> listTransf = db.BienMovimiento.Where(a => a.BienID == item.BienID && a.AutorizacionAuditor == 1 && a.EstadoID == 3).ToList();
 
                         List<BienMovimiento> listBaja = db.BienMovimiento.Where(a => a.BienID == item.BienID && a.AutorizacionAuditor == 1 && a.EstadoID == 2).ToList();
-
-
-
-
 
                         if (listTransf.Count() == 0 && listBaja.Count() == 0)
                         {
@@ -296,6 +290,219 @@ namespace SAG2.Controllers
 
         #region Create
 
+        public ActionResult CreateDonacion()
+        {
+            try
+            {
+                Usuario usuario = (Usuario)Session["Usuario"];
+                Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+                int id = 0;
+                int largopre = 0;
+                largopre = int.Parse(Proyecto.CodCodeni);
+                int largo = largopre.ToString().Length;
+                bool fromBD = false;
+                int filtro = int.Parse(Session["Filtro"].ToString());
+                try
+                {
+                    id = db.BienModInventario.Where(a => a.ProyectoID == Proyecto.ID).Max(a => a.ID);
+                    fromBD = true;
+                }
+                catch (Exception ex)
+                {
+                    TempData["Message"] = "Sin permiso para esta accion" + ex.Message;
+                    id = 0;
+                }
+                if (id <= 0)
+                {
+                    id = int.Parse(string.Format("{0}{1}", Proyecto.CodCodeni, "01"));
+                }
+                int CodCodeniInt = int.Parse(Proyecto.CodCodeni);
+                string CodCodeni = CodCodeniInt.ToString();
+                string CodBien = (id + 1).ToString();
+                string CodeniBien = "";
+                try
+                {
+                    CodeniBien = CodBien.Substring(0, CodCodeni.Length);
+                }
+                catch
+                {
+                    CodeniBien = CodBien;
+                }
+                string aux = (int.Parse(Proyecto.CodCodeni + "01")).ToString();
+                if (CodeniBien != CodCodeni)
+                {
+                    int cerosint = (id.ToString().Length - CodCodeni.Length);
+                    string cerosstring = string.Empty;
+                    for (int i = 0; i < cerosint; i++)
+                    {
+                        cerosstring += "0";
+                    }
+                    id = int.Parse(CodCodeni + "1" + cerosstring);
+                }
+                else if (id != int.Parse(aux) || id == int.Parse(aux) && fromBD == true)
+                {
+                    id = id + 1;
+                }
+                ViewBag.NroBien = id;
+
+                ViewBag.FamiliaID = new SelectList(db.BienFamilia.OrderBy(a => a.ID), "ID", "Nombre",1);
+                ViewBag.UsuarioID = new SelectList(db.Usuario, "ID", "Persona.NombreCompleto");
+                ViewBag.EstadoID = new SelectList(db.BienEstadoInventario.OrderBy(a => a.ID), "ID", "Nombre");
+                ViewBag.CondicionID = new SelectList(db.BienCondicion.OrderBy(a => a.ID), "ID", "Nombre");
+                ViewBag.SubfamiliaID = new SelectList(db.BienSubFamilia.Where(d => d.FamiliaID == 1), "ID", "Nombre", 1);  
+
+                if (usuario.esAdministrador)
+                {
+                    ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
+                }
+                else
+                {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                TempData["Message"] = "Sin permiso para esta accion" + ex.Message;
+
+            }
+
+            return View();
+
+        }
+        public ActionResult SaveDonacion(BienModDonacion model, HttpPostedFileBase archivo)
+        {
+
+            Usuario usuario = (Usuario)Session["Usuario"];
+
+            Proyecto proyecto = (Proyecto)Session["Proyecto"];
+            int ultimaID = 0;
+            try
+            {
+                try
+                {
+                    ultimaID = db.BienModInventario.ToList().Last().ID;
+                }
+                catch
+                {
+                    ultimaID = int.Parse(string.Format("{0}{1}", proyecto.CodCodeni, "01"));
+                }
+                BienModInventario bien = new BienModInventario();
+                BienMovimiento mov = new BienMovimiento();
+
+
+                bien.ID = ultimaID + 1;
+               bien.Monto = model.MontoInt;
+              bien.UsuarioID = model.UsuarioID;
+                bien.ProyectoID = proyecto.ID;
+                bien.Fecha = model.Fecha;
+                bien.Cantidad = model.Cantidad;
+                bien.DescripcionBien = model.DescripcionBien;
+                bien.Ubicacion = model.Ubicacion;
+               bien.CondicionID = model.CondicionID;
+                bien.FamiliaID = model.FamiliaID;
+               bien.SubFamiliaID = model.SubFamiliaID;
+                bien.EstadoID = 1;
+                bien.ProcedenciaID = 3;
+                bien.MovimientoID = 0;
+                bien.EgresoID = 0;
+                bien.ReintegroID = 0; 
+
+
+
+                try
+                {
+
+                    if (archivo.ContentLength > 0)
+                    {
+                        string name = string.Format("Archivo-{0}-{1}-{2}{3}{4}.{5}", bien.ProyectoID, bien.ID, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, Path.GetFileName(archivo.FileName));
+                        string _path = Path.Combine(Server.MapPath("~/Archivos"), name);
+
+                        mov.RutaArchivo = _path;
+
+                        archivo.SaveAs(_path);
+
+                    }
+
+                    if (archivo == null || mov.RutaArchivo == null)
+                    {
+
+                        throw new Exception();
+
+                    }
+
+
+
+                    //db
+
+                    db.Database.ExecuteSqlCommand("PABien " + bien.ID + ", " + bien.FamiliaID + ", " + bien.SubFamiliaID + ", " + bien.ProcedenciaID + ", '" + bien.DescripcionBien + "', " + bien.Cantidad + ", " + bien.Monto + ", '" + bien.Ubicacion + "', " + bien.EstadoID + ", " + bien.ProyectoID + ", " + bien.ProyectoID + ", " + bien.UsuarioID + ", " + bien.EgresoID + ", " + bien.CondicionID + ", " + bien.ReintegroID + ", " + bien.MovimientoID);
+
+
+
+                    mov.UsuarioID = usuario.ID;
+                    mov.CondicionID = model.CondicionID;
+                    mov.AutorizacionAuditor = 0;
+                 //   mov.Cantidad = model.Cantidad;
+                    mov.EstadoID = 1;
+                    mov.Detalle = model.Detalle;
+                    mov.NuevaUbicacion = bien.Ubicacion;
+                    mov.FechaMovimiento = DateTime.Now;
+                    mov.ComentarioAuditor = "";
+                    mov.BienID = bien.ID;
+                    db.BienMovimiento.Add(mov);
+                    db.SaveChanges();
+
+                    // Enviar correo
+                    string mensajeCorreo = "Existe un bien por autorizar ";
+                    mensajeCorreo = mensajeCorreo + "<table><tr><td>Proyecto<td><td>" + proyecto.NombreLista + "</td></tr>";
+                    mensajeCorreo = mensajeCorreo + "<tr><td>Detalle</td><td>" + model.Detalle + "</td></tr>";
+                    mensajeCorreo = mensajeCorreo + "<tr><td>Bien</td><td>" + model.DescripcionBien + "</td></tr> </table>";
+
+                    var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 4 && d.ProyectoID == proyecto.ID).ToList();
+                    foreach (var Scorreo in supervisorCorreo)
+                    {
+                        string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
+                        Correo.enviarCorreo(CorreoSup, mensajeCorreo, "Autorizacion Bien  Inventario");
+                    }
+
+                    supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 7 && d.ProyectoID == proyecto.ID).ToList();
+                    foreach (var Scorreo in supervisorCorreo)
+                    {
+                        string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
+                        Correo.enviarCorreo(CorreoSup, mensajeCorreo, "Autorizacion Bien  Inventario");
+                    }
+                    TempData["Message"] += "Creado con exito " + model.DescripcionBien;
+
+
+
+                }
+
+                catch (Exception ex)
+                {
+
+                    TempData["Message"] = "Error en la carga de archivo, seleccione un archivo válido." + ex.Message;
+
+                    //TempData["Message"] += "Error en la carga de archivo, seleccione un archivo válido.";
+
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+
+                TempData["Message"] += "Error al guardar" + ex.Message;
+
+
+            }
+
+            return RedirectToAction("CreateDonacion");
+
+        }
+
         public ActionResult Create()
         {
 
@@ -460,7 +667,7 @@ namespace SAG2.Controllers
                 }
 
                 ViewBag.listadoUsuario = listUsuario;
-
+               // ViewBag.listadoUsuario = new SelectList(db.Usuario, "ID", "Persona.NombreCompleto");
 
 
                 var q2 = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
@@ -566,9 +773,6 @@ namespace SAG2.Controllers
             return View();
 
         }
-
-
-
         [HttpPost]
 
         public ActionResult Save(BienModInventarioVM model, HttpPostedFileBase archivo, int tipo)
@@ -721,11 +925,6 @@ namespace SAG2.Controllers
             BienModInventarioVM model = new BienModInventarioVM();
 
             Dependencia model2 = new Dependencia();
-
-
-
-
-
             BienMovimiento bienMovimiento = db.BienMovimiento.Where(a => a.BienID == id && a.EstadoID == 1).First();
 
 
@@ -796,61 +995,31 @@ namespace SAG2.Controllers
         {
 
             BienModInventario model = db.BienModInventario.Find(id);
-
             BienMovimiento bienMovimiento = db.BienMovimiento.Where(a => a.BienID == id && a.EstadoID == 1).First();
-
-
-
-
-
             ViewBag.NroBien = id;
 
-
-
             var u = db.Usuario.ToList();
-
             List<SelectListItem> listUsuario = new List<SelectListItem>();
-
             Usuario seleccionado = db.Usuario.Where(a => a.ID == model.UsuarioID).First();
-
-
-
-
-
             listUsuario.Add(new SelectListItem
-
             {
-
                 Text = string.Format("{0} {1} {2}", seleccionado.Persona.Nombres, seleccionado.Persona.ApellidoParterno, seleccionado.Persona.ApellidoMaterno),
-
-
-
                 Value = seleccionado.ID.ToString()
-
             });
-
-
 
             foreach (var item in u)
             {
-
                 listUsuario.Add(new SelectListItem
-
                 {
-
                     Text = string.Format("{0} {1} {2}", item.Persona.Nombres, item.Persona.ApellidoParterno, item.Persona.ApellidoMaterno),
-
                     Value = item.ID.ToString()
-
                 });
-
             }
-
             ViewBag.listadoUsuario = listUsuario;
 
 
 
-            var q = db.BienFamilia.ToList();
+           var q = db.BienFamilia.ToList();
 
             List<SelectListItem> listfamilia = new List<SelectListItem>();
 

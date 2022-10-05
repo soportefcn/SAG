@@ -1090,11 +1090,15 @@ namespace SAG2.Controllers
 
                     foreach (var item in listaTodos)
                     {
+                        int cantidadBaja = 0;
+                        if (item.BienID == 1349) {
+                            cantidadBaja = 0;
+                        }  
                         // if (item.FechaMovimiento.Date >= desde.Date && item.FechaMovimiento.Date <= hasta.Date)
                         //  {
                         BienModInventario bien = db.BienModInventario.Find(item.BienID);
 
-                        int cantidadBaja = 0;
+                        
                         try
                         {
                             List<BienMovimiento> listBajas = db.BienMovimiento.Where(a => (a.BienID == bien.ID || a.bienAnteriorID == bien.ID) && a.EstadoID == 2 && a.AutorizacionAuditor == 1).ToList();

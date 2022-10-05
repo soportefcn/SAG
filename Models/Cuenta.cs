@@ -35,6 +35,8 @@ namespace SAG2.Models
         public int resumen { get; set; }
         public int indicador { get; set; }
         public int ProResultado { get; set; }
+        public int Presupuesto { get; set; }
+
         public virtual Cuenta Padre { get; set; }
         public virtual List<Cuenta> Hijos { get; set; }
         public virtual List<Movimiento> Ingresos { get; set; }

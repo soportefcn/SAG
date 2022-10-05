@@ -446,6 +446,7 @@ namespace SAG2.Controllers
                     db.Database.ExecuteSqlCommand("UPDATE FondoFijo SET EgresoID = NULL WHERE EgresoID = " + modificadoID);
                     db.Database.ExecuteSqlCommand("DELETE FROM DetalleEgreso WHERE MovimientoID = " + modificadoID);
                     db.Database.ExecuteSqlCommand("DELETE FROM Movimiento WHERE ID = " + modificadoID);
+
                 }
                 catch (Exception)
                 { }
@@ -528,17 +529,7 @@ namespace SAG2.Controllers
                 db.Autorizacion.Add(autorizacion);
                 db.SaveChanges();
 
-                //string MensajeCorreo = "Se Solicita Autorizacio&oacute;n <br> Para : ";
-                //MensajeCorreo = MensajeCorreo + "<table style='border: 1px solid black;'><tr><td>Proyecto</td><td>" + Proyecto.NombreLista  + "</td></tr>";
-                //MensajeCorreo = MensajeCorreo + "<tr><td>Tipo Comp.</td><td>Egreso</td></tr><tr><td># Comp</td><td>" + egreso.NumeroComprobante + "</td></tr>";
-                //MensajeCorreo = MensajeCorreo + "<tr><td>Solicitado Por </td><td>" + persona.NombreCompleto + "</td></tr><tr><td>Tipo</td><td>Modificaci&oacute;n</td></tr> </table>";
-             
-                //var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 4 && d.ProyectoID == egreso.ProyectoID).ToList();
-                //foreach (var Scorreo in supervisorCorreo)
-                //{
-                //    string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
-                //   // Correo.enviarCorreo(CorreoSup, MensajeCorreo, "Autorizacion Modificación");
-                //}
+    
 
 
                 ViewBag.Mensaje = utils.mensajeAdvertencia("La modificación ha sido solicitada al Supervisor.");

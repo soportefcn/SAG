@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SAG2.Models.Proyecto>
+﻿@model SAG2.Models.filtroProyecto
 
 @{
     ViewBag.Title = "ProyectosPresupuesto";
@@ -6,6 +6,7 @@
     List<SAG2.Models.DetallePresupuesto> DPresupuesto = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.DetallePresupuesto;
     List<SAG2.Models.Presupuesto> EPresupuesto = (List<SAG2.Models.Presupuesto>)@ViewBag.Presupuestos;
     List<SAG2.Models.Rol> snRol = new List<SAG2.Models.Rol>();
+    IList<SAG2.Models.Proyecto> ListaProyecto = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;  
     try
     {
         snRol = (List<SAG2.Models.Rol>)@ViewBag.Roles;
@@ -15,12 +16,24 @@
     { }
 }
 
-
-<h2>Proyectos Presupuesto</h2>
-
-<table id="ResultadoTable" class="table table-responsive table-bordered">
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Proyectos Presupuesto</h3>
+  </div>
+  <div class="panel-body">
+         <table class="table table-striped">
+           <tr><td>
+               <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
+               <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+               <div class="col-md-4">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+           </td></tr> 
+       </table>
+        </div>
+</div>
+<hr />
+<table class="table table-responsive table-bordered">
     <thead>
-        <tr class="label-info">
+        <tr class="success">
             <th>COD SAG</th>
             <th> COD SENAME</th>
             <th> NOMBRE PROGRAMA</th>
@@ -43,7 +56,8 @@
      </tr>
       </thead>
   <tbody>
-@foreach (var item in Model) {
+@foreach (var item in ListaProyecto)
+{
     int SaldoInicial = 0;
     string  Presupuesto = "Sin Presupuesto";
     var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();  
@@ -176,4 +190,12 @@
  </tbody>
 
 </table>
-       
+
+   <script>
+    $(document).ready(function () {
+
+
+    
+
+    });
+</script>

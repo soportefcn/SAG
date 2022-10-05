@@ -514,11 +514,16 @@ namespace SAG2.Controllers
                     bmivm.RutaArchivo = item.RutaArchivo;
 
                     bmivm.SubFamilia = "$" + bmi.Monto.ToString("#,##0");
+                    try
+                    {
+                        bmivm.Familia = bmi.Egreso.NDocumento.ToString();
 
-                    bmivm.Familia = bmi.Egreso.NDocumento.ToString ();
-
-                    bmivm.Ubicacion = bmi.Movimiento.NumeroComprobante.ToString(); ;
-
+                        bmivm.Ubicacion = bmi.Movimiento.NumeroComprobante.ToString(); ;
+                    }
+                    catch {
+                        bmivm.Familia = " ";
+                        bmivm.Ubicacion = " ";
+                    }
 
 
 
