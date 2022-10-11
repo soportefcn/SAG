@@ -603,6 +603,7 @@ namespace SAG2.Controllers
 
                         foreach (DetalleEgreso detalle in lista)
                         {
+                            int idDetalleEgreso = detalle.ID;
                             monto_egresos += detalle.Monto;
                             if (detalle.FondoFijoID != null)
                             {
@@ -644,7 +645,10 @@ namespace SAG2.Controllers
 
                             detalle.MovimientoID = egresoID;
                             db.DetalleEgreso.Add(detalle);
+                            int rev = detalle.ID;
                             db.SaveChanges();
+                            rev = detalle.ID;
+                            db.Database.ExecuteSqlCommand("UPDATE BienModInventario SET EgresoID = " + rev + "  WHERE EgresoID = " + idDetalleEgreso);
                         }
                         Session.Remove("DetalleEgreso");
 

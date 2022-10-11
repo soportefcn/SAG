@@ -1,2 +1,4 @@
 
 *.rar
+obj/Release/Package/PackageTmp/Web.config
+obj/Release/Package/PackageTmp/Web.config
