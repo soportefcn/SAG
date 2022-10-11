@@ -50,6 +50,24 @@ namespace SAG2.Classes
             }
             return PrFiltro;
         }
+        public SelectList ProyectoFiltro2(int filtro, int PrID)
+        {
+            SAG2DB db = new SAG2DB();
+            SelectList PrFiltro = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista");
+            if (filtro == 1)
+            {
+                PrFiltro = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista");
+            }
+            if (filtro == 2)
+            {
+                PrFiltro = new SelectList(db.Proyecto.Where(p => p.Cerrado.Equals("P")), "ID", "NombreLista");
+            }
+            if (filtro == 3)
+            {
+                PrFiltro = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista");
+            }
+            return PrFiltro;
+        }
         public string nombreAuditor(int Id){
             SAG2DB db = new SAG2DB();
 

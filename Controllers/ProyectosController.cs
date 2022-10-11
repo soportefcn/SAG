@@ -40,7 +40,118 @@ namespace SAG2.Controllers
 
             return View(proyecto.ToList());
         }
+        public ViewResult ListadoProyectosPresupuestoExcel(int ProyectoID, int tipoProyectoID, int RegionID)
+        {
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            int periodo = (int)Session["Periodo"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            List<Proyecto> proyecto = new List<Proyecto>();
+            Persona Persona = (Persona)Session["Persona"];
+            Proyecto Proto = (Proyecto)Session["Proyecto"];
 
+            ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();
+            ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
+            ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
+            ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
+            ViewBag.Periodo = db.Periodo.ToList();
+            proyecto = utils.FiltroProyecto(filtro);
+
+            if (ProyectoID > 1)
+            {
+                ViewBag.Proyectos = proyecto.Where(d => d.ID == ProyectoID).ToList();
+            }
+            else { 
+                if ( RegionID != 0){           
+                    proyecto = proyecto.Where(d => d.Direccion.Comuna.RegionID == RegionID).ToList();
+                }
+                if (tipoProyectoID != 0)
+                {
+                    proyecto = proyecto.Where(d => d.TipoProyectoID  == tipoProyectoID).ToList();
+                }
+                ViewBag.Proyectos = proyecto.ToList();
+            
+            }
+            //
+
+
+            return View();
+
+        }
+         [HttpPost]
+        public ViewResult ListadoProyectosPresupuesto(FormCollection form)
+        {
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            int periodo = (int)Session["Periodo"];
+            Usuario usuario = (Usuario)Session["Usuario"];
+            List<Proyecto> proyecto = new List<Proyecto>();
+            Persona Persona = (Persona)Session["Persona"];
+            Proyecto Proto = (Proyecto)Session["Proyecto"];
+             //
+            int prfiltro_id = 1;
+            int RegionId = 0;
+            int tipoProyectoID = 0;
+            if (form["ProyectoID"].ToString() != "")
+            {
+                prfiltro_id = int.Parse(form["ProyectoID"].ToString());
+            }
+            if (form["regionID"].ToString() != "")
+            {
+                RegionId = int.Parse(form["regionID"].ToString());
+            }
+            if (form["TipoProgramaID"].ToString() != "")
+            {
+                tipoProyectoID = int.Parse(form["TipoProgramaID"].ToString());
+            }
+
+             //
+            ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();
+            ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
+            ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
+            ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
+            ViewBag.Periodo = db.Periodo.ToList();
+            proyecto = utils.FiltroProyecto(filtro);
+            ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+            ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+            if (prfiltro_id != 1)
+            {
+                ViewBag.Proyectos = proyecto.Where(d => d.ID == prfiltro_id).ToList();
+                if (usuario.esAdministrador)
+                {
+                    ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, prfiltro_id);
+                }
+                else
+                {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proto.ID), "ID", "NombreLista", prfiltro_id);
+                }
+            }
+            else {
+                if (RegionId != 0) {
+                    proyecto = proyecto.Where(d => d.Direccion.Comuna.RegionID == RegionId).ToList();
+                    ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre", RegionId);
+                }
+                if (tipoProyectoID != 0) {
+                    ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla", tipoProyectoID);
+                    proyecto = proyecto.Where(d => d.TipoProyectoID == tipoProyectoID).ToList(); 
+                }
+                if (usuario.esAdministrador)
+                {
+                    ViewBag.ProyectoID = utils.ProyectoFiltro2(filtro, prfiltro_id);
+                }
+                else
+                {
+                    ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proto.ID), "ID", "NombreLista");
+                }
+                ViewBag.Proyectos = proyecto.ToList();
+            }
+
+           
+            //
+     
+         
+            return View();
+
+        }
+        
         public ViewResult ListadoProyectosPresupuesto()
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
@@ -50,12 +161,13 @@ namespace SAG2.Controllers
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proto = (Proyecto)Session["Proyecto"];
 
+            ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();   
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
             ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
             ViewBag.Periodo = db.Periodo.ToList();
             proyecto = utils.FiltroProyecto(filtro);
-            ViewBag.Proyectos = proyecto.ToList();
+            ViewBag.Proyectos = proyecto.Where(d => d.ID ==  Proto.ID).ToList();
             //
             if (usuario.esAdministrador)
             {

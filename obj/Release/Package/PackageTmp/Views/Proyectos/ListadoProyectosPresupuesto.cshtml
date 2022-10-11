@@ -7,6 +7,7 @@
     List<SAG2.Models.Presupuesto> EPresupuesto = (List<SAG2.Models.Presupuesto>)@ViewBag.Presupuestos;
     List<SAG2.Models.Rol> snRol = new List<SAG2.Models.Rol>();
     IList<SAG2.Models.Proyecto> ListaProyecto = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;  
+    List<SAG2.Models.Cuenta> Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.Cuentas;
     try
     {
         snRol = (List<SAG2.Models.Rol>)@ViewBag.Roles;
@@ -21,13 +22,22 @@
     <h3 class="panel-title">Proyectos Presupuesto</h3>
   </div>
   <div class="panel-body">
-         <table class="table table-striped">
+        @using (Html.BeginForm())
+   {
+        <table class="table table-striped">
            <tr><td>
                <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
                <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
                <div class="col-md-4">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
            </td></tr> 
        </table>
+                  <div class="form-group">
+              <br />
+                     <input type="submit" id="Procesar" value="Buscar" class="btn btn-primary" />
+                       <input type="button" id="ExcelCC" value="Excel" class="btn btn-success " />
+                      
+                   </div>
+   }
         </div>
 </div>
 <hr />
@@ -52,58 +62,91 @@
             <th> VALOR SUBVENCION</th><th> VALOR SUBVENCION MENSUAL</th><th> VALOR SUBVENCION ANUAL</th>
             <th> NUMERO DE CTA CTE</th>   
             <th> BANCO</th>     
-            <th>Presupuesto</th>
+            <th>Presupuesto Ingresos</th>
+             <th>Presupuesto Egresos</th>
      </tr>
       </thead>
   <tbody>
 @foreach (var item in ListaProyecto)
 {
     int SaldoInicial = 0;
-    string  Presupuesto = "Sin Presupuesto";
-    var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();  
+    int Ingresos = 0;
+    int Egresos = 0;
+    int PresupuestoID = 0;
+    string Presupuesto = "Sin Presupuesto";
+    var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();
     int Pres = 0;
-    try {
+    try
+    {
         int PrID = item.ID;
+        if (PrID == 492)
+        {
+            PrID = item.ID;
+        }
         SaldoInicial = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().SaldoInicial;
+        PresupuestoID = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().ID;
+
+        var DatosPResupuesto = DPresupuesto.Where(d => d.PresupuestoID == PresupuestoID).ToList();
+        foreach (var DatPres in DatosPResupuesto)
+        {
+            int cuentaID = DatPres.CuentaID;
+            string tipo = Cuentas.Where(d => d.ID == cuentaID).FirstOrDefault().Tipo;
+            if (tipo == "I")
+            {
+                Ingresos = Ingresos + DatPres.Monto;
+            }
+            if (tipo == "E")
+            {
+                Egresos = Egresos + DatPres.Monto;
+            }
+        }
+
         Presupuesto = "Con Presupuesto";
-        Pres = 1;   
+        Pres = 1;
     }
-    catch (Exception e) { 
-        
+    catch (Exception e)
+    {
+
     }
     
     
     <tr >
-        <td> @Html.DisplayFor(modelItem => item.CodCodeni  ) </td>
+        <td> @Html.DisplayFor(modelItem => item.CodCodeni) </td>
         <td> @Html.DisplayFor(modelItem => item.CodSename)   </td>
-        <td> @Html.DisplayFor(modelItem => item.Nombre ) </td>
-        <td> @Html.DisplayFor(modelItem => item.Fono  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.TipoProyecto.LineaAtencion.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.TipoProyecto.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Region.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Direccion.DireccionLista  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Convenio.ResEx   )  </td>
-         <td> @Html.DisplayFor(modelItem => item.Convenio.NroPlazas    )  </td>
+        <td> @Html.DisplayFor(modelItem => item.Nombre) </td>
+        <td> @Html.DisplayFor(modelItem => item.Fono)  </td>
+        <td> @Html.DisplayFor(modelItem => item.TipoProyecto.LineaAtencion.Nombre)  </td>
+        <td> @Html.DisplayFor(modelItem => item.TipoProyecto.Nombre)  </td>
+        <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Region.Nombre)  </td>
+        <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Nombre)  </td>
+        <td> @Html.DisplayFor(modelItem => item.Direccion.DireccionLista)  </td>
+        <td> @Html.DisplayFor(modelItem => item.Convenio.ResEx)  </td>
+         <td> @Html.DisplayFor(modelItem => item.Convenio.NroPlazas)  </td>
          <td> 
          @{
-                if (item.Convenio.FechaInicio != null) {
+    if (item.Convenio.FechaInicio != null)
+    {
                     @Html.Raw(item.Convenio.FechaInicio.Value.ToShortDateString());
-                }else{
+    }
+    else
+    {
                      @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-               }
+    }
            }
          </td>
          <td> 
          @{
-                if (item.Convenio.FechaTermino != null) {
+    if (item.Convenio.FechaTermino != null)
+    {
                     @Html.Raw(item.Convenio.FechaTermino.Value.ToShortDateString());
-                }else{
+    }
+    else
+    {
                      @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-               }
+    }
            }
          </td>
-         <td> @Html.DisplayFor(modelItem => item.Convenio.Comentarios  )  </td>
+         <td> @Html.DisplayFor(modelItem => item.Convenio.Comentarios)  </td>
         <td>
                 <table style="width: 100%;" class="table table-striped table-bordered table-hover">
         <tbody>
@@ -127,7 +170,7 @@
                         }
                     </td>
                 </tr>
-                i++;
+                        i++;
             }
         </tbody>
     </table>
@@ -137,53 +180,68 @@
         </td>
         <td> 
           @{
-               if (item.ValorSubvencion != null)
-                        {
+            if (item.ValorSubvencion != null)
+            {
                             @Html.Raw("$" + item.ValorSubvencion.Value.ToString("#,###"));
-                        }
-                        else
-                        {
+            }
+            else
+            {
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                        }
+            }
                     }
 
         </td>
        <td style="width: 16.6%">
                     @{
-                        if (item.Convenio.NroPlazas != null && item.ValorSubvencion != null)
-                        {
+            if (item.Convenio.NroPlazas != null && item.ValorSubvencion != null)
+            {
                             @Html.Raw("$" + (item.Convenio.NroPlazas * item.ValorSubvencion.Value).ToString("#,###"));
-                        }
-                        else
-                        {
+            }
+            else
+            {
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                        }
+            }
                     }
                 </td>
                  <td style="width: 16.6%">
                     @{
-                        if (item.Convenio.NroPlazas != null && item.ValorSubvencion != null)
-                        {
+            if (item.Convenio.NroPlazas != null && item.ValorSubvencion != null)
+            {
                             @Html.Raw("$" + (12 * item.Convenio.NroPlazas * item.ValorSubvencion.Value).ToString("#,###"))
-                        }
-                        else
-                        {
+            }
+            else
+            {
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                        }
+            }
                     }
                 </td>
-        <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().NumeroLista   ) </td>
-           <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().Banco.NombreLista   ) </td>
-         <td  @if (Pres == 0){@Html.Raw(" style='background-color: Red;color:white'");}>
-              @if (Pres == 0){
-                  @Html.Raw(Presupuesto); 
-              }else{
-                  @SaldoInicial.ToString("#,##0")  
+        <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().NumeroLista) </td>
+           <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().Banco.NombreLista) </td>
+         <td  @if (Ingresos == 0)
+              {@Html.Raw(" style='background-color: Red;color:white'");
+              }>
+              @if (Ingresos == 0)
+              {
+                  @Html.Raw(Presupuesto);
+              }
+              else
+              {
+                  @Ingresos.ToString("#,##0")  
               }
         </td>
-            <td>
-
-            </td>
+                 <td  @if (Egresos == 0)
+                      {@Html.Raw(" style='background-color: Red;color:white'");
+                      }>
+              @if (Egresos == 0)
+              {
+                  @Html.Raw(Presupuesto);
+              }
+              else
+              {
+                  @Egresos.ToString("#,##0")  
+              }
+        </td>
+ 
         
     </tr>
 }
@@ -191,11 +249,129 @@
 
 </table>
 
+<div id="Detalle"></div>
+
+
    <script>
     $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+        $('#TipoProgramaID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+                    var Tprograma = $('#TipoProgramaID').val();
+                    if (Tprograma == "") {
+                        Tprograma = 0;
+                    }
+                    var Tregion = $('#regionID').val();
+                    if (Tregion == "") {
+                        Tregion = 0;
+                    }
+                    return $.ajax({
+                        url: url,
+                        method: 'POST',
+                        async: false,
+                        dataType: 'json',
+                        data: {
+                            id: Tprograma,
+                            RegionID: Tregion
+                        },
+                        success: function (agrupaciones, textStatus, xhr) {
+                            var comunas = agrupaciones;
+                            var ddlComunas = $('#ProyectoID');
+                            $('#ProyectoID > option').remove();
+                            if (comunas.length == 0) {
+                                ddlComunas.append($("<option />").val("1").text("Sin información"));
+                            } else {
+                                ddlComunas.append($("<option />").val("1").text("Todos"));
+                                for (i = 0; i < comunas.length; i++) {
+                                    ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                                }
+                            }
+
+                        },
+                        error: function (request, status, error) {
+                            alert("error");
+                        }
+                    });
+        });
+
+        $('#regionID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+               var Tprograma = $('#TipoProgramaID').val();
+               if (Tprograma == "") {
+                   Tprograma = 0;
+               }
+               var Tregion = $('#regionID').val();
+               if (Tregion == "") {
+                   Tregion = 0;
+               }
+               return $.ajax({
+                   url: url,
+                   method: 'POST',
+                   async: false,
+                   dataType: 'json',
+                   data: {
+                       id: Tprograma,
+                       RegionID: Tregion
+                   },
+                   success: function (agrupaciones, textStatus, xhr) {
+                       var comunas = agrupaciones;
+                       var ddlComunas = $('#ProyectoID');
+                       $('#ProyectoID > option').remove();
+                       if (comunas.length == 0) {
+                           ddlComunas.append($("<option />").val("1").text("Sin información"));
+                       } else {
+                           ddlComunas.append($("<option />").val("1").text("Todos"));
+                           for (i = 0; i < comunas.length; i++) {
+                               ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                           }
+                       }
+
+                   },
+                   error: function (request, status, error) {
+                       alert("error");
+                   }
+               });
+
+        });
+
+        $("#ExcelCC").click(function () {
+
+            var mensaje = "";
+            var TipoProgramaID = $('#TipoProgramaID').val();
+            var ProyectoID = $('#ProyectoID').val();
+            var regionID = $('#regionID').val();
+
+       
+            var url = '@Url.Action("ListadoProyectosPresupuestoExcel", "Proyectos", new {  ProyectoID = "ProyectoID_cambiar", tipoProyectoID = "tipoProyectoID_cambiar", RegionID = "RegionID_cambiar" })';
+
+            if (regionID == "") {
+                regionID = 0;
+            }
+            if (ProyectoID == "") {
+                ProyectoID = 0;
+            }
+            if (TipoProgramaID == "") {
+                TipoProgramaID = 0;
+            }
+
+            if (mensaje == "") {
+       
+                url = url.replace("&amp;", "&");
+                url = url.replace("ProyectoID_cambiar", ProyectoID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("tipoProyectoID_cambiar", TipoProgramaID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("RegionID_cambiar", regionID);
+                window.open(url);
+            }
+            else {
+
+                Swal.fire(mensaje)
+            }
+
+        });
 
 
-    
 
     });
 </script>
