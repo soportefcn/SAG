@@ -813,6 +813,8 @@ namespace SAG2.Controllers
                     db.Database.ExecuteSqlCommand("UPDATE FondoFijoGrupo SET EgresoID = NULL, Activo = 'S' WHERE EgresoID = " + id);
                     db.Database.ExecuteSqlCommand("UPDATE FondoFijo SET EgresoID = NULL WHERE EgresoID = " + id);
                     db.Database.ExecuteSqlCommand("DELETE FROM DetalleEgreso WHERE MovimientoID = " + id);
+                    db.Database.ExecuteSqlCommand("DELETE FROM BienMovimientoInventario WHERE BienID in  ( SELECT ID  FROM  BienModInventario where MovimientoID  =  " + id + " )");
+                    db.Database.ExecuteSqlCommand("DELETE FROM BienModInventario WHERE MovimientoID  =  " + id + " ");
                 }
                 catch (Exception)
                 { }
@@ -1009,6 +1011,8 @@ namespace SAG2.Controllers
             db.Database.ExecuteSqlCommand("UPDATE FondoFijoGrupo SET EgresoID = NULL, Activo = 'S' WHERE EgresoID = " + id);
             db.Database.ExecuteSqlCommand("UPDATE FondoFijo SET EgresoID = NULL WHERE EgresoID = " + id);
             db.Database.ExecuteSqlCommand("DELETE FROM DetalleEgreso WHERE MovimientoID = " + id);
+            db.Database.ExecuteSqlCommand("DELETE FROM BienMovimientoInventario WHERE BienID in  ( SELECT ID  FROM  BienModInventario where MovimientoID  =  " + id + " )");
+            db.Database.ExecuteSqlCommand("DELETE FROM BienModInventario WHERE MovimientoID  =  " + id + " ");
 
             Movimiento Egreso = db.Movimiento.Find(id);
             int monto = Egreso.Monto_Egresos;
@@ -1184,6 +1188,8 @@ namespace SAG2.Controllers
                 db.Database.ExecuteSqlCommand("UPDATE FondoFijoGrupo SET EgresoID = NULL, Activo = 'S' WHERE EgresoID = " + id);
                 db.Database.ExecuteSqlCommand("UPDATE FondoFijo SET EgresoID = NULL WHERE EgresoID = " + id);
                 db.Database.ExecuteSqlCommand("DELETE FROM DetalleEgreso WHERE MovimientoID = " + id);
+                db.Database.ExecuteSqlCommand("DELETE FROM BienMovimientoInventario WHERE BienID in  ( SELECT ID  FROM  BienModInventario where MovimientoID  =  " + id + " )");
+                db.Database.ExecuteSqlCommand("DELETE FROM BienModInventario WHERE MovimientoID  =  " + id + " ");
             }
             catch (Exception)
             { }
