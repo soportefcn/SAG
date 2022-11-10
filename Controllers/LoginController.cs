@@ -82,6 +82,13 @@ namespace SAG2.Controllers
                     Session.Add("Rol", Rol);
                     Response.Redirect("./Proyecto", true);
                 }
+
+                if (usuario.esSupervisor)
+                {
+                    Session.Add("CambioTipo", true);
+                    Session.Add("Rol", Rol);
+                    Response.Redirect("./Proyecto", true);
+                }
                 Proyecto Proyecto = new Proyecto();
                 CuentaCorriente CuentaCorriente = new CuentaCorriente();
 
@@ -196,7 +203,12 @@ namespace SAG2.Controllers
             }
 
             utils.Log(1, "LOGIN OK | " + usuario.Nombre + " | " + Request.UserAgent + " | " + Request.UserHostAddress);
-            Response.Redirect(FormsAuthentication.DefaultUrl, true);
+            try
+            {
+                Response.Redirect(FormsAuthentication.DefaultUrl, true);
+            }catch(Exception e){
+                utils.Log(1, "LOGIN OK | " +e.Message);
+            }
             return Index();
         }
 
@@ -231,7 +243,7 @@ namespace SAG2.Controllers
 
             if (usuario.esSupervisor)
             {
-                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+                ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(p => p.CodCodeni).ToList();
                 return View();
             }
 
@@ -362,7 +374,7 @@ namespace SAG2.Controllers
             Persona Persona = (Persona) Session["Persona"];
             Usuario usuario = (Usuario)Session["Usuario"];
             Rol Rol = new Rol();
-            if (!usuario.esAdministrador)
+            if (usuario.esUsuario)
             {
                 Rol = (Rol)db.Rol.Where(r => r.PersonaID == Persona.ID).Where(r => r.ProyectoID == proyectoID).Single();
             }

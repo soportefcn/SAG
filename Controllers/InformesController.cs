@@ -33,7 +33,7 @@ namespace SAG2.Controllers
 
             Proyecto Proyecto = db.Proyecto.Where(d => d.ID == pr_id).FirstOrDefault();
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 if (pr_id != 1)
                 {
@@ -237,7 +237,7 @@ namespace SAG2.Controllers
             var pr_id = Proyecto.ID;
             ViewBag.tpID = 0;
             ViewBag.RegID = 0;
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -284,7 +284,7 @@ namespace SAG2.Controllers
             ViewBag.RegID = RegionId;
             Proyecto Proyecto = db.Proyecto.Where(d => d.ID == pr_id).FirstOrDefault();
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 if (pr_id != 1)
                 {
@@ -802,7 +802,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
             int filtro = int.Parse(Session["Filtro"].ToString()); 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                    ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -845,7 +845,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
             int filtro = int.Parse(Session["Filtro"].ToString());
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -884,9 +884,9 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
-            int filtro = int.Parse(Session["Filtro"].ToString());   
+            int filtro = int.Parse(Session["Filtro"].ToString());
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -929,8 +929,8 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
-            int filtro = int.Parse(Session["Filtro"].ToString());   
-            if (usuario.esAdministrador)
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -977,7 +977,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             var pr_id = Proyecto.ID;
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -1007,7 +1007,7 @@ namespace SAG2.Controllers
             int pr_id = int.Parse(form["ProyectoID"].ToString());
             Proyecto Proyecto = db.Proyecto.Where(d => d.ID == pr_id).FirstOrDefault();
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -2026,8 +2026,8 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
-            int filtro = int.Parse(Session["Filtro"].ToString());   
-            if (usuario.esAdministrador)
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -2076,7 +2076,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
             int filtro = int.Parse(Session["Filtro"].ToString());
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -2292,8 +2292,8 @@ namespace SAG2.Controllers
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            int filtro = int.Parse(Session["Filtro"].ToString());    
-            if (usuario.esAdministrador)
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -2342,9 +2342,9 @@ namespace SAG2.Controllers
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();
-            int filtro = int.Parse(Session["Filtro"].ToString());    
+            int filtro = int.Parse(Session["Filtro"].ToString());
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -3001,7 +3001,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             int filtro = int.Parse(Session["Filtro"].ToString());
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -3036,8 +3036,8 @@ namespace SAG2.Controllers
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();
-            int filtro = int.Parse(Session["Filtro"].ToString());  
-            if (usuario.esAdministrador)
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -3393,7 +3393,7 @@ namespace SAG2.Controllers
                 Periodo = (int)Session["Periodo"];
                 Mes = (int)Session["Mes"];
             }
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -3420,7 +3420,7 @@ namespace SAG2.Controllers
                 Periodo = (int)Session["Periodo"];
                 Mes = (int)Session["Mes"];
             }
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }

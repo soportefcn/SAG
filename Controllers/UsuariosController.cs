@@ -20,10 +20,93 @@ namespace SAG2.Controllers
 
         public ViewResult Index(string q = "")
         {
-            var usuario = db.Usuario.Include(u => u.Persona).Where(a => a.Nombre.Contains(q)).OrderBy(u => u.Nombre);
+            var usuario = db.Usuario.Include(u => u.Persona).OrderBy(u => u.Nombre);
             return View(usuario.ToList());
         }
+        [HttpPost]
+        public ViewResult Index(FormCollection form)
+        {
+            string q = "";
+            try
+            {
+                q = form["busqueda"].ToString();
+            }
+            catch (Exception)
+            {
+                q = "";
+            }
+            List<Usuario> usuario = new List<Usuario>();
 
+            // Busqueda por app. Paterno
+            var BusNombre = db.Persona.Where(d => d.ApellidoParterno.Contains(q)).ToList();
+            foreach( var dato in BusNombre){
+                var xdato = db.Usuario.Where(d => d.PersonaID == dato.ID).FirstOrDefault();
+                if (xdato != null)
+                {
+                    usuario.Add(xdato);
+                }
+            }
+            // Busqueda por App Materno
+           BusNombre = db.Persona.Where(d => d.ApellidoMaterno.Contains(q)).ToList();
+            foreach (var dato in BusNombre)
+            {
+                var xdato = db.Usuario.Where(d => d.PersonaID == dato.ID).FirstOrDefault();
+                if (xdato != null)
+                {
+                    usuario.Add(xdato);
+                }
+            }
+            // busqueda por nombre
+            BusNombre = db.Persona.Where(d => d.Nombres.Contains(q)).ToList();
+            foreach (var dato in BusNombre)
+            {
+                var xdato = db.Usuario.Where(d => d.PersonaID == dato.ID).FirstOrDefault();
+                if (xdato != null)
+                {
+                    usuario.Add(xdato);
+                }
+            }
+            // busqueda por tipo 
+
+            bool strAdm = q.Contains("ADMI");
+            if (strAdm) {
+                var BusAdm = db.Usuario.Where(d => d.Administrador.Equals("S")).ToList();
+                foreach (var dato in BusAdm)
+                {           
+                     usuario.Add(dato);                   
+                }
+            }
+
+            bool strSup = q.Contains("SUPERVISOR");
+            if (strSup)
+            {
+                var BusAdm = db.Usuario.Where(d => d.Supervisor.Equals("S")).ToList();
+                foreach (var dato in BusAdm)
+                {
+                    usuario.Add(dato);
+                }
+            }
+
+            bool strNorma = q.Contains("NORMAL");
+            if (strNorma)
+            {
+                var BusAdm = db.Usuario.Where(d => d.Supervisor.Equals("N") && d.Administrador.Equals("N")).ToList();
+                foreach (var dato in BusAdm)
+                {
+                    usuario.Add(dato);
+                }
+            }
+
+            // busqueda por Usuario
+            var BusUsuario = db.Usuario.Where(d => d.Nombre.Contains(q)).ToList();
+            foreach (var dato in BusUsuario)
+            {
+                usuario.Add(dato);
+            }
+
+            //var usuario = db.Usuario.Include(u => u.Persona).Where(a => a.Nombre.Contains(q)).OrderBy(u => u.Nombre);
+            return View(usuario.ToList());
+        }
         //
         // GET: /Usuarios/Details/5
 

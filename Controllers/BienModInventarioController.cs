@@ -818,7 +818,7 @@ namespace SAG2.Controllers
 
                 else if (tipo == 2)
                 {
-
+                    bien.EgresoID = 0;
                     bien.ReintegroID = model.EgresoID;
 
                 }
