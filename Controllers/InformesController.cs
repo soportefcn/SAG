@@ -2162,7 +2162,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             int filtro = int.Parse(Session["Filtro"].ToString()); 
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
             }
@@ -2243,7 +2243,7 @@ namespace SAG2.Controllers
         
            // Proyecto Proyecto = db.Proyecto.Where(d => d.ID == ProyectoID).FirstOrDefault();
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, ProyectoID);
             }

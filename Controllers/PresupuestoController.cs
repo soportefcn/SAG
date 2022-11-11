@@ -36,7 +36,8 @@ namespace SAG2.Controllers
             pr_id = Int32.Parse(form["Proyectos2"].ToString());
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona Persona = (Persona)Session["Persona"];
-            if (usuario.esAdministrador)
+           
+            if (!usuario.esUsuario)
             {
 
                 ViewBag.Proyectos = utils.FiltroProyecto(filtro);  
@@ -44,15 +45,9 @@ namespace SAG2.Controllers
             }
             else
             {
-                if (usuario.esSupervisor)
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-
-                }
-                else
-                {
+          
                     ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-                }
+                
             }
 
 
@@ -178,22 +173,14 @@ namespace SAG2.Controllers
                 Proyecto Proyecto = (Proyecto)Session["Proyecto"];
                 pr_id = Proyecto.ID;
             }
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
 
                 ViewBag.Proyectos = utils.FiltroProyecto(filtro);  
             }
             else
-            {
-                if (usuario.esSupervisor)
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-                }
+            {          
+                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();              
             }
 
             if (Periodo == 0)
@@ -4628,7 +4615,7 @@ namespace SAG2.Controllers
             {
                 Periodo = DateTime.Now.Year;
             }
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
 
                 ViewBag.Proyectos = utils.FiltroProyecto(filtro);   
@@ -4786,21 +4773,13 @@ namespace SAG2.Controllers
                 Periodo = Int32.Parse(form["periodoBalance"].ToString()); ;
             }
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.Proyectos = utils.FiltroProyecto(filtro);  
             }
             else
-            {
-                if (usuario.esSupervisor)
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-                }
+            {    
+                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();                
             }
             ViewBag.Periodo_Inicio = Periodo.ToString();
             ViewBag.Mes_Inicio = "1";

@@ -85,7 +85,7 @@ namespace SAG2.Controllers
 
                 if (usuario.esSupervisor)
                 {
-                    Session.Add("CambioTipo", true);
+                  
                     Session.Add("Rol", Rol);
                     Response.Redirect("./Proyecto", true);
                 }

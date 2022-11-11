@@ -51,7 +51,7 @@ namespace SAG2.Controllers
             Persona Persona = (Persona)Session["Persona"];
             Usuario usuario = (Usuario)Session["Usuario"];
             Rol Rol = new Rol();
-            if (!usuario.esAdministrador)
+            if (usuario.esUsuario)
             {
                 Rol = (Rol)db.Rol.Where(r => r.PersonaID == Persona.ID).Where(r => r.ProyectoID == proyectoID).Single();
             }
@@ -137,9 +137,9 @@ namespace SAG2.Controllers
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             Usuario usuario = (Usuario)Session["Usuario"];
-            int filtro = int.Parse(Session["Filtro"].ToString()); 
-            
-            if (usuario.esAdministrador)
+            int filtro = int.Parse(Session["Filtro"].ToString());
+
+            if (!usuario.esUsuario)
             {
                 if (filtro == 1)
                 {
@@ -150,11 +150,7 @@ namespace SAG2.Controllers
                     ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).ToList() ;
                 }
             }
-            else if (usuario.esSupervisor)
-            {
-                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-            }
-            else
+            else 
             {
                 ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
             }

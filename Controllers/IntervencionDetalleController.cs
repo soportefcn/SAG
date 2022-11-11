@@ -395,7 +395,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             int periodo = (int)Session["Periodo"];
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.Proyectos = utils.FiltroProyecto(filtro);   
   
@@ -403,14 +403,9 @@ namespace SAG2.Controllers
             }
             else
             {
-                if (usuario.esSupervisor)
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-                }
-                else
-                {
+
                     ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
-                }
+
 
             }  
             List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == Proyecto.ID && a.Anio == periodo ).OrderByDescending(a => a.ID ).ToList();
@@ -426,22 +421,16 @@ namespace SAG2.Controllers
             Persona persona = (Persona)Session["Persona"];
             int filtro = int.Parse(Session["Filtro"].ToString());  
             ViewBag.ProyectoID = ProyectoID;
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.Proyectos = utils.FiltroProyecto(filtro);   
 
             }
             else
             {
-                if (usuario.esSupervisor)
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
 
-                }
-                else
-                {
                     ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-                }
+                
             }
             List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == ProyectoID && a.Anio == PeriodoApertura).OrderByDescending(a => a.ID).ToList();
             ViewBag.Periodo = PeriodoApertura;
@@ -457,7 +446,7 @@ namespace SAG2.Controllers
             int mes = (int)Session["Mes"];
 
             int ProyectoID = Proyecto.ID;
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
           
                 if (filtro == 1)
@@ -472,14 +461,7 @@ namespace SAG2.Controllers
             }
             else
             {
-                if (usuario.esSupervisor)
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-                }
-                else
-                {
-                    ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
-                }
+                    ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();               
             }
             List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.Anio == periodo && a.Mes == mes).ToList();
             ViewBag.ProyectoID = ProyectoID;
@@ -497,7 +479,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.Periodo = PeriodoApertura;
             ViewBag.Mes = MesApertura;
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 if (filtro == 1)
                 {
@@ -511,14 +493,9 @@ namespace SAG2.Controllers
             }
             else
             {
-                if (usuario.esSupervisor)
-                {
-                    ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
-                }
-                else
-                {
+
                     ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == Proyecto.ID).OrderBy(p => p.CodCodeni).ToList();
-                }
+                
             }
             List<IntervencionDetalle> model = db.IntervencionDetalle.Where(a => a.ProyectoID == ProyectoID && a.Anio == PeriodoApertura && a.Mes == MesApertura).ToList();
             ViewBag.ProyectoID = ProyectoID;

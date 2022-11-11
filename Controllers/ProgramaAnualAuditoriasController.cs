@@ -89,13 +89,9 @@ namespace SAG2.Controllers
             //proyecto = db.Rol.Where(r => r.PersonaID == persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).Where(r => r.Cerrado == null).Distinct().ToList();
             Usuario usuario = (Usuario)Session["Usuario"];
 
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 proyecto = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
-            }
-            else if (usuario.esSupervisor)
-            {
-                proyecto = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
             }
             else
             {

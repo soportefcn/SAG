@@ -115,7 +115,7 @@ namespace SAG2.Controllers
             if (prfiltro_id != 1)
             {
                 ViewBag.Proyectos = proyecto.Where(d => d.ID == prfiltro_id).ToList();
-                if (usuario.esAdministrador)
+                if (!usuario.esUsuario)
                 {
                     ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, prfiltro_id);
                 }
@@ -169,7 +169,7 @@ namespace SAG2.Controllers
             proyecto = utils.FiltroProyecto(filtro);
             ViewBag.Proyectos = proyecto.Where(d => d.ID ==  Proto.ID).ToList();
             //
-            if (usuario.esAdministrador)
+            if (!usuario.esUsuario)
             {
                 ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proto.ID);
             }
