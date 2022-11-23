@@ -78,13 +78,15 @@ input[type="text"], textarea
 
         </div>
         <div class="panel-footer">
-	        <div  style ="width: 250px ; display:inline-block">
-               <input class="btn btn-default" type="submit" value="Guardar" />
-            </div>
-            <div style="float :right;width:500px;display:inline-block">
+
+            <div style="width: 400px; display: inline-block">
+                 <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Usuarios/Create">NUEVO</a>
 	            <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false">BUSCAR</a>
-                <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Usuarios/Create">NUEVO</a>
+               
 	        </div>
+                       <div style="float: right; display: inline-block">
+               <input type="submit" value="Guardar" class="btn btn-primary" />
+           </div>
         </div>
     </div>
        

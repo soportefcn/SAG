@@ -19,7 +19,7 @@
     Response.Clear();
     Response.Buffer = true;
     Response.ContentType = "application/vnd.ms-excel";
-    Response.AddHeader("Content-Disposition", "attachment;filename=InformePresupuesto-" + DateTime.Now.ToShortDateString() + ".xls");
+    Response.AddHeader("Content-Disposition", "attachment;filename=MaestroProyecto-" + DateTime.Now.ToShortDateString() + ".xls");
 }
 <html lang="es">
 <head>
@@ -91,8 +91,8 @@
                 Egresos = Egresos + DatPres.Monto;
             }
         }
-        
-        Presupuesto = "Con Presupuesto";
+
+        Presupuesto = "Con saldo Inicial / sin presupuesto iniciado";
         Pres = 1;   
     }
     catch (Exception e) { 

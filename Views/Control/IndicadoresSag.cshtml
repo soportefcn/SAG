@@ -128,11 +128,7 @@ catch (Exception ex)
 {
 
 }
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".js-autocomplete").select2();
-    });
-</script>
+
 <table>
     <tr>
         <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
@@ -171,7 +167,7 @@ catch (Exception ex)
         <td>Proyecto</td>
         <td>
 
-            <select name="ProyectosIndicador" id="ProyectosIndicador" class="js-autocomplete">
+            <select name="ProyectosIndicador" id="ProyectosIndicador">
                 <option value="-1"> - Seleccione proyecto</option>
                 @foreach (SAG2.Models.Proyecto Proyectos2 in ViewBag.Proyectos)
                 {

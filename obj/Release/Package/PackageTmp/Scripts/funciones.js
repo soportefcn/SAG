@@ -1836,6 +1836,19 @@ $(document).ready(function () {
             }
             $('body').css('opacity','1');
         }
+
+        if ($("#Cheque").val() != undefined) {
+            var Valor = $("#Cheque").val();
+            var Rev1 = $.isNumeric(Valor);
+            if (!Rev1) {
+                alert("El cheque debe ser numerico");
+                return false;
+            }
+            if (Valor.length > 9) {
+                alert("El numero del Cheque no debe ser superior a 9 digitos");
+                return false;
+            }
+        }
         return true;
     });
 

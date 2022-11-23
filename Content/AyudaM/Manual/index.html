@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="TI Fundacion del Niño">
+    <meta name="generator" content="theme de bootstrap>
+    <link rel='stylesheet' id='montserrat-font-css' href="https://fonts.googleapis.com/css?family=Montserrat%3A400%2C700&#038;ver=1.1" type='text/css' media='all' />
+    <title>Manual SAG </title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/cheatsheet/">
+
+    
+
+    
+
+<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bg-dark {
+            --bs-bg-opacity: 1;
+            background-color: #36AFE8 !important;
+        }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="./cheatsheet.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    
+<header class="bd-header bg-dark py-3 d-flex align-items-stretch border-bottom border-dark">
+  <div class="container-fluid d-flex align-items-center">
+    <h1 class="d-flex align-items-center fs-4 text-white mb-0">
+      <img src="../Imagenes/Logo_Codeni3.png" width="38" height="30" class="me-3" alt="Bootstrap">
+    Manual SAG
+    </h1>
+    <a href="https://www.ciudaddelnino.cl/" class="ms-auto link-light" hreflang="ar">Fundación Ciudad del Niño</a>
+  </div>
+</header>
+<aside class="bd-aside sticky-xl-top text-muted align-self-start mb-3 mb-xl-5 px-2">
+  <h2 class="h6 pt-4 pb-3 mb-4 border-bottom">En este Manual</h2>
+  <nav class="small" id="toc">
+    <ul class="list-unstyled">
+      <li class="my-2">
+        <button class="btn d-inline-flex align-items-center collapsed border-0" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#contents-collapse" aria-controls="contents-collapse">Contenido</button>
+        <ul class="list-unstyled ps-3 collapse" id="contents-collapse">
+          <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#typography">Introduccion</a></li>
+          <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#images">Requisitos</a></li>
+          <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Manpdf">Manuales </a></li>
+        </ul>
+      </li>
+      <li class="my-2">
+        <a class="d-inline-flex align-items-center rounded text-decoration-none" href="#images">
+        <button class="btn d-inline-flex align-items-center collapsed border-0" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#forms-collapse" aria-controls="forms-collapse">Sistema SAG</button></a>
+        <ul class="list-unstyled ps-3 collapse" id="forms-collapse">
+            <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#overview">Ingreso al Software SAG</a></li>
+            <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#disabled-forms">Selección de Proyectos</a></li>
+            <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#sizing">Pagina Principal</a></li>
+            <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#input-group">Menu Herramientas</a></li>
+            <li class="my-3">
+              <button class="btn d-inline-flex align-items-center collapsed border-1" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#forms-collapse2" aria-controls="forms-collapse2">Mantenedores</button>
+              <ul class="list-unstyled ps-4 collapse" id="forms-collapse2">
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#floating-labels">Mantenedores</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#validation">Bancos</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#ControlInterno">Bodega </a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Informes">Conceptos</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Supervisores">Cuentas</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Administracion">Intervenciones</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Inventario">Inventario</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Personal">Personal</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Programas">Programas</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Proveedores">Proveedores</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Reportes">Reportes</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Honorarios">Tasa Imp. Honorario</a></li>
+            </ul>
+            </li>
+            <li class="my-3">
+              <button class="btn d-inline-flex align-items-center collapsed border-1" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#forms-collapse3" aria-controls="forms-collapse3">Rendiciones de Cuentas</button>
+              <ul class="list-unstyled ps-4 collapse" id="forms-collapse3">
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#MRendicion">Rendiciones de cuentas</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Ingresos">Ingresos</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Reintegros">Reintegros</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Egresos">Egresos</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CorregirH">Corregir Honorarios</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#RegistroPago">Registro de Pagos</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#RendicionC">Rendición de Cuentas</a></li>
+              </ul>
+            </li>
+            <li class="my-4">
+              <button class="btn d-inline-flex align-items-center collapsed border-1" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#forms-collapse4" aria-controls="forms-collapse4">Control Interno</button>
+              <ul class="list-unstyled ps-4 collapse" id="forms-collapse4">
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#ControlInternoP">Control Interno</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CIBanco">Banco</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CIResultado">Estado Resultados</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CIInventario">Inventarios</a></li> 
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CIPresupuesto">Presupuesto</a></li> 
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CIBodega">Bodegas</a></li> 
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CIIntervenciones">Intervenciones</a></li> 
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#CICierreMes">Cierre de MEs</a></li> 
+              </ul>
+            </li>
+            <li class="my-4">
+              <button class="btn d-inline-flex align-items-center collapsed border-1" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#forms-collapse5" aria-controls="forms-collapse5">Informes</button>
+              <ul class="list-unstyled ps-4 collapse" id="forms-collapse5">
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#MenuInforme">Informes</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#InfRendicion">Rendicion de Cuentas</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#InfInventario">Inventarios</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#InfIntervenciones">Intervenciones</a></li> 
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#InfComparacion">Comparación Aportes de Subvención </a></li> 
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#InfCuenta">Cuentas</a></li> 
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#InfFondoRendir">Fondos a Rendir</a></li> 
+                
+              </ul>
+            </li>
+            <li class="my-4">
+              <button class="btn d-inline-flex align-items-center collapsed border-1" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#forms-collapse6" aria-controls="forms-collapse5">Supervisores</button>
+              <ul class="list-unstyled ps-4 collapse" id="forms-collapse6">
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#mnuSupervisores">Supervisores</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#mnuRegMov">Registros Movimientos</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#mnuCierrePeriodo">Cierre Periodos</a></li>
+                
+              </ul>
+            </li>
+            <li class="my-4">
+              <button class="btn d-inline-flex align-items-center collapsed border-1" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#forms-collapse7" aria-controls="forms-collapse5">Administración</button>
+              <ul class="list-unstyled ps-4 collapse" id="forms-collapse7">
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#mnuADM">Administracion</a></li>
+                <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#mnuAperturaMes">Apertura de Mes</a></li>                
+              </ul>
+            </li>
+        </ul>
+      </li>
+     
+    </ul>
+  </nav>
+</aside>
+<div class="bd-cheatsheet container-fluid bg-body">
+  <section id="content">
+    <h2 class="sticky-xl-top fw-bold pt-3 pt-xl-5 pb-2 pb-xl-3">Contenido</h2>
+
+    <article class="my-3" id="typography">
+      <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+        <h3>Introducción</h3>
+
+      </div>
+
+      <div>
+        <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+        <p class="display-4">Introducción</p>
+
+        </div>
+        </div>
+
+        <div class="bd-example-snippet bd-code-snippet"><div class="bd-example">
+            <p>
+             El nuevo sistema SAG 2.0. Es un sistema pensado con el objetivo de simplificar y canalizar los requerimientos de la rendición de cuentas exigidas a los proyectos.
+             <br />
+            Este nuevo sistema está basado en el SAG usado actualmente con mejoras considerables en la forma que se manejan los datos.
+             <br />
+            El nuevo sistema está realizado en un entorno web que estará disponible en internet desde cualquier computador.
+             </p>
+        </div></div>
+
+          </div>
+      
+        <hr>
+
+    </article>
+    <article class="my-3" id="images">
+        <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+            <h3>Requisitos</h3>
+
+        </div>
+
+        <div>
+            <div class="bd-example-snippet bd-code-snippet">
+                <div class="bd-example">
+                    <p class="display-4">Requisitos</p>
+
+                </div>
+            </div>
+            <div class="bd-example-snippet bd-code-snippet">
+                <div class="bd-example">
+                    <div class="alert alert-success">
+                        <ul>
+                            <li> UTILIZAR NAVEGADOR Mozilla Firefox , Google Chrome o Edge </li>
+                            <li>TENER UNA CONEXIÓN A INTERNET DE 4 MB O MAS.</li>
+                            <li> CARACTERÍSTICAS MÍNIMAS DEL COMPUTADOR PENTIUM DUALCORE CON 2 GB RAM.</li>
+                            <li>ESCRITURA SE DEBERÁ SER CON LETRA MAYÚSCULA ESTO ESTA DEFINIDO POR DEFECTO EN EL SISTEMA NO PUDIÉNDOSE INGRESAR MINÚSCULAS.</li>
+                            <li> LOS RUT SE DEBEN INGRESAR SIN PUNTOS.</li>
+                            <li> SE PUDE UTILIZAR MAS DE UNA VENTANA ABIERTA.</li>
+                            <li> TIENE UN TIEMPO DE EXPIRACIÓN DE LA SESIÓN DE 15  MIN.</li>
+                            <li> TABULACIONES CON TECLA TAB Y NO CON ENTER.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr>
+
+
+    </article>
+    <article class="my-3" id="Manpdf">
+      <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+          <h3>Manuales</h3>
+
+      </div>
+
+      <div>
+          <div class="bd-example-snippet bd-code-snippet">
+              <div class="bd-example">
+                  <p class="display-4">Manuales</p>
+
+              </div>
+          </div>
+          <div class="bd-example-snippet bd-code-snippet">
+              <div class="bd-example">
+                <p>Instructivo del uso del SAG <br> manuales de inventarios, bodega y intervenciones</p>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
+                  Manual de Inventario
+                </button>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manualBodega">
+                  Manual de Bodega
+                </button>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manualIntervencion">
+                  Manual de Intervenciones
+                </button>
+              </div>
+          </div>
+
+      </div>
+
+      <hr>
+
+
+  </article>
+  </section>
+
+  <section id="forms">
+      <h2 class="sticky-xl-top fw-bold pt-3 pt-xl-5 pb-2 pb-xl-3">Sistema SAG</h2>
+
+      <article class="my-3" id="overview">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3> </h3>
+
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">1.- Ingreso al Software SAG</p>
+                      <br />
+                      <p>
+                        Para ingresar se debe dirigir al siguiente Link <a href="https://sag.ciudaddelnino.cl">https://sag.ciudaddelnino.cl</a>
+                        posterior se despliega la siguiente portada, donde se debe ingresar nombre de usuario y contraseña y presionar ingresar:
+                      </p>
+                  </div>
+              </div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+
+                      <img src="../Imagenes/Inicio.png" class="img-fluid">
+                   
+                  </div>
+              </div>
+
+          </div>
+      </article>
+      <article class="my-3" id="disabled-forms">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3></h3>
+
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">2.- Selección de Programa</p>
+
+                      <p>Al ingresar con el nombre de usuario y contraseña solicitara seleccionar el programa al cual se tiene acceso, quienes tengan mas de un programa a cargo.</p>
+                      <img src="../Imagenes/Proyectos.png" class="img-fluid">
+                  </div>
+              </div>
+
+          </div>
+      </article>
+      <article class="my-3" id="sizing">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3></h3>
+
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">3.- Pagina Principal</p>
+                      <p>En la cual se visualiza lo siguiente, donde deberá estar llenado en su totalidad por el Programa:</p>
+                      <img src="../Imagenes/Principal.png" class="img-fluid">
+ 
+                  </div>
+              </div>
+
+          </div>
+      </article>
+      <article class="my-3" id="input-group">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3></h3>
+
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">4.- Menu Herramientas</p>
+                      <p>El menú Herramientas contiene opciones para el manejo del sistema a nivel de usuario conectado, el cual se compone de:</p>
+                      <img src="../Imagenes/MHerramientas.png" class="img-fluid">
+                      <p>               
+                          <li><strong>Página de Inicio:</strong> Es la opción para volver a la página principal donde están los antecedentes del programa.</li>
+                          <li><strong>Propiedades del Sistema :</strong>En esta pantalla es donde se da la posibilidad de cambiar de proyecto en caso de que el usuario trabaje en más de un proyecto, también se indica el periodo de trabajo y los correlativos de los comprobantes.</li>
+                          <li><strong>Cambio de Contraseña: </strong>Cambiar contraseña por defecto a una personal.</li>
+                          <li><strong>Preguntas Frecuentes: </strong>Al seleccionar se despliega un listado de preguntas sobre el uso del Software SAG y sus respuestas.</li>
+                          <li> <strong>Manual de Ayuda :</strong>Guía del uso del Sistema Software SAG.</li>     
+                          <li><strong>Salir : </strong>Permite salir del sistema</li>
+                      </p>
+                  </div>
+              </div>
+
+          </div>
+      </article>
+      <article class="my-3" id="floating-labels">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3></h3>
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">5.-Mantenedores</p>
+                      <p>En la siguiente pestaña del menú al presionar Mantenedores se muestra las opciones disponibles, según su perfil de usuario el cual muestra lo siguiente:</p>
+                      <img src="../Imagenes/MMantenedores.png" class="img-fluid"><br />
+
+
+                  </div>
+              </div>
+
+          </div>
+      </article>
+      <article class="my-3" id="validation">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3>Mantenedores</h3>
+              
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">5.1 Bancos</p>
+                      <p>Al presionar en el <strong> Menú Mantenedores -> Banco</strong>  da dos opciones Maestro Bancos y Ctas. Ctes, según lo siguiente:</p>
+                      <img src="../Imagenes/MBanco.png" class="img-fluid"><br>
+                      <p><strong>Maestro Bancos:</strong>  En esta opción da la posibilidad de buscar y crear Bancos, según la siguiente imagen:</p>
+                        <img src="../Imagenes/MMBanco.png" class="img-fluid"><br>
+                       <p> <strong>Ctas. Ctes.: </strong>En esta opción muestra los datos de la Cuenta Corriente del programa como su número de cuenta, sucursal, dirección, etc. También permite su modificación o crear nuevos datos:</p>
+                       <img src="../Imagenes/MCcta.png" class="img-fluid"><br>
+                      </p>
+                  </div>
+              </div>
+          </div>
+      </article>
+      <article class="my-3" id="ControlInterno">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3>Mantenedores</h3>
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">5.2 Bodega </p>
+                      <p>Al presionar en el menú Mantenedores – Bodega da dos opciones Artículos y Unidades de medida</p>
+                      <img src="../Imagenes/mbodega.png" class="img-fluid"><br>
+                      <p><strong>Artículos:</strong>   En esta opción da la posibilidad de buscar y crear Artículos en la descripción, seleccionando la Categoría y unidad de medida que corresponda al artículo creado. Según la siguiente imagen:</p>
+                      <img src="../Imagenes/Articulo.png" class="img-fluid"><br>
+                      <p> <strong> Unidad de Medida:</strong> En esta opción permite crear una unidad de medida que no aparezca en el listado al presionar Buscar, al crear se debe escribir en <strong> Descripción</strong> y en la <strong>Sigla</strong> la abreviatura de cómo será identificada, luego se da presionar Guardar para crear.</p>
+                      <img src="../Imagenes/UnidadMedida.png" class="img-fluid"><br>
+                    </div>
+              </div>
+          </div>
+      </article>
+      <article class="my-3" id="Informes">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3>Mantenedores</h3>
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">5.3 Conceptos</p>
+                      <p>Al presionar en el menú Mantenedores – Conceptos muestra las distintas opciones que permite su modificación o crear, según el siguiente listado:</p>
+                      <img src="../Imagenes/MConceptos.png" class="img-fluid">
+                  </div>
+              </div>
+          </div>
+      </article>
+      <article class="my-3" id="Supervisores">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3>Mantenedores</h3>
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">5.4 Cuentas</p>
+                      <p>Al presionar en Mantenedores – Cuentas, se abre un recuadro el cual muestra los datos de una cuenta y permite su modificación o crear una nueva, según la siguiente imagen:</p>
+                      <img src="../Imagenes/Cuentas.png" class="img-fluid">
+                  </div>
+              </div>
+          </div>
+      </article>
+      <article class="my-3" id="Administracion">
+          <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+              <h3>Mantenedores</h3>
+          </div>
+
+          <div>
+              <div class="bd-example-snippet bd-code-snippet">
+                  <div class="bd-example">
+                      <p class="display-6">5.5 Intervenciones</p>
+                      <p>Al presionar en Mantenedores – Intervenciones, se despliega una lista de opciones las cuales permite modificar o crear datos del programa para el valor de las intervenciones, tanto como Medida de Protección o Sobre Atenciones por 80 BIS:</p>
+                      <img src="../Imagenes/Intervenciones.png" class="img-fluid">
+                  </div>
+              </div>
+          </div>
+      </article>
+      <article class="my-3" id="Inventario">
+        <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+            <h3>Mantenedores</h3>
+        </div>
+
+        <div>
+            <div class="bd-example-snippet bd-code-snippet">
+                <div class="bd-example">
+                    <p class="display-6">5.6 Inventarios</p>
+                    <p>Al presionar en Mantenedores – Inventario, se despliega una lista de opciones las cuales permite modificar o crear, Familias, Sub Familias, Estados, Procedencias, Condición y Dependencias de Inventario:</p>
+                    <img src="../Imagenes/Inventario.png" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </article>
+    <article class="my-3" id="Personal">
+      <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+          <h3>Mantenedores</h3>
+      </div>
+
+      <div>
+          <div class="bd-example-snippet bd-code-snippet">
+              <div class="bd-example">
+                  <p class="display-6">5.7 Personal</p>
+                  <p>Al presionar en Mantenedores – Personal se despliega una lista de opciones las cuales permite visualizar, modificar o crear tanto Profesión, Cargos y Asignar Roles a los usuarios.</p>
+                  <img src="../Imagenes/mPersonal.png" class="img-fluid"><br>
+                  <p>Al seleccionar las siguientes opciones:<br><strong>Maestro Personal :</strong><br>Permite buscar y crear al personal de un programa, según la siguiente imagen:</p>
+                  <img src="../Imagenes/Per1.png" class="img-fluid"><br>
+                  <p><strong>Profesión: </strong> 
+                    Permite buscar y crear una Profesión para ser asignado a un usuario en el Software SAG
+                    </p>
+                    <img src="../Imagenes/Profesional.png" class="img-fluid"><br>
+                    <p><strong>Cargos:</strong>Permite buscar y crear un cargo para luego asignar a un usuario.</p>
+                    <img src="../Imagenes/Cargo.png" class="img-fluid"><br>
+                    <p><strong>Asignar roles :</strong>Permite buscar y crear roles los cuales son vinculantes para que aparezcan en la Pagina de Inicio del Software SAG tales como; Apoderado, quien es el apoderado de la cuenta corriente del programa, secretaria, Supervisor Financiero  </p>
+                    <img src="../Imagenes/AsignarRoles.png" class="img-fluid"><br>
+                </div>
+          </div>
+      </div>
+  </article>
+  <article class="my-3" id="Programas">
+    <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+        <h3>Mantenedores</h3>
+    </div>
+
+    <div>
+        <div class="bd-example-snippet bd-code-snippet">
+            <div class="bd-example">
+                <p class="display-6">5.8 Programas</p>
+                <p>Al presionar en Mantenedores – Programas se despliega una lista de opciones para crear o modificar programas y contratos</p>
+                <img src="../Imagenes/MPrograma.png" class="img-fluid"><br>
+                <p>Al seleccionar las siguientes opciones: <br><strong>Programas:</strong>En el da la opción de Crear un programa en el Software SAG respetando el correlativo asignado en los programas o modificar los datos creados, según la siguiente imagen:
+                </p>
+                <img src="../Imagenes/Programa.png" class="img-fluid"><br>
+                <p><strong>Contratos:</strong>En el da la opción de Crear un Contrato para que figure en la Página de Inicio del programa en el Software SAG, según la siguiente imagen </p>
+                <img src="../Imagenes/contratos.png" class="img-fluid"><br>
+              </div>
+        </div>
+    </div>
+</article>
+<article class="my-3" id="Proveedores">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Mantenedores</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6"> 5.9 Proveedores </p>
+              <p>Al presionar en Mantenedores – Proveedores se despliega la siguiente pantalla la cual permite visualizar un proveedor creado o crear uno nuevo</p>
+              <img src="../Imagenes/Proveedores.png" class="img-fluid">
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="Reportes">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Mantenedores</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">5.10 Reportes</p>
+              <p>Al presionar en Mantenedores – Reportes se despliega una lista con Tipo de Reportes y Contenido Reporte que es solo para desarrollo en los reportes de Estados de Resultado.</p>
+              <img src="../Imagenes/Mreportes.png" class="img-fluid">
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="Honorarios">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Mantenedores</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">5.11 Tasa Imp. Honorario</p>
+              <p>Al presionar en Mantenedores – Tasa Imp. Honorario se despliega una pantalla que permite visualizar la Tasa de Impuesto de Honorarios o crear una nueva, esto se crea una vez al año según SII, por honorarios por segunda categoría o honorarios con préstamos estatal. <br>
+                Al crearse habilita la tasa de impuesto al seleccionar en un egreso con boleta de honorarios.
+              </p>
+              <img src="../Imagenes/Thonorarios.png" class="img-fluid">
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="MRendicion">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Rendiciones de Cuentas</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">6. Rendiciones de Cuentas</p>
+              <p>En el Menú del Software SAG se encuentra la opción Rendiciones de Cuentas, al presionar despliega una lista con la siguiente información que se puede seleccionar.
+              </p>
+              <img src="../Imagenes/mRendicion.png" class="img-fluid">
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="Ingresos">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Rendiciones de Cuentas</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">6.1 Ingresos </p>
+              <p>En el Menú al presionar Rendición de Cuentas – Ingresos, se despliega la pantalla de ingresos para ser registrados en Software SAG según la siguiente imagen:
+              </p>
+              <img src="../Imagenes/Cingreso.png" class="img-fluid">
+              <p>
+                <li> <strong>N° Comprobante:</strong> Este numero lo da por defecto y se genera en correlativo.</li>
+                <li> <strong>Cuenta : </strong>Al presionar se despliega una lista con cuentas que se deben presionar según el ingreso recibido por el Programa.</li>
+                <li> <strong>Monto $: </strong> Ingresar el monto recibido en la cartola de la cuenta corriente del programa.</li>
+                <li> <strong>N° Cheque:</strong>Colocar el numero que se registro en la cartola de la cuenta corriente o en su defecto la fecha sin guion o puntos.</li>
+                <li> <strong>Glosa:</strong>Escribir a que corresponde el ingreso recibido en la cartola de cuenta corriente (ej.: subvención, 80 bis, traspasos transitorios, etc.)</li>
+                <li> <strong>Fecha:</strong>Esta se da por defecto, pero puede ser modificada por la fecha de cuando se recibió el depósito.  </li>
+              </p>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="Reintegros">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Rendiciones de Cuentas</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">6.2 Reintegros</p>
+              <p>En el Menú al presionar Rendición de Cuentas – Reintegros, da la siguiente opción:</p>
+              <img src="../Imagenes/Reintegro.png" class="img-fluid"><br>
+             <p>
+              <li><strong>N° Comprobante: </strong>Este número lo da por defecto y se genera en correlativo.</li>
+              <li><strong>N° Egreso:</strong>Al presionar se despliega una lista con los Egresos creados por programa y se debe seleccionar el número al cual se realizará un reintegro.</li>
+              <li><strong>Cuenta contable – Beneficiario – Monto $: </strong> Al seleccionar un Egreso se da por defecto a la cuenta contable, beneficiario y monto asociadas a él</li>
+              <li><strong>Glosa :</strong>Escribir a que concepto corresponde el Reintegro a crear.</li>
+              <li><strong>Fecha : </strong>Esta se da por defecto, pero puede ser modificada por la fecha del Reintegro</li>
+             </p> 
+             <p><b><i>Al tener los datos mencionados se debe presionar Detalle y se despliega el siguiente cuadro</i></b></p>
+             <img src="../Imagenes/ReintegroDetalle.png" class="img-fluid">
+             <p>
+              <li><strong>Tipo Documento:</strong>Al presionar se despliega una lista de documentos que se puede seleccionar según el gasto asociado al reintegro por el egreso girado.</li>
+              <li><strong>N° Documento:</strong>Se debe digitar el número asociado al Tipo Documento asociado al reintegro.</li>
+              <li><strong>Monto :</strong>Se debe digitar el monto asociado a cada tipo de documento seleccionado</li>
+              <li><strong>Emisión:</strong>Seleccionar la fecha de cuando se registra el reintegro.</li>
+              <li><strong>Cuenta :</strong>Al presionar se despliega una lista de cuentas contables la cual se debe seleccionar a la que corresponde el gasto que se esta digitando (Ej. Alimentación, Movilización, Materiales de oficina, etc.)</li>
+             </p>
+             <p>
+              Luego de tener todos los datos se debe presionar <button class="btn btn-primary">Guardar Linea</button> si en el Reintegro que se está digitando contiene más de un documento se sigue con el mismo procedimiento anterior, si ya se digitaron todos los documentos por los gastos asociados al Reintegro se debe volver a presionar 
+              <button>General</button> donde se dice la palabra Monto $ del costado derecho va decir la suma de todos los documentos registrados en el Detalle del Reintegro, si esta correcto se debe presionar <button class="btn btn-primary">Guardar</button>
+             </p>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="Egresos">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Rendiciones de Cuentas</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">6.3 Egresos</p>
+              <p>
+                En el Menú al presionar Rendición de Cuentas – Egresos, da la siguiente opción:
+              </p>
+              <img src="../Imagenes/Egreso.png" class="img-fluid">
+              <p>
+                La cual debe ser llenado completando lo siguiente:<br>
+                <li><strong>N° Comprobante:</strong>Este número lo da por defecto y se genera en correlativo.</li>
+                <li><strong>N° Cheque :</strong>Se debe digitar el número correlativo del cheque o en su defecto el número de transferencia</li>
+                <li><strong>Fecha - Fecha Cheque: </strong> Seleccionar la fecha de cuando se está registrando el egreso o la fecha de cuando fue girado el documento</li>
+                <li><strong>Monto :</strong>Se visualiza cuando se termine de registras los gastos.</li>
+                <li><strong>Beneficiario :</strong>Se puede seleccionar Personal, Proveedores y Otro, al seleccionar por una de las opciones se debe digitar el RUT de quien es el beneficiario del Egreso girado.</li>
+                <li><strong>Glosa :</strong>Escribir el concepto del egreso a que consiste el gasto que se esta incurriendo (Ej.: Servicio de Telefonía fija, etc.) </li>
+              </p>
+              <p><b><i>Al tener los datos mencionados se debe presionar Detalle y se despliega el siguiente cuadro</i></b></p>
+              <img src="../Imagenes/EgresoDetalle.png" class="img-fluid"><br/>
+              <p>La cual debe ser llenado completando lo siguiente:<br>
+                <li><strong>Origen:</strong>Al presionar se despliega una lista de opciones .</li>
+                <li><strong>Tipo Documento:</strong>Se debe digitar presionar y se despliega una lista en la cual se debe presionar por el concepto del gasto que se está registrando.</li>
+                <li><strong>Monto $:</strong>Se debe digitar el monto asociado a cada tipo de documento seleccionado.</li>
+                <li><strong>Emisión - Vencimiento: </strong>Seleccionar la fecha de cuando se registra el egreso.</li>
+                <li><strong>Cuenta:</strong>Al presionar se despliega una lista de cuentas contables la cual se debe seleccionar a la que corresponde el gasto que se está digitando (Ej. Alimentación, Movilización, Materiales de oficina, etc.)</li>
+                <li><strong>Glosa:</strong>Se debe escribir el concepto del gasto por el tipo de documento seleccionado</li>                
+              </p>
+              <p>
+                Luego de tener todos los datos se debe presionar  <button class="btn btn-primary">Guardar Linea</button>si el egreso
+                 que se está digitando contiene más de un documento se sigue con el mismo procedimiento anterior,
+                  si ya se digitaron todos los documentos por los gastos asociados al Egreso se debe volver a presionar <button>General</button>	
+                       donde se dice la palabra Monto $ corresponde a la suma de todos los documentos registrados en el Detalle del Egreso, si esta correcto se debe presionar <button class="btn btn-primary">Guardar</button>
+              </p>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="CorregirH">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Rendiciones de Cuentas</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">6.4 Corregir Honorarios</p>
+              <p>
+                En el Menú al presionar Rendición de Cuentas – Corregir Honorarios, da la siguiente opción:
+              </p>
+              <img src="../Imagenes/corregirH.png" class="img-fluid"><br>
+              <p><i>Esta opción es utilizada cuando una boleta queda emitida y se debe modificar, cuando en el informe de honorarios se visualiza alguna boleta sin conciliar.</i></p>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="RegistroPago">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Rendiciones de Cuentas</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">6.5 Registro de Pagos</p>
+              <p>
+                En el Menú al presionar Rendición de Cuentas – Registro de Pagos, se despliega una lista con:
+              </p>
+              <img src="../Imagenes/mRegistroPago.png" class="img-fluid"><br>
+              <p><strong>Prog. Semanal de pagos:</strong> Al presionar se despliega la siguiente función, donde solo se debe colocar la fecha de cuando se requiere el reporte en el cual muestra el resumen de la semana según el día elegido, mostrando los Ingresos, Reintegros y Egresos de la semana indicada, ej.;</p>
+              <img src="../Imagenes/ProgramaSemanal.png" class="img-fluid"><br>
+              <p><strong>Prog. de pagos entre fechas:</strong> Al presionar se debe colocar la fecha de inicio y fecha final, posterior presionar imprimir y mostrara el rango de los Ingresos, Reintegros y Egresos ej. Del reporte;</p>
+              <img src="../Imagenes/ProgramaFecha.png" class="img-fluid"><br>
+            </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="RendicionC">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Rendiciones de Cuentas</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">6.6 Rendición de Cuentas</p>
+              <p>
+                En el Menú al presionar Rendición de Cuentas – Rendición de Cuentas, se despliega una lista con:
+              </p>
+              <img src="../Imagenes/mRendicion2.png" class="img-fluid"><br>
+              <p><strong>Caratula Actual: </strong> Al presionar Caratula Actual muestra la Rendición de Cuentas del periodo actual utilizando en el Software SAG, destacando que el reporte se puede imprimir, según el siguiente ej.;</p>
+              <img src="../Imagenes/CaratulaActual.png" class="img-fluid"><br>
+              <p><strong>Generar Rendición:</strong>
+                Al presionar Generar Rendición se debe completar los campos requeridos como: <br>
+                <li>Intervenciones (mes en uso): se debe completar con el total de intervenciones realizadas por el mes cerrado. </li>
+                <li>Provisión por indemnización: Se debe completar con el monto de la provisión de indemnización del mes que se está efectuando la rendición.</li>
+                <li>Posterior al llenado se debe presionar Guardar.</li>
+                Según el siguiente recuadro: <br>
+              </p>
+              <img src="../Imagenes/GenerarRendicion.png" class="img-fluid"><br>
+              <p><strong>Rendiciones Anteriores:</strong>Al presionar Rendición Anteriores se despliega la siguiente imagen; la cual muestra el historial de Rendiciones Generadas en el Programa del Sistema Software SAG y se debe presionar el Informe que se requiere o la Caratula de Rendición</p>
+              <img src="../Imagenes/RendicionesAnt.png" class="img-fluid"><br>
+            </div>
+      </div>
+  </div>
+</article>
+<article class="my-4" id="ControlInternoP">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7. Control Interno</p>
+              <p>En el Menú al presionar Control Interno, se despliega una lista con las siguientes funciones:
+                            </p>
+              <img src="../Imagenes/mControlInterno.png" class="img-fluid"><br>
+             </div>
+      </div>
+  </div>
+</article>
+<article class="my-4" id="CIBanco">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7.1 Banco</p>
+              <p>Al presionar en el Menú Software SAG, Control Interno – Banco, se despliega una lista con las siguientes funciones:
+                            </p>
+              <img src="../Imagenes/ciBancoM.png" class="img-fluid"><br>
+              <p><strong>Libro Banco : </strong> Al presionar Libro Banco se visualiza un listado con los Ingresos, Reintegros y Egresos del mes seleccionado en el Programa del Sistema Software SAG. <br>
+                Al desplegarse el Libro Banco se debe seleccionar el Mes y presionar el botón Ver resultados, mas el año. Dando la posibilidad de Exportar a Excel o imprimir, según el siguiente Ej.;
+                </p>
+             </div>
+             <img src="../Imagenes/CILibrobanco.png" class="img-fluid"><br>
+             <p><strong>Conciliación Bancaria : </strong>Al presionar Conciliación Bancaria se visualiza la cuadratura del Saldo de la Cuenta Corriente y el Libro Banco, menos los Cheques Girados y No Cobrados (si hubiera) Destacar que es importante que estos saldos se encuentren cuadrados. <br>
+              Al desplegar el recuadro se selecciona el Mes y Año, luego se debe presionar Ver Resultados. Para cuadrar la conciliación se debe verificar el saldo de la Cuenta Corriente y registrarlo en el recuadro Cartola Bancaria y modificar la Fecha de cuando corresponde el saldo. A Continuación, presionar el botón Ver el cuál mostrara la opción Conciliar la se debe presionar esto permite pintar con color aquellos montos que se encuentran en la cartola y dejar en blanco los cuales no están, al final se debe presionar Guardar.<br>
+              Ej. de la conciliación bancaria.:
+            </p>
+            <img src="../Imagenes/CIConciliacionB.png" class="img-fluid"><br>
+            <p><strong>Saldo Libro Banco :</strong> Al Presionar Saldo Libro Banco se visualiza en pantalla el Saldo Inicial y Saldo Final de todos los programas, según el Mes y Año seleccionado, Ej.: dando la posibilidad de exportar a Excel. </p>
+            <img src="../Imagenes/CISaldoMensual.png" class="img-fluid"><br>
+          </div>
+  </div>
+</article>
+<article class="my-4" id="CIResultado">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7.2 Estado de Resultados</p>
+              <p>Al presionar en el Menú Software SAG, Control Interno – Estado de Resultados, se despliega una lista con las siguientes funciones:
+                            </p>
+              <img src="../Imagenes/CIEstadoM.png" class="img-fluid"><br>
+              <p><strong>Ingresos y Gastos :</strong>En esta opción se visualiza las cuentas contables utilizadas al momento de sus registros de Ingresos y Gastos ya rebajados los Reintegros, donde se debe seleccionar el Programa y luego presionar Procesar, se puede seleccionar Ingresos o Egresos en la pantalla o Exportar ambos al presionar Excel. Según el siguiente Ej.,</p>
+              <img src="../Imagenes/CIIngresoGasto.png" class="img-fluid"><br> 
+              <p><i>Nota: Los demás informes del listado de Estados Resultados funciona de la misma forma anterior.</i></p>
+            </div>
+      </div>
+  </div>
+</article>
+<article class="my-4" id="CIInventario">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7.3 Inventarios</p>
+              <p>Al presionar en el Menú Software SAG, Control Interno – Inventario, se despliega una lista con las siguientes funciones: En el se realiza el registro de los bienes adquiridos como compras y son inventariados.
+                            </p>
+              <img src="../Imagenes/CIInventarioM.png" class="img-fluid"><br>
+              <p><i>Nota: Este modulo cuenta con su Manual de Inventarios</i></p>
+             </div>
+      </div>
+  </div>
+</article>
+<article class="my-4" id="CIPresupuesto">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7.4 Presupuesto</p>
+              <p>Al presionar en el Menú Software SAG, Control Interno – Presupuesto, se despliega una lista con las siguientes funciones:
+                            </p>
+              <img src="../Imagenes/CIPresupuestoM.png" class="img-fluid"><br>
+              <p><strong>Formulación :</strong> Al Presionar en la lista Formulación se despliegan las cuentas contables de Ingresos y Egresos si se seleccionan, destacando que es obligatorio su llenado con previa aprobación de Administración Central. Destacando que es importante colocar el Saldo Inicial que corresponde al Saldo Final del periodo anterior de cuando este debe ser completado al finalizar se debe presionar Guardar, según el siguiente Ej.:</p>
+              <img src="../Imagenes/CIFormulacionPre.png" class="img-fluid"><br>
+              <p><strong>Control Presupuestario : </strong>Al Presionar Control Presupuestario se despliegan las cuentas contables realizando la diferencia entre lo Presupuestado y lo Real mostrando la Desviación en montos y porcentaje, al llenar se debe seleccionar el Programa, presionar Concepto donde se selecciona Ingresos o Egresos y el año a consultar. Tipo de Reporte 
+              <br>
+              <li>Normal: consiste en el total de las cuentas de contables</li>
+              <li>Estándar: Es un reporte resumido mostrando solo las cuentas principales.</li>
+              <i>•	Ambos reportes se pueden exportar a Excel o visualizar en pantalla, Ej.; Reporte Normal</i>
+              <img src="../Imagenes/CIControlPres.png" class="img-fluid"><br>
+              <p>
+                •	Al presionar Reporte Estándar se debe seleccionar Exportar Excel y luego entre anual, 1er semestre o 2do semestre y este es exportado a Excel y al abrir muestra lo siguiente:
+              </p>
+              <img src="../Imagenes/CiExcelcontrol.png" class="img-fluid"><br>
+              </p>
+            </div>
+      </div>
+  </div>
+</article>
+<article class="my-4" id="CIBodega">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7.5 Bodega</p>
+              <p>Al presionar en el Menú Software SAG, Control Interno – Bodega, se despliega una lista con las siguientes funciones: donde se ingresan los artículos de bodega adquiridos por el programa estos no son los ítems inventariados.
+                            </p>
+              <img src="../Imagenes/CiBodegaM.png" class="img-fluid"><br>
+              <p>Nota :<b><i>Este Modulo cuenta con su Manual de Bodega</i></b></p>
+             </div>
+      </div>
+  </div>
+</article>
+<article class="my-4" id="CIIntervenciones">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7.6 Intervenciones</p>
+              <p>
+                Al presionar en el Menú Software SAG, Control Interno – Intervenciones, se despliega una lista con las siguientes funciones: donde se registran las atenciones por plazas normales y por sobre atenciones por 80 bis
+                            </p>
+              <img src="../Imagenes/Mintervenciones.png" class="img-fluid"><br>
+              <p><b><i>Nota: Este módulo cuenta con su Manual de Intervenciones.</i></b></p>
+             </div>
+      </div>
+  </div>
+</article>
+<article class="my-4" id="CICierreMes">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Control Interno</h3>
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">7.7 Cierre de Mes</p>
+              <p>Al presionar en el Menú Software SAG, Control Interno – Cierre de Mes, se despliega una lista con las siguientes funciones: las cuales permite visualizar las principales cuentas contables utilizadas por el programa y su cuadratura.
+                            </p>
+              <img src="../Imagenes/McierreMes.png" class="img-fluid"><br>
+              <p><strong>Importar Archivo:</strong>Al Presionar Importar Archivo permite cargar archivo CSV con los Saldos finales del Banco BCI por las cuentas corrientes de los programas, según el siguiente Ej.:</p>
+              <img src="../Imagenes/ImportarArchivo.png" class="img-fluid"><br> 
+              <p>Para importar el archivo CSV, se debe seleccionar el mes y año por los saldos finales del archivo extraído del Banco BCI, luego se debe buscar al presionar Seleccionar Archivo al completar los pasos anteriores se debe dar Importar.</p>
+              <p><strong>Consulta de Saldo Corporativo:</strong>Al Presionar habilita la forma de ver los saldos cargados en Importar Archivo solo seleccionando el Mes y Año cargado, al tener esto, se presiona Ver Resultados y son visualizados en pantalla o permite exportar a Excel, según el siguiente Ej.:</p>
+              <img src="../Imagenes/SaldoCorporativo.png" class="img-fluid"><br> 
+              <p><strong>Reporte Cierre:</strong>Al Presionar muestra la posibilidad de obtener el cierre de mes con las principales cuentas y sus cuadraturas de todos los programas. Solo es necesario seleccionar Periodo y Año y presionar Ver Resultados, donde muestra el siguiente detalle el cual se puede exportar a Excel, Ej.:</p>
+              <img src="../Imagenes/ReporteCierre.png" class="img-fluid"><br> 
+            </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="MenuInforme">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Informes</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">8 Informes</p>
+              <p>
+                En el Menú al presionar Informes, se despliega una lista con las siguientes funciones:
+              </p>
+             <img src="../Imagenes/mnuInforme.png" class="img-fluid">
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="InfRendicion">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Informes</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">8.1 Rendición de Cuentas</p>
+              <p>
+                Al presionar en el Menú Software SAG, Informes – Rendición de Cuentas, se despliega una lista con las siguientes funciones: 
+              </p>
+             <img src="../Imagenes/mnu2rendicionCuenta.png" class="img-fluid"><br>
+             <p><strong>Ingresos :</strong>Al presionar permite visualizar y exportar a Excel los Informes de Ingresos al cual solo debe seleccionar el rango de fechas a buscar, el programa al cual se tiene acceso y presionar Ver Resultados, según el siguiente Ej.:</p>
+             <img src="../Imagenes/InfIngresos.png" class="img-fluid"><br>
+             <p><strong>Egresos :</strong>Al presionar permite visualizar y exportar a Excel los Informes de Egresos al cual solo debe seleccionar el rango de fechas a buscar, el programa al cual se tiene acceso y presionar Ver Resultados, según el siguiente Ej.:</p>
+             <img src="../Imagenes/Inf_Egresos.png" class="img-fluid"><br>
+             <p><strong>Reintegros :</strong>Al presionar permite visualizar y exportar a Excel los Informes de Reintegros al cual solo debe seleccionar el rango de fechas a buscar, el programa al cual se tiene acceso y presionar Ver Resultados, según el siguiente Ej.:</p>
+             <img src="../Imagenes/InfReintegro.png" class="img-fluid"><br>
+             <p><strong>Cuentas :</strong>Al presionar permite visualizar y exportar a Excel el Informes de Cuentas al cual solo debe seleccionar el rango de fechas, el programa al cual se tiene acceso, la cuenta contable y presionar Ver Resultados, según el siguiente Ej.:</p>
+             <img src="../Imagenes/InfReintegro.png" class="img-fluid"><br>
+             <p><strong>Fondos a Rendir :</strong>Al presionar permite visualizar y exportar a Excel el Informe de Fondos a Rendir, para obtener solo debe seleccionar el rango de fechas, el programa al cual se tiene acceso y presionar Ver Resultados, según el siguiente Ej.:</p>
+             <img src="../Imagenes/InfFondoRendir.png" class="img-fluid"><br>
+             <p><strong>Cajas Chica :</strong>Al presionar permite visualizar y exportar a Excel el Informe de los gastos utilizados por Caja Chica, para obtener solo debe seleccionar el Mes, el programa al cual se tiene acceso y presionar Ver Resultados, según el siguiente Ej.:</p>
+             <img src="../Imagenes/infCajachica.png" class="img-fluid"><br>
+             <p><strong>Honorarios</strong>Al presionar permite visualizar y exportar a Excel el Informe de Honorarios, para obtener solo debe seleccionar el Mes, el programa al cual se tiene acceso y presionar Ver Resultados, según el siguiente Ej.:</p>
+             <img src="../Imagenes/InfHonorarios.png" class="img-fluid"><br>
+            </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="InfInventario">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Informes</h3>
+
+  </div>
+
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">8.2 Inventario</p>
+
+              <p>
+                Al presionar en el Menú Software SAG, Informes – Inventario, se despliega una lista con las siguientes funciones:
+              </p>
+              <img src="../Imagenes/InfInventariomnu.png" class="img-fluid"><br\>
+              <p><strong>Reporte Inventario :</strong> Al presionar permite visualizar y exportar a Excel el Informe de Altas – Bajas y Traspasos, para obtener solo debe seleccionar el Rango de Fechas, el Programa al cual se tiene acceso y presionar Filtrar, según el siguiente Ej.: </p>
+              <img src="../Imagenes/ReporteInventario.png" class="img-fluid"><br\>
+              <p>
+                Destacando que al presionar Filtrar muestra en pantalla en Color Azul los informes disponibles según el rango buscado, para visualizar este informe se debe presionar.
+              </p>
+              <p><strong>Informe de Altas: </strong>Muestra todas las Altas de Inventarios registradas en el periodo seleccionada, donde permite imprimir o exportar a Excel, según el siguiente Ej.:</p>
+              <img src="../Imagenes/InfAlta.png" class="img-fluid"><br\>
+              <p><strong>Hoja Inventario :</strong> Al presionar permite visualizar y exportar a Excel el Informe de Dependencias, para obtener solo debe seleccionar el Programa y la Dependencia donde fue registrado el bien y presionar Filtrar, según el siguiente Ej.:</p>
+              <img src="../Imagenes/Hinventario.png" class="img-fluid"><br\>
+              <p>
+                Destacando que al presionar Filtrar muestra en pantalla en Color Azul la Hoja Inventario, para visualizar este informe se debe presionar.
+              </p>
+              <p><strong>Informe Hoja de Inventario : </strong>Muestra todas las Altas de Inventarios registradas en la Dependencia seleccionada, donde permite imprimir o exportar a Excel, según el siguiente Ej.:             
+              </p>
+              <img src="../Imagenes/InfHoja.png" class="img-fluid"><br\>
+              <p><strong>Inventario General :</strong>Al presionar permite visualizar y exportar a Excel el Informe de Inventario General, para obtener solo debe seleccionar el Programa y presionar Filtrar, según el siguiente Ej.:  </p>
+              <img src="../Imagenes/InventarioGeneral.png" class="img-fluid"><br\>
+              <p>Destacando que al presionar Filtrar muestra en pantalla en Color Azul la Hoja Inventario, para visualizar este informe se debe presionar.</p>
+              <p><strong>Informe de Inventario General: </strong> Muestra todas las Altas – Bajas y Traslados de Inventarios registradas en el Programa Seleccionado, permitiendo imprimir o exportar a Excel, según el siguiente Ej.:
+              </p>
+              <img src="../Imagenes/Inf_inventarioGral.png" class="img-fluid"><br\>
+            </div>
+      </div>
+
+  </div>
+</article>
+<article class="my-3" id="InfIntervenciones">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Informes</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">8.3 Intervenciones</p>
+              <p>
+                Al presionar en el Menú Software SAG, Informes–Intervenciones, se despliega una lista con las siguientes funciones:
+              </p>
+              <img src="../Imagenes/InfIntervenciones.png" class="img-fluid"><br>
+              <p><i><b>Nota: Se debe complementar con el Manual de Intervenciones</b></i></p>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="InfComparacion">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Informes</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-InfComparacion">
+              <p class="display-6">8.4 Comparación Aportes de Subvención </p>
+             <p>
+              Al presionar en el Menú Software SAG, Informes – Comparación Aportes de Subvención, permite visualizar los Ingresos de Subvención registrados por los Programas y los Descuentos realizados por la Administración Central, solo se debe seleccionar el rango de Fechas y presionar Ver Resultados, este reporte se puede exportar a Excel. Según el siguiente Ej.:
+            </p>
+              <img src="../Imagenes/InfCompa.png" class="img-fluid">
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="InfCuenta">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Informes</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-InfComparacion">
+              <p class="display-6">8.5 Cuentas </p>
+             <p>
+              Permite visualizar y exportar a Excel el Informes de Cuentas al cual solo debe seleccionar el rango de fechas, el programa al cual se tiene acceso, la cuenta contable y presionar Ver Resultados, según el siguiente Ej.:          </p>
+              <img src="../Imagenes/Infcuenta2.png" class="img-fluid">
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="InfFondoRendir">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Informes</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-InfComparacion">
+              <p class="display-6">8.6 Fondos a Rendir </p>
+             <p>
+              Permite visualizar y exportar a Excel el Informe de Fondos a Rendir, para obtener solo debe seleccionar el rango de fechas, el programa al cual se tiene acceso y presionar Ver Resultados, según el siguiente Ej.:
+            </p>
+        
+              <img src="../Imagenes/InfFondoRendir2.png" class="img-fluid"><br>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="mnuSupervisores">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Supervisores</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">9 Supervisores</p>
+             <p>
+              En el Menú principal del software SAG al presionar Supervisores, se despliega una lista con las siguientes funciones:
+            </p>
+              <img src="../Imagenes/mnuSupervisores.png" class="img-fluid"><br>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="mnuSupervisores">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Supervisores</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">9.1 Registros de Movimientos</p>
+             <p>
+              En el Menú al presionar Supervisores – Registros de Movimientos, muestra el detalle de los movimientos de Ingresos – Reintegros y Egresos efectuados del programa seleccionado. Entre algunas de las ventajas son: Saber el usuario y hora de creación del movimiento como Desconciliar un movimiento que está conciliado en la Conciliación Bancaria. Según el siguiente Ej.:
+            </p>
+              <img src="../Imagenes/RegMovimiento.png" class="img-fluid"><br>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="mnuCierrePeriodo">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Supervisores</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">9.2 Cierre Periodos</p>
+             <p>
+              En el Menú al presionar Supervisores – Cierre de Periodos, muestra todos los Programas con la fecha que efectuaron el cierre de mes y la apertura del mes siguiente, mostrando en Rojo los Programas que cierran un mes en periodos superiores al mes siguiente, adicionalmente el reporte permite ser exportado a Excel. Según el siguiente Ej.:            </p>
+              <img src="../Imagenes/cierrePeriodos.png" class="img-fluid"><br>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="mnuADM">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Administracion</h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">10 Administración</p>
+             <p>
+              En el Menú principal del software SAG al presionar Administración, se despliega una lista con las siguientes funciones:
+            </p>
+              <img src="../Imagenes/mnuAdministracion.png" class="img-fluid"><br>
+          </div>
+      </div>
+  </div>
+</article>
+<article class="my-3" id="mnuAperturaMes">
+  <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+      <h3>Administración </h3>
+  </div>
+  <div>
+      <div class="bd-example-snippet bd-code-snippet">
+          <div class="bd-example">
+              <p class="display-6">10.1 Apertura de Mes</p>
+             <p>
+              En el Menú al presionar Administración – Apertura de Mes, se despliega la opción donde un usuario Administrador del SAG pueda abrir el periodo de un programa el cual ya se encuentre cerrado y necesite realizar modificaciones. Esto se realiza previa autorización de la Contadora General.<br/>
+              Para la Apertura de un Periodo se debe estar en el Programa requerido, seleccionar el Mes y Año y presionar Procesar. Según el siguiente Ej.:
+            </p>
+              <img src="../Imagenes/aperturaMes.png" class="img-fluid"><br>
+          </div>
+      </div>
+  </div>
+</article>
+
+</section>
+
+
+</div>
+
+<div class="modal fade" id="exampleModalDefault" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLiveLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>I will not close if you click outside me. Don't even try to press escape key.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exampleModalCenteredScrollable" tabindex="-1" aria-labelledby="exampleModalCenteredScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenteredScrollableTitle">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the modal.</p>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <p>This content should appear at the bottom after you scroll.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exampleModalFullscreen" tabindex="-1" aria-labelledby="exampleModalFullscreenLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="exampleModalFullscreenLabel">Manual de Inventario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <iframe src="../doc/mInventario.pdf" height="100%" width="100%"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="manualBodega" tabindex="-1" aria-labelledby="manualBodegaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="manualBodegaLabel">Manual de Bodega</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <iframe src="../doc/Mbodega.pdf" height="100%" width="100%"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="manualIntervencion" tabindex="-1" aria-labelledby="manualIntervencionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="manualIntervencionLabel">Manual de Intervenciones</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <iframe src="../doc/MIntervenciones.pdf" height="100%" width="100%"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+
+      <script src="cheatsheet.js"></script>
+  </body>
+</html>

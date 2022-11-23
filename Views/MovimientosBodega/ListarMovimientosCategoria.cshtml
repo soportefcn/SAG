@@ -210,13 +210,13 @@
                     {@movimiento.Salida}
                 </td>
                 <td></td>
-                <td style="text-align: center;">                    @if (ProyectTraspasado == "")
+                <td style="text-align: center;">                    @if (ProyectTraspasado != "")
                                                                     {
-                    @movimiento.Observaciones.ToUpper();
+                     @ProyectTraspasado;
                                                                     }
                                                                     else
                                                                     {
-                    @ProyectTraspasado;
+                   
                                                                     } </td>
             </tr>
     }

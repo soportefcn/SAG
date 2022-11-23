@@ -246,7 +246,7 @@ input[type="text"], textarea
         // nos mostrará por pantalla "Texto 2" int DocumentoIDD, int NDocumentoD, int Monto, string FechaEmision, int CuentaID,
     });
     $("#GuardarLineaR").click(function () {
-        alert("entro");
+
         if ($("#CuentaID").val() == "" && $(".egreso #Origen").val() != "ff") {
             $('body').css('opacity', '0.25');
             alert("Debe seleccionar una cuenta para guardar el detalle.");

@@ -1692,7 +1692,16 @@ $(document).ready(function () {
     });
 
     // Replicar primer valor
+    $(".ReplicarValor").click(function () {
+        var cuentaID = $(this).attr("cuenta");
+        var valor = $("#Presupuesto_1_" + cuentaID).val();
 
+        if (valor != "") {
+            for (var i = 2; i < 13; i++) {
+                $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
+            }
+        }
+    });
 
     $("#TipoCuenta").change(function () {
         $(".cuenta_I").hide();
@@ -1826,18 +1835,7 @@ $(document).ready(function () {
             $('body').css('opacity', '1');
             return false;
         }
-
-        if ($("#PreguntarImprimir") != undefined && $("#PreguntarImprimir").val() == "true")
-        {
-            $('body').css('opacity','0.25');
-            if (confirm("Desea imprimir el comprobante?"))
-            {
-                $("#ImprimirComprobante").val("true");
-            }
-            $('body').css('opacity','1');
-        }
-
-        if ($("#Cheque") != undefined)  {
+       /* if ($("#Cheque") != undefined)  {
             var Valor = $("#Cheque").val();
             var Rev1 = $.isNumeric(Valor);
             if (!Rev1) {
@@ -1848,6 +1846,16 @@ $(document).ready(function () {
                 alert("El numero del Cheque no debe ser superior a 9 digitos");
                 return false;
             }
+        }*/
+
+        if ($("#PreguntarImprimir") != undefined && $("#PreguntarImprimir").val() == "true")
+        {
+            $('body').css('opacity','0.25');
+            if (confirm("Desea imprimir el comprobante?"))
+            {
+                $("#ImprimirComprobante").val("true");
+            }
+            $('body').css('opacity','1');
         }
         return true;
     });
@@ -1960,7 +1968,6 @@ $(document).ready(function () {
         }
         return false;
     });
-
     $(".tipobeneficiario #DVBuscar").focusout(function(){
         $("#PersonaID").val("0");
         $("#ProveedorID").val("0");

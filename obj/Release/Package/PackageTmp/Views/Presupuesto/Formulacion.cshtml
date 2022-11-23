@@ -38,8 +38,9 @@
     $(document).ready(function () {
         $("#GuardarPresupuesto").click(function () {
             if ($("#SaldoInicial").val() == "") {
-                alert("Debe ingresar el saldo inicial");
-                $("#SaldoInicial").focus();
+                //alert("Debe ingresar el saldo inicial");
+                //$("#SaldoInicial").focus();
+                $("#SaldoInicial").val("0");
                 return false;
             } else {
                 return true;
@@ -109,7 +110,7 @@
             }
         </tr>
         <tr>
-            <th align="right" >Saldo Inicial: <input type="text" value="@ViewBag.SaldoInicial" size="7" style="text-align: right;" disabled /></th>
+            <th align="right" >Saldo Inicial: <input type="text" value="@ViewBag.SaldoInicial.ToString("#,##0")" size="7" style="text-align: right;" disabled /></th>
             <th colspan="12"></th>
         </tr>
         @foreach (var cuenta in Model)

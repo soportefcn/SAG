@@ -31,7 +31,7 @@ input[type="text"], textarea
                <fieldset>
          <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Movimiento de Egreso de Articulo</h3>
+    <h3 class="panel-title">Movimiento de Salida</h3>
   </div>
   <div class="panel-body">
    <div class="form-group form-inline" style="text-align:right" >
@@ -70,7 +70,7 @@ input[type="text"], textarea
             <label>Categoría</label>
         </div>
         <div class="form-group" style="margin-right: 10px;">
-            @Html.DropDownList("CategoriaID", null, new { @class= "form-control" })
+             @Html.DropDownList("CategoriaID", null, "-- SELECCIONE UNA CATEGORIA --", new { @class = "form-control"} )
 
         </div>
 
@@ -111,7 +111,7 @@ input[type="text"], textarea
       <div class="panel-footer">
     <div  style ="width: 400px ; display:inline-block">
            <a class="btn btn-success" href="./ListarSalidas" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
-            <a class="btn btn-default" href="/SAG_5_desarrollo//MovimientosBodega/movimientoSalida"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+            <a class="btn btn-default" href="/SAG_5//MovimientosBodega/movimientoSalida"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
         </div>
          <div style="float :right;width:150px;display:inline-block">
          <input class ="btn btn-primary" type="submit" value="Guardar" />
@@ -151,7 +151,7 @@ input[type="text"], textarea
             }
                 });
         $("#CategoriaID").change(function () {
-            $.get('/SAG_5_desarrollo/Articulos/Articulos/' + $(this).val(), function (response) {
+            $.get('/SAG_5/Articulos/Articulos/' + $(this).val(), function (response) {
                 var articulos = $.parseJSON(response);
                 var ddlArticulos = $('#ArticuloID');
                 $('#ArticuloID > option').remove();
@@ -171,7 +171,7 @@ input[type="text"], textarea
         $("#ArticuloID").change(function () {
             var periodo = $("#Periodo").val();
             var mes = $("#Mes").val();
-            $.get('/SAG_5_desarrollo/Bodega/darsaldo/?articuloID=' + $(this).val() +"&periodo="+ periodo + "&mes=" + mes , function (response) {
+            $.get('/SAG_5/Bodega/darsaldo/?articuloID=' + $(this).val() +"&periodo="+ periodo + "&mes=" + mes , function (response) {
             var saldo = $.parseJSON(response);
             if (saldo.length == 0) {
                 alert("El producto no tiene Saldo");
@@ -191,7 +191,7 @@ input[type="text"], textarea
             var articulo = $("#ArticuloID").val();
           
             if (articulo != 1) {
-                $.get('/SAG_5_desarrollo/Bodega/darsaldo/?articuloID=' + articulo + "&periodo=" + periodo + "&mes=" + mes, function (response) {
+                $.get('/SAG_5/Bodega/darsaldo/?articuloID=' + articulo + "&periodo=" + periodo + "&mes=" + mes, function (response) {
                     var saldo = $.parseJSON(response);
                     if (saldo.length == 0) {
                         alert("El producto no tiene Saldo");

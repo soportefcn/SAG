@@ -1,6 +1,20 @@
 ﻿@model SAG2.Models.Movimiento
+@using SAG2.Models;
 @{
     Layout = null;
+    Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+    SAG2DB db = new SAG2DB();
+}
+@{
+    try
+    {
+        Rol Rol = db.Rol.Where(r => r.ProyectoID == Proyecto.ID && r.TipoRolID == 5).Single();
+        ViewBag.Ejecutor = Rol.Persona.NombreCompleto;
+    }
+    catch (Exception)
+    {
+        ViewBag.Ejecutor = "DEBE ASIGNAR SECRETARIA";
+    }
 }
 <!DOCTYPE html>
 <html>
@@ -118,7 +132,8 @@
   </tr>
 </table>
     @{
-        if (Model.CuentaID == 60){
+        if (Model.CuentaID == 60)
+        {
                     <table width="100%" border="1" cellspacing="0" cellpadding="0">
                         <tr>
                             <th style="width: auto;">Nº Doc.</th>
@@ -127,9 +142,9 @@
                             <th style="width: auto;">Cuenta</th>      
                         </tr>
             @{
-                int Idm = Model.ID;
-          SAG2.Models.SAG2DB db3 = new SAG2.Models.SAG2DB();
-           // List<SAG2.Models.DetalleReintegro> ReintegrosD = db3.DetalleReintegro.Where(d => d.MovimientoID == detalle.ID).ToList();
+            int Idm = Model.ID;
+            SAG2.Models.SAG2DB db3 = new SAG2.Models.SAG2DB();
+            // List<SAG2.Models.DetalleReintegro> ReintegrosD = db3.DetalleReintegro.Where(d => d.MovimientoID == detalle.ID).ToList();
             foreach (var Reintegro in @ViewBag.DetallesR)
             {
                 <tr>

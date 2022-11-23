@@ -188,12 +188,12 @@ input[type="text"], textarea
         @if (Model.Nulo == null || Model.Nulo.Equals("N"))
         {
            
-            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Liberar" href="../LiberarEgreso/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea liberar este egreso? Eliminará todo el detalle asociado a él.');"><span class ="fa fa-unlock fa-lg"></span></a>
-            <a class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Anular" href="../Anular/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea anular este egreso? Si lo hace, PERDERÁ el correlativo.');"><span class ="fa fa-times fa-lg"></span></a>
+            <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Liberar" href="../LiberarEgreso/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea liberar este egreso? Eliminará todo el detalle asociado a él.  y se eliminaran los bienes asociados');"><span class ="fa fa-unlock fa-lg"></span></a>
+            <a class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Anular" href="../Anular/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea anular este egreso? Si lo hace, PERDERÁ el correlativo. y se eliminaran los bienes asociados');"><span class ="fa fa-times fa-lg"></span></a>
         }
         @if (@ViewBag.UltimoIdentificador != null && @ViewBag.UltimoIdentificador.Equals(Model.ID.ToString()))
         {
-            <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea eliminar este egreso? Si lo hace, podrá utilizar nuevamente este correlativo.');"><span class ="fa fa-trash-o fa-fw"></span></a>
+            <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea eliminar este egreso? Si lo hace, podrá utilizar nuevamente este correlativo. y se eliminaran los bienes asociados');"><span class ="fa fa-trash-o fa-fw"></span></a>
         }
         <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Cancelar" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Egresos/Create"><span class ="fa fa-undo fa-fw"></span></a>
           

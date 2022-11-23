@@ -20,10 +20,6 @@ ul.dropdown ul li a					{ border-right: none; }
 ul.dropdown ul ul 					{ left: 100%; top: 0; }
 ul.dropdown li:hover > ul 			{ visibility: visible; }
 
-#data tr {
-  display: none;
-}
-
 .soloImpresion
 {
     /* display: none;*/    
