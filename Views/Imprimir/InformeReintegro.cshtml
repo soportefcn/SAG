@@ -78,6 +78,7 @@
             <th align="left" width="50px">Fecha</th>
             <th align="left" width="100px" style="white-space: nowrap;">Cuenta</th>
             <th style="border-right: 1px solid black;" style="white-space: nowrap;">Cta. Cte.</th>
+            <th style="border-right: 1px solid black;" style="white-space: nowrap;">Beneficiario</th>
         </tr>
     @foreach (var item in Model)
     {
@@ -114,7 +115,8 @@
                         @Html.Raw(detalle.Cuenta.NombreLista)
                     </div>
                 </td>
-                <td align="center">@Html.DisplayFor(modelItem => item.CuentaCorriente.NumeroLista)</td>            
+                <td align="center">@Html.DisplayFor(modelItem => item.CuentaCorriente.NumeroLista)</td>     
+                <td align="left">@Html.DisplayFor(modelItem => item.Beneficiario)</td>       
             }
             catch (Exception)
             {

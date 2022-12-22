@@ -1,0 +1,42 @@
+﻿@model IEnumerable<SAG2.Models.CuentaGlosa>
+
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Glosa x Cuenta";
+}
+
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>
+            CuentaID
+        </th>
+        <th>
+            Glosa
+        </th>
+        <th>
+            Respaldo
+        </th>
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CuentaID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Glosa)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Respaldo)
+        </td>
+              <td>
+            <a href="@Url.Action("Edit", "CuentaGlosa", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+
+    </tr>
+}
+
+</table>

@@ -230,26 +230,6 @@ $(document).ready(function () {
     });
     
 
-    /*
-    $("#Bruto").change(function () {
-        if ($('#Bruto').val() != "") {
-            var bruto = new Number($('#Bruto').val());
-           
-            var porce=10.75;
-            var retencion = bruto * porce / 100;
-       
-            
-         
-            var checkText = $("#Porcentaje").val();;
-            alert('jquery catch select text' + checkText);
-            alert($(".Porcentaje").find("option:selected").text() + ' clicked!');
-            var neto = bruto - retencion;
-            $('#Retencion').val(Math.round(retencion));
-            $('#Neto').val(Math.round(neto));
-        }
-    });
-                */
-
 
     $("#Bruto").change(function () {
         if ($('#Bruto').val() != "") {
@@ -490,166 +470,61 @@ $(document).ready(function () {
     });
     */
 
-    $(".egreso #GuardarLinea").click(function () {
-     
-       
-        if ($("#CuentaID").val() == "" && $(".egreso #Origen").val() != "ff") {
-            $('body').css('opacity','0.25');
-            alert("Debe seleccionar una cuenta para guardar el detalle.");
-            $('body').css('opacity','1');
-            $("#CuentaID").focus();
-            return false;
-        }
+   
 
-        var monto = new Number($("#Monto").val());
-        var montoEgreso = new Number($("#Monto_Egresos").val());
-
-        var montoTotal = monto + montoEgreso;
- 
-        
-        if ($(".egreso #Origen").val() == "oo" || $(".egreso #Origen").val() == "dp" || $(".egreso #Origen").val() == "hs") {
-            $.post("/SAG_5/Egresos/GuardarLinea", $("#detalle form").serialize(),
-            function (data) {
-                if (data == "OK") {
-                    // Si el monto fue guardado leemos utilidad para sumar detalles del egreso
-                    $.get('/SAG_5/Data/SumaDetalleEgreso', function(data) {
-                        $('#Monto_Egresos').val(data);
-                        $('body').css('opacity','0.25');
-                        alert("Línea guardada con exito!");
-                        $('body').css('opacity','1');
-                        $(".egreso #NComprobanteDP").val("");
-                        $(".egreso #DocumentoIDD").val("");
-                        $(".egreso #NDocumentoD").val("");
-                        $(".egreso #Monto").val("");
-                        $(".egreso #CuentaID").val("");
-                        $(".egreso #Glosa").val("");
-                        $(".egreso #Origen").val("");
-                        $(".egreso #DeudaPendienteID").val("");
-                        $(".egreso #BoletaHonorarioID").val("");
-                    });
-                } else {
-                    $('body').css('opacity','0.25');
-                    alert(data);
-                    $('body').css('opacity','1');
-                    return false;
-                }
-            })
-            .success(function () { })
-            .error(function () { })
-            .complete(function () { });
-        } else if ($(".egreso #Origen").val() == "ff") {
-            //alert($("#FondoFijoGrupoID").val());
-            var fondoFijoGrupoID = $("#FondoFijoGrupoID").val();
-            /*if ($(".egreso #DocumentoID").val() == "") {
-            alert("Debe seleccionar un tipo de documento.");
-            $(".egreso #DocumentoID").focus();
-            return false;
-            } else {*/
-            //$.get('/SAG_5/FondoFijo/GenerarEgreso/?DocumentoID=' + $(".egreso #DocumentoID").val(), function (response) {
-            $.get('/SAG_5/CajaChica/GenerarEgreso/?fondoFijoGrupoID=' + fondoFijoGrupoID, function (response) {
-                $('body').css('opacity','0.25');
-                if (response == "-1") {
-                    alert("Ocurrió un error al agregar el detalle del fondo fijo.");
-                    return false;
-                } else if (response == "0") {
-                    alert("No hay fondo fijo disponible para generar el egreso.");
-                    return false;
-                } else {
-                    alert("Fondo fijo agregado al detalle del egreso con exito!");
-                    montoEgreso = new Number(response);
-                    $("#Monto_Egresos").val(montoEgreso);
-                    $(".egreso #NComprobanteDP").val("");
-                    $(".egreso #DocumentoIDD").val("");
-                    $(".egreso #NDocumentoD").val("");
-                    $(".egreso #Monto").val("");
-                    $(".egreso #CuentaID").val("");
-                    $(".egreso #Glosa").val("");
-                    $(".egreso #Origen").val("");
-                    $(".egreso #DeudaPendienteID").val("");
-                    $(".egreso #BoletaHonorarioID").val("");
-                }
-                $('body').css('opacity','1');
-            });
-            //}
-        }
-
-        if ($(".egreso #DetalleEgresoID") != undefined && $(".egreso #DetalleEgresoID").val() != "" && $(".egreso #DetalleEgresoID") != null && $(".egreso #DetalleEgresoID").val() != "0") {
-            $(".egreso #DetalleEgresoID").val("");
-        } else {
-            $(".egreso #DetalleEgresoIndex").val("");
-        }
-
-        var currSrc = $("#iframeDetalle").attr("src");
-        $("#iframeDetalle").attr("src", "");
-        $("#iframeDetalle").attr("src", currSrc);
-        $("#iframeDetalle").show();
-
-        $("#iframeDetalle").attr("src", function ( i, val ) { return val; });
-
-        try {
-            $('#iframeDetalle').contentWindow.location.reload(true);
-            $('#iframeDetalle').contentWindow.location.reload(true);
-            $('#iframeDetalle').contentWindow.location.reload(true);
-            $('#iframeDetalle').contentWindow.location.reload(true);
-            $('#iframeDetalle').contentWindow.location.reload(true);
-            $('#iframeDetalle').contentWindow.location.reload(true);
-        } catch (err) { }
-        //$("#FondoFijoGrupoID").val("");
-    });
-
-    $(".egreso #BorrarLinea").click(function () {
-        var monto = new Number($("#Monto").val());
-        var montoEgreso = new Number($("#Monto_Egresos").val());
-        // Guardamos linea del formulario si opcion es otro
-        if ($(".egreso #Origen").val() == "oo" || $(".egreso #Origen").val() == "dp" || $(".egreso #Origen").val() == "hs") {
-            $.post("/SAG_5/Egresos/BorrarLinea", $("#detalle form").serialize(),
-            function (data) {
-                if (data == "OK") {
-                    $.get('/SAG_5/Data/SumaDetalleEgreso', function(data) {
-                        $('#Monto_Egresos').val(data);
-                        $('body').css('opacity','0.25');
-                        alert("Detalle borrada con exito!");
-                        $('body').css('opacity','1');
-                    });
-                } else {
-                    $('body').css('opacity','0.25');
-                    alert("Ocurrió un error al borrar el detalle.");
-                    $('body').css('opacity','1');
-                    return false;
-                }
-            })
-            .success(function () { })
-            .error(function () { })
-            .complete(function () { });
-        } else if ($(".egreso #Origen").val() == "ff") {
+    //$(".egreso #BorrarLinea").click(function () {
+    //    var monto = new Number($("#Monto").val());
+    //    var montoEgreso = new Number($("#Monto_Egresos").val());
+    //     Guardamos linea del formulario si opcion es otro
+    //    if ($(".egreso #Origen").val() == "oo" || $(".egreso #Origen").val() == "dp" || $(".egreso #Origen").val() == "hs") {
+    //        $.post("/SAG_5/Egresos/BorrarLinea", $("#detalle form").serialize(),
+    //        function (data) {
+    //            if (data == "OK") {
+    //                $.get('/SAG_5/Data/SumaDetalleEgreso', function(data) {
+    //                    $('#Monto_Egresos').val(data);
+    //                    $('body').css('opacity','0.25');
+    //                    alert("Detalle borrada con exito!");
+    //                    $('body').css('opacity','1');
+    //                });
+    //            } else {
+    //                $('body').css('opacity','0.25');
+    //                alert("Ocurrió un error al borrar el detalle.");
+    //                $('body').css('opacity','1');
+    //                return false;
+    //            }
+    //        })
+    //        .success(function () { })
+    //        .error(function () { })
+    //        .complete(function () { });
+    //    } else if ($(".egreso #Origen").val() == "ff") {
            
-        }
+    //    }
 
-        if ($(".egreso #DetalleEgresoID") != undefined && $(".egreso #DetalleEgresoID").val() != "" && $(".egreso #DetalleEgresoID") != null && $(".egreso #DetalleEgresoID").val() != "0") {
-            $(".egreso #DetalleEgresoID").val("");
-        } else {
-            $(".egreso #DetalleEgresoIndex").val("");
-        }
+    //    if ($(".egreso #DetalleEgresoID") != undefined && $(".egreso #DetalleEgresoID").val() != "" && $(".egreso #DetalleEgresoID") != null && $(".egreso #DetalleEgresoID").val() != "0") {
+    //        $(".egreso #DetalleEgresoID").val("");
+    //    } else {
+    //        $(".egreso #DetalleEgresoIndex").val("");
+    //    }
 
-        var currSrc = $("#iframeDetalle").attr("src");
-        $("#iframeDetalle").attr("src", "");
-        $("#iframeDetalle").attr("src", currSrc);
-        $("#iframeDetalle").show();
+    //    var currSrc = $("#iframeDetalle").attr("src");
+    //    $("#iframeDetalle").attr("src", "");
+    //    $("#iframeDetalle").attr("src", currSrc);
+    //    $("#iframeDetalle").show();
 
-        $("#iframeDetalle").attr("src", "");
-        $("#iframeDetalle").attr("src", currSrc);
-        $("#iframeDetalle").show();
+    //    $("#iframeDetalle").attr("src", "");
+    //    $("#iframeDetalle").attr("src", currSrc);
+    //    $("#iframeDetalle").show();
 
-        $(".egreso #NComprobanteDP").val("");
-        $(".egreso #DocumentoID").val("");
-        $(".egreso #NDocumento").val("");
-        $(".egreso #Monto").val("");
-        $(".egreso #CuentaID").val("");
-        $(".egreso #Glosa").val("");
-        $(".egreso #Origen").val("");
-        $(".egreso #DeudaPendienteID").val("");
-        $(".egreso #BoletaHonorarioID").val("");
-    });
+    //    $(".egreso #NComprobanteDP").val("");
+    //    $(".egreso #DocumentoID").val("");
+    //    $(".egreso #NDocumento").val("");
+    //    $(".egreso #Monto").val("");
+    //    $(".egreso #CuentaID").val("");
+    //    $(".egreso #Glosa").val("");
+    //    $(".egreso #Origen").val("");
+    //    $(".egreso #DeudaPendienteID").val("");
+    //    $(".egreso #BoletaHonorarioID").val("");
+    //});
 
 
     /**************  Salida ****/
@@ -876,7 +751,7 @@ $(document).ready(function () {
         window.parent.document.getElementById("Origen").value = "";
         window.parent.document.getElementById("DeudaPendienteID").value = "";
         window.parent.document.getElementById("BoletaHonorarioID").value = "";
-
+       
         if ($(this).attr("DetalleEgresoID") != undefined && $(this).attr("DetalleEgresoID") != "" && $(this).attr("DetalleEgresoID") != null && $(this).attr("DetalleEgresoID") != "0") {
             window.parent.document.getElementById("DetalleEgresoID").value = "";
             window.parent.document.getElementById("DetalleEgresoID").value = $(this).attr("DetalleEgresoID");
@@ -941,7 +816,7 @@ $(document).ready(function () {
         window.parent.document.getElementById("BorrarLinea").style.display = 'block';
     });
 
-    $("#BorrarLinea").click(function(){
+    $("#BorrarLineaX").click(function(){
         if ($(".egreso #DetalleEgresoID") != undefined && $(".egreso #DetalleEgresoID").val() != "" && $(".egreso #DetalleEgresoID") != null && $(".egreso #DetalleEgresoID").val() != "0") {
             $(".egreso #DetalleEgresoID").val("");
         } else {
@@ -1692,16 +1567,7 @@ $(document).ready(function () {
     });
 
     // Replicar primer valor
-    $(".ReplicarValor").click(function () {
-        var cuentaID = $(this).attr("cuenta");
-        var valor = $("#Presupuesto_1_" + cuentaID).val();
 
-        if (valor != "") {
-            for (var i = 2; i < 13; i++) {
-                $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
-            }
-        }
-    });
 
     $("#TipoCuenta").change(function () {
         $(".cuenta_I").hide();
@@ -1835,7 +1701,18 @@ $(document).ready(function () {
             $('body').css('opacity', '1');
             return false;
         }
-       /* if ($("#Cheque") != undefined)  {
+
+        if ($("#PreguntarImprimir") != undefined && $("#PreguntarImprimir").val() == "true")
+        {
+            $('body').css('opacity','0.25');
+            if (confirm("Desea imprimir el comprobante?"))
+            {
+                $("#ImprimirComprobante").val("true");
+            }
+            $('body').css('opacity','1');
+        }
+
+        if ($("#Cheque").val() != undefined) {
             var Valor = $("#Cheque").val();
             var Rev1 = $.isNumeric(Valor);
             if (!Rev1) {
@@ -1846,16 +1723,6 @@ $(document).ready(function () {
                 alert("El numero del Cheque no debe ser superior a 9 digitos");
                 return false;
             }
-        }*/
-
-        if ($("#PreguntarImprimir") != undefined && $("#PreguntarImprimir").val() == "true")
-        {
-            $('body').css('opacity','0.25');
-            if (confirm("Desea imprimir el comprobante?"))
-            {
-                $("#ImprimirComprobante").val("true");
-            }
-            $('body').css('opacity','1');
         }
         return true;
     });
@@ -1968,6 +1835,7 @@ $(document).ready(function () {
         }
         return false;
     });
+
     $(".tipobeneficiario #DVBuscar").focusout(function(){
         $("#PersonaID").val("0");
         $("#ProveedorID").val("0");

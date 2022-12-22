@@ -10,13 +10,13 @@
         Response.ContentType = "application/vnd.ms-excel";
         Response.AddHeader("Content-Disposition", "attachment;filename=Intervenciones." + @ViewBag.Periodo + ".SAG.2.0-" + DateTime.Now.ToShortDateString() + ".xls");
     }
-    
+
     ViewBag.Title = "Intervenciones";
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
     int periodo = @ViewBag.Periodo;
 }
 @{ 
-     var Meses = new string[12]
+    var Meses = new string[12]
     {
 	    "Enero",
 	    "Febrero",
@@ -32,7 +32,11 @@
 	    "Diciembre"
 	};
 }
-
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".js-autocomplete").select2();
+        });
+        </script>
 <style>
 /* Conversion a mayusculas */
 input[type="text"], textarea
@@ -43,41 +47,48 @@ input[type="text"], textarea
 <div id="SAGBox" style="width: 90%">
 
     <h2 align="center">INTERVENCIONES MENSUALES PER&Iacute;ODO @periodo</h2>
-    @if (!@ViewBag.Exportar.Equals("xls"))
-    {<input class="btn btn-success" type="button" style="float: right;" value="Exportar a Excel" id="boton" onclick="@Html.Raw("window.location='/SAG_5/Control/Intervenciones?export=xls&Periodo="+@ViewBag.Periodo+"'");" />
-    }<br />
+<br />
     <br /><span style='float: right;'>
-        @Html.CheckBox("vigentes", false)Incluir no vigentes
+       
     </span>
-          <script type="text/javascript">
-              $("#vigentes").change(function () {
-                  if ($('#vigentes').prop('checked')) {
-                                            $("#boton").attr("onclick", "@Html.Raw("window.location='/SAG_5/Control/Intervenciones?export=xls&Periodo="+@ViewBag.Periodo+"&cerrado=S'");");
 
-                  }
-                  else {
-                                            $("#boton").attr("onclick", "@Html.Raw("window.location='/SAG_5/Control/Intervenciones?export=xls&Periodo="+@ViewBag.Periodo+"&cerrado='");");
-                  }
-              });
-
-          </script>
     @if (!@ViewBag.Exportar.Equals("xls"))
     {
         using (Html.BeginForm())
         {
+         
+            <input type="hidden" name="exportar" id="exportar" value="@ViewBag.Exportar" />
+
+ 
+           <table class="table table-striped">
+           <tr><td>
+               <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID", null, " TODOS ", new { @class = "form-control js-autocomplete" })</div> 
+               <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID", null, " TODOS ", new { @class = "form-control js-autocomplete" })</div>
+               <div class="col-md-4">Region   @Html.DropDownList("regionID", null, " TODOS ", new { @class = "form-control js-autocomplete" })</div>
+           </td></tr> 
+       </table>
+           <br />
+        <input class="btn btn-success" type="button" style="float: right;" value="Exportar a Excel" id="btnExportar" />
+        
+    
             @Html.Raw("Período:")
             <select name="Periodo" id="Periodo">
                 @for (var i = DateTime.Now.Year; i > DateTime.Now.Year - 5; i--)
                 {
-                    <option value="@Html.Raw((@i).ToString())" @if (i == periodo) { @Html.Raw("selected=\"selected\"") ; }>@Html.Raw((@i).ToString())</option>
+                    <option value="@Html.Raw((@i).ToString())" @if (i == periodo)
+                                                               { @Html.Raw("selected=\"selected\"") ;
+                                                               }>@Html.Raw((@i).ToString())</option>
                 }
             </select>
-            <input class="btn btn-primary" type="submit" value="Aceptar" />
+            <input class="btn btn-primary" type="submit" value="Aceptar" />           
+    
         }
     }
-    <br />
+    <hr />
     <!-- Nuevo formato intervenciones -->
-    <table class="table table-bordered table-hover" @if (@ViewBag.Exportar.Equals("xls")) { @Html.Raw("border=\"1\"") ; }>
+    <table class="table table-bordered table-hover" @if (@ViewBag.Exportar.Equals("xls"))
+                                                    { @Html.Raw("border=\"1\"") ;
+                                                    }>
         <tr>
             <th>Cobertura</th>
             @for (var i = 0; i < 12; i++)
@@ -96,7 +107,9 @@ input[type="text"], textarea
             var coberturas = db.Convenio.Where(p => p.Periodo == periodo && p.ProyectoID == proyecto.ID).ToList();
             <!-- Cobertura -->
             <tr>
-                <td style="font-weight: bold;" @if (@ViewBag.Exportar.Equals("xls")) { @Html.Raw("width=\"400px\"") ; }>@proyecto.CodCodeni  @proyecto.Nombre</td>
+                <td style="font-weight: bold;" @if (@ViewBag.Exportar.Equals("xls"))
+                                               { @Html.Raw("width=\"400px\"") ;
+                                               }>@proyecto.CodCodeni  @proyecto.Nombre</td>
                 @for (var i = 1; i < 13; i++)
                 {
                     try
@@ -126,9 +139,9 @@ input[type="text"], textarea
                     {
                         var atencion = proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes == i).Single();
                         <td style="text-align: center;@if (atencion.Atenciones < atencion.Cobertura)
-                                                  {@Html.Raw(" color: Red;")}
-                                                  else if (atencion.Atenciones > atencion.Cobertura)
-                                                  {@Html.Raw(" color: Blue;")}" valign="middle">
+                                                      {@Html.Raw(" color: Red;")}
+                                                      else if (atencion.Atenciones > atencion.Cobertura)
+                                                      {@Html.Raw(" color: Blue;")}" valign="middle">
                             @atencion.Atenciones
                         </td>
                     }
@@ -154,9 +167,9 @@ input[type="text"], textarea
                     {
                         var atencion = proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes == i).Single();
                         <td style="text-align: center;@if (@atencion.Porcentaje < 100)
-                                                  {@Html.Raw(" color: Red;")}
-                                                  else
-                                                  {@Html.Raw(" color: Blue;")}">
+                                                      {@Html.Raw(" color: Red;")}
+                                                      else
+                                                      {@Html.Raw(" color: Blue;")}">
                             @atencion.Porcentaje.ToString("0.00")%
                         </td>
                     }
@@ -176,44 +189,44 @@ input[type="text"], textarea
                         }
 
                         <td style="text-align: center; width: 57px;@if (porcentaje < 100)
-                                                               {@Html.Raw(" color: Red;")}
-                                                               else
-                                                               {@Html.Raw(" color: Blue;")}">
+                                                                   {@Html.Raw(" color: Red;")}
+                                                                   else
+                                                                   {@Html.Raw(" color: Blue;")}">
                             @Html.Raw(porcentaje_str)%
                         </td>
                     }
                 }
                 @{
-                    float cobertura2 = float.Parse(@coberturas.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6).Sum(p => p.NroPlazas).ToString());
-                    float atenciones2 = float.Parse(@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6).Sum(p => p.Atenciones).ToString());
-                    float porcentaje2 = atenciones2 * 100 / cobertura2;
-                    var porcentaje_str2 = porcentaje2.ToString("0.00");
-                    if (porcentaje_str2.Equals("NeuN"))
-                    {
-                        porcentaje_str2 = "0,00";
-                    }
+                float cobertura2 = float.Parse(@coberturas.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6).Sum(p => p.NroPlazas).ToString());
+                float atenciones2 = float.Parse(@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Where(p => p.Mes > 6).Sum(p => p.Atenciones).ToString());
+                float porcentaje2 = atenciones2 * 100 / cobertura2;
+                var porcentaje_str2 = porcentaje2.ToString("0.00");
+                if (porcentaje_str2.Equals("NeuN"))
+                {
+                    porcentaje_str2 = "0,00";
+                }
 
                     <td style="text-align: center; width: 57px;@if (porcentaje2 < 100)
-                                                           {@Html.Raw(" color: Red;")}
-                                                           else
-                                                           {@Html.Raw(" color: Blue;")}">
+                                                               {@Html.Raw(" color: Red;")}
+                                                               else
+                                                               {@Html.Raw(" color: Blue;")}">
                         @Html.Raw(porcentaje_str2)%
                     </td>
                 }
                 @{
-                    float cobertura3 = float.Parse(@coberturas.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.NroPlazas).ToString());
-                    float atenciones3 = float.Parse(@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.Atenciones).ToString());
-                    float porcentaje3 = atenciones3 * 100 / cobertura3;
-                    var porcentaje_str3 = porcentaje3.ToString("0.00");
-                    if (porcentaje_str3.Equals("NeuN"))
-                    {
-                        porcentaje_str3 = "0,00";
-                    }
+                                                               float cobertura3 = float.Parse(@coberturas.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.NroPlazas).ToString());
+                                                               float atenciones3 = float.Parse(@proyecto.Intervenciones.Where(p => p.Periodo == @ViewBag.Periodo).Sum(p => p.Atenciones).ToString());
+                                                               float porcentaje3 = atenciones3 * 100 / cobertura3;
+                                                               var porcentaje_str3 = porcentaje3.ToString("0.00");
+                                                               if (porcentaje_str3.Equals("NeuN"))
+                                                               {
+                                                                   porcentaje_str3 = "0,00";
+                                                               }
 
                     <td style="text-align: center; width: 57px;@if (porcentaje3 < 100)
-                                                           {@Html.Raw(" color: Red;")}
-                                                           else
-                                                           {@Html.Raw(" color: Blue;")}">
+                                                               {@Html.Raw(" color: Red;")}
+                                                               else
+                                                               {@Html.Raw(" color: Blue;")}">
                         @Html.Raw(porcentaje_str3)%
                     </td>
                 }
@@ -221,3 +234,94 @@ input[type="text"], textarea
         }
     </table>
 </div>
+<script>
+    $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+        $('#TipoProgramaID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+                    var Tprograma = $('#TipoProgramaID').val();
+                    if (Tprograma == "") {
+                        Tprograma = 0;
+                    }
+                    var Tregion = $('#regionID').val();
+                    if (Tregion == "") {
+                        Tregion = 0;
+                    }
+                    return $.ajax({
+                        url: url,
+                        method: 'POST',
+                        async: false,
+                        dataType: 'json',
+                        data: {
+                            id: Tprograma,
+                            RegionID: Tregion
+                        },
+                        success: function (agrupaciones, textStatus, xhr) {
+                            var comunas = agrupaciones;
+                            var ddlComunas = $('#ProyectoID');
+                            $('#ProyectoID > option').remove();
+                            if (comunas.length == 0) {
+                                ddlComunas.append($("<option />").val("1").text("Sin información"));
+                            } else {
+                                ddlComunas.append($("<option />").val("1").text("Todos"));
+                                for (i = 0; i < comunas.length; i++) {
+                                    ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                                }
+                            }
+
+                        },
+                        error: function (request, status, error) {
+                            alert("error");
+                        }
+                    });
+        });
+        $('#regionID').change(function () {
+            url = baseUrl + '@Url.Action("ProgramaRegionTipo", "Administracion")';
+                    var Tprograma = $('#TipoProgramaID').val();
+                    if (Tprograma == "") {
+                        Tprograma = 0;
+                    }
+                    var Tregion = $('#regionID').val();
+                    if (Tregion == "") {
+                        Tregion = 0;
+                    }
+                    return $.ajax({
+                        url: url,
+                        method: 'POST',
+                        async: false,
+                        dataType: 'json',
+                        data: {
+                            id: Tprograma,
+                            RegionID: Tregion
+                        },
+                        success: function (agrupaciones, textStatus, xhr) {
+                            var comunas = agrupaciones;
+                            var ddlComunas = $('#ProyectoID');
+                            $('#ProyectoID > option').remove();
+                            if (comunas.length == 0) {
+                                ddlComunas.append($("<option />").val("1").text("Sin información"));
+                            } else {
+                                ddlComunas.append($("<option />").val("1").text("Todos"));
+                                for (i = 0; i < comunas.length; i++) {
+                                    ddlComunas.append($("<option />").val(comunas[i].Value).text(comunas[i].Text));
+                                }
+                            }
+
+                        },
+                        error: function (request, status, error) {
+                            alert("error");
+                        }
+                    });
+
+        });
+
+        $("#btnExportar").click(function () {
+           
+            $("#exportar").val("xls");            
+            $("form").submit();
+
+        });
+
+    });
+ </script>

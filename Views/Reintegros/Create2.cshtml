@@ -244,6 +244,7 @@ input[type="text"], textarea
     </div>
 </div>
 <script>
+
     $(document).ready(function () {
         $(".validarCeroN").change(function () {
             var ceID = $('#CuentaID').val();
@@ -321,10 +322,12 @@ function (data) {
 })
 
         })
+
         $("#CuentaIDD").change(function () {
             // Así accedemos al Texto de la opción seleccionada
             var valor = $("#CuentaIDD option:selected").attr('title');
             $("#texto").html(valor)
+         
             // alert(valor);
             // Si seleccionamos la opción "Texto 2"
             // nos mostrará por pantalla "Texto 2"
@@ -333,6 +336,7 @@ function (data) {
             // Así accedemos al Texto de la opción seleccionada
             var valor = $("#CuentaIDD option:selected").attr('title');
             $("#texto").html(valor)
+
             // alert(valor);
             // Si seleccionamos la opción "Texto 2"
             // nos mostrará por pantalla "Texto 2"
@@ -345,9 +349,7 @@ function (data) {
             // Si seleccionamos la opción "Texto 2"
             // nos mostrará por pantalla "Texto 2"
         });
-        $("#CuentaIDD").change(function(){
-         // alert($("#CuentaIDD").val()+' - ' +$("#CuentaID").val());
-        })
+
         $("#GuardarLineaR").click(function () {
             if ($("#CuentaIDD").val() == "" && $(".egreso #Origen").val() != "ff") {
                 $('body').css('opacity', '0.25');
@@ -385,24 +387,24 @@ function (data) {
 
             }
         $.post("@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Reintegros/GuardarLinea", $("#detalle form").serialize(),
-  function (data) {
-      if (data == "OK") {
-          $('#Monto_Ingresos').val(montoTotal);
-          $('body').css('opacity', '0.25');
-          alert("Línea guardada con exito!");
-          $('body').css('opacity', '1');
-          $("#DocumentoIDD").val("");
-          $("#NDocumentoD").val("");
-          $("#Monto").val("");
-          $("#CuentaIDD").val("");
-          $("#DetalleReintegroIndex").val("");
-          $("#MontoOriginal").val("");
-      } else {
-          $('body').css('opacity', '0.25');
-          alert(data);
-          $('body').css('opacity', '1');
-          return false;
-      }
+        function (data) {
+            if (data == "OK") {
+              $('#Monto_Ingresos').val(montoTotal);
+              $('body').css('opacity', '0.25');
+              alert("Línea guardada con exito!");
+              $('body').css('opacity', '1');
+              $("#DocumentoIDD").val("");
+              $("#NDocumentoD").val("");
+              $("#Monto").val("");
+              $("#CuentaIDD").val("");
+              $("#DetalleReintegroIndex").val("");
+              $("#MontoOriginal").val("");
+         } else {
+              $('body').css('opacity', '0.25');
+              alert(data);
+              $('body').css('opacity', '1');
+              return false;
+         }
   })
         var currSrc = $("#iframeDetalle").attr("src");
         $("#iframeDetalle").attr("src", "");

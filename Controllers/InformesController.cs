@@ -294,7 +294,10 @@ namespace SAG2.Controllers
                     
                 }
                 else {
-                    ViewBag.ProyectoID = utils.ProyectoFiltro(filtro,0);
+                 
+                        ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, 0);
+ 
+                   
                     ViewBag.PrCod = "";
                  
                     ViewBag.PrID = 1;

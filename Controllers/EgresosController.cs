@@ -65,8 +65,9 @@ namespace SAG2.Controllers
         }
         public ViewResult Index()
         {
+            int periodo = (int)Session["Periodo"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            var movimiento = db.Movimiento.Include(m => m.Proyecto).Include(m => m.TipoComprobante).Include(m => m.Cuenta).Include(m => m.Persona).Include(m => m.Proveedor).Include(m => m.CuentaCorriente).Where(m => m.auto == 0).Where(m => m.TipoComprobanteID == ctes.tipoEgreso).Where(m => m.ProyectoID == Proyecto.ID).Where(a => a.Temporal == null && a.Eliminado == null && ((a.CuentaID != 6 || a.CuentaID == null) || a.CuentaID == null)).OrderByDescending(a => a.Periodo).ThenByDescending(a => a.NumeroComprobante);
+            var movimiento = db.Movimiento.Include(m => m.Proyecto).Include(m => m.TipoComprobante).Include(m => m.Cuenta).Include(m => m.Persona).Include(m => m.Proveedor).Include(m => m.CuentaCorriente).Where(m => m.auto == 0).Where(m => m.TipoComprobanteID == ctes.tipoEgreso).Where(m => m.ProyectoID == Proyecto.ID).Where(a => a.Temporal == null && a.Eliminado == null && ((a.CuentaID != 6 || a.CuentaID == null) || a.CuentaID == null) && a.Periodo == periodo ).OrderByDescending(a => a.Periodo).ThenByDescending(a => a.NumeroComprobante);
             return View(movimiento.ToList());
         }
 
@@ -394,6 +395,10 @@ namespace SAG2.Controllers
             {
                 ViewBag.MontoEgreso = egreso.Monto_Egresos;
             }
+            // Detalle Egreso 
+            List<DetalleEgreso> lista = new List<DetalleEgreso>();
+            lista = db.DetalleEgreso.Where(d => d.MovimientoID == id).ToList();
+            Session.Add("DetalleEgreso", lista);
 
             return View(egreso);
         }
@@ -844,6 +849,7 @@ namespace SAG2.Controllers
             int mes = (int)Session["Mes"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             CuentaCorriente CuentaCorriente = (CuentaCorriente)Session["CuentaCorriente"];
+            // Buscar cuenta corriente segun movimiento !!!
 
             // Verificamos que haya saldo disponible para guardar el detalle de egreso
             try
@@ -864,14 +870,19 @@ namespace SAG2.Controllers
             if (Session["DetalleEgreso"] != null)
             {
                 lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+                if (lista.Count == 0) {
+                    lista = new List<DetalleEgreso>();
+                    DetalleEgresoIndex = -1;
+                }
             }
             else
             {
                 lista = new List<DetalleEgreso>();
+                DetalleEgresoIndex = -1;
             }
 
             // Se limpia la lista temporal
-            Session.Remove("DetalleEgreso");
+            //Session.Remove("DetalleEgreso");
 
             try
             {

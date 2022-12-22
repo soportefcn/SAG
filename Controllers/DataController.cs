@@ -5,11 +5,14 @@ using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
 using System.IO;
+using System.Web.Script.Serialization;
+
 
 namespace SAG2.Controllers
 {
     public class DataController : Controller
     {
+        private SAG2DB db = new SAG2DB();
         public string SumaDetalleEgreso()
         {
             if (Session["DetalleEgreso"] != null)
@@ -28,6 +31,85 @@ namespace SAG2.Controllers
                 return "0";
             }
         }
+
+        public string NDetalleEgreso(int x) { 
+        DetalleEgreso xdata =  new DetalleEgreso();
+        List<DetalleEgreso> Lista = new List<DetalleEgreso>();
+        if (Session["DetalleEgreso"] != null)
+        {
+            Lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+            int i = 0;
+            foreach (var data in Lista)
+            {
+                i++;
+                if (x == i){
+                    xdata.ID = data.ID;
+                    xdata.BoletaHonorarioID = data.BoletaHonorarioID;
+                    xdata.CuentaID = data.CuentaID;
+                    xdata.Monto = data.Monto;
+                    xdata.NDocumento = data.NDocumento;
+                    xdata.DocumentoID = data.DocumentoID;
+                    xdata.Glosa = data.Glosa;
+                    xdata.DeudaPendienteID = data.DeudaPendienteID;
+                    xdata.FondoFijoID = data.FondoFijoID;
+                    xdata.FechaEmision = data.FechaEmision;
+                    xdata.FechaVencimiento = data.FechaVencimiento;
+                }
+            }
+        }
+        return new JavaScriptSerializer().Serialize(xdata);
+        }
+        
+        public string DetalleEgreso()
+        {
+            List<DetalleEgreso> Lista = new List<DetalleEgreso>();
+            List<FrmEgreso> ListaData = new List<FrmEgreso>();
+            if (Session["DetalleEgreso"] != null)
+            {            
+                Lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+                foreach( var data in Lista){
+                    FrmEgreso xdata = new FrmEgreso();
+                    xdata.NComprobanteDP = data.NComprobanteDP.ToString();
+                    xdata.Documento = db.Documento.Find(data.DocumentoID).NombreLista;
+                    xdata.NDocumento = long.Parse(data.NDocumento.ToString());
+                    xdata.Monto = data.Monto;
+                    xdata.FechaEmision = data.FechaEmision.ToShortDateString();
+                    xdata.FechaVencimiento = data.FechaVencimiento.ToShortDateString();
+                    xdata.NombreCuenta = db.Cuenta.Find(data.CuentaID).NombreLista;
+                    xdata.FondoFijoID = data.FondoFijoID;
+                    xdata.DeudaPendienteID = data.DeudaPendienteID;
+                    xdata.BoletaHonorarioID = data.BoletaHonorarioID;
+                    int len = data.Glosa.Length;
+                    if (len > 20)
+                    {
+                        xdata.Glosa = data.Glosa.Substring(0,19);
+                    }
+                    else {
+                        xdata.Glosa = data.Glosa;
+                    }
+                    ListaData.Add(xdata);
+                  
+                }
+            }
+            return new JavaScriptSerializer().Serialize(ListaData);
+           
+        }
+        
+        public string DetalleEgresoEliminar(int x)
+        {
+            DetalleEgreso xdata = new DetalleEgreso();
+            List<DetalleEgreso> Lista = new List<DetalleEgreso>();
+            if (Session["DetalleEgreso"] != null)
+            {
+                Lista = (List<DetalleEgreso>)Session["DetalleEgreso"];          
+
+            }
+
+
+            return new JavaScriptSerializer().Serialize(xdata);
+        }
+        
+       
         public string SumaDetalleReintegro()
         {
             if (Session["DetalleReintegro"] != null)
@@ -46,6 +128,7 @@ namespace SAG2.Controllers
                 return "0";
             }
         }
+       
         public int recibir()
         {
             int datos = 0;
@@ -54,8 +137,6 @@ namespace SAG2.Controllers
                 // var pic = System.Web.HttpContext.Current.Request.Files["file"];
                 try
                 {
-
-
                     HttpPostedFileBase filebase = new HttpPostedFileWrapper(httpPostedFile);
                     var fileName = Path.GetFileName(filebase.FileName);
                     // var path = Path.Combine(Server.MapPath("~/pdf/"), fileName);
@@ -96,5 +177,47 @@ namespace SAG2.Controllers
              
 
     }
+   
+    // Obtener glosa
+        public string Glosacuenta(int xCuentaID)
+        {
+            CuentaGlosa Dato = new CuentaGlosa();
+            // Datos Referenciados
+            var Meses = new string[13]
+        {
+        " ","Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+        };
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];      
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+
+            var xDato = db.CuentaGlosa.Where(d => d.CuentaID == xCuentaID && d.Estado == 1).FirstOrDefault();
+
+            if (xDato != null) {
+
+                string Glosa = xDato.Glosa;
+
+                // Palabras Reservadas
+
+                Glosa = Glosa.Replace("<mes>",Meses[mes]);
+                Glosa = Glosa.Replace("<periodo>", periodo.ToString());
+                Glosa = Glosa.Replace("<nProyecto>", Proyecto.NombreLista);
+                Glosa = Glosa.Replace("<Proyecto>", Proyecto.Nombre);
+
+
+                Dato.ID = xDato.ID;
+                Dato.CuentaID = xDato.CuentaID;
+                Dato.Glosa = Glosa;
+                Dato.Respaldo = xDato.Respaldo;
+
+
+
+            }
+
+             
+
+            return new JavaScriptSerializer().Serialize(Dato);
+        }
+    
     }
 }

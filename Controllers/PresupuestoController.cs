@@ -976,25 +976,25 @@ namespace SAG2.Controllers
                 ViewBag.Mes_Inicio = "1";
                 ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
                 // desde Saldo
- 
+
                 dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
             }
             catch (Exception)
             {
                 ViewBag.SaldoInicial = 0;
             }
-                int PeriodoAnt = Periodo - 1;
-                int SaldoInicial = 0;
-                try
-                {
-                   SaldoInicial = db.Saldo.Where(d => d.Mes == 12 && d.Periodo == PeriodoAnt && d.CuentaCorriente.ProyectoID == Proyecto.ID).FirstOrDefault().SaldoFinal;
-          
-                }
-                catch (Exception)
-                {
-                    SaldoInicial = 0;
-                }
-                ViewBag.SaldoInicial = SaldoInicial;
+            int PeriodoAnt = Periodo - 1;
+            int SaldoInicial = 0;
+            try
+            {
+                SaldoInicial = db.Saldo.Where(d => d.Mes == 12 && d.Periodo == PeriodoAnt && d.CuentaCorriente.ProyectoID == Proyecto.ID).FirstOrDefault().SaldoFinal;
+
+            }
+            catch (Exception)
+            {
+                SaldoInicial = 0;
+            }
+            ViewBag.SaldoInicial = SaldoInicial;
             ViewBag.Detalle = dp;
             var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.Presupuesto == 1).OrderBy(c => c.Orden);
             return View(cuenta.ToList());

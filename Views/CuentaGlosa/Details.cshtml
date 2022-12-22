@@ -1,0 +1,45 @@
+﻿@model SAG2.Models.CuentaGlosa
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>CuentaGlosa</legend>
+
+    <div class="display-label">CuentaID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CuentaID)
+    </div>
+
+    <div class="display-label">Glosa</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Glosa)
+    </div>
+
+    <div class="display-label">Respaldo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Respaldo)
+    </div>
+
+    <div class="display-label">UsuarioID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UsuarioID)
+    </div>
+
+    <div class="display-label">Fecha</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Fecha)
+    </div>
+
+    <div class="display-label">Estado</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Estado)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

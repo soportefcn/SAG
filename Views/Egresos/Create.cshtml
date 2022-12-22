@@ -4,6 +4,7 @@
     DateTime Fecha = new DateTime();
     var Mes = (int)Session["Mes"];
     var Periodo = (int)Session["Periodo"];
+    var FechaX = Fecha.ToShortDateString();
     try
     {
         Fecha = new DateTime((int)Session["Periodo"], (int)Session["Mes"], DateTime.Now.Day);
@@ -159,7 +160,7 @@ input[type="text"], textarea
             @Html.Label("Nº Comprobante D/P")
         </div>
         <div class="form-group">
-            @Html.TextBox("NComprobanteDP", String.Empty)
+            @Html.TextBox("NComprobanteDP", String.Empty, new { @class = "form-control"})
         </div>
             </div>
     <div class="form-group form-inline">
@@ -211,6 +212,7 @@ input[type="text"], textarea
           </div>
       <div class="form-group">
             <div class="alert alert-danger" role="alert"><label id="texto" ></label></div>
+          <div class="alert alert-warning" style="display:none;" id="DRespaldo"><strong>Doc. Respaldo :</strong><label id="Respaldo"></label></div>
         </div>
        
         <div class="form-group" style="margin-left: 7px; margin-right:10px">
@@ -219,15 +221,25 @@ input[type="text"], textarea
         <div class="form-group">
             @Html.TextArea("Glosa", new { @class = "form-control" })
         </div>
-    <div class="form-group">
+    <div class="form-group" >
         <p>
-            <input type="button" value="Guardar Linea" id="GuardarLinea" class="btn btn-primary" />
-            <input type="button" value="Eliminar Linea" id="BorrarLinea" class="btn btn-danger" />
+            
         </p>
         </div>
+    <div class="row">
+  <div class="col-xs-12 col-md-8"></div>
+  <div class="col-xs-6 col-md-4 form-inline" style="text-align: right;">
+      <div class="form-group-inline">
+           <input type="button" value="Eliminar Linea" id="BorrarLinea" class="btn btn-danger" />
+             <input type="button" value="Guardar Linea" id="GuardarLinea" class="btn btn-primary" />
+           
+        </div>
+  </div>
+</div>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
-        <iframe src="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Egresos/ListarLineas" width="660px" height="200px" id="iframeDetalle" frameborder="0" scrolling="auto"></iframe>
+    <div id="DetalleData"></div>
+
 }
         </fieldset>
     </div>
@@ -237,19 +249,226 @@ input[type="text"], textarea
     </div>
 </div>
 <script>
-  
+    function CargaGrilla() {
+        $.get('/SAG_5/Data/DetalleEgreso', function (data) {
+
+            var ValorEgresos = 0;
+            var html = "";
+            var Detalle = $.parseJSON(data);
+            if (Detalle.length > 0) {
+                var html = "<table class='table table-bordered'> <tr class='info'> <td>#</td><td>N° Comp. D/P</td><td> Documento</td><td>N° Doc</td><td>Monto</td><td>Emision</td><td>Vencimiento</td><td>Cuenta</td><td>Glosa</td></tr> "
+                for (i = 0; i < Detalle.length; i++) {
+                    html = html + "<tr onclick='LDetalle(" + (i + 1) + ")' style='cursor: pointer;' ID=" + "Linea_" + (i + 1) + " >";
+                    html = html + "<td>" + (i + 1) + "</td>";
+                    html = html + "<td>" + Detalle[i].NComprobanteDP + "</td>";
+                    html = html + "<td>" + Detalle[i].Documento + "</td>";
+                    html = html + "<td>" + Detalle[i].NDocumento + "</td>";
+                    html = html + "<td>" + Detalle[i].Monto + "</td>";
+                    html = html + "<td>" + Detalle[i].FechaEmision + "</td>";
+                    html = html + "<td>" + Detalle[i].FechaVencimiento + "</td>";
+                    html = html + "<td>" + Detalle[i].NombreCuenta + "</td>";
+                    html = html + "<td>" + Detalle[i].Glosa + "</td>";
+                    html = html + "</tr>";
+                    ValorEgresos += Detalle[i].Monto;
+
+                }
+                html = html + "</table>";
+            }
+            var xpress = document.getElementById("DetalleData");
+            $("#BorrarLinea").hide();
+            xpress.innerHTML = html;
+            $('#Monto_Egresos').val(ValorEgresos);
+            $('body').css('opacity', '0.25')
+
+           
+            $('body').css('opacity', '1');
+            $(".egreso #NComprobanteDP").val("");
+            $(".egreso #DocumentoIDD").val("");
+            $(".egreso #NDocumentoD").val("");
+            $(".egreso #Monto").val("");
+            $(".egreso #CuentaID").val("");
+            $(".egreso #Glosa").val("");
+            $(".egreso #Origen").val("");
+            $(".egreso #DeudaPendienteID").val("");
+            $(".egreso #BoletaHonorarioID").val("");
+            $(".egreso #texto").val("");
+        });
+    };
+
+    $(".egreso #GuardarLinea").click(function () {
+
+
+        if ($("#CuentaID").val() == "" && $(".egreso #Origen").val() != "ff") {
+            $('body').css('opacity', '0.25');
+            alert("Debe seleccionar una cuenta para guardar el detalle.");
+            $('body').css('opacity', '1');
+            $("#CuentaID").focus();
+            return false;
+        }
+
+        var monto = new Number($("#Monto").val());
+        var montoEgreso = new Number($("#Monto_Egresos").val());
+
+        var montoTotal = monto + montoEgreso;
+
+
+        if ($(".egreso #Origen").val() == "oo" || $(".egreso #Origen").val() == "dp" || $(".egreso #Origen").val() == "hs") {
+            $.post("/SAG_5/Egresos/GuardarLinea", $("#detalle form").serialize(),
+            function (data) {
+                if (data == "OK") {
+                    // Si el monto fue guardado leemos utilidad para sumar detalles del egreso
+                    CargaGrilla();
+                    window.parent.document.getElementById("texto").innerHTML = "";
+                } else {
+                    $('body').css('opacity', '0.25');
+                    alert(data);
+                    $('body').css('opacity', '1');
+                    return false;
+                }
+            })
+            .success(function () { })
+            .error(function () { })
+            .complete(function () { });
+        } else if ($(".egreso #Origen").val() == "ff") {
+
+            var fondoFijoGrupoID = $("#FondoFijoGrupoID").val();
+
+            $.get('/SAG_5/CajaChica/GenerarEgreso/?fondoFijoGrupoID=' + fondoFijoGrupoID, function (response) {
+                $('body').css('opacity', '0.25');
+                if (response == "-1") {
+                    alert("Ocurrió un error al agregar el detalle del fondo fijo.");
+                    return false;
+                } else if (response == "0") {
+                    alert("No hay fondo fijo disponible para generar el egreso.");
+                    return false;
+                } else {
+                    alert("Fondo fijo agregado al detalle del egreso con exito!");
+                    montoEgreso = new Number(response);
+                    $("#Monto_Egresos").val(montoEgreso);
+                    $(".egreso #NComprobanteDP").val("");
+                    $(".egreso #DocumentoIDD").val("");
+                    $(".egreso #NDocumentoD").val("");
+                    $(".egreso #Monto").val("");
+                    $(".egreso #CuentaID").val("");
+                    $(".egreso #Glosa").val("");
+                    $(".egreso #Origen").val("");
+                    $(".egreso #DeudaPendienteID").val("");
+                    $(".egreso #BoletaHonorarioID").val("");
+                }
+                $('body').css('opacity', '1');
+            });
+            //}
+        }
+        if ($(".egreso #DetalleEgresoID") != undefined && $(".egreso #DetalleEgresoID").val() != "" && $(".egreso #DetalleEgresoID") != null && $(".egreso #DetalleEgresoID").val() != "0") {
+            $(".egreso #DetalleEgresoID").val("");
+        } else {
+            $(".egreso #DetalleEgresoIndex").val("");
+        }
+    });
+
+    $("#BorrarLinea").click(function () {
+        var monto = new Number($("#Monto").val());
+        var montoEgreso = new Number($("#Monto_Egresos").val());
+        // Guardamos linea del formulario si opcion es otro
+        if ($(".egreso #Origen").val() == "oo" || $(".egreso #Origen").val() == "dp" || $(".egreso #Origen").val() == "hs") {
+            $.post("/SAG_5/Egresos/BorrarLinea", $("#detalle form").serialize(),
+            function (data) {
+                if (data == "OK") {
+                    $.get('/SAG_5/Data/SumaDetalleEgreso', function (data) {
+                        $('#Monto_Egresos').val(data);
+                        $('body').css('opacity', '0.25');
+                        CargaGrilla();
+                        window.parent.document.getElementById("texto").innerHTML = "";
+                        alert("Detalle borrada con exito!");
+                        $('body').css('opacity', '1');
+                    });
+                } else {
+                    $('body').css('opacity', '0.25');
+                    alert("Ocurrió un error al borrar el detalle.");
+                    $('body').css('opacity', '1');
+                    return false;
+                }
+            })
+            .success(function () { })
+            .error(function () { })
+            .complete(function () { });
+        } else if ($(".egreso #Origen").val() == "ff") {
+
+        }
+
+        if ($(".egreso #DetalleEgresoID") != undefined && $(".egreso #DetalleEgresoID").val() != "" && $(".egreso #DetalleEgresoID") != null && $(".egreso #DetalleEgresoID").val() != "0") {
+            $(".egreso #DetalleEgresoID").val("");
+        } else {
+            $(".egreso #DetalleEgresoIndex").val("");
+        }
+
+
+
+        window.parent.document.getElementById("NComprobanteDP").value = "";
+        window.parent.document.getElementById("DocumentoIDD").value = "";
+        window.parent.document.getElementById("NDocumentoD").value = "";
+        window.parent.document.getElementById("Monto").value = "";
+        window.parent.document.getElementById("CuentaID").value = "";
+        window.parent.document.getElementById("Glosa").value = "";
+        window.parent.document.getElementById("DeudaPendienteID").value = "";
+        window.parent.document.getElementById("Origen").value = "";
+        window.parent.document.getElementById("BoletaHonorarioID").value = "";
+        window.parent.document.getElementById("texto").innerHTML = "";
+        $("#BorrarLinea").hide();
+        $("#DetalleEgresoIndex").val("");
+        $("#texto").val("");
+    });
+
+
+    function Glosa(idcuenta) {
+        if (idcuenta == "") {
+            $('#DRespaldo').css('display', 'none')
+            $("#Glosa").html("");
+            $("#texto").html("");
+        } else {
+            var url = '@Url.Action("Glosacuenta", "data")';
+
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: { xCuentaID: idcuenta },
+                success: function (data, textStatus, xhr) {
+                    var Datos = data;
+                    var idDato = Datos.ID;
+                    if (idDato != 0) {
+                        var Glosa = Datos.Glosa;
+                        $('#DRespaldo').css('display', '')
+                        $("#Respaldo").html(Datos.Respaldo)
+                        $("#Glosa").html(Glosa)
+                    } else {
+                        $('#DRespaldo').css('display', 'none')
+                        $("#Glosa").html("");
+                    }
+
+                },
+                error: function (xhr) { alert("Error "); }
+            });
+        }
+    }
+
     $("#CuentaID").change(function () {
         // Así accedemos al Texto de la opción seleccionada
         var valor = $("#CuentaID option:selected").attr('title');
-       $("#texto").html(valor)
-      // alert(valor);
+        $("#texto").html(valor)
+        var idCuenta = $("#CuentaID option:selected").attr('value');
+        Glosa(idCuenta);
         // Si seleccionamos la opción "Texto 2"
         // nos mostrará por pantalla "Texto 2"
     });
     $("#CuentaID").keydown(function () {
         // Así accedemos al Texto de la opción seleccionada
         var valor = $("#CuentaID option:selected").attr('title');
+       
         $("#texto").html(valor)
+        var idCuenta = $("#CuentaID option:selected").attr('value');
+        Glosa(idCuenta);
         // alert(valor);
         // Si seleccionamos la opción "Texto 2"
         // nos mostrará por pantalla "Texto 2"
@@ -262,4 +481,91 @@ input[type="text"], textarea
         // Si seleccionamos la opción "Texto 2"
         // nos mostrará por pantalla "Texto 2"
     });
+    var baseUrl = "";
+
+    function LDetalle(dato) {
+        var MuestraDetalle = $("#DetalleEgresoIndex").val();
+        $("#Linea_" + MuestraDetalle).css('background-color', 'white');
+        if (dato == MuestraDetalle) {
+            window.parent.document.getElementById("NComprobanteDP").value = "";
+            window.parent.document.getElementById("DocumentoIDD").value = "";
+            window.parent.document.getElementById("NDocumentoD").value = "";
+            window.parent.document.getElementById("Monto").value = "";
+            window.parent.document.getElementById("CuentaID").value = "";
+            window.parent.document.getElementById("Glosa").value = "";
+            window.parent.document.getElementById("DeudaPendienteID").value = "";
+            window.parent.document.getElementById("Origen").value = "";
+            window.parent.document.getElementById("BoletaHonorarioID").value = "";
+            window.parent.document.getElementById("texto").innerHTML = "";
+            $("#BorrarLinea").hide();
+            $("#DetalleEgresoIndex").val("");
+            $("#texto").val("");
+            $("#Linea_" + dato).css('background-color', 'white');
+        } else {
+            url = '@Url.Action("NDetalleEgreso", "data")';
+            window.parent.document.getElementById("NComprobanteDP").value = "";
+            window.parent.document.getElementById("DocumentoIDD").value = "";
+            window.parent.document.getElementById("NDocumentoD").value = "";
+            window.parent.document.getElementById("Monto").value = "";        
+            window.parent.document.getElementById("CuentaID").value = "";
+            window.parent.document.getElementById("Glosa").value = "";
+            window.parent.document.getElementById("DeudaPendienteID").value = "";
+            window.parent.document.getElementById("Origen").value = "";
+            window.parent.document.getElementById("BoletaHonorarioID").value = "";
+            window.parent.document.getElementById("texto").innerHTML = "";
+            $("#BorrarLinea").show();
+       
+            $("#Linea_" + dato).css('background-color', 'yellow');
+
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    x: dato
+                },
+                success: function (DEgreso, textStatus, xhr) {
+                    var Datos = DEgreso;
+                    $('#DetalleEgresoIndex').val(dato);
+                    $('#Monto').val(Datos.Monto);
+                    $('#NDocumentoD').val(Datos.NDocumento);
+                    $('#DocumentoIDD').val(Datos.DocumentoID);
+                    $('#Glosa').val(Datos.Glosa);
+                    $('#CuentaID').val(Datos.CuentaID);
+                   
+                    
+                  
+                    $("#CuentaID").change();
+                    window.parent.document.getElementById("Origen").value = "oo";
+                    window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
+                    window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                    if (Datos.DeudaPendienteID != null) {
+                        $('#DeudaPendienteID').val(Datos.DeudaPendienteID);
+                        window.parent.document.getElementById("Origen").value = "dp";
+                    }
+                    if (Datos.BoletaHonorarioID != null) {
+                        $('#BoletaHonorarioID').val(Datos.BoletaHonorarioID);
+                        window.parent.document.getElementById("Origen").value = "hs";
+                        window.parent.document.getElementById("DocumentoIDD").value = "3";
+                    }
+                    if (Datos.FondoFijoID != null) {
+                        $('#FondoFijoID').val(Datos.FondoFijoID);
+                        $('body').css('opacity', '0.25');
+                        alert("El detalle de la caja chica no se puede modificar ya que se genera automáticamente.");
+                        $('body').css('opacity', '1');
+                        return false;
+                    }
+                },
+                error: function (request, status, error) {
+                    alert("error");
+                }
+            });
+
+        }
+			
+	
+
+    }
+
 </script>

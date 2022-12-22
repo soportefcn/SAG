@@ -74,10 +74,10 @@
             {
                 numInterDeuda = interD.Where(p => p.ProyectoID == proyectoID).Where(m => m.Mes == item.Mes).Where(a => a.Anio == item.Anio).Where(d => d.Bis == item.Tipo).Sum(n => n.TotalIntervencionesAPagar);
             }
-            /*  if (item.EstadoID == 2)
-            {
-                montoDeuda = item.Valor;
-            }*/
+            //if (item.EstadoID == 2)
+            //{
+            //    montoDeuda = item.Valor;
+            //}
             var reg = regiones.Find(p => p.ID == item.RegionID).Nombre;
             var nombrePro = pro.Find(p => p.ID == item.ProyectoID).Nombre;
             var tp = tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).Nombre;
