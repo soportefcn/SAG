@@ -1,0 +1,123 @@
+﻿@model IEnumerable<SAG2.Models.InicioLog>
+@{
+    Layout = null;
+    ViewBag.Title = "InicioLogExcel";
+    List<SAG2.Models.Proyecto> TempProtecto = new List<SAG2.Models.Proyecto>();    
+    TempProtecto = (List<SAG2.Models.Proyecto>)@ViewBag.Programa;
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=LogInicio-" + DateTime.Now.ToShortDateString() + ".xls");
+    string FechaSis = DateTime.Now.ToShortDateString();
+}
+<!DOCTYPE html>
+<html>
+<head>
+        <style type="text/css" media="print">
+    @@page
+    {
+        size: landscape;
+        margin: 2cm;
+    }
+    body 
+        {
+            font-family: Arial;    
+        }
+    td 
+    {
+        font-size: 10px;    
+    }
+    
+    th 
+    {
+        font-size: 12px;    
+    }
+    h2 {
+        text-align: center;
+    }
+    
+    .registros td
+    {
+        border: 1px solid black;    
+    }
+    th 
+    {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+    }
+    
+    thead {	display: table-header-group;}
+    tfoot {display: table-footer-group;}
+    
+    tbody {
+        display:table-row-group;
+    }
+    
+    tr  {
+        page-break-inside: avoid;
+    }
+    
+    .registros td {padding: 2px;}
+    </style>
+    </head>
+    <body>
+<table cellpadding="5" border="1" style="width: 100%;">
+    <tr>
+        <th>
+            Tipo
+        </th>
+        <th>
+            Centro Costo
+        </th>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Mes
+        </th>
+        <th>
+            Periodo
+        </th>
+
+        <th>
+            Descripcion
+        </th>
+
+      
+    </tr>
+
+@foreach (var item in Model) {
+    var cc = TempProtecto.Where(d => d.ID == item.ProyectoId).FirstOrDefault().CodCodeni.ToString();
+    DateTime FF = (DateTime) item.Fecha;
+    
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tipo)
+        </td>
+        <td>
+            @cc
+        </td>
+        <td>
+            @FF.ToShortDateString()
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Mes)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Periodo)
+        </td>
+    
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+   
+
+    </tr>
+}
+
+</table>
+        </body>
+
+</html>

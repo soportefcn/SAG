@@ -17,54 +17,16 @@ namespace SAG2.Controllers
 
         private SAG2DB db = new SAG2DB();
 
-        public ActionResult Index()
+        public ActionResult Index( int? ProyectoID)
         {
-
-            var q = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).OrderBy(a => a.CodCodeni).ToList();
-            List<SelectListItem> listproyecto = new List<SelectListItem>();
-            listproyecto.Add(new SelectListItem
+            if (ProyectoID == null)
             {
-
-                Text = "Seleccione Un Proyecto",
-
-                Value = "0"
-
-            });
-
-
-
-            foreach (var x in q)
-            {
-
-                listproyecto.Add(new SelectListItem
-
-                {
-
-                    Text = x.NombreEstado,
-
-                    Value = x.ID.ToString()
-
-                });
-
+                Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+                ProyectoID = Proyecto.ID;
             }
-
-            ViewBag.listadoproyecto = listproyecto;
-
-
-
-
-
-            BienModInventarioVM model = new BienModInventarioVM();
-            Proyecto proyecto = (Proyecto)Session["Proyecto"];
-
-
-
-            ViewBag.ProyectoID = proyecto.ID.ToString();
-
-
-
-            return View(model);
-
+            ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null), "ID", "NombreLista", ProyectoID);
+         
+            return View();
         }
 
 
@@ -216,85 +178,42 @@ namespace SAG2.Controllers
         }
 
 
-
-
-
-
-
         public ActionResult BienesAnulados()
         {
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             List<BienMovimiento> listmov = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 2 && a.Bien.ProyectoID == Proyecto.ID ).ToList();
-
             List<BienModInventario> listBien = new List<BienModInventario>();
-
             BienModInventarioVM model = new BienModInventarioVM();
-
-
-
-
-
             model.lista = new List<BienModInventarioVM>();
-
-
-
             foreach (var item in listmov)
             {
-
                 BienModInventario bien = db.BienModInventario.Find(item.BienID);
-
                 listBien.Add(bien);
-
-
-
                 BienModInventarioVM bienVM = new BienModInventarioVM();
 
-
-
                 bienVM.Proyecto = bien.Proyecto.NombreEstado;
-
                 bienVM.Usuario = item.Auditor.Persona.NombreCompleto;
-
                 bienVM.Familia = bien.Familia.Nombre + " - " + bien.SubFamilia.Nombre;
-
                 bienVM.DescripcionBien = bien.DescripcionBien;
-
                 bienVM.Detalle = item.Detalle;
-
                 bienVM.Estado = item.Estado.Nombre;
-
                 bienVM.Cantidad = item.Cantidad;
-
                 bienVM.Procedencia = item.ComentarioAuditor;
-
                 bienVM.CondicionText = bien.Condicion.Nombre;
-
-
-
                 if (bien.Egreso != null) 
                 {
-
                     bienVM.NDocumento = bien.Egreso.NDocumento.ToString();
-
                     bienVM.Monto = bien.Egreso.Monto.ToString();
-
                 }
 
                 if (bien.Reintegro != null)
                 {
-
                     bienVM.NDocumento = bien.Reintegro.NDocumento.ToString();
-
                     bienVM.Monto = bien.Reintegro.Monto.ToString();
-
                 } 
-
                 model.lista.Add(bienVM);
-
             }
-
             return View(model);
-
         }
 
 
@@ -443,33 +362,17 @@ namespace SAG2.Controllers
         public JsonResult GetBienes(int id)
         {
 
-
-
-
-
             List<BienModInventarioVM> lista = new List<BienModInventarioVM>();
-
-
-
             List<BienMovimiento> listaMov = db.BienMovimiento.Where(a => a.AutorizacionAuditor == 0 && a.Bien.ProyectoID.Equals(id) ).ToList();
 
             foreach (var item in listaMov)
             {
 
-
-
                 BienModInventario bmi = db.BienModInventario.Where(d => d.ID.Equals(item.BienID)).FirstOrDefault();  
-
                 if (item.EstadoID == 3)
                 {
-
                     bmi = db.BienModInventario.Find(item.bienAnteriorID);
-
                 }
-
-
-
-
 
                 if (bmi.ProyectoID == id )
                 {
@@ -516,8 +419,13 @@ namespace SAG2.Controllers
                     bmivm.SubFamilia = "$" + bmi.Monto.ToString("#,##0");
                     try
                     {
-                        bmivm.Familia = bmi.Egreso.NDocumento.ToString();
-
+                        if (bmi.Movimiento.TipoComprobanteID == 2)
+                        {
+                            bmivm.Familia = bmi.Egreso.NDocumento.ToString();
+                        }
+                        else {
+                            bmivm.Familia = bmi.Reintegro.NDocumento.ToString();
+                        }
                         bmivm.Ubicacion = bmi.Movimiento.NumeroComprobante.ToString(); ;
                     }
                     catch {
@@ -527,24 +435,7 @@ namespace SAG2.Controllers
 
 
 
-                /*    if (bmi.Egreso != null) error modelo
-                    {
 
-                        bmivm.Familia = bmi.Egreso.NDocumento.ToString();
-
-                        bmivm.Ubicacion = bmi.Egreso.Egreso.NumeroComprobante.ToString();
-
-                    }
-
-                    if (bmi.Reintegro != null)
-                    {
-
-                        bmivm.Familia = bmi.Reintegro.NDocumento.ToString();
-
-                        bmivm.Ubicacion = bmi.Reintegro.Reintegro.NumeroComprobante.ToString();
-
-                    }
-                    */
 
 
                     lista.Add(bmivm);
@@ -567,35 +458,20 @@ namespace SAG2.Controllers
         }
 
 
-
         public ActionResult AnularSave(BienMovimiento model)
         {
 
-
-
             BienMovimiento bienmov = db.BienMovimiento.Find(model.ID);
-
-
-
             BienModInventario bien = db.BienModInventario.Find(bienmov.BienID);
-
-
 
             try
             {
 
                 Usuario usuario = (Usuario)Session["Usuario"];
-
                 bienmov.AutorizacionAuditor = 2;
-
                 bienmov.ComentarioAuditor = model.ComentarioAuditor;
-
                 bienmov.AuditorID = usuario.ID;
-
-
-
                 db.Entry(bienmov).State = EntityState.Modified;
-
                 db.SaveChanges();
 
                 // correo
@@ -613,7 +489,7 @@ namespace SAG2.Controllers
 
 
 
-            return RedirectToAction("Lista", new { id = bien.ProyectoID });
+            return RedirectToAction("Index", new { ProyectoID = bien.ProyectoID });
 
         }
 

@@ -61,7 +61,7 @@
                 @Html.Label("Proyecto:") <br />
          
                   <select name="ProyectoID" id="ProyectoID" class="js-autocomplete" >
-                 <option value="-1"> - Seleccione proyecto</option>
+                 <option value="-1"> - Seleccione Programa</option>
                     @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
                     {
                         if (proyectoID == Proyecto.ID)
@@ -92,7 +92,7 @@
             <tr>
                 <th style=" width:auto;" onclick="sortTable(0)">Mes</th>
                 <th style=" width:auto;" onclick="sortTable(1)">Año</th>
-                <th style=" width:auto;" onclick="sortTable(2)">Cód. Sename</th>
+                <th style=" width:auto;" onclick="sortTable(2)">Cod. Sename/Servicio Mejor Ni&ntilde;ez</th>
                 <th style=" width:auto;" onclick="sortTable(3)">Nombre Completo</th>
                 <th style=" width:auto;" onclick="sortTable(4)">Tipo</th>
                 <th style=" width:auto;" onclick="sortTable(5)">Total</th>

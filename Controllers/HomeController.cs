@@ -70,7 +70,54 @@ namespace SAG2.Controllers
           //  Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 1).Sum(d => d.GastoObjetado);
             // Rem aqui va cambiar supervisiones
             @ViewBag.Contratos = db.Contrato.Include(c => c.Servicio).Where(c => c.ProyectoID == proyectoID).OrderBy(c => c.Servicio.Nombre).ToList();
+            int ValorUSS = 0;
+            try
+            {
+                ValorUSS = int.Parse(db.ProgramaQ.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).FirstOrDefault().Valor.ToString());
+            }
+            catch (Exception) {
+                ValorUSS = 0;
+            }
+            @ViewBag.ValorUSS = ValorUSS;
 
+            
+            string FechaUSS = "";
+            try
+            {
+                FechaUSS = db.ProgramaQ.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).FirstOrDefault().FechaIngreso.ToShortDateString();
+            }
+            catch (Exception)
+            {
+                FechaUSS = "";
+            }
+            @ViewBag.FechaUSS = FechaUSS;
+
+            int PZona = 0;
+            int ComunaID = 0;
+            try
+            {
+                ComunaID = db.Proyecto.Where(d => d.ID == proyectoID).FirstOrDefault().Direccion.ComunaID;
+                PZona = db.PorcentajeZona.Where(d => d.ComunaID == ComunaID).OrderByDescending(d => d.ID).FirstOrDefault().Valor ;
+            }
+            catch (Exception)
+            {
+                PZona = 0;
+                ComunaID = 0;
+            }
+            @ViewBag.PZona = PZona;
+
+            double Pbase = 0;
+            string tipBa = "";
+            try
+            {
+                tipBa = db.Proyecto.Where(d => d.ID == proyectoID).FirstOrDefault().TipoProyecto.Sigla;
+                Pbase = db.ParametroUss.Where(d => d.Tipo == tipBa).OrderByDescending(d => d.ID).FirstOrDefault().uss;
+            }
+            catch (Exception)
+            {
+                Pbase = 0;
+            }
+            @ViewBag.Pbase = Pbase;
             try
             {
                 @ViewBag.FondoFijoUtilizado = db.FondoFijo.Where(f => f.EgresoID == null).Where(f => f.ProyectoID == proyectoID).Sum(f => f.Monto) / (ctes.porcentajeFondoFijo * ctes.montoFondoFijo) * 100;

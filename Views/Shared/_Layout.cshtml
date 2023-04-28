@@ -33,7 +33,9 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 	<title>SAG2 @ViewBag.Title</title>
-
+        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' id='montserrat-font-css' href="https://fonts.googleapis.com/css?family=Montserrat%3A400%2C700&#038;ver=1.1" type='text/css' media='all' />
 	<script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
 	<script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
 	<script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
@@ -41,7 +43,7 @@
 	<script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
    <script src="@Url.Content("~/Scripts/jquery.number.js")" type="text/javascript"></script>
-         <script src="@Url.Content("~/Scripts/select2.min.js")" type="text/javascript" language="javascript"></script>
+   <script src="@Url.Content("~/Scripts/select2.min.js")" type="text/javascript" language="javascript"></script>
      <link href="@Url.Content("~/Content/select2.min.css")" rel="stylesheet">
 
 
@@ -235,12 +237,18 @@
                 <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Autorizaciones/Pendientes" style="display: block;" class="alert alert-info" >Hay @autorizacionesPendientes autorizaciones pendientes.</a>
             }
             <hr align="center" />
-        }
+            }
               @if (PreguntasPendientes > 0)
               {
        
                 <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/PreguntasFrecuentes/index" style="display: block;" class="alert alert-success" >Hay @PreguntasPendientes Preguntas pendientes.</a>
             
+            <hr align="center" />
+              }
+              @if (Usuario.esAdministrador)
+              {
+       
+                <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Administracion/InicioLog" style="display: block;" class="alert alert-warning" >Actualización página de inicio.</a>           
             <hr align="center" />
               }
         @if (respuestaAuditoria > 0)
@@ -257,10 +265,11 @@
         }
         </div>
                           }
+
     
     @if (Usuario.esAdministrador || Session["CambioTipo"] != null)
     {
-        <div class="aviso_left no-imprimir"><p>Sag_20170117</p><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Administrador">Administrador</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Supervisor">Supervisor</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Usuario">Usuario</a></div>
+        <div class="aviso_left no-imprimir"><p>Sag_20230424</p><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Administrador">Administrador</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Supervisor">Supervisor</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Usuario">Usuario</a></div>
     }
         <hr>
      

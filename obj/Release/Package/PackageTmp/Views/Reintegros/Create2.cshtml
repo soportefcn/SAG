@@ -244,7 +244,11 @@ input[type="text"], textarea
     </div>
 </div>
 <script>
+    var baseUrl = "";
+
     $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
         $(".validarCeroN").change(function () {
             var ceID = $('#CuentaID').val();
             if(ceID != 60){
@@ -306,25 +310,29 @@ input[type="text"], textarea
         $("#GuardarReintegro").click(function () {
 
             $.post("@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Reintegros/Guardar", $("#general form").serialize(),
-function (data) {
-  
-    if (data == "0") {
- 
-        alert("Egreso tiene Reintegro asociado");
-
-    } else {
-        alert("guardado con exito!");
-        $("form").submit();
+        function (data) { 
+        if (data == "0") { 
+            alert("Egreso tiene Reintegro asociado");
+        } else {
+            alert("guardado con exito!");
+            var url = '@Url.Action("Edit2", "Reintegros", new { id = "ID_cambiar",  imprimir ="true"})';
+            url = url.replace("&amp;", "&");
+            url = url.replace("ID_cambiar", data);
+            url = baseUrl + url;
+            window.open(url,"_self");
+       // $("form").submit();
         
         return true;
     }
 })
 
         })
+
         $("#CuentaIDD").change(function () {
             // Así accedemos al Texto de la opción seleccionada
             var valor = $("#CuentaIDD option:selected").attr('title');
             $("#texto").html(valor)
+         
             // alert(valor);
             // Si seleccionamos la opción "Texto 2"
             // nos mostrará por pantalla "Texto 2"
@@ -333,6 +341,7 @@ function (data) {
             // Así accedemos al Texto de la opción seleccionada
             var valor = $("#CuentaIDD option:selected").attr('title');
             $("#texto").html(valor)
+
             // alert(valor);
             // Si seleccionamos la opción "Texto 2"
             // nos mostrará por pantalla "Texto 2"
@@ -345,9 +354,7 @@ function (data) {
             // Si seleccionamos la opción "Texto 2"
             // nos mostrará por pantalla "Texto 2"
         });
-        $("#CuentaIDD").change(function(){
-         // alert($("#CuentaIDD").val()+' - ' +$("#CuentaID").val());
-        })
+
         $("#GuardarLineaR").click(function () {
             if ($("#CuentaIDD").val() == "" && $(".egreso #Origen").val() != "ff") {
                 $('body').css('opacity', '0.25');
@@ -385,24 +392,24 @@ function (data) {
 
             }
         $.post("@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Reintegros/GuardarLinea", $("#detalle form").serialize(),
-  function (data) {
-      if (data == "OK") {
-          $('#Monto_Ingresos').val(montoTotal);
-          $('body').css('opacity', '0.25');
-          alert("Línea guardada con exito!");
-          $('body').css('opacity', '1');
-          $("#DocumentoIDD").val("");
-          $("#NDocumentoD").val("");
-          $("#Monto").val("");
-          $("#CuentaIDD").val("");
-          $("#DetalleReintegroIndex").val("");
-          $("#MontoOriginal").val("");
-      } else {
-          $('body').css('opacity', '0.25');
-          alert(data);
-          $('body').css('opacity', '1');
-          return false;
-      }
+        function (data) {
+            if (data == "OK") {
+              $('#Monto_Ingresos').val(montoTotal);
+              $('body').css('opacity', '0.25');
+              alert("Línea guardada con exito!");
+              $('body').css('opacity', '1');
+              $("#DocumentoIDD").val("");
+              $("#NDocumentoD").val("");
+              $("#Monto").val("");
+              $("#CuentaIDD").val("");
+              $("#DetalleReintegroIndex").val("");
+              $("#MontoOriginal").val("");
+         } else {
+              $('body').css('opacity', '0.25');
+              alert(data);
+              $('body').css('opacity', '1');
+              return false;
+         }
   })
         var currSrc = $("#iframeDetalle").attr("src");
         $("#iframeDetalle").attr("src", "");

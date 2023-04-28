@@ -37,7 +37,56 @@ namespace SAG2.Controllers
                 }
 
             ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            ViewBag.Busq = q;
+            return View(proyecto.ToList());
+        }
+        [HttpPost]
+        public ViewResult Index(FormCollection form )
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            List<Proyecto> proyecto = new List<Proyecto>();
+            Persona Persona = (Persona)Session["Persona"];
 
+
+            string q = form["busqueda"].ToString();
+
+            if (q != "")
+            {
+                // Busqueda por nombre proyecto
+               var  xproyecto = db.Proyecto.Where(a => a.Nombre.Contains(q)).ToList();
+                foreach( var xdato in xproyecto){
+                    proyecto.Add(xdato);
+                }
+                // busqueda por codigo Codeni
+
+                var xproyecto2 = db.Proyecto.Where(a => a.CodCodeni.Contains(q.Trim())).ToList();
+                foreach (var xdato in xproyecto2)
+                {
+                    int xp = proyecto.Where(d => d.ID == xdato.ID).Count();
+                    if (xp == 0)
+                    {
+                        proyecto.Add(xdato);
+                    }
+                }
+                // Busqueda por codeigo Sename
+                var xproyecto3 = db.Proyecto.OrderBy(a => a.Nombre).Where(a => a.CodCodeni.Contains(q)).ToList();
+                foreach (var xdato in xproyecto3)
+                {    
+                    int xp = proyecto.Where(d => d.ID == xdato.ID).Count();
+                    if (xp == 0)
+                    {
+                        proyecto.Add(xdato);
+                    }
+                    }
+            }
+            else
+            {
+                q = " ";
+                proyecto = db.Proyecto.OrderBy(p => p.Nombre).ToList();
+            }
+
+            ViewBag.Proyectos = db.Proyecto.Where(p => p.Eliminado == null).OrderBy(p => p.CodCodeni).ToList();
+            ViewBag.Busq = q;
             return View(proyecto.ToList());
         }
         public ViewResult ListadoProyectosPresupuestoExcel(int ProyectoID, int tipoProyectoID, int RegionID)
@@ -48,7 +97,7 @@ namespace SAG2.Controllers
             List<Proyecto> proyecto = new List<Proyecto>();
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proto = (Proyecto)Session["Proyecto"];
-
+            ViewBag.Contratos = db.Contrato.ToList();
             ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
@@ -104,6 +153,7 @@ namespace SAG2.Controllers
             }
 
              //
+            ViewBag.Contratos = db.Contrato.ToList();
             ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
@@ -168,6 +218,7 @@ namespace SAG2.Controllers
             ViewBag.Periodo = db.Periodo.ToList();
             proyecto = utils.FiltroProyecto(filtro);
             ViewBag.Proyectos = proyecto.Where(d => d.ID ==  Proto.ID).ToList();
+            ViewBag.Contratos = db.Contrato.Where(d => d.ProyectoID == Proto.ID).ToList();
             //
             if (!usuario.esUsuario)
             {
@@ -479,7 +530,7 @@ namespace SAG2.Controllers
         {
             int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];
-
+            Usuario usuario = (Usuario)Session["Usuario"];
             if (ModelState.IsValid)
             {
                 // Modificación dirección
@@ -504,6 +555,9 @@ namespace SAG2.Controllers
                 try
                 {
                     Convenio Convenio = db.Convenio.Where(c => c.ProyectoID == proyecto.ID && c.Periodo == periodo && c.Mes == mes).Single();
+
+                    // VErificar si cambio Convenio para inicio Log
+
                     convenioID = Convenio.ID;
                     Convenio.ResEx = proyecto.Convenio.ResEx;
                     Convenio.NroPlazas = proyecto.Convenio.NroPlazas;
@@ -551,14 +605,44 @@ namespace SAG2.Controllers
 
                     convenioID = Convenio.ID;
                 }
+                // Verificar Valor Subvencion 
+               int ValorS =  Int32.Parse(Request.Form["ValorS"].ToString());
+                if(ValorS != proyecto.ValorSubvencion){
+                    InicioLog log = new InicioLog();
+                    log.Tipo = "Ant Administrativos, Financieros y Contables";
+                    log.ProyectoId = proyecto.ID;
+                    log.Fecha = DateTime.Now;
+                    log.Mes = mes;
+                    log.Periodo = periodo;
+                    log.RegistroID = proyecto.ID;
+                    log.UsuarioID = usuario.ID;
+                    log.Descripcion = "VS :" + ValorS + " VsNuevo:" + proyecto.ValorSubvencion ;
+                    db.InicioLog.Add(log);
+                    db.SaveChanges();
+                
+                }
 
+
+                //
                 proyecto.Convenio = null;
                 proyecto.ConvenioID = convenioID;
                 proyecto.SistemaAsistencialID = 1;
                 TempData["Message"] = "Creado con exito ";
                 db.Entry(proyecto).State = EntityState.Modified;
                 db.SaveChanges();
-               
+               ///
+                //InicioLog log = new InicioLog();
+                //log.Tipo = "Programa";
+                //log.ProyectoId = proyecto.ID;
+                //log.Fecha = DateTime.Now;
+                //log.Mes = mes;
+                //log.Periodo = periodo;
+                //log.RegistroID = proyecto.ID;
+                //log.UsuarioID = usuario.ID;
+                //log.Descripcion = "Modificado con exito " + proyecto.CodCodeni;
+                //db.InicioLog.Add(log);
+                //db.SaveChanges();
+                //
                 return RedirectToAction("Create");
             }
             ViewBag.SistemaAsistencialID = new SelectList(db.SistemaAsistencial, "ID", "NombreLista", proyecto.SistemaAsistencialID);

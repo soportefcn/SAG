@@ -73,3 +73,7 @@ ul.dropdown li:hover > ul 			{ visibility: visible; }
     border-color: #ebccd1 !important;
 }
 .centrado { text-align: center !important; }
+
+::selection {
+    background: #b2d135;
+}

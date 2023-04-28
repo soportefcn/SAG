@@ -67,7 +67,7 @@
               Fundación Ciudad del Niño<br />
               @Html.Raw(@ViewBag.Proyecto)
               <br />
-              Cod. Sename: @Html.Raw(@ViewBag.CodSename)
+             Cod. Sename/Servicio Mejor Ni&ntilde;ez:: @Html.Raw(@ViewBag.CodSename)
           </strong>
               </td>
     <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
@@ -116,7 +116,7 @@
             <td>
                 @if (@item.Cuenta != null)
                 {@item.Cuenta.NombreLista}
-                else if(@item.Cuenta.NombreLista ==null) {@Html.Raw(cuentas.Where(c => c.CuentaID == item.CuentaID).First().NombreLista) }
+                }
             </td>
             <td>COMPROBANTE NULO</td>
             <td>

@@ -19,6 +19,7 @@ namespace SAG2.Models
         public string Glosa { get; set; }
         public int? Cheque { get; set; }
         public string NombreCuenta { get; set; }
+        public int Estado { get; set; }
 
     }
     public class movcuentatr
@@ -38,6 +39,7 @@ namespace SAG2.Models
         public string Glosa { get; set; }
         public int? Cheque { get; set; }
         public string NombreCuenta { get; set; }
+        public int Estado { get; set; }
     }
     public class filtroProyecto {
         public int ProyectoID { get; set; }

@@ -53,6 +53,9 @@ namespace SAG2.Controllers
         {
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             rol.ProyectoID = Proyecto.ID;
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
+            Usuario usuario = (Usuario)Session["Usuario"];
 
             try
             {
@@ -60,6 +63,19 @@ namespace SAG2.Controllers
                 {
                     db.Rol.Add(rol);
                     db.SaveChanges();
+
+                    InicioLog log = new InicioLog();
+                    log.Tipo = "Responsabilidad Administrativa";
+                    log.ProyectoId = Proyecto.ID;
+                    log.Fecha = DateTime.Now;
+                    log.Mes = mes;
+                    log.Periodo = periodo;
+                    log.RegistroID = rol.ID;
+                    log.UsuarioID = usuario.ID;
+                    log.Descripcion = "Rol :" + rol.TipoRol.Nombre + " " + rol.Persona.NombreCompleto  ;
+                    db.InicioLog.Add(log);
+                    db.SaveChanges();
+
                     TempData["Message"] = "Rol Asignado ";
                     return RedirectToAction("Create");
                 }
@@ -96,11 +112,28 @@ namespace SAG2.Controllers
         {
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             rol.ProyectoID = Proyecto.ID;
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
+            Usuario usuario = (Usuario)Session["Usuario"];
 
             if (ModelState.IsValid)
             {
                 db.Entry(rol).State = EntityState.Modified;
                 db.SaveChanges();
+                string TiporolNombre = db.TipoRol.Find(rol.TipoRolID).Nombre;
+                string PersonaNombreCompleto =  db.Persona.Find(rol.PersonaID).NombreCompleto;
+                InicioLog log = new InicioLog();
+                log.Tipo = "Responsabilidad Administrativa";
+                log.ProyectoId = Proyecto.ID;
+                log.Fecha = DateTime.Now;
+                log.Mes = mes;
+                log.Periodo = periodo;
+                log.RegistroID = rol.ID;
+                log.UsuarioID = usuario.ID;
+                log.Descripcion = "Asignado : " + TiporolNombre + " " + PersonaNombreCompleto;
+                db.InicioLog.Add(log);
+                db.SaveChanges();
+
                 TempData["Message"] = "Rol Asignado ";
                 return RedirectToAction("Create");
             }
@@ -124,8 +157,24 @@ namespace SAG2.Controllers
 
         [HttpGet, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
-        {            
+        {
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
+            Usuario usuario = (Usuario)Session["Usuario"];
             Rol rol = db.Rol.Find(id);
+
+            InicioLog log = new InicioLog();
+            log.Tipo = "Responsabilidad Administrativa";
+            log.ProyectoId = rol.ProyectoID;
+            log.Fecha = DateTime.Now;
+            log.Mes = mes;
+            log.Periodo = periodo;
+            log.RegistroID = rol.ID;
+            log.UsuarioID = usuario.ID;
+            log.Descripcion = "Eliminado : " + rol.TipoRol.Nombre + " " + rol.Persona.NombreCompleto;
+            db.InicioLog.Add(log);
+            db.SaveChanges();
+
             db.Rol.Remove(rol);
             db.SaveChanges();
             return RedirectToAction("Create");

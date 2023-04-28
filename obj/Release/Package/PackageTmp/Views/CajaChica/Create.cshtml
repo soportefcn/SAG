@@ -91,6 +91,7 @@ input[type="text"], textarea
                 </div>
                   <div class="form-group">
             <div class="alert alert-danger" style="padding-top: 7px;"  role="alert"><label id="texto" ></label></div>
+                       <div class="alert alert-warning" style="display:none;" id="DRespaldo"><strong>Doc. Respaldo :</strong><label id="Respaldo"></label></div>
         </div>
                 <div class="form-inline form-group">
                     <div class="form-group" style="margin-right: 25px;margin-left:8px">
@@ -109,6 +110,10 @@ input[type="text"], textarea
                         @Html.TextBoxFor(model => model.Monto, new { @class="form-control" })
                     </div>
                 </div>
+                    <div class="form-group">
+           
+         
+        </div>
                 <div class="form-group" style ="margin-left:8px">
                     @Html.LabelFor(model => model.Glosa)
                 <br />
@@ -120,7 +125,7 @@ input[type="text"], textarea
                 <br />
         }
       <div style="float :right;width:100px;display:inline-block">
-       <input class="btn btn-primary" type="submit" value="Guardar" id="botonGuardar" class="validarCuenta" /> 
+       <input class="btn btn-primary" type="button" value="Guardar" id="boton_Guardar" class="validarCuenta" /> 
           </div>
   </fieldset>
     }
@@ -220,19 +225,75 @@ input[type="text"], textarea
     $("#CuentaID").change(function () {
        
         var valor = $("#CuentaID option:selected").attr('title');
-       $("#texto").html(valor)
+        $("#texto").html(valor)
+        var idCuenta = $("#CuentaID option:selected").attr('value');
+        Glosa(idCuenta);
     
     });
     $("#CuentaID").keydown(function () {
       
         var valor = $("#CuentaID option:selected").attr('title');
         $("#texto").html(valor)
+        var idCuenta = $("#CuentaID option:selected").attr('value');
+        Glosa(idCuenta);
        
     });
     $("#CuentaID").keyup(function () {
      
         var valor = $("#CuentaID option:selected").attr('title');
         $("#texto").html(valor)
+        var idCuenta = $("#CuentaID option:selected").attr('value');
+        Glosa(idCuenta);
      
     });
+    function Glosa(idcuenta) {
+        if (idcuenta == "") {
+            $('#DRespaldo').css('display', 'none')
+            $("#Glosa").html("");
+            $("#texto").html("");
+        } else {
+            var url = '@Url.Action("Glosacuenta", "data")';
+
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: { xCuentaID: idcuenta },
+                success: function (data, textStatus, xhr) {
+                    var Datos = data;
+                    var idDato = Datos.ID;
+                    if (idDato != 0) {
+                        var Glosa = Datos.Glosa;
+                        $('#DRespaldo').css('display', '')
+                        $("#Respaldo").html(Datos.Respaldo)
+                        $("#Glosa").html(Glosa)
+                    } else {
+                        $('#DRespaldo').css('display', 'none')
+                        $("#Glosa").html("");
+                    }
+
+                },
+                error: function (xhr) { alert("Error "); }
+            });
+        }
+    }
+    $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+        $("#boton_Guardar").click(function () {
+            // Validar Ingreso
+            var idCuenta = $("#CuentaID option:selected").attr('value');
+            var NumeroDocumento = $("#NumeroDocumento").val();
+            var Monto = $("#Monto").val();
+            if (idCuenta != 0) {
+                $("form").submit();
+            } else {
+                alert("Seleccione cuenta");
+            }
+           
+           
+        });
+    });
+
 </script>

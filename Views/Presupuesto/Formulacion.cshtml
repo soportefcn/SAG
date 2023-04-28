@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<SAG2.Models.Cuenta>
 @{
+	SAG2.Models.Proyecto Proyecto = (SAG2.Models.Proyecto)Session["Proyecto"];
     Layout = "~/Views/Shared/_Layoutinf.cshtml";
     ViewBag.Title = "Formulación de Presupuesto";
     List<SAG2.Models.DetallePresupuesto> dp = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.Detalle;
@@ -11,6 +12,20 @@
     {
         ViewBag.PresupuestoID = "0";
     }
+	
+				SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+                int PeriodoAnt = periodo_inicio - 1;
+                int SaldoInicial = 0;
+                try
+                {
+                   SaldoInicial = db.Saldo.Where(d => d.Mes == 12 && d.Periodo == PeriodoAnt && d.CuentaCorriente.ProyectoID == Proyecto.ID).FirstOrDefault().SaldoFinal;
+          
+                }
+                catch (Exception)
+                {
+                    SaldoInicial = 0;
+                }
+                ViewBag.SaldoInicial = SaldoInicial;
     int mes_actual = DateTime.Now.Month; 
     bool subtotales = false;
     var Meses = new string[12]
@@ -54,7 +69,6 @@
     <h2>Formulación de Presupuesto</h2>
 @using (Html.BeginForm())
 {
-    int x = Model.Count(); 
     <input type="hidden" name="PresupuestoID" id="PresupuestoID" value="@Html.Raw(@ViewBag.PresupuestoID)" />
      <input type="hidden" name="MesTope" id="MesTope" value="@ViewBag.MesTermino" />
  
@@ -173,19 +187,14 @@
             }   
             </tr>
         }
-        @if (x != 0)
-        {
-            <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)" style="background-color: Silver;"><th align="left">Total @cuentaAnterior.Nombre</th>
-            @for (int i = 0; i < 12; i++)
-                        {
-                            <td valign="middle">
-                            <input type="text" valorAnterior="0" value="0" padre="@Html.Raw(cuentaAnterior.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" class="Presupuesto" disabled="disabled" size="7" style="font-size: 10px; text-align: right;" />
-                            </td>
-                        }</tr>
-            <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)"><td colspan="13">&nbsp;</td></tr>
-            }
-        
-        
+        <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)" style="background-color: Silver;"><th align="left">Total @cuentaAnterior.Nombre</th>
+        @for (int i = 0; i < 12; i++)
+                    {
+                        <td valign="middle">
+                        <input type="text" valorAnterior="0" value="0" padre="@Html.Raw(cuentaAnterior.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" class="Presupuesto" disabled="disabled" size="7" style="font-size: 10px; text-align: right;" />
+                        </td>
+                    }</tr>
+        <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)"><td colspan="13">&nbsp;</td></tr>
     </table>
 }
 </div>
@@ -193,14 +202,18 @@
     $(document).ready(function () {
         $(".ReplicarValor").click(function () {
             var mesTermino = $("#MesTope").val();
-            var cuentaID = $(this).attr("cuenta");
-            var valor = $("#Presupuesto_1_" + cuentaID).val();
+			if(mesTermino != 0){
+				var cuentaID = $(this).attr("cuenta");
+				var valor = $("#Presupuesto_1_" + cuentaID).val();
 
-            if (valor != "") {
-                for (var i = 2; i < mesTermino; i++) {
-                    $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
-                }
-            }
+				if (valor != "") {
+					for (var i = 2; i < mesTermino; i++) {
+						$("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
+					}
+				}
+			}else{
+				alert(" No hay un convenio Vigente");
+			}
         });
 
 

@@ -270,7 +270,7 @@
                 }
             </tr>
             <tr style="">
-                <th style="background-color: silver; text-align: left">4. Otros Aportes del SENAME</th>
+                <th style="background-color: silver; text-align: left">4. Otros Aportes del Sename/Servicio Mejor Ni&ntilde;ez</th>
                 @foreach (var mes in Meses)
                 {
                     double valorIngresos = ingresos.Where(m => (m.CuentaID == 8 && m.CuentaID == 10) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);

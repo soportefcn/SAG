@@ -43,6 +43,7 @@ namespace SAG2.Models
         public virtual List<DetalleEgreso> Egresos { get; set; }
        // public virtual SenameUso SenameUsos { get; set; }
         //public virtual List<Movimiento> Egresos { get; set; }
+       // public virtual CuentaGlosa Glosa { get; set; }
 
         public virtual string NombreLista 
         {

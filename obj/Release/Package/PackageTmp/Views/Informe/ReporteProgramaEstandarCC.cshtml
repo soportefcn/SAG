@@ -283,7 +283,7 @@
                 }
             </tr>
             <tr style="">
-                <th style="background-color: silver; text-align: left">4. Otros Aportes del SENAME</th>
+                <th style="background-color: silver; text-align: left">4. Otros Aportes del Sename/Servicio Mejor Ni&ntilde;ez</th>
                 @foreach (var mes in Meses)
                 {
                     double valorIngresos = ingresos.Where(m => (m.CuentaID == 8 && m.CuentaID == 10) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
@@ -719,7 +719,7 @@
                 }
             </tr>
             <tr>
-                <th style="background-color: silver; text-align: left">8) Devolución de fondos al SENAME</th>
+                <th style="background-color: silver; text-align: left">8) Devoluci&oacute;n de fondos al Sename/Servicio Mejor Ni&ntilde;ez</th>
                 @foreach (var mes in Meses)
                 {
                     double valorEgresos = egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 145)).Sum(m => m.Monto);

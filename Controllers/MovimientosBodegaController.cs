@@ -202,10 +202,13 @@ namespace SAG2.Controllers
                 }
             }
         }
-        public ActionResult ListarEntradas()
+        public ActionResult ListarEntradas(int? periodo, int? mes)
         {
-            int periodo = (int)Session["Periodo"];
-            int mes = (int)Session["Mes"];
+            if (periodo == null)
+            {
+                periodo = (int)Session["Periodo"];
+                mes = (int)Session["Mes"];
+            }
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             return View(db.MovimientoBodega.Where(b => b.Periodo == periodo).Where(b => b.Mes == mes).Where(b => b.ProyectoID == Proyecto.ID).Where(b => b.Tdoc  == 1).OrderByDescending(b => b.ID).ToList());       
         }
@@ -492,19 +495,37 @@ namespace SAG2.Controllers
                     saldo = 0;
                 }
 
-                //Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            
+
+
                 ViewBag.DocumentoID = new SelectList(db.Documento.OrderBy(a => a.ID), "ID", "NombreLista");
-                //  ViewBag.ArticuloID = new SelectList(db.Articulo.OrderBy(a => a.Nombre), "ID", "NombreLista");
+                
                 movimientosbodega.ProyectoID = Proyecto.ID;
                
-                movimientosbodega.Fecha = DateTime.Now;
-                movimientosbodega.Tdoc = 1;
+          
                 int ArticuloID = movimientosbodega.ArticuloID;
                 int Cantidad = (int)movimientosbodega.Entrada;
-                movimientosbodega.Salida = 0;
-                movimientosbodega.Saldo = saldo + Cantidad; 
+                
+                  
                 int detallegreso = (int)movimientosbodega.DetalleEgresoID;
-                db.MovimientoBodega.Add(movimientosbodega);
+
+                MovimientosBodega Registro = new MovimientosBodega();
+
+                Registro.ArticuloID = ArticuloID;
+                Registro.DetalleEgresoID = detallegreso;
+                Registro.Entrada =  movimientosbodega.Entrada;
+                Registro.Fecha = DateTime.Now;
+                Registro.Tdoc = 1;
+                Registro.Salida = 0;
+                Registro.Saldo = saldo + Cantidad;
+                Registro.ProyectoID = Proyecto.ID;
+                Registro.ProyectoIDTraspaso = 0;
+                Registro.Observaciones = movimientosbodega.Observaciones;
+                Registro.Periodo = movimientosbodega.Periodo;
+                Registro.Mes = movimientosbodega.Mes;
+
+
+                db.MovimientoBodega.Add(Registro);
                 db.SaveChanges();
                 //saldoBodega((int)Session["Periodo"], (int)Session["Mes"], Proyecto.ID, ArticuloID, Cantidad, 0);
                 saldoBodega(movimientosbodega.Periodo, movimientosbodega.Mes , Proyecto.ID, ArticuloID, Cantidad, 0);
@@ -867,86 +888,116 @@ namespace SAG2.Controllers
 
         public void saldoBodega(int periodo,  int mes, int proyectoID, int articuloID, int entrada = 0, int salida = 0)
         {
-            try
-            {
+            //try
+            //{
 
-                Bodega bodega = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == mes).Where(b => b.Periodo == periodo).Take(1).Single();
-                if (bodega.Periodo == periodo && bodega.Mes == mes)
+                int bodegaC = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == mes).Where(b => b.Periodo == periodo).Count();
+                if (bodegaC > 0)
                 {
-
-                    bodega.Entrada += entrada;
-                    bodega.Salida += salida;
-                    bodega.Saldo = bodega.SaldoInicial + bodega.Entrada - bodega.Salida;
-                    db.Entry(bodega).State = EntityState.Modified;
-                    db.SaveChanges();
-
-                    // crear if para actualizar saldo de mes actual cuando se graba mes anterior
-                    if ((int)Session["Mes"] != mes)
+                    int SaldoMensual = 0;
+                    Bodega bodega = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == mes).Where(b => b.Periodo == periodo).Take(1).Single();
+                    if (bodega.Periodo == periodo && bodega.Mes == mes)
                     {
-                        int PeriodoActual = (int)Session["Periodo"];
-                        int MesActual = (int)Session["Mes"];
 
-                        Bodega bodegaActual = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == MesActual).Where(b => b.Periodo == PeriodoActual).Take(1).Single();
-                        bodegaActual.SaldoInicial = bodega.Saldo;
-                        bodegaActual.Saldo = bodegaActual.SaldoInicial + bodegaActual.Entrada - bodegaActual.Salida;
-                        db.Entry(bodegaActual).State = EntityState.Modified;
+                        bodega.Entrada += entrada;
+                        bodega.Salida += salida;
+                        bodega.Saldo = bodega.SaldoInicial + bodega.Entrada - bodega.Salida;
+                        db.Entry(bodega).State = EntityState.Modified;
                         db.SaveChanges();
-
-                    }
-                }
-            }
-             catch (Exception)
-               
-                {
-                    //int saldo = 0;
-
-                    Bodega  bodega = new Bodega();
-                    bodega.ProyectoID = proyectoID;
-                    bodega.ArticuloID = articuloID;
-                    bodega.Periodo = periodo;
-                    bodega.Mes = mes;
-                    bodega.Entrada = entrada;
-                    bodega.Salida = salida;
-                    bodega.Saldo =  entrada - salida;
-                    bodega.SaldoInicial = 0;
-                    db.Bodega.Add(bodega);
-                    db.SaveChanges();
-
-                    if ((int)Session["Mes"] != mes)
-                    {
-                        try
-                        {
-                        int PeriodoActual = (int)Session["Periodo"];
-                        int MesActual = (int)Session["Mes"];
-
-                        Bodega bodegaActual = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == MesActual).Where(b => b.Periodo == PeriodoActual).Take(1).Single();
-                        if (bodegaActual.Periodo == PeriodoActual  && bodegaActual.Mes == MesActual)
-                        {
-                            bodegaActual.SaldoInicial =   entrada - salida;
-                            bodegaActual.Saldo = bodegaActual.SaldoInicial + bodegaActual.Entrada - bodegaActual.Salida;
-                            db.Entry(bodegaActual).State = EntityState.Modified;
-                            db.SaveChanges();
-
-                        }
-                        }
-                        catch 
+                        SaldoMensual = bodega.SaldoInicial + bodega.Entrada - bodega.Salida;
+                        // crear if para actualizar saldo de mes actual cuando se graba mes anterior
+                        if ((int)Session["Mes"] != mes)
                         {
                             int PeriodoActual = (int)Session["Periodo"];
                             int MesActual = (int)Session["Mes"];
-                            Bodega bodegaActual = new Bodega();
-                            bodegaActual.ProyectoID = proyectoID;
-                            bodegaActual.ArticuloID = articuloID;
-                            bodegaActual.Periodo = PeriodoActual;
-                            bodegaActual.Mes = MesActual;
-                            bodegaActual.Entrada = 0;
-                            bodegaActual.Salida = 0;
-                            bodegaActual.SaldoInicial =  entrada - salida;
-                            bodegaActual.Saldo = bodegaActual.SaldoInicial + bodegaActual.Entrada - bodegaActual.Salida;
-                            db.Bodega.Add(bodegaActual);
-                            db.SaveChanges();
+
+                            int bodegaActualCount = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == MesActual).Where(b => b.Periodo == PeriodoActual).Count();
+
+                            if (bodegaActualCount > 0)
+                            {
+                                Bodega bodegaActual = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == MesActual).Where(b => b.Periodo == PeriodoActual).Take(1).Single();
+
+                                bodegaActual.SaldoInicial = bodega.Saldo;
+                                bodegaActual.Saldo = bodegaActual.SaldoInicial + bodegaActual.Entrada - bodegaActual.Salida;
+                                db.Entry(bodegaActual).State = EntityState.Modified;
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+
+                                Bodega BodegaActual = new Bodega();
+                                BodegaActual.ArticuloID = articuloID;
+                                BodegaActual.Entrada = 0;
+                                BodegaActual.Salida = 0;
+                                BodegaActual.SaldoInicial = SaldoMensual;
+                                BodegaActual.Saldo = SaldoMensual;
+                                BodegaActual.Periodo = PeriodoActual;
+                                BodegaActual.Mes = MesActual;
+                                BodegaActual.ProyectoID = proyectoID;
+                                db.Bodega.Add(BodegaActual);
+                                db.SaveChanges();
+
+                            }
+
                         }
                     }
                 }
+                else {
+                    Bodega Bodega = new Bodega();
+                    Bodega.ArticuloID = articuloID;
+                    Bodega.Entrada = entrada;
+                    Bodega.Salida = 0;
+                    Bodega.SaldoInicial = 0;
+                    Bodega.Saldo = entrada;
+                    Bodega.Periodo = periodo;
+                    Bodega.Mes = mes;
+                    Bodega.ProyectoID = proyectoID;
+                    db.Bodega.Add(Bodega);
+                    db.SaveChanges();
+                    if ((int)Session["Mes"] != mes)
+                    {
+                        int PeriodoActual = (int)Session["Periodo"];
+                        int MesActual = (int)Session["Mes"];
+
+                        int bodegaActualCount = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == MesActual).Where(b => b.Periodo == PeriodoActual).Count();
+
+                        if (bodegaActualCount > 0)
+                        {
+                            Bodega bodegaActual = db.Bodega.Where(b => b.ProyectoID == proyectoID).Where(b => b.ArticuloID == articuloID).Where(b => b.Mes == MesActual).Where(b => b.Periodo == PeriodoActual).Take(1).Single();
+
+                            bodegaActual.SaldoInicial = Bodega.Saldo;
+                            bodegaActual.Saldo = bodegaActual.SaldoInicial + bodegaActual.Entrada - bodegaActual.Salida;
+                            db.Entry(bodegaActual).State = EntityState.Modified;
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+
+                            Bodega BodegaActual = new Bodega();
+                            BodegaActual.ArticuloID = articuloID;
+                            BodegaActual.Entrada = 0;
+                            BodegaActual.Salida = 0;
+                            BodegaActual.SaldoInicial = Bodega.Saldo;
+                            BodegaActual.Saldo = Bodega.Saldo;
+                            BodegaActual.Periodo = PeriodoActual;
+                            BodegaActual.Mes = MesActual;
+                            BodegaActual.ProyectoID = proyectoID;
+                            db.Bodega.Add(BodegaActual);
+                            db.SaveChanges();
+
+                        }
+
+                    }
+                
+                
+                }
+           // }
+             //catch (Exception)
+               
+             //   {
+             //       //int saldo = 0;
+
+             //   }
             
          
         }

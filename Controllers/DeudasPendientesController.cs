@@ -218,16 +218,53 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             if (personalID != 0)
             {
-                return View(db.DeudaPendiente.Where(m => m.ProyectoID == Proyecto.ID).Where(d => d.PersonaID == personalID).Where(d => d.EgresoID == null).OrderByDescending(d => d.NumeroComprobante).ToList());
+                return View(db.DeudaPendiente.Where(m => m.ProyectoID == Proyecto.ID).Where(d => d.PersonaID == personalID).Where(d => d.EgresoID == null).OrderByDescending(d => d.ID).ToList());
             }
             else if (proveedorID != 0)
             {
-                return View(db.DeudaPendiente.Where(m => m.ProyectoID == Proyecto.ID).Where(d => d.ProveedorID == proveedorID).Where(d => d.EgresoID == null).OrderByDescending(d => d.NumeroComprobante).ToList());
+                return View(db.DeudaPendiente.Where(m => m.ProyectoID == Proyecto.ID).Where(d => d.ProveedorID == proveedorID).Where(d => d.EgresoID == null).OrderByDescending(d => d.ID).ToList());
             }
             else
             {
-                return View(db.DeudaPendiente.Where(m => m.ProyectoID == Proyecto.ID).Where(d => d.ProveedorID == null).Where(d => d.PersonaID == null).Where(d => d.EgresoID == null).OrderByDescending(d => d.NumeroComprobante).ToList());
+                return View(db.DeudaPendiente.Where(m => m.ProyectoID == Proyecto.ID).Where(d => d.ProveedorID == null).Where(d => d.PersonaID == null).Where(d => d.EgresoID == null).OrderByDescending(d => d.ID).ToList());
             }
+        }
+
+        [HttpPost]
+        public ActionResult ListadoEgreso(FormCollection formulario) {
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
+         
+            List<DetalleEgreso> lista = new List<DetalleEgreso>(); ;
+            foreach( var dato in formulario){
+                int tmp = Int32.Parse(dato.ToString());
+                DeudaPendiente dp = db.DeudaPendiente.Find(tmp);
+                DetalleEgreso detalle = new DetalleEgreso();
+                detalle.BoletaHonorarioID = null;
+                detalle.Conciliado = null;
+                detalle.CuentaID = dp.CuentaID;
+                detalle.DeudaPendienteID = tmp;
+                detalle.DocumentoID = dp.DocumentoID;
+                detalle.FechaEmision = dp.FechaEmision;
+                detalle.FechaVencimiento = dp.FechaVencimiento;
+                detalle.Monto = dp.Monto;
+                detalle.DocumentoID = dp.DocumentoID;
+                detalle.NComprobanteDP = dp.NumeroComprobante;
+                detalle.NDocumento = dp.NumeroDocumento;
+                detalle.Glosa = dp.Glosa;
+                lista.Add(detalle);
+            }
+
+            Session.Remove("DetalleEgreso");
+            Session.Add("DetalleEgreso", lista);
+            return RedirectToAction("CerrarPopUp");
+
+        }
+
+        public ActionResult CerrarPopUp()
+        {
+          
+            return View();
         }
 
         //

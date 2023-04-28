@@ -152,8 +152,13 @@ namespace SAG2.Controllers
             fondofijo.Mes = (int)Session["Mes"];
             fondofijo.ProyectoID = ((Proyecto)Session["Proyecto"]).ID;
             fondofijo.CuentaID = Int32.Parse(Request.Form["CuentaID"].ToString());
-            fondofijo.Glosa = fondofijo.Glosa.ToUpper();
-
+            if (fondofijo.Glosa != null)
+            {
+                fondofijo.Glosa = fondofijo.Glosa.ToUpper();
+            }
+            else {
+                fondofijo.Glosa = " ";
+            }
             if (fondofijo.NumeroDocumento == null || fondofijo.NumeroDocumento <= 0)
             {
                 fondofijo.NumeroDocumento = 1;
@@ -239,6 +244,7 @@ namespace SAG2.Controllers
         [HttpGet]
         public string GenerarEgreso(int fondoFijoGrupoID)
         {
+            Session.Remove("DetalleEgreso");
             int ProyectoID = ((Proyecto)Session["Proyecto"]).ID;
             int monto = 0;
             List<DetalleEgreso> lista_tmp = new List<DetalleEgreso>();

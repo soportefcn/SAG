@@ -224,6 +224,67 @@ namespace SAG2.Controllers
         {
             return View();
         }
+
+        public ViewResult InicioLog()
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            int periodo = (int)Session["Periodo"];
+            int Mes = (int)Session["Mes"];
+             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            ViewBag.Programa = db.Proyecto.ToList();
+            List<InicioLog> IniLog = new List<InicioLog>();
+            if (usuario.esUsuario)
+            {
+                IniLog = db.InicioLog.Where(d => d.Periodo == periodo && d.Mes == Mes && d.ProyectoId == Proyecto.ID).OrderByDescending(d => d.Fecha).ToList();
+               
+            }
+            else {
+                IniLog = db.InicioLog.Where(d => d.Periodo == periodo && d.Mes == Mes).OrderByDescending(d => d.Fecha).ToList();
+            }
+            ViewBag.Periodo = periodo;
+            ViewBag.Mes = Mes; 
+            return View(IniLog);
+        }
+
+        [HttpPost]
+        public ActionResult InicioLog(FormCollection data)
+        {
+            int periodo = int.Parse(data["PeriodoApertura"]);
+            int Mes = int.Parse(data["MesApertura"]);
+            int ProyectoID = int.Parse(data["Proyecto"]);
+            int tipo = int.Parse(data["Proyecto"]);
+            List<InicioLog> IniLog = new List<InicioLog>();
+
+            IniLog = db.InicioLog.Where(d => d.Periodo == periodo && d.Mes == Mes).OrderByDescending(d => d.Fecha).ToList();
+
+            if (ProyectoID != 0) {
+                IniLog = IniLog.Where(d => d.ProyectoId == ProyectoID).ToList();
+            }
+
+
+            ViewBag.Programa = db.Proyecto.ToList();
+            ViewBag.Periodo = periodo;
+            ViewBag.Mes = Mes;
+            ViewBag.ProyectoSel = ProyectoID;
+            return View(IniLog);
+
+
+
+        }
+
+        public ActionResult InicioLogExcel(int Periodo, int Mes, int ProyectoID, int Tipo) {
+            List<InicioLog> IniLog = new List<InicioLog>();
+
+            IniLog = db.InicioLog.Where(d => d.Periodo == Periodo && d.Mes == Mes).OrderByDescending(d => d.Fecha).ToList();
+
+            if (ProyectoID != 0)
+            {
+                IniLog = IniLog.Where(d => d.ProyectoId == ProyectoID).ToList();
+            }
+            ViewBag.Programa = db.Proyecto.ToList();
+            return View(IniLog);
+        }
+
         [HttpPost]
         public ActionResult Apertura(FormCollection data) {
             Persona Persona = (Persona)Session["Persona"];

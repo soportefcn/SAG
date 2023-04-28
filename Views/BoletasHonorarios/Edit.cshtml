@@ -1,6 +1,23 @@
 ﻿@model SAG2.Models.BoletaHonorario
 @{
     ViewBag.Title = "Modificar";
+    int periodoSel = Model.Periodo;
+    int mesSel = Model.Mes;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
 }
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
@@ -28,20 +45,56 @@ input[type="text"], textarea
     @Html.HiddenFor(model => model.Periodo)
     @Html.HiddenFor(model => model.Mes)
     @Html.HiddenFor(model => model.ProyectoID) 
-    @Html.Hidden("Porcentaje", 10)   
+        <input id="PersonaID" name="PersonaID" type="hidden" value="@ViewBag.PersonalID" />
+    <input id="ProveedorID" name="ProveedorID" type="hidden" value="@ViewBag.ProveedorID" />
+    <input id="Rut" name="Rut" type="hidden" value="@ViewBag.Rut" />
+    <input id="DV" name="DV" type="hidden" value="@ViewBag.DV" />
+    <input id="Beneficiario" name="Beneficiario" type="hidden" value="@ViewBag.Beneficiario" />
+
     
-    <fieldset>
-       <input type="hidden" name="VPorce" id="VPorce" value="@ViewBag.ValorPorcentaje" />
+    <fieldset>      
         <input type="hidden" name="RegistroModificar" id="RegistroModificar" value="@ViewBag.RegistroModificar" />
         <div class="panel panel-default">
   <div class="panel-heading"><h3><b>Modificar Boleta de Honorario</b></h3></div>
   <div class="panel-body">
-      <div class="form-group form-inline" >
-        <div class="form-group">
-            @Html.LabelFor(model => model.PersonaID, "Persona")
+            <div class="form-group form-inline">
+         <div class="form-group" style="margin-right: 15px;">
+            Período
+        </div>
+        <div class="form-group" style="margin-right: 15px;">
+            <input class="form-control" type="text" value="@Model.Periodo" readonly="readonly" />
+        </div>
+         <div class="form-group" style="margin-right: 15px;">
+            Mes
         </div>
         <div class="form-group">
-            @Html.DropDownList("PersonaID",  null, "  ", new { @class = "form-control js-autocomplete"})
+            <input class="form-control" type="text" value="@Meses[@Model.Mes - 1]" readonly="readonly" />
+        </div>
+          <div class="form-group" style="margin-right: 15px;">
+            N° Comprobante de Egreso
+        </div>
+        <div class="form-group" style="margin-right: 15px;">
+              @if (Model.Egreso != null)
+     {
+            <input class="form-control" type="text" value="@Model.Egreso.NumeroComprobante" readonly="readonly" />
+              }
+        </div>
+           </div>
+ 
+     @if (ViewBag.RegistroModificar != "Si")
+     {
+      <div class="alert alert-warning">
+           @Html.Raw(ViewBag.RegistroModificar)
+      </div>
+     }
+      <hr />
+
+      <div class="form-group form-inline" >
+        <div class="form-group" >
+            @Html.Label("Persona")
+        </div>
+       <div class="form-group">
+            <input type="text" value="@ViewBag.NombreLista" style="width: 400px;" class="form-control" readonly = "readonly" />
         </div>
        </div>
       <div class="form-group form-inline" >
@@ -64,12 +117,12 @@ input[type="text"], textarea
          <div class="form-group form-inline" >
               <div class="form-group">
            <label>Porcentaje</label>     <br />
-           @Html.DropDownList("PORCENTAJE", null, "-- SELECCIONE % --", new { @class = "form-control"} )      
+         @Html.TextBoxFor(model => model.Porcentaje, new { @readonly = "readonly", @class = "form-control" })  
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Bruto)
         <br />
-            @Html.TextBoxFor(model => model.Bruto, new { @class = "form-control" })
+            @Html.TextBoxFor(model => model.Bruto, new { @readonly = "readonly", @class = "form-control" })
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Retencion)
@@ -80,13 +133,13 @@ input[type="text"], textarea
         <div class="form-group">
             @Html.LabelFor(model => model.Neto)
         <br />
-            @Html.TextBoxFor(model => model.Neto, new { @class="form-control" })
+            @Html.TextBoxFor(model => model.Neto, new { @readonly = "readonly", @class = "form-control" })
         </div></div>
         <div class="form-group">
             @Html.LabelFor(model => model.Concepto)
         </div>
         <div class="form-group">
-            @Html.TextAreaFor(model => model.Concepto, new { @class="form-control" })
+            @Html.TextAreaFor(model => model.Concepto, new { @class = "form-control" })
         </div>
 
          <div class="form-group form-inline">
@@ -121,8 +174,8 @@ input[type="text"], textarea
   </div>
   <div class="panel-footer">
 	<div  style ="width: 500px ; display:inline-block">
-           <a class="btn btn-success" href="../Index" onclick="window.open(this.href, 'Buscar','width=950,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false">BUSCAR</a>
-            <a class="btn btn-default" href="/SAG_5_desarrollo/BoletasHonorarios/Create">NUEVO</a>
+           <a class="btn btn-success" href="@Url.Action("CorregirHonorario", "BoletasHonorarios", new { periodo = periodoSel, mes = mesSel })">BUSCAR</a>
+            
             @if (Model.EgresoID == null)
             {
                 <a class="btn btn-danger" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');">ELIMINAR</a>

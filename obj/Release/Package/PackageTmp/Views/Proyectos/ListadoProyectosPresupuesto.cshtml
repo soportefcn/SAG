@@ -8,9 +8,11 @@
     List<SAG2.Models.Rol> snRol = new List<SAG2.Models.Rol>();
     IList<SAG2.Models.Proyecto> ListaProyecto = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;  
     List<SAG2.Models.Cuenta> Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.Cuentas;
+    List<SAG2.Models.Contrato> DContrato =  new List<SAG2.Models.Contrato>();
     try
     {
         snRol = (List<SAG2.Models.Rol>)@ViewBag.Roles;
+        DContrato = (List<SAG2.Models.Contrato>)@ViewBag.Contratos;
 
     }
     catch (Exception)
@@ -59,6 +61,7 @@
             <th> FECHA DE TERMINO</th>
             <th> DETALLE CONTRATOS</th>
             <th> RESPONSABILIDADES ADMINISTRATIVAS</th>
+            <th> CONTRATOS </th>
             <th> VALOR SUBVENCION</th><th> VALOR SUBVENCION MENSUAL</th><th> VALOR SUBVENCION ANUAL</th>
             <th> NUMERO DE CTA CTE</th>   
             <th> BANCO</th>     
@@ -75,6 +78,7 @@
     int PresupuestoID = 0;
     string Presupuesto = "Sin Presupuesto";
     var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();
+    var ContratoProyecto = DContrato.Where(d => d.ProyectoID == item.ID).ToList();
     int Pres = 0;
     try
     {
@@ -176,6 +180,26 @@
     </table>
 
 
+
+        </td>
+        <td>
+                    <table style="width: 100%;" class="table table-hover table-bordered">
+                <tbody>
+                    @{int iC = 1;}
+                    @foreach (SAG2.Models.Contrato Contrato in ContratoProyecto)
+                    {
+                        <tr>
+                            <td style="width: 15px;">@iC</td>
+                            <td style="width: 25%;">@Html.Raw(Contrato.Servicio.Nombre.ToUpper())</td>
+                            <td style="width: 25%;">@Html.Raw(Contrato.Nombre.ToUpper())</td>
+                            <td>@Html.Raw(Contrato.Monto.ToString("#,###"))</td>
+                            <td>@Contrato.Moneda</td>                   
+                            <td style="width: 30%;">@Contrato.Comentario</td>
+                        </tr>
+                        iC++;
+                    }
+                </tbody>
+            </table>
 
         </td>
         <td> 

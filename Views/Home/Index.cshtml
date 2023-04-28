@@ -43,14 +43,14 @@
         <tbody>
             <tr>
                 <th class="active">Institución</th>
-                <td>@Html.Raw(Proyecto.Institucion)</td>
+                <td colspan="5">@Html.Raw(Proyecto.Institucion)</td>
             </tr>
             <tr>
                 <th class="active">Programa</th>
                 <td style="width:">@Html.Raw(Proyecto.Nombre)</td>
                 <th class="active">Cód. Programa</th>
                 <td>@Html.Raw(Proyecto.CodCodeni)</td>
-                <th class="active">Cód. SENAME</th>
+                <th class="active">Cód. Sename/Servicio Mejor Niñez</th>
                 <td>
                     @{
                         if (Proyecto.CodSename != null)
@@ -177,7 +177,7 @@
                 <tr>
                     <th class="active">Comentarios:</th>
 
-                    <td>
+                    <td colspan="3" style="text-transform: capitalize;text-align:justify ">
                         @{
                             if (Proyecto.Convenio.Comentarios != null)
                             {
@@ -189,8 +189,7 @@
                             }
                         }
                     </td>
-                    <td></td>
-                    <td></td>
+               
                 </tr>
                 </tr>
             </tbody>
@@ -304,11 +303,12 @@
                     @foreach (SAG2.Models.Contrato Contrato in ViewBag.Contratos)
                     {
                         <tr>
-                            <td style="width: 15px;">@i</td>
-                            <td style="width: 40%;">@Html.Raw(Contrato.Servicio.Nombre.ToUpper())</td>
-                            <td style="width: 40%;">@Html.Raw(Contrato.Nombre.ToUpper())</td>
+                     <td style="width: 15px;">@i</td>
+                            <td style="width: 25%;">@Html.Raw(Contrato.Servicio.Nombre.ToUpper())</td>
+                            <td style="width: 25%;">@Html.Raw(Contrato.Nombre.ToUpper())</td>
                             <td>@Html.Raw(Contrato.Monto.ToString("#,###"))</td>
                             <td>@Contrato.Moneda</td>
+                            <td style="width: 30%;">@Contrato.Comentario</td>
                         </tr>
                         i++;
                     }
@@ -350,7 +350,7 @@
                     }
                 </td>
                 <th class="active">Subvención año</th>
-                <td style="width: 16.6%">
+                <td colspan="3">
                     @{
                         if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
                         {
@@ -365,9 +365,27 @@
             </tr>
             <tr>
                 <th class="active">Cuenta corriente</th>
-                <td colspan="2"><strong>@Html.Raw(CuentaCorriente.Numero)</strong></td>
+                <td colspan="3"><strong>@Html.Raw(CuentaCorriente.Numero)</strong></td>
                 <th class="active">Banco</th>
-                <td colspan="2"><strong>@Html.Raw(CuentaCorriente.Banco.Nombre.ToUpper())</strong></td>
+                <td colspan="3"><strong>@Html.Raw(CuentaCorriente.Banco.Nombre.ToUpper())</strong></td>
+            </tr>
+            <tr>
+                <th class="active">
+                    Valor USS
+                </th>
+                <td> @ViewBag.ValorUSS.ToString("#,###") </td>
+                <th class="active">
+                    Fecha Ingreso ( USS)
+                </th>
+                <td> @ViewBag.FechaUSS</td>
+                <th class="active">
+                    % de Zona
+                </th>
+                <td> @ViewBag.PZona</td>
+                 <th class="active">
+                    Valor Base
+                </th>
+                <td> @ViewBag.Pbase</td>
             </tr>
         </tbody>
     </table>
@@ -414,7 +432,7 @@
     }
 
     <hr/>
-    <h3>Supervisiones SENAME</h3>
+    <h3>Supervisiones Sename/Servicio Mejor Niñez</h3>
     @if (ViewBag.Supervisiones.Count == 0)
     {
         @Html.Raw("<p>No existen supervisiones.</p>")
@@ -497,5 +515,5 @@
 </div>
         @if (Proyecto.CodSename == null)
         {
-            @Html.Raw("<script>alert('Debe ingresar el Codigo Sename.');</script>");
+            @Html.Raw("<script>alert('Debe ingresar el Codigo Sename/Servicio Mejor Niñez.');</script>");
         }

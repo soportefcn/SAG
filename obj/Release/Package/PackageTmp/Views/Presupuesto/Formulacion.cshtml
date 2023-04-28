@@ -7,6 +7,8 @@
     int mes_inicio = 1;
     int mes_Termino = ViewBag.MesTermino;
     int periodo_inicio = Int32.Parse(ViewBag.Periodo_Inicio);
+    int InicioM = Int32.Parse(ViewBag.InicioMes);
+    InicioM = InicioM - 1;
     if (ViewBag.PresupuestoID.Equals(""))
     {
         ViewBag.PresupuestoID = "0";
@@ -54,8 +56,10 @@
     <h2>Formulación de Presupuesto</h2>
 @using (Html.BeginForm())
 {
+    int x = Model.Count(); 
     <input type="hidden" name="PresupuestoID" id="PresupuestoID" value="@Html.Raw(@ViewBag.PresupuestoID)" />
      <input type="hidden" name="MesTope" id="MesTope" value="@ViewBag.MesTermino" />
+    <input type="hidden" name="MesTopeInicio" id="MesTopeInicio" value="@ViewBag.InicioMes" />
  
 
     
@@ -162,36 +166,42 @@
                         catch (Exception e)
                         { }
                         <input type="text" valorAnterior="@value.ToString()" value="@value.ToString()" padre="@Html.Raw(cuenta.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuenta.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuenta.ID.ToString());}" class="Presupuesto" size="7" style="font-size: 10px; text-align: right;" eshoja="true" />
-                                                                                                                                                                                                                                                                                                                                                                     if (i == 0)
-                                                                                                                                                                                                                                                                                                                                                                     {
-                        <img src="@Url.Content("~/Content/Images/FlechaDerecha.png")" height="10" width="10" style="vertical-align: middle; cursor: pointer;" class="ReplicarValor" cuenta="@Html.Raw(cuenta.ID.ToString())"  title="Replicar valor" />
-                                                                                                                                                                                                                                                                                                                                                                     }
+                        if (i == InicioM)
+                        {
+                            <img src="@Url.Content("~/Content/Images/FlechaDerecha.png")" height="10" width="10" style="vertical-align: middle; cursor: pointer;" class="ReplicarValor" cuenta="@Html.Raw(cuenta.ID.ToString())"  title="Replicar valor" />
+                        }
                     }
                 </td>
                     mes_inicio++;
             }   
             </tr>
         }
-        <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)" style="background-color: Silver;"><th align="left">Total @cuentaAnterior.Nombre</th>
-        @for (int i = 0; i < 12; i++)
-                    {
-                        <td valign="middle">
-                        <input type="text" valorAnterior="0" value="0" padre="@Html.Raw(cuentaAnterior.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" class="Presupuesto" disabled="disabled" size="7" style="font-size: 10px; text-align: right;" />
-                        </td>
-                    }</tr>
-        <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)"><td colspan="13">&nbsp;</td></tr>
+        @if (x != 0)
+        {
+            <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)" style="background-color: Silver;"><th align="left">Total @cuentaAnterior.Nombre</th>
+            @for (int i = 0; i < 12; i++)
+                        {
+                            <td valign="middle">
+                            <input type="text" valorAnterior="0" value="0" padre="@Html.Raw(cuentaAnterior.Padre.ID.ToString())" mes="@Html.Raw((i + 1).ToString())" id="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" name="Presupuesto_@{@Html.Raw((i + 1).ToString());}_@{@Html.Raw(cuentaAnterior.ID.ToString());}" class="Presupuesto" disabled="disabled" size="7" style="font-size: 10px; text-align: right;" />
+                            </td>
+                        }</tr>
+            <tr class="@Html.Raw("cuenta_" + @cuentaAnterior.Tipo)"><td colspan="13">&nbsp;</td></tr>
+            }
+        
+        
     </table>
 }
 </div>
 <script>
     $(document).ready(function () {
         $(".ReplicarValor").click(function () {
-            var mesTermino = $("#MesTope").val();
+            var mesTermino = parseInt($("#MesTope").val()) + 1;
+            var MesTopeInicio = parseInt($("#MesTopeInicio").val());
             var cuentaID = $(this).attr("cuenta");
-            var valor = $("#Presupuesto_1_" + cuentaID).val();
+            var valor = $("#Presupuesto_" + MesTopeInicio + "_" + cuentaID).val();
 
             if (valor != "") {
-                for (var i = 2; i < mesTermino; i++) {
+                for (var i = (MesTopeInicio); i < mesTermino; i++) {
                     $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
                 }
             }

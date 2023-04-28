@@ -288,6 +288,7 @@ namespace SAG_5.Controllers
             ViewBag.periodo = periodo;
             ViewBag.mes = mes;
             ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
+            ViewBag.Entrada = 0;
 
             return View();
         }
@@ -297,17 +298,39 @@ namespace SAG_5.Controllers
             int filtro = int.Parse(Session["Filtro"].ToString());
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
             ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
-
+            ViewBag.Entrada = 1;
             ViewBag.listaCuentas = db.DetalleInformes.Where(d => d.informeID == Informe).OrderBy(d => d.cuentaID).ToList();
             ViewBag.ID = Proyectos;
+            int id = Proyectos;
             ViewBag.Periodo = periodo;
          
             ViewBag.IdInforme = Informe;
-            ViewBag.Mes = Mes;
-            var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
-            ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            ViewBag.mes = Mes;
+            // Pensar en rescatar ultimo Saldo Inicial !!!! 24-04-2023
+            try
+            {
+                var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            }
+            catch {
+                ViewBag.SaldoInicial = 0;
+            }
             ViewBag.CuentaFinancimiento = db.cuentaGrupo.Where(d => d.grupo.Equals(1)).ToList();
             ViewBag.CuentaApoyo = db.cuentaGrupo.Where(d => d.grupo.Equals(2)).ToList();
+
+            // Movimientos Periodo
+
+            ViewBag.presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.ID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
+            
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.Nulo == null).ToList();
+            ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.ID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
+            // Se cambio consulta de reintegro y se agrego reintegro gastos  !!!!
+            ViewBag.reintegros = db.Movimiento.Where(m => m.ProyectoID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+            ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
+            ViewBag.nombreLista = db.Proyecto.Find(id).NombreLista;
+            ViewBag.cuenta = db.Cuenta.ToList();
+            //
+
             if (Mes < 13)
             {
                 ViewBag.GrupoMeses = new int[1] {
@@ -530,10 +553,7 @@ namespace SAG_5.Controllers
             }
             return View();
         }
-
-       
-
-
+     
         public ActionResult ReporteProgramaExcelCC(int Informe, int Proyectos, int Mes, int periodo)
         {
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
@@ -606,11 +626,7 @@ namespace SAG_5.Controllers
             }
             return View();
         }
-
        
-
-
-
         public ActionResult ReporteProgramaEstandar()
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
@@ -685,14 +701,7 @@ namespace SAG_5.Controllers
                     12 };
             }
 
-            //if (periodo == null)
-            //{
 
-            //}
-            //else
-            //{
-            //    ViewBag.PresupuestoID = db.Presupuesto.Where(p => p.ProyectoID == Proyectos && p.Periodo == periodo);
-            //}
             return View(); 
 
         }
@@ -724,11 +733,18 @@ namespace SAG_5.Controllers
                 ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.Eliminado == null), "ID", "NombreLista", Proyectos);
             }
             ViewBag.ID = Proyectos;
+            int id = Proyectos;
             ViewBag.Periodo = periodo;
             ViewBag.CuentaFinancimiento = db.cuentaGrupo.Where(d => d.grupo.Equals(1)).ToList();
             ViewBag.CuentaApoyo = db.cuentaGrupo.Where(d => d.grupo.Equals(2)).ToList();
             ViewBag.Mes = Mes;
+            // Movimientos 
 
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Periodo == periodo && m.Temporal == null && m.Nulo == null ).ToList();
+            ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.ID == id && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null && e.Egreso.Nulo == null).ToList();
+            ViewBag.reintegros = db.Movimiento.Where(m => m.ProyectoID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+            ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo && m.Reintegro.Nulo == null).OrderBy(m => m.CuentaIDD).ToList();
+           
             var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
             ViewBag.SaldoInicial = presupuesto.SaldoInicial;
             if (Mes < 13)
@@ -936,8 +952,7 @@ namespace SAG_5.Controllers
             return View();
         }
 
-       
-
+     
         public ActionResult ReporteProgramaEstandarExcelCC(int Proyectos, int Mes, int? periodo)
         {
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
@@ -1012,10 +1027,14 @@ namespace SAG_5.Controllers
         public ActionResult ReporteProgramaSintesis()
         {
             Proyecto proyecto = (Proyecto)Session["Proyecto"];
-            int filtro = int.Parse(Session["Filtro"].ToString()); 
-
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            int mes = (int)Session["Mes"];
+            int periodo = (int)Session["Periodo"];
+            ViewBag.periodo = periodo;
+            ViewBag.mes = mes;
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
             ViewBag.Proyectos = utils.ProyectoFiltro(filtro, proyecto.ID);
+            ViewBag.Entrada = 0;
 
             return View();
         }
@@ -1027,20 +1046,21 @@ namespace SAG_5.Controllers
             ViewBag.SaldoInicial = presupuesto.SaldoInicial;
             ViewBag.CuentaFinancimiento = db.cuentaGrupo.Where(d => d.grupo.Equals(1)).ToList();
             ViewBag.CuentaApoyo = db.cuentaGrupo.Where(d => d.grupo.Equals(2)).ToList();
-
-
+            ViewBag.Entrada = 1;
             ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
-
             ViewBag.ID = Proyectos;
+            int id = Proyectos;
             ViewBag.Periodo = periodo;
-
             ViewBag.Mes = Mes;
 
-            //    ViewBag.IdLinea = linea;
-            ViewBag.Periodo = periodo;
-
-            ViewBag.Mes = Mes;
-
+            //    Movimiento;
+            ViewBag.presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.ID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.Nulo == null).ToList();
+            ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.ID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null && e.Egreso.Nulo == null).ToList();
+            ViewBag.reintegros = db.Movimiento.Where(m => m.ProyectoID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+            ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
+            ViewBag.ListaCuenta = db.Cuenta.ToList();
+            ViewBag.NombreLista = db.Proyecto.Find(id).NombreLista;
 
             if (Mes < 13)
             {
@@ -2619,6 +2639,10 @@ namespace SAG_5.Controllers
             ViewBag.Linea = new SelectList(db.LineasAtencion.ToList(), "ID", "Sigla");
             ViewBag.tipoPrograma = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
             ViewBag.region = new SelectList(db.Region.ToList(), "ID", "Nombre");
+            int mes = (int)Session["Mes"];
+            int periodo = (int)Session["Periodo"];
+            ViewBag.periodo = periodo;
+            ViewBag.mes = mes;
             return View();
         }
         [HttpPost]
@@ -2628,6 +2652,22 @@ namespace SAG_5.Controllers
             ViewBag.region = new SelectList(db.Region.ToList(), "ID", "Nombre");
             ViewBag.Idregion = region;
             ViewBag.Mes = Mes;
+            int id = region;
+
+
+            ViewBag.presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.Direccion.Comuna.RegionID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
+            //  int mes = 1;
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.Nulo == null).ToList();
+            ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.Direccion.Comuna.RegionID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null && e.Egreso.Nulo == null).ToList();
+            // Se cambio consulta de reintegro y se agrego reintegro gastos  !!!!
+            ViewBag.reintegros = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+            ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Proyecto.Direccion.Comuna.RegionID == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
+            ViewBag.NombreRegion = db.Region.Find(id).Nombre;
+            ViewBag.ListadoCuenta = db.Cuenta.ToList();
+            ViewBag.PresupuestoID = db.Presupuesto.Where(p => p.Proyecto.Direccion.Comuna.Region.ID == region && p.Periodo == periodo);
+         ;
+
+
             try
             {
                 ViewBag.SaldoInicial = db.Presupuesto.Where(m => m.Proyecto.Direccion.Comuna.RegionID == region && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).Sum(m => m.SaldoInicial);
@@ -2940,6 +2980,10 @@ namespace SAG_5.Controllers
             ViewBag.Linea = new SelectList(db.LineasAtencion.ToList(), "ID", "Sigla");
             ViewBag.tipoPrograma = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
             ViewBag.region = new SelectList(db.Region.ToList(), "ID", "Nombre");
+            int mes = (int)Session["Mes"];
+            int periodo = (int)Session["Periodo"];
+            ViewBag.periodo = periodo;
+            ViewBag.mes = mes;
             return View();
         }
         [HttpPost]
@@ -2953,6 +2997,20 @@ namespace SAG_5.Controllers
             ViewBag.Idregion = region;
             ViewBag.Mes = Mes;
             ViewBag.tipoPrograma = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+            int id = region;
+
+
+            ViewBag.presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.Direccion.Comuna.RegionID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
+           
+            ViewBag.ingresos = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.Nulo == null).ToList();
+            ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.Direccion.Comuna.RegionID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null && e.Egreso.Nulo == null).ToList();
+            // Se cambio consulta de reintegro y se agrego reintegro gastos  !!!!
+            ViewBag.reintegros = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+            ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Proyecto.Direccion.Comuna.RegionID == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
+            ViewBag.NombreRegion = db.Region.Find(id).Nombre;
+            ViewBag.ListadoCuenta = db.Cuenta.ToList();
+
+
             try
             {
                 ViewBag.SaldoInicial = db.Presupuesto.Where(m => m.Proyecto.Direccion.Comuna.RegionID == region && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).Sum(m => m.SaldoInicial);
@@ -3883,7 +3941,11 @@ Mes,
             ViewBag.Informe = new SelectList(db.Informe, "ID", "nombreInforme");
             ViewBag.Linea = new SelectList(db.LineasAtencion.ToList(), "ID", "Sigla");
             ViewBag.tipoPrograma = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
-            ViewBag.region = new SelectList(db.Region.ToList(), "ID", "Nombre"); 
+            ViewBag.region = new SelectList(db.Region.ToList(), "ID", "Nombre");
+            int mes = (int)Session["Mes"];
+            int periodo = (int)Session["Periodo"];
+            ViewBag.periodo = periodo;
+            ViewBag.mes = mes;
             return View();
         }
         [HttpPost]
@@ -3898,6 +3960,7 @@ Mes,
             ViewBag.Periodo = periodo;
             ViewBag.Mes = Mes;
             ViewBag.IdInforme = Informe;
+            int id = region;
             try
             {
                 ViewBag.SaldoInicial = db.Presupuesto.Where(m => m.Proyecto.Direccion.Comuna.RegionID == region && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).Sum(m => m.SaldoInicial);
@@ -3914,9 +3977,19 @@ Mes,
             {
                 //var ingresos = db.Movimiento.Where(e => (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12) && e.Temporal == null && e.Periodo == periodo || e.Proyecto.Direccion.Comuna.Region.ID == region).Sum(m => m.Monto_Ingresos);
                 //ViewBag.valorIngresos = (System.Numerics.Complex)(ingresos.Where(e => (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12) && e.Temporal == null && e.Periodo == periodo).Sum(m => m.Monto_Ingresos));
+                 // Movimientos
 
-
+                ViewBag.presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.Direccion.Comuna.RegionID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
+                //  int mes = 1;
+                ViewBag.ingresos = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.Nulo == null ).ToList();
+                ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.Direccion.Comuna.RegionID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null && e.Egreso.Nulo == null).ToList();
+                // Se cambio consulta de reintegro y se agrego reintegro gastos  !!!!
+                ViewBag.reintegros = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+                ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Proyecto.Direccion.Comuna.RegionID == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
+                ViewBag.NombreRegion = db.Region.Find(id).Nombre;
+                ViewBag.ListadoCuenta = db.Cuenta.ToList();
                 ViewBag.PresupuestoID = db.Presupuesto.Where(p => p.Proyecto.Direccion.Comuna.Region.ID == region && p.Periodo == periodo);
+                
             }
 
             if (Mes < 13)

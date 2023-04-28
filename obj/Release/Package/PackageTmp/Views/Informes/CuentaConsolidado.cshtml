@@ -16,9 +16,9 @@
    {
        <table class="table table-striped">
            <tr><td>
-               <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
-               <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
-               <div class="col-md-4">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+               <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID", null, " TODOS ", new { @class = "form-control js-autocomplete" })</div> 
+               <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID", null, " TODOS ", new { @class = "form-control js-autocomplete" })</div>
+               <div class="col-md-4">Region   @Html.DropDownList("regionID", null, " TODOS ", new { @class = "form-control js-autocomplete" })</div>
            </td></tr> 
        </table>
 
@@ -48,7 +48,7 @@
                  <div class="form-group">
                      <br />
                      <input type="button" id="Procesar" value="Ver resultados!" class="btn btn-primary" />
-                          @Html.ActionLink("Excel", "CuentaExcelConsolidado", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta, ProyectoID = @ViewBag.PrID, tipoProyectoID = @ViewBag.tpID, RegionID = @ViewBag.RegID  }, new { @class = "btn btn-success" })
+                          @Html.ActionLink("Excel", "CuentaExcelConsolidado", new { Hasta = DateTime.Parse(@ViewBag.Hasta), Desde = DateTime.Parse(@ViewBag.Desde), Cuenta = @ViewBag.Cuenta, ProyectoID = @ViewBag.PrID, tipoProyectoID = @ViewBag.tpID, RegionID = @ViewBag.RegID }, new { @class = "btn btn-success" })
                       
                    </div>
 
@@ -83,25 +83,32 @@
         </tr>
     @foreach (var item in Model)
     {
-
-        <tr>
+        if (item.Estado == 0)
+        {
+           
+            <tr style="text-decoration: line-through;">        
+            
              <td>@item.Tipo  </td>
             <td>@item.Region   </td>
             <td>@item.codCodeni </td>
             <td align="center">
                 @{ 
-                    if( item.TipoComprobanteID == 1){
+            if (item.TipoComprobanteID == 1)
+            {
                         <a href="@Url.Action("Edit", "Ingresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Ingreso  <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /> </a>
-                   }
-                    if (item.TipoComprobanteID == 2) { 
+            }
+            if (item.TipoComprobanteID == 2)
+            { 
                          <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-                    }
-                    if (item.TipoComprobanteID == 3) { 
+            }
+            if (item.TipoComprobanteID == 3)
+            { 
                     <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-                    } 
-                     if (item.TipoComprobanteID == 4) { 
+            }
+            if (item.TipoComprobanteID == 4)
+            { 
                     <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Gasto Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-                    } 
+            } 
                  }
             </td>
              <td>
@@ -118,6 +125,50 @@
             <td>@item.CtaCte</td>
             <td>@item.Glosa</td>
         </tr>
+        }
+        else
+        {
+         <tr>        
+            
+             <td>@item.Tipo  </td>
+            <td>@item.Region   </td>
+            <td>@item.codCodeni </td>
+            <td align="center">
+                @{ 
+            if (item.TipoComprobanteID == 1)
+            {
+                        <a href="@Url.Action("Edit", "Ingresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Ingreso  <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /> </a>
+            }
+            if (item.TipoComprobanteID == 2)
+            { 
+                         <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+            }
+            if (item.TipoComprobanteID == 3)
+            { 
+                    <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+            }
+            if (item.TipoComprobanteID == 4)
+            { 
+                    <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Gasto Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+            } 
+                 }
+            </td>
+             <td>
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td>
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td>@item.NombreCuenta</td>
+            <td>@item.Cheque</td>
+            <td align="right">
+                @item.Monto.ToString("###,##")
+            </td>
+            <td>@item.CtaCte</td>
+            <td>@item.Glosa</td>
+        </tr>
+        
+        }
     }
     </table>
     

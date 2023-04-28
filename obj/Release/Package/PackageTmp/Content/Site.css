@@ -176,10 +176,11 @@ table.tabla_comprobante, table.tabla_comprobante tr, table.tabla_comprobante tr 
 
 tr.row_comprobante:hover 
 {
-    background-color: #F0F0F0 !imporant;
+    background-color:#blue !imporant; 
 }
 .alert-dang {
   color: #a94442;
   background-color: #f2dede;
   border-color: #ebccd1;
 }
+

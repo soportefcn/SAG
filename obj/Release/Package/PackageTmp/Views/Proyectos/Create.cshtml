@@ -90,7 +90,7 @@ input[type="text"], textarea
                    @Html.TextBoxFor(model => model.CodCodeni, new {@class="form-control", @style="width: 100px;" })
                 </div>
                  <div class="form-group" style="margin-right: 45px;">
-                  @Html.LabelFor(model => model.CodSename, "Cód. SENAME")
+                  @Html.LabelFor(model => model.CodSename, "Cód.Sename/Servicio Mejor Niñez")
                 </div>
                 <div class="form-group" style="margin-right: 10px;">
                  @Html.TextBoxFor(model => model.CodSename, new { @class="form-control", @style="width: 100px;"  })
@@ -286,7 +286,7 @@ input[type="text"], textarea
     </div>
     <div class="panel-footer">
 	<div  style ="width: 500px ; display:inline-block">
-            <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=600,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+            <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=700,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
             <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
             
         </div>

@@ -47,7 +47,11 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Create(Contrato contrato)
         {
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario Usuario = (Usuario)Session["Usuario"];
+
             contrato.Activo = "S";
             contrato.ProyectoID = Proyecto.ID;
 
@@ -55,6 +59,19 @@ namespace SAG2.Controllers
             {
                 db.Contrato.Add(contrato);
                 db.SaveChanges();
+
+                InicioLog log = new InicioLog();
+                log.Tipo = "Contrato";
+                log.ProyectoId = Proyecto.ID;
+                log.Fecha = DateTime.Now;
+                log.Mes = mes;
+                log.Periodo = periodo;
+                log.RegistroID = contrato.ID;
+                log.UsuarioID = Usuario.ID;
+                log.Descripcion = "Nuevo : " + contrato.Nombre;
+                db.InicioLog.Add(log);
+                db.SaveChanges();
+
                 TempData["Message"] = "Creado con exito " + contrato.Nombre;
                 return RedirectToAction("Create");  
             }
@@ -79,6 +96,11 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Edit(Contrato contrato)
         {
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario Usuario = (Usuario)Session["Usuario"];
+
             if (ModelState.IsValid)
             {
                 contrato.Activo = null;
@@ -89,6 +111,19 @@ namespace SAG2.Controllers
 
                 db.Entry(contrato).State = EntityState.Modified;
                 db.SaveChanges();
+
+                InicioLog log = new InicioLog();
+                log.Tipo = "Contrato";
+                log.ProyectoId = Proyecto.ID;
+                log.Fecha = DateTime.Now;
+                log.Mes = mes;
+                log.Periodo = periodo;
+                log.RegistroID = contrato.ID;
+                log.UsuarioID = Usuario.ID;
+                log.Descripcion = "Modificado : " + contrato.Nombre;
+                db.InicioLog.Add(log);
+                db.SaveChanges();
+
                 TempData["Message"] = "Creado con exito " + contrato.Nombre;
                 return RedirectToAction("Create");
             }

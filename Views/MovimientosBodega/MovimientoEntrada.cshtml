@@ -25,6 +25,11 @@ input[type="text"], textarea
 }
 </style>
 <div id="SAGBox" class="control_bodega">
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $(".js-autocomplete").select2();
+            });
+    </script>
     <h2>Control de bodega</h2>
 @using (Html.BeginForm())
 {
@@ -101,7 +106,7 @@ input[type="text"], textarea
            <label>Artículo</label>
         </div>
             <div class="form-group" style="margin-right: 10px;">
-            <select name="ArticuloID" id="ArticuloID" tabindex="5" class="form-control">
+            <select name="ArticuloID" id="ArticuloID" tabindex="5" class="form-control js-autocomplete">
                 <option>Seleccione Documento de Respaldo</option>
                   
             </select>
@@ -118,12 +123,13 @@ input[type="text"], textarea
       </div>
       <div class="panel-footer">
     <div  style ="width: 400px ; display:inline-block">
-       <a class="btn btn-success" href="./ListarEntradas" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+           <div class="btn btn-success" type="button" id="buscarEntrada" ><span class ="fa fa-search fa-fw"></span>BUSCAR</div>
+      
         <a class="btn btn-default" href="/SAG_5/MovimientosBodega/movimientoentrada"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
         
     </div>
          <div style="float :right;display:inline-block">
-         <input class ="btn btn-primary" type="submit" value="Guardar" />
+         <input class ="btn btn-primary" type="button" value="Guardar" id="GrabarEntrada" />
          </div>
    
 </div>
@@ -133,7 +139,7 @@ input[type="text"], textarea
  
                              if (TempData["Message"] != null)
                              {
-    @Html.Raw("<script>alert('" + TempData["Message"] + ViewBag.NroDocumento + ".');</script>");
+                                        @Html.Raw("<scriptswal({ title: 'Good job!',text: 'You clicked the button!',icon: 'success',button: 'Aww yiss!', });;</script>");
 
                              }
 
@@ -145,11 +151,57 @@ input[type="text"], textarea
 <script type="text/javascript" language="javascript">
     $(document).ready(function ()
     {
+        $("#buscarEntrada").click(function () {
+          
+            var periodo = $("#Periodo").val();
+            var mes = $("#Mes").val();
+            window.open("/SAG_5/MovimientosBodega/ListarEntradas?Periodo=" + periodo + "&Mes=" + mes, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no')
+        });
+
+        $("#GrabarEntrada").click(function () {
+            var ValidarDatos = 0;
+            var ArticuloID = $("#ArticuloID").val();
+            var DetalleEgresoID = $("#DetalleEgresoID").val();
+            var CuentaID = $("#CuentaID").val();
+            var NroDocumento = $("#NroDocumento").val();
+            var Entrada = $("#Entrada").val();
+
+            if( !$.isNumeric(ArticuloID)  ){
+                ValidarDatos = 1;
+            }
+            if(ArticuloID == null ){
+                ValidarDatos = 1;
+            }
+            if(DetalleEgresoID == "" ){
+                ValidarDatos = 1;
+            }
+
+            if(CuentaID == "" ){
+                ValidarDatos = 1;
+            }
+            if(NroDocumento == "" ){
+                ValidarDatos = 1;
+            }
+
+            if(Entrada == "" ){
+                ValidarDatos = 1
+            }
+    
+            if ( ValidarDatos == 1 ) {
+                alert("error");
+ 
+            }else{
+                $("form").submit();
+            
+            }
+        });
+
+        });
         $('#NroDocumento').on ('change', function () {
-            alert("hola"); // or $(this).val()
+          //  alert("hola"); // or $(this).val()
         });
         $('#Mes').change(function () {
-            var mesactual = @ViewBag.mes
+            var mesactual = @ViewBag.mes;
             if(mesactual == 1) {
                 if ($('#Mes').val() == 12) {
                     var anio = $('#Periodo').val();
@@ -162,6 +214,8 @@ input[type="text"], textarea
                 }
             }
         });
+
+
         $("#BuscarEgresoID").click(function () {
             var periodo = $("#Periodo").val();
             var mes = $("#Mes").val();
@@ -210,8 +264,9 @@ input[type="text"], textarea
         });
     
 
-    });
+  
     $(document).focus(function () {
+
         if ($('#CuentaID').val() != "") {
             $.get('/SAG_5/MovimientosBodega/Articulos/' + $('#CuentaID').val(), function (response) {
                 var articulos = $.parseJSON(response);

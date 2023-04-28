@@ -80,7 +80,11 @@
                 <td>@item.NombreCuenta</td>
                 <td>@item.Cheque</td>
                 <td align="right">
-                    @item.Monto.ToString("###,##")
+                    @if (item.Estado == 0) {
+                        @Html.Raw("0").ToString();
+                    }else{
+                        @item.Monto.ToString("###,##")
+                    }
                 </td>
                 <td>@item.CtaCte</td>
                 <td>@item.Glosa</td>

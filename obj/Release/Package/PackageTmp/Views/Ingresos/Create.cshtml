@@ -91,6 +91,8 @@ input[type="text"], textarea
            </div>
       <div class="form-group">
             <div class="alert alert-success" role="alert"><label id="texto" ></label></div>
+            <div class="alert alert-warning" style="display:none;" id="DRespaldo"><strong>Doc. Respaldo :</strong><label id="Respaldo"></label></div>
+
         </div>
 
       <div class ="form-group form-inline">
@@ -192,7 +194,39 @@ input[type="text"], textarea
 </script>
 
 <script>
-    
+    function Glosa(idcuenta) {
+        if (idcuenta == "") {
+            $('#DRespaldo').css('display', 'none')
+            $("#Descripcion").html("");
+            $("#texto").html("");
+         
+        } else {
+            var url = '@Url.Action("Glosacuenta", "data")';
+
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: { xCuentaID: idcuenta },
+                success: function (data, textStatus, xhr) {
+                    var Datos = data;
+                    var idDato = Datos.ID;
+                    if (idDato != 0) {
+                        var Glosa = Datos.Glosa;
+                        $("#Descripcion").html(Glosa)
+                        $('#DRespaldo').css('display', '')
+                        $("#Respaldo").html(Datos.Respaldo)
+                    } else {
+                        $('#DRespaldo').css('display', 'none')
+                        $("#Descripcion").html("");
+                    }
+
+                },
+                error: function (xhr) { alert("Error "); }
+            });
+        }
+    }
        
 
     if ($("#planilla").val() != undefined) {
@@ -207,6 +241,8 @@ input[type="text"], textarea
             }
         }
         $("#texto").html(valor);
+        var idCuenta = $("#CuentaID option:selected").attr('value');
+        Glosa(idCuenta);
       
     });
     $("#CuentaID").keydown(function () {

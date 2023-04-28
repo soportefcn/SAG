@@ -238,7 +238,11 @@
             else
             {@Html.Raw("-")}
         </td>
-        <td align="left" nowrap>@item.Cuenta.NombreLista    </td>
+        <td align="left" nowrap>@try{
+                                    @item.Cuenta.NombreLista
+                                }catch(Exception)
+                                { } 
+              </td>
         <td nowrap>
             @try
             {

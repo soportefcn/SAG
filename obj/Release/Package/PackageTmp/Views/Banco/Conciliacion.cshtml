@@ -52,7 +52,13 @@
     /* if (periodoActual != PeriodoSeleccionado || mesActual != mesSeleccionado || esSupervisor) */
     if (periodoActual != PeriodoSeleccionado || mesActual != mesSeleccionado)
     {
-        PuedeConciliar = false;
+        if (esSupervisor)
+        {
+            PuedeConciliar = true;
+        }
+        else {
+            PuedeConciliar = false;
+        }
     }
 }
 

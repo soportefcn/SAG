@@ -2,7 +2,24 @@
 @{
     ViewBag.Title = "Reporte Region Síntesis";
     Layout = "~/Views/Shared/_Layoutinf.cshtml";
-    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+
+    var MesesData = new string[12]
+    {
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
+
+ 
 
 }
 <script type="text/javascript">
@@ -88,12 +105,27 @@
         </div>
         <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6">
             <label class="control-label" for="Mes">Mes</label>
-            @Html.DropDownList("Mes", new List<SelectListItem> { new SelectListItem { Value = "1", Text = "Enero" }, new SelectListItem { Value = "2", Text = "Febrero" }, new SelectListItem { Value = "3", Text = "Marzo" }, new SelectListItem { Value = "4", Text = "Abril" }, new SelectListItem { Value = "5", Text = "Mayo" }, new SelectListItem { Value = "6", Text = "Junio" }, new SelectListItem { Value = "7", Text = "Julio" }, new SelectListItem { Value = "8", Text = "Agosto" }, new SelectListItem { Value = "9", Text = "Septiembre" }, new SelectListItem { Value = "10", Text = "Octubre" }, new SelectListItem { Value = "11", Text = "Noviembre" }, new SelectListItem { Value = "12", Text = "Diciembre" }, new SelectListItem { Value = "13", Text = "Primer Semestre" }, new SelectListItem { Value = "14", Text = "Segundo Semestre" }, new SelectListItem { Value = "15", Text = "Anual" } }, new { @class = "form-control js-autocomplete" })
-        </div>
+                 	    <select class="form-control" name="Mes" id="Mes">
+                                @for (var i = 0; i < 12; i++)
+                                {
+                                    <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1))
+                                                                                    {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@MesesData[@i])</option>
+                                }
+                                 <option value="13" @if (@ViewBag.mes == 13) {@Html.Raw("selected=\"selected\"")}>Primer Semestre</option>
+                                <option value="14" @if (@ViewBag.mes == 14) {@Html.Raw("selected=\"selected\"")}>Segundo Semestre</option>
+                                 <option value="15" @if (@ViewBag.mes == 15) {@Html.Raw("selected=\"selected\"")}>Anual</option>
+                             </select> 
+             </div>
         <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6">
             <label class="control-label" for="Año">Año</label>
-            @Html.DropDownList("periodo", new List<SelectListItem> { new SelectListItem { Value = "2017", Text = "2017" }, new SelectListItem { Value = "2018", Text = "2018" }, new SelectListItem { Value = "2019", Text = "2019" }, new SelectListItem { Value = "2020", Text = "2020" }, new SelectListItem { Value = "2021", Text = "2021" }, new SelectListItem { Value = "2022", Text = "2022" } }, new { @class = "form-control js-autocomplete" })
-        </div>
+                       <select class="form-control" name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 3; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                            {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>  
+             </div>
     </div>
     <br/>
     <div class="row">
@@ -139,12 +171,13 @@
         int id = ViewBag.Idregion;
         int periodo = ViewBag.Periodo;
 
-        //  int mes = 1;
-        var ingresos = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID  == id && m.Periodo == periodo && m.Temporal == null).ToList();
-        var egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.Direccion.Comuna.RegionID    == id && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
-        var reintegros = db.Movimiento.Where(m => m.Proyecto.Direccion.Comuna.RegionID     == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
-        var reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.Proyecto.Direccion.Comuna.RegionID    == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo).OrderBy(m => m.CuentaIDD).ToList();
-        
+         List<SAG2.Models.Movimiento> ingresos = ViewBag.ingresos;
+        List<SAG2.Models.Movimiento> reintegros = ViewBag.reintegros;
+        List<SAG2.Models.DetalleReintegro> reintegrosGastos = ViewBag.reintegrosGastos;
+        List<SAG2.Models.DetalleEgreso> egresos = ViewBag.egresos;
+        List<SAG2.Models.DetallePresupuesto> presupuestoDetalle = ViewBag.presupuestoDetalle;
+        List<SAG2.Models.Cuenta> ListadoCuenta = ViewBag.ListadoCuenta;
+       
         var totalEgreso = new double[13];
         var totalPresupuestoE = new double[13];
         var totalIngresosEgreso = new double[13];
@@ -153,7 +186,7 @@
         var totalPresupuesto = new double[13];
         var totalesPresupuestosIngresos = new double[13];
         var totalesPresupuestosEgresos = new double[13];
-        var pruebacuentas = db.Cuenta.ToList();
+       // var pruebacuentas = db.Cuenta.ToList();
         var presupuestoInicial = new double[13];
         var saldoInicial = new double[13];
         
@@ -166,7 +199,7 @@
             <table border="1" class="table table-bordered table-hover">
                 <tr>
                     <tH>Estado de Resultado</tH>
-                    <tH>@db.Region.Find(id).Nombre </tH>
+                    <tH>@ViewBag.NombreRegion</tH>
 
                 </tr>
                 <tr>
@@ -418,7 +451,7 @@
                                         {
                                             //saldoInicial[mes] = double.Parse((@db.Presupuesto.Where(p => p.Proyecto.ID == id && p.Periodo == periodo).Sum(s => s.SaldoInicial)).ToString());
                                             @((saldoInicial[mes] + (valorIngresos - valorEgresos)).ToString("$#,###"))
-                                            { saldoInicial[mes] = double.Parse(((@db.Presupuesto.Where(p => p.Proyecto.Direccion.Comuna.RegionID  == id && p.Periodo == periodo).Sum(s => s.SaldoInicial)) + Convert.ToInt32(valorIngresos - valorEgresos)).ToString()); }
+                                            { saldoInicial[mes] = double.Parse(((ViewBag.SaldoInicial) + Convert.ToInt32(valorIngresos - valorEgresos)).ToString()); }
                                             {
                                                 totalesIngresos[mes] += valorIngresos;
                                                // totalesPresupuestosIngresos[mes] += valorPresupuesto;

@@ -272,13 +272,17 @@ namespace SAG2.Classes
             cuenta.Hijos = cuenta.Hijos.Where(c => c.ID != 80).OrderBy(c => c.Orden).ToList();
             foreach (Cuenta Hijo in cuenta.Hijos)
             {
+          
+
                 if (Hijo.Estado == 1)
                 {
                     if (Hijo.ID == egresoID || Hijo.ID == ingresoID)
                         continue;
+               
 
                     if (Hijo.Hijos.Count.Equals(0))
                     {
+
                         if (Hijo.ID.Equals(ID))
                         {
                             response += "<option value=\"" + Hijo.ID + "\" selected=\"selected\" title=\"" + Hijo.Descripcion + "\">" + Hijo.NombreLista + "</option>";
@@ -303,8 +307,8 @@ namespace SAG2.Classes
         {
             string response;
                 SAG2DB db = new SAG2DB();
-                response = generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaIngresos));
-                response += generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaEgresos));
+                response = generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaIngresos),ID);
+                response += generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaEgresos),ID);
                 return response;
 
         }

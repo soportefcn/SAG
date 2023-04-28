@@ -1,0 +1,184 @@
+﻿@model IEnumerable<SAG2.Models.InicioLog>
+
+@{
+    ViewBag.Title = "Cuadro";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SAG2.Models.Proyecto> TempProtecto = new List<SAG2.Models.Proyecto>();
+
+    TempProtecto = (List<SAG2.Models.Proyecto>)@ViewBag.Programa;
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+
+    int Periodo = @ViewBag.Periodo;
+    int Mes = @ViewBag.Mes;
+}
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $(".js-autocomplete").select2();
+        });
+    </script>
+
+
+<h2>Actualización página de inicio</h2>
+@using (Html.BeginForm())
+{
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4>Filtros</h4>
+
+<table class="table table-condensed table-hover table-bordered">
+        <tbody>
+            <tr>
+                <th class="active" nowrap="nowrap">Programa</th>
+                <td>
+                    <select name="Proyecto" id="Proyecto" class="js-autocomplete" >
+                        <option value="0"> Todos </option>
+                        @foreach (var Proyecto in ViewBag.Programa)
+                        {
+                            <option value="@Proyecto.ID" @if (@ViewBag.ProyectoSel == Proyecto.ID)
+                                                                     { @Html.Raw("selected=\"selected\"") }>
+                                
+                                @Proyecto.NombreEstado</option>    
+                        }
+                    </select>
+                </td>
+                 <th class="active" nowrap="nowrap">Mes</th>
+                <td>
+                    <select name="MesApertura" id="Mesapertura" class="form-control">
+                     @for (var i = 0; i < 12; i++)
+                    {
+                        <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.Mes == (i + 1))
+                                                                     { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw(@Meses[@i])
+                        </option>
+                     }
+                    </select>
+
+
+                </td>
+                <th class="active" nowrap="nowrap">Periodo</th>
+                <td>
+                                 <select name="PeriodoApertura" id="PeriodoApertura" class="form-control">
+                  @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                  {
+                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
+                                                                 { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw((@i).ToString())
+                  </option>
+                  }
+              </select>
+                </td>
+            </tr>
+            <tr>
+                <th class="active" nowrap="nowrap">Tipo</th>
+                <td style="width:" colspan="5">
+                    <select name="tipo" id="tipo" class="js-autocomplete" >
+                        <option value="0"> Todos </option>   
+                        <option value=1>Antecedentes del Programa</option>   
+                        <option value=2>Antecedentes del Convenio</option>  
+                        <option value=3>Contratos</option>  
+                        <option value=4>Antecedentes Administrativos, Financieros y Contables</option>  
+                    </select>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+    </table>
+      <div class="form-inline">
+                  <div class ="form-group"><input type="submit" value="Ver resultados!" class="btn btn-primary"  /></div>
+                   
+                 <div class="form-group" style="margin-right:10px" >
+            <a  id="ExcelLog" value="Excel"  data-toggle="tooltip" data-placement="top" title="Exportar a Excel" tipo="Ingresos" class="btn btn-success" style="height: 100%;" >
+                      <span class ="fa fa-file-excel-o  fa-2x"></span>
+                     </a>
+                     </div>
+
+      </div>
+  </div>
+</div>
+}
+<table class="table table-hover table-bordered">
+    <tr>
+        <th>
+            Tipo
+        </th>
+        <th>
+            Centro Costo
+        </th>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Mes
+        </th>
+        <th>
+            Periodo
+        </th>
+
+        <th>
+            Descripcion
+        </th>
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    var cc = TempProtecto.Where(d => d.ID == item.ProyectoId).FirstOrDefault().CodCodeni.ToString();
+    DateTime FF = (DateTime) item.Fecha;
+    
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tipo)
+        </td>
+        <td>
+            @cc
+        </td>
+        <td>
+            @FF.ToShortDateString()
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Mes)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Periodo)
+        </td>
+    
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+   
+
+    </tr>
+}
+
+</table>
+
+<script>
+    $(document).ready(function () {
+        $("#ExcelLog").click(function () {
+
+            // (int Periodo, int Mes, int ProyectoID, int Tipo
+            var ProyectoID = $("#Proyecto").val();
+            var mes = $("#Mesapertura").val();
+            var Periodo = $("#PeriodoApertura").val();
+            var Tipo = $("#tipo").val();         
+            window.open("/SAG_5/Administracion/InicioLogExcel?Periodo=" + Periodo + '&Mes=' + mes + '&ProyectoID=' + ProyectoID + '&Tipo=' + Tipo, 'Inicio Log');
+            return false;
+        });
+    });
+</script>

@@ -1,4 +1,4 @@
-﻿@model SAG2.Models.BienModInventarioVM
+﻿
 @{
     ViewBag.Title = "Mantenedor Autorización de Bienes";
 }
@@ -19,12 +19,11 @@
         <fieldset>
 
                 <div class="panel panel-default">
-                    <div class="panel-heading"><h3><b>Aprobación de Movimientos</b></h3></div>
+                    <div class="panel-heading"><h3><b>Autorización de Bienes </b></h3></div>
                     <div class="panel-body">
 
                         <div class="form-group form-inline">
-                            @Html.DropDownListFor(model => model.ProyectoID, new SelectList(ViewBag.listadoproyecto, "Value", "Text"), new { @class = "form-control js-autocomplete", required = "required" })
-                        </div>
+                          @Html.DropDownList("ProyectoID", null, htmlAttributes: new { @class = "form-control js-autocomplete" })       </div>
 
                         <table id="tabla-bienes" style="width: 100%;" class ="table table-hover table-bordered" >
                             <thead>
@@ -66,6 +65,7 @@
         chargeData();
 
         $("#ProyectoID").change(function () {
+           
             $("#tr-datos").empty();
             $.ajax({
                 type: 'POST',
@@ -101,7 +101,7 @@
             type: 'POST',
             url: '@Url.Action("GetBienes")',
             dataType: 'json',
-            data: { id: @ViewBag.ProyectoID },
+            data: { id: $('#ProyectoID').val()},
             success: function (bien) {
                 $.each(bien, function (i, bien) {
                     $("#tr-datos").append('<tr><td style="text-align:center;"> ' + bien['ID'] + '</td><td>' +

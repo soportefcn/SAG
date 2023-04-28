@@ -309,7 +309,7 @@
                 }
             </tr>
             <tr style="">
-                <th style="background-color: silver; text-align: left">4. Otros Aportes del SENAME</th>
+                <th style="background-color: silver; text-align: left">4. Otros Aportes del Sename/Servicio Mejor Ni&ntilde;ez</th>
                 @foreach (var mes in Meses)
                 {
                     double valorIngresos = ingresos.Where(m => (m.CuentaID == 8 && m.CuentaID == 10) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
@@ -563,7 +563,7 @@
                 <th style="background-color: silver; text-align: left">a. Funcionamiento</th>
             </tr>
             <tr>
-                <th style="background-color: silver; text-align: left">1) Consumos Básicos</th>
+                <th style="background-color: silver; text-align: left">1) Consumos B&aacute;sicos</th>
                 @foreach (var mes in Meses)
                 {
                     double valorEgresos = egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36)).Sum(m => m.Monto);
@@ -851,7 +851,7 @@
                 }
             </tr>
             <tr>
-                <th style="background-color: silver; text-align: left">8) Devoluci&oacute;n de fondos al SENAME</th>
+                <th style="background-color: silver; text-align: left">8) Devoluci&oacute;n de fondos al Sename/Servicio Mejor Ni&ntilde;ez</th>
                 @foreach (var mes in Meses)
                 {
                     double valorEgresos = egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 145)).Sum(m => m.Monto);
@@ -1777,38 +1777,7 @@
                     {@Html.Raw("$0")}
                     </td>
               
-                    @*if ((mes == 12 && mesSeleccion == 15) || (mes == 12 && mesSeleccion == 14) || (mes == 6 && mesSeleccion == 13))
-                    {
-                        foreach (var meses in Meses)
-                        {
-                            valorIngresos += ingresos.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79) && e.Temporal == null && e.Periodo == periodo && e.Mes == meses).Sum(m => m.Monto_Ingresos);
-                            valorPresupuesto += @presupuestoDetalle.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79) && e.Mes == meses).Sum(m => m.Monto);
 
-                            //valorEgresos
-                            valorEgresos += egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79) && e.Egreso.Mes == meses).Sum(m => m.Monto);
-                            valorPresupuestoE += presupuestoDetalle.Where(e => e.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79) && e.Mes == meses).Sum(m => m.Monto);
-                        }
-
-                        DifEgresos = valorEgresos - valorPresupuestoE;
-                        DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
-
-                        valorDif = valorEgresos - valorPresupuesto;
-                 
-
-                        <td>
-                            @if (valorEgresos != 0)
-                            {@valorEgresos.ToString("$#,###")
-                            {
-                                //   totalIngresosEgreso[mes] += valorIngresos;
-                                totalesIngresos[mes] += valorIngresos;
-                                totalesPresupuestosIngresos[mes] += valorPresupuesto;
-                            }
-                        }
-                        else
-                        {@Html.Raw("$0")}
-                        </td>
-                 
-                    }*@
 
                 }
             </tr>
@@ -1823,12 +1792,7 @@
                     double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
                     double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
                     valorEgresos = valorEgresos - valor_Reintegros;
-                    //double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
-                    //double DifEgresos = valorEgresos - valorPresupuestoE;
-                    //double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
-
-                  //  double valorDif = (valorIngresos - valorEgresos) - (valorPresupuesto - valorPresupuestoE);
-                  //  double valorDifPor = (valorDif) / (valorPresupuesto - valorPresupuestoE) * 100;
+   
               
 
                     <td>
@@ -1844,39 +1808,7 @@
                     {@Html.Raw("$0")}
                     </td>
              
-                    @*if ((mes == 12 && mesSeleccion == 15) || (mes == 12 && mesSeleccion == 14) || (mes == 6 && mesSeleccion == 13))
-                    {
-                        foreach (var meses in Meses)
-                        {
-                            valorIngresos += ingresos.Where(e => (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12) && e.Temporal == null && e.Periodo == periodo && e.Mes == meses).Sum(m => m.Monto_Ingresos);
-                            valorPresupuesto += @presupuestoDetalle.Where(e => (e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12) && e.Mes == meses).Sum(m => m.Monto);
 
-                            //valorEgresos
-                            valorEgresos += egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79) && e.Egreso.Mes == meses).Sum(m => m.Monto);
-                            valorPresupuestoE += presupuestoDetalle.Where(e => e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79) && e.Mes == meses).Sum(m => m.Monto);
-                        }
-
-                        DifEgresos = valorEgresos - valorPresupuestoE;
-                        DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
-
-                        valorDif = (valorIngresos - valorEgresos) - (valorPresupuesto - valorPresupuestoE);
-                        valorDifPor = (valorDif) / (valorPresupuesto - valorPresupuestoE) * 100;
-                    
-
-                        <td>
-                            @if (valorIngresos - valorEgresos != 0)
-                            {@((valorIngresos - valorEgresos).ToString("$#,###"))
-                            {
-                                //   totalIngresosEgreso[mes] += valorIngresos;
-                                totalesIngresos[mes] += valorIngresos;
-                                totalesPresupuestosIngresos[mes] += valorPresupuesto;
-                            }
-                        }
-                        else
-                        {@Html.Raw("$0")}
-                        </td>
-            
-                    }*@
                 }
             </tr>
             <tr>

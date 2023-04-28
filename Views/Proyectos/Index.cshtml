@@ -5,9 +5,13 @@
 }
 
  <div id="contenido_popup">
-      <div class="form-group">
-          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" style="width: 300px;">
+     @using (Html.BeginForm())
+{
+      <div class="form-inline form-group">
+          <input type="text" class="form-control" placeholder="Busqueda" id="busqueda" name="busqueda" style="width: 300px;" value="@ViewBag.Busq">
+          <input type="submit" value="Busqueda" id="btn-buscar" class="btn btn-success " />
         </div> 
+     }
    <table class = "table table-hover table-bordered">
       <thead class="fixedHeader">
     <tr class="info">
@@ -19,7 +23,7 @@
             Centro. Costo.
         </th>
         <th style="width:108px;">
-            Cód. Sename
+            Cod. Sename/Servicio Mejor Ni&ntilde;ez
         </th>
         <!--<th>
             Institución
@@ -36,7 +40,7 @@
             <a href="@Url.Action("Edit", "Proyectos", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
         </td>
         <td style="width:320px;">
-            @Html.DisplayFor(modelItem => item.Nombre)
+            @Html.DisplayFor(modelItem => item.NombreLista)
         </td>
         <td style="width:108px;">
             @Html.DisplayFor(modelItem => item.CodCodeni)
@@ -55,3 +59,5 @@
     </tbody>
         </table>
     </div>
+
+

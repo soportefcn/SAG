@@ -27,6 +27,7 @@ input[type="text"], textarea
     @Html.HiddenFor(model => model.PeriodoInicio)
     @Html.Hidden("DireccionID", Model.DireccionID)
     @Html.Hidden("ConvenioID", Model.ConvenioID)
+    @Html.Hidden("ValorS",Model.ValorSubvencion)
        
   <fieldset>      
   <div class="panel panel-default">
@@ -84,7 +85,7 @@ input[type="text"], textarea
                 }
           </div>
           <div class="form-group" style="margin-right: 10px;">
-           @Html.LabelFor(model => model.CodSename, "Cód. SENAME")
+           <label>Cod. Sename/Servicio Mejor Ni&ntilde;ez</label> 
           </div>
           <div class="form-group">
               @Html.TextBoxFor(model => model.CodSename, new { @class = "form-control" })

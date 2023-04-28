@@ -69,7 +69,7 @@ input[type="text"], textarea
       <div class="panel-footer">
     <div  style ="width: 400px ; display:inline-block">
         <a class="btn btn-success" href="./ListarDonaciones" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
-          <a class="btn btn-default" href="/SAG_5_desarrollo/MovimientosBodega/movimientoDonacion"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+          <a class="btn btn-default" href="/SAG_5/MovimientosBodega/movimientoDonacion"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
         </div>
          <div style="float :right;width:150px;display:inline-block">
          <input class ="btn btn-primary" type="submit" value="Guardar" />
@@ -96,7 +96,7 @@ input[type="text"], textarea
     $(document).ready(function () {
 
         $("#CategoriaID").change(function () {
-            $.get('/SAG_5_desarrollo/Articulos/Articulos/' + $(this).val(), function (response) {
+            $.get('/SAG_5/Articulos/Articulos/' + $(this).val(), function (response) {
                 var articulos = $.parseJSON(response);
                 var ddlArticulos = $('#ArticuloID');
                 $('#ArticuloID > option').remove();

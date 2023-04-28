@@ -125,10 +125,10 @@
                     <td nowrap="nowrap"></td>
                 }
                 <td>                
-                    @if (ProyectTraspasado == ""){
-                    @movimiento.Observaciones.ToUpper();
+                    @if (ProyectTraspasado != ""){
+					@ProyectTraspasado;
                 }else{
-                    @ProyectTraspasado;
+                    
                     } 
 
                 </td>

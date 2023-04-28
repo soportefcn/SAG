@@ -48,11 +48,12 @@
 
     var PuedeConciliar = true;
 
-    /* Por peticion de Judith se autoriza conciliar a las supervisoras */
-    /* if (periodoActual != PeriodoSeleccionado || mesActual != mesSeleccionado || esSupervisor) */
+
     if (periodoActual != PeriodoSeleccionado || mesActual != mesSeleccionado)
     {
-        PuedeConciliar = false;
+	
+			PuedeConciliar = false;
+		
     }
 }
 
@@ -63,7 +64,7 @@
         $(document).ready(function () {
             var periodo = $("#Periodo").val();
             var mes = $("#Mes").val();
-            window.open("/SAG_5_desarrollo/Imprimir/Conciliacion?Periodo=" + periodo + '&Mes=' + mes, 'Conciliacion');
+            window.open("/SAG_5/Imprimir/Conciliacion?Periodo=" + periodo + '&Mes=' + mes, 'Conciliacion');
         });
 	</script>
 }
@@ -74,7 +75,7 @@
 <table border="0" class="sin-hover">
     <tr>
         <td>
-        <fieldset style="width: @if (Usuario.esAdministrador)
+                      <fieldset style="width: @if (Usuario.esAdministrador)
                         {@Html.Raw("458px;");} else {@Html.Raw("400px;");} height: 100px;">
                 <div class="form-group form-inline">
                       

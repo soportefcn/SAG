@@ -63,6 +63,7 @@ namespace SAG2.Controllers
                 ViewBag.Ingresos = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(m => m.CuentaID != null && m.Nulo == null && m.Eliminado == null && m.CuentaID != 1 && m.Nulo == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
                 ViewBag.Reintegros = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
                 ViewBag.Egresos = db.DetalleEgreso.Where(m => m.Egreso.ProyectoID == pr_id).Where(m => m.CuentaID != null).Where(m => m.Nulo == null && m.Egreso.Eliminado == null && m.Egreso.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+                ViewBag.ReintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == pr_id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == Periodo).OrderBy(m => m.CuentaIDD).ToList();
 
                 List<DetallePresupuesto> dp = new List<DetallePresupuesto>();
 
@@ -204,6 +205,7 @@ namespace SAG2.Controllers
                 */
                 ViewBag.Ingresos = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(m => m.CuentaID != null && m.Nulo == null && m.Eliminado == null && m.CuentaID != 1 && m.Nulo == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
                 ViewBag.Reintegros = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+                ViewBag.ReintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == pr_id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == Periodo).OrderBy(m => m.CuentaIDD).ToList();
 
                 /*
                 SELECT cuentaid, SUM(monto)
@@ -938,15 +940,22 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             int PeriodoTermino =0;
             int MesTermino = 0;
+            int PeriodoInicio = 0;
+            int MesInicio = 0;
             try
             {
                 DateTime FechaTermino = DateTime.Parse(Proyecto.Convenio.FechaTermino.ToString());
                 MesTermino = FechaTermino.Month + 1;
-                PeriodoTermino = FechaTermino.Year; 
+                PeriodoTermino = FechaTermino.Year;
+                DateTime Fechainicio = DateTime.Parse(Proyecto.Convenio.FechaInicio.ToString());
+                PeriodoInicio = Fechainicio.Year;
+                MesInicio = Fechainicio.Month;
             }
             catch (Exception) {
                 PeriodoTermino = 0;
                 MesTermino = 0;
+                MesInicio = 13;
+
             }  
            
             if (PeriodoTermino > Periodo)
@@ -961,10 +970,25 @@ namespace SAG2.Controllers
                 }
           
             }
+
+            if (PeriodoInicio < Periodo)
+            {
+                MesInicio = 1;
+            }
+            else
+            {
+                if (PeriodoInicio > Periodo)
+                {
+                    MesInicio = 13;
+                }
+
+            }
             ViewBag.MesTermino = MesTermino; 
             ViewBag.PresupuestoID = string.Empty;
             ViewBag.Periodo_Inicio = Periodo.ToString();
             ViewBag.Mes_Inicio = "1";
+            ViewBag.InicioMes = MesInicio.ToString();
+
             List<DetallePresupuesto> dp = new List<DetallePresupuesto>();
             int activo = db.Presupuesto.Where(m => m.ProyectoID == Proyecto.ID && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).Count();
 

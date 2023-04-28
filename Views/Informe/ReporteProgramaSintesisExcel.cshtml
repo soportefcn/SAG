@@ -113,7 +113,7 @@
         //var presupuestoID = db.Presupuesto.Where(p => p.Proyecto.ID == id && p.Periodo == periodo).First().ID;
         var presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.ID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
         //  int mes = 1;
-        var ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null).ToList();
+        var ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.Nulo == null).ToList();
         var egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.ID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
         // Se cambio consulta de reintegro y se agrego reintegro gastos  !!!!
         var reintegros = db.Movimiento.Where(m => m.ProyectoID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();

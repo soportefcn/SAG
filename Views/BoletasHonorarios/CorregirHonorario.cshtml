@@ -1,0 +1,191 @@
+﻿@model IEnumerable<SAG2.Models.BoletaHonorario>
+@{
+   
+    ViewBag.Title = "Boleta de honorarios";
+    var Meses = new string[12]
+    {
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
+}
+
+<div id="SAGBox">
+    <h2>Corregir Boleta de Honorarios</h2>
+@using (Html.BeginForm())
+{
+    if (@ViewBag.Rendicion == null || !@ViewBag.Rendicion.Equals("Rendicion"))
+    {
+ 
+      <fieldset>
+
+    <div class="panel panel-default">
+    <div class="panel-body">
+      <h3>Periodo</h3> 
+      <div class="form-inline form-group">
+          <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>Mes</label>
+          </div>
+          <div class="form-group">
+              <select name="Mes" id="Mes" class="form-control">
+                  @for (var i = 0; i < 12; i++)
+                  {
+                      <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.Mes == (i + 1)) { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw(@Meses[@i])
+                  </option>
+              }
+              </select>
+          </div>
+          <div class="form-group" style="margin-right: 10px;margin-left:8px">
+              <label>Periodo</label>
+          </div>
+          <div class="form-group" style="margin-right: 50px">
+              <select name="Periodo" id="Periodo" class="form-control">
+                  @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
+                  {
+                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i) { @Html.Raw("selected=\"selected\"") }>
+                          @Html.Raw((@i).ToString())
+                  </option>
+              }
+              </select>
+          </div>
+          <div class="form-group">
+              <input type="submit" value="Ver resultados!" class="btn btn-primary" />
+          </div>
+  
+      </div>
+  </div>
+
+</div>
+               
+                </fieldset>
+        
+    }
+}
+ 
+    <table  class ="table table-bordered">
+     
+    <tr class="primary">
+        <th style="width: 80px;"> Fecha </th>
+         <th style="width: 58px;">N° Egreso</th>
+        <th  style="width: 68px;"> Nº Boleta </th>  
+         <th style="width: 65px;"> Estado </th>
+        <th style="width: 190px;"> Beneficiario </th> 
+        <th style="width: 63px;"> Bruto $ </th>
+        <th style="width: 83px;">Retencion $</th>
+        <th style="width: 0px;">Liquido $</th>
+          
+        <th style="width: 180px;">Glosa</th>
+        <th style="width: 33px;" colspan="2">Acciones</th>
+    </tr>
+
+ <tbody >  
+@foreach (var item in Model)
+{
+    <tr     @if (item.Egreso == null)        
+            {
+               @Html.Raw("class='danger'")
+            }
+        >
+          <td style="width: 73px;">
+            @item.Fecha.ToShortDateString()
+        </td>
+          <td style="width: 58px;">
+            @if (item.Egreso != null)
+            {
+                @Html.DisplayFor(modelItem => item.Egreso.NumeroComprobante)
+            }
+            else
+            {
+                @Html.Raw("-")
+            }
+        </td>
+
+        <td  style="width: 68px;">
+            @Html.DisplayFor(modelItem => item.NroBoleta)
+        </td>
+
+
+        <td style="width: 65px;">
+            @if (item.Nula != null)
+            {
+                @Html.Raw("<span class='label label-danger'>Nula</span>")
+            }
+            else
+            {
+                try
+                {
+                    if (item.Egreso.Conciliado == "S")
+                    {
+                @Html.Raw("<span class='label label-warning'>Conciliado</span>")
+                    }
+                    else
+                    {
+                    @Html.Raw("<span class='label label-success'>Vigente</span>")
+                    }
+                }
+                catch { 
+                   @Html.Raw("<span class='label label-danger'>Revisar</span>")
+                }
+            }
+        </td>
+        <td style="width: 190px;">
+            @if (item.Persona != null)
+            {
+                @item.Persona.NombreLista.ToUpper();
+            }
+            else if (item.Proveedor != null)
+            {
+                @item.Proveedor.NombreLista.ToUpper();
+            }
+            else
+            {
+                try
+                {
+                    @item.Beneficiario.ToUpper();
+                }
+                catch (Exception)
+                { }
+            }
+        </td>
+        <td style="width: 63px;" align="right">
+            @item.Bruto.ToString("#,###")
+        </td>
+        <td style="width: 83px;" align="right">
+            @item.Retencion.ToString("#,###")
+        </td>
+        <td align="right">
+            @item.Neto.ToString("#,###")
+        </td>
+
+        <td style="width: 180px;">
+            @item.Concepto.ToUpper()
+        </td>
+            <td style="width: 33px;">
+               
+      <a href="@Url.Action("Edit", "BoletasHonorarios", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+
+            </td>
+               @if (item.EgresoID == null)
+            {
+             <td style="width: 33px;">   <a class="btn btn-danger" href="../BoletasHonorarios/Delete/@Html.Raw(item.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');">X</a></td>
+            }
+        else{
+                   <td style="width: 33px;"> </td>
+               }
+                      
+         
+    </tr>
+}   
+     </tbody>
+    </table>
+</div>

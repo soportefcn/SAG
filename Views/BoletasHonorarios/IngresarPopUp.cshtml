@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/PopUp.cshtml";
 }
 <div class="top">Ingresar Boleta de Honorarios&nbsp;&nbsp;
-<a href="/SAG_5_desarrollo/BoletasHonorarios/ListadoEgreso/?personalID=@ViewBag.PersonaID">
+<a href="/SAG_5/BoletasHonorarios/ListadoEgreso/?personalID=@ViewBag.PersonaID">
     <img src="@Url.Content("~/Content/Images/Buscar2.png")" alt="Buscar" title="Buscar" style="vertical-align: middle;" />
 </a>
 &nbsp;&nbsp;
@@ -11,10 +11,15 @@
 <div >
     <style>
 /* Conversion a mayusculas */
-input[type="text"], textarea
-{
-    text-transform: uppercase;
-}
+    input[type="text"], textarea
+    {
+        text-transform: uppercase;
+    }
+    areaWidth
+    {
+        width: 679px; 
+        height: 75px;
+    }
 </style>
 <fieldset>
         
@@ -28,62 +33,54 @@ input[type="text"], textarea
     <input id="Rut" name="Rut" type="hidden" value="@ViewBag.Rut" />
     <input id="DV" name="DV" type="hidden" value="@ViewBag.DV" />
     <input id="Beneficiario" name="Beneficiario" type="hidden" value="@ViewBag.Beneficiario" />
-    
-    <div class="panel panel-default">
-  <div class="panel-heading"><h3>Ingresar Boleta de Honorarios</h3></div>
+
+    <div class="panel panel-info">
+  <div class="panel-heading"><b>Ingresar Boleta Honorarios :  @ViewBag.NombreLista </b></div>
   <div class="panel-body">
-      <div class="form-group form-inline" style="margin-left: 20px;">
-     <div class="form-group" style="margin-left: 20px;">
-            @Html.Label("Persona")
-        </div>
-        <div class="form-group" style="margin-left: 20px;">
-            <input type="text" value="@ViewBag.NombreLista" style="width: 350px;" />
-        </div>
-    </div>
-      <div class="form-group form-inline" style="margin-left: 20px;">
+ 
+      <div class="form-inline">
         <div class="form-group" style="margin-left: 20px;">
             @Html.LabelFor(model => model.NroBoleta)
-        </div>
-        <div class="form-group" style="margin-left: 20px;">
+            <br />
             @Html.EditorFor(model => model.NroBoleta)
         </div>
 
         <div class="form-group" style="margin-left: 20px;">
             @Html.LabelFor(model => model.Fecha)
-        </div>
-
-        <div class="form-group" style="margin-left: 20px;">
-            @Html.TextBoxFor(model => model.Fecha, new { @Value = DateTime.Now.ToShortDateString(), @class = "calendario" })
+            <br />
+            @Html.TextBoxFor(model => model.Fecha, new { @Value = DateTime.Now.ToShortDateString(), @class = "calendario form-control" })
         </div>
         </div>
-       <div class="form-group form-inline" style="margin-left: 20px;">
-          <div class="form-group">
-           <label>Porcentaje</label>     <br />
-           @Html.DropDownList("PORCENTAJE", null, "-- SELECCIONE % --", new { @class = "form-control"} )      
-        </div>
-        <div class="form-group" style="margin-left: 20px;">
-            @Html.LabelFor(model => model.Bruto)
+        <div class="form-inline" >
+            <div class="form-group" style="margin-left: 20px;">
+                <label>Porcentaje</label>     <br />
+                @Html.DropDownList("PORCENTAJE", null, "Sel %", new { @class = "form-control"} )      
+            </div>
+            <div class="form-group" style="margin-left: 5px;">
+                @Html.LabelFor(model => model.Bruto)
         <br />
-            @Html.EditorFor(model => model.Bruto)
+                  @Html.TextBoxFor(model => model.Bruto, new { @class = "form-control" })
+           
         </div>
-        <div class="form-group" style="margin-left: 20px;">
+        <div class="form-group" style="margin-left: 5px;">
             @Html.LabelFor(model => model.Retencion)
         <br />
-            @Html.TextBoxFor(model => model.Retencion, new { @readonly = "readonly", @style="width: 90px;" })
+            @Html.TextBoxFor(model => model.Retencion, new { @readonly = "readonly",  @class = "form-control" })
         </div>
         
-        <div class="form-group" style="margin-left: 20px;">
+        <div class="form-group" style="margin-left: 10px;">
             @Html.LabelFor(model => model.Neto)
          <br />
-            @Html.EditorFor(model => model.Neto)
+             @Html.TextBoxFor(model => model.Neto, new { @readonly = "readonly",  @class = "form-control" })
+           
         </div>
            </div>
-       <div class="form-group form-inline" style="margin-left: 20px;">
+       <div class="form-inline" >
         <div class="form-group" style="margin-left: 20px;">
             @Html.LabelFor(model => model.Concepto)
-        </div>
-        <div class="form-group" style="margin-left: 20px;">
-            @Html.TextAreaFor(model => model.Concepto, new { @cols = "57", @rows = "3" })
+        <br />
+           
+            @Html.TextAreaFor(model => model.Concepto, new { @cols = "57", @rows = "3" ,@class="form-control" , @style=" width: 679px; height: 75px;"  })
         </div>
            </div>
         <div class="form-group form-inline" style="margin-left: 20px;">
@@ -101,10 +98,11 @@ input[type="text"], textarea
             <input type="checkbox" name="Nula" id="Nula" value="1" />
         </div>
             </div>
-     
-            <input type="submit" value="Guardar" class="btn btn-primary guardar-boleta-pop-up" />
+     <hr />
+         <input type="submit" value="Guardar" class="btn btn-primary guardar-boleta-pop-up"  />   
         
   </div>
+
 </div>
     
    

@@ -2,7 +2,7 @@
 @{
     
     ViewBag.Title = "ReportePrograma";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+  
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
     Layout = null;
     Response.Clear();
@@ -13,70 +13,43 @@
 
 }
 
-
-<style media="print">
+<html>
+<head>
+    <title>Reporte Programa </title>
+<style>
     @@page {
         size: landscape;
         margin: 1cm !important;
     }
 
     body {
-        font-family: "Times New Roman" !important;
-        margin: 0 !important;
-        display: block !important;
-        overflow: visible !important;
-    }
-
-    td {
-        font-size: 10px !important;
-    }
-
-    th {
-        font-size: 12px !important;
-    }
-
-    h2 {
-        font-size: 16px !important;
-        text-align: center;
-    }
-
-    .pie {
-        display: none;
-    }
-
-    .permisos, .body, .contenedor {
-        padding: 0 !important;
-        border: 0 !important;
-        display: block !important;
-    }
-
-    .permisos {
-        width: 90% !important;
-    }
-
-    .ocultoImpresion, .menu, .top {
-        display: none;
-    }
-
-    .soloImpresion {
+         font-family: "Arial Narrow", sans-serif;
+        margin: 0;
         display: block;
+        overflow: visible;
     }
 
-    .DatosPresupuesto {
-        overflow: visible !important;
-        display: block !important;
-    }
-
-    th {
-        font-size: 11px !important;
-    }
+    .xlCelda {
+        
+            font-family: "Arial Narrow", sans-serif !important;
+         
+            text-align: right !important;
+            vertical-align: middle !important;
+            border: .5pt solid black !important;
+         width:117px !important;
+        }
+    .xlCeldatotal {        
+            font-family: "Arial Narrow", sans-serif !important;
+            text-align: right !important;
+            vertical-align: middle !important;
+            border: .5pt solid black !important;
+            width:117px !important;
+            font-weight : bold !important;
+            background:silver !important;
+        }
 </style>
-<style media="screen">
-    th {
-        font-size: 11px !important;
-    }
-
-</style>
+</head>
+<body>
 
 
 @if (ViewBag.ID != null)
@@ -115,7 +88,7 @@
         //var presupuestoID = db.Presupuesto.Where(p => p.Proyecto.ID == id && p.Periodo == periodo).First().ID;
         var presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.ID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
         //  int mes = 1;
-        var ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null).ToList();
+        var ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null && m.Nulo == null).ToList();
         var egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.ID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
         // Se cambio consulta de reintegro y se agrego reintegro gastos  !!!!
         var reintegros = db.Movimiento.Where(m => m.ProyectoID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
@@ -135,11 +108,22 @@
 
         int presupuestoCabecera = 0;
 
-        <div class="col-md-12" style="overflow-y: scroll;" id="prueba ocultoImpresion">
-            <table border="1" class="table table-bordered table-hover">
+      
+            <table border="1">
                 <tr>
                     <tH>Estado de Resultado</tH>
-                    <tH colspan="3">@db.Proyecto.Find(id).NombreLista </tH>
+                    @if (@ViewBag.Mes == 13 || @ViewBag.Mes == 14)
+                {
+                <tH colspan="7">@db.Proyecto.Find(id).NombreLista</tH>
+                }
+                @if (@ViewBag.Mes == 15)
+                {
+                <tH colspan="13">@db.Proyecto.Find(id).NombreLista</tH>
+                }
+                 @if (@ViewBag.Mes < 13)
+                 {
+                <tH >@db.Proyecto.Find(id).NombreLista</tH>
+                 }
                 </tr>
                 <tr>
 
@@ -156,7 +140,7 @@
                     @foreach (var mes in Meses)
                     {
                      
-                        <th style="width:80px !important;">Real $</th>
+                        <th>Real $</th>
                
                     }
                    @if (@ViewBag.Mes > 12) { 
@@ -196,7 +180,7 @@
                      }
                  }
                   
-                <td style="text-align: right;font-weight: bold;">
+                <td class="xlCelda">
                    
                                @if (SSaldo != 0)
                                             {
@@ -212,7 +196,7 @@
             }
                      if (@ViewBag.Mes > 12)
                      { 
-                        <th style="text-align: right;font-weight: bold;"> @saldoInicial[1].ToString("$#,###")</th>
+                        <th class="xlCelda"> @saldoInicial[1].ToString("$#,###")</th>
                      } 
             }         
         </tr>
@@ -255,7 +239,7 @@
                                         double diffTotal = (totalIngresosEgreso[mesTotal] - totalPresupuesto[mesTotal]);
                                         double diffTotalPor = (diffTotal / totalPresupuesto[mesTotal]) * 100;
                                         xTotSaldo = xTotSaldo + totalIngresosEgreso[mesTotal];
-                                        <th style="background-color: silver; text-align: right;font-weight: bold; ">
+                                        <th class="xlCeldatotal">
                                             @if (totalIngresosEgreso[mesTotal] != 0)
                                             {
                                                 @totalIngresosEgreso[mesTotal].ToString("$#,###")
@@ -270,7 +254,7 @@
                                         double diffTotal = (totalEgreso[mesTotal] - totalPresupuestoE[mesTotal]);
                                         double diffTotalPor = ((diffTotal) / (totalPresupuestoE[mesTotal])) * 100;
                                         xTotSaldo = xTotSaldo + totalEgreso[mesTotal];
-                                        <th style="background-color: silver; text-align: right; font-weight: bold;">
+                                        <th class="xlCeldatotal">
                                             @if (totalEgreso[mesTotal] != 0)
                                             {
                                                 @totalEgreso[mesTotal].ToString("$#,###")
@@ -293,7 +277,7 @@
                             { 
                                 
                                  
-                                <th style="background-color: silver; text-align: right; font-weight: bold;"> 
+                                <th class="xlCeldatotal"> 
                                      @if (xTotSaldo != 0)
                                             {
                                       @xTotSaldo.ToString("$#,###") }
@@ -320,7 +304,7 @@
                                     double valorDifPor = (valorDif) / (valorPresupuesto) * 100;
      
 
-                                    <td style="background-color: silver; text-align: right;font-weight: bold;">
+                                    <td class="xlCeldatotal">
                                         @if (valorIngresos != 0)
                                         {@valorIngresos.ToString("$#,###")
                                             {
@@ -336,7 +320,7 @@
                                 }
                              @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver; text-align: right; font-weight: bold;"> 
+                                <th class="xlCeldatotal"> 
                                       @if (xTotIng != 0)
                                         {
                                       @xTotIng.ToString("$#,###") 
@@ -361,7 +345,7 @@
                                     double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
                                     valorEgresos = valorEgresos - valor_Reintegros;
 
-                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
+                                    <td class="xlCeldatotal">
                                         @if (valorEgresos != 0)
                                         {@valorEgresos.ToString("$#,###")
                                             xTotegreso += valorEgresos; 
@@ -373,7 +357,7 @@
                                 }
                                  @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                       @if (xTotegreso != 0)
                                         {
                                     @xTotegreso.ToString("$#,###") 
@@ -403,7 +387,7 @@
 
                                     if (cuenta.Tipo == "I" || cuenta.Tipo == null)
                                     {
-                                        <td style=" text-align: right; font-weight: bold; ">
+                                        <td class="xlCelda">
                                             @if (valorIngresos != 0)
                                             {@valorIngresos.ToString("$#,###")
                                                 {
@@ -439,7 +423,7 @@
 
                                         double DifEgresos = valorEgresos - valorPresupuestoE;
                                         double DifEgresosPor = (DifEgresos) / (valorPresupuestoE) * 100;
-                                        <td style=" text-align: right; font-weight: bold; ">
+                                        <td class="xlCelda">
                                             @if (valorEgresos != 0)
                                             {@valorEgresos.ToString("$#,###")
                                                 {
@@ -464,7 +448,7 @@
                                 }
                                @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="text-align: right; font-weight: bold;">  
+                                <th class="xlCelda">  
                                     @if (xTot4 != 0){
                                      @xTot4.ToString("$#,###")
                                     }else
@@ -494,7 +478,7 @@
                                     double TotalFlujo = valorIngresos - valorEgresos;
                                     xTotflujo += TotalFlujo;
                                     
-                                    <td style=" background-color: silver;text-align: right; font-weight: bold; ">
+                                    <td class="xlCeldatotal">
                                         @if (TotalFlujo != 0)
                                         {
                                              
@@ -507,7 +491,7 @@
                                 }
                                 @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver;text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (xTotflujo != 0)
                                     {
                                      @xTotflujo.ToString("$#,###")
@@ -532,7 +516,7 @@
                                     double DifEgresos = (valorEgresos - valorReintegro) - valorPresupuestoE;
                                     double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
                                     valorEgresos = valorEgresos - valorReintegro;
-                                    <td style="background-color: silver; text-align: right;font-weight :bold; ">
+                                    <td class="xlCeldatotal">
                                         @if (valorEgresos != 0)
                                         {@valorEgresos.ToString("$#,###")
                                             {
@@ -547,7 +531,7 @@
                                 }
                               @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver;text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (xTotPersonal != 0)
                                     {
                                      @xTotPersonal.ToString("$#,###")
@@ -576,7 +560,7 @@
                                     double Valorx = saldoInicial[mes] + (valorIngresos - valorEgresos);
                                     xTotSaldoA += Valorx;
 
-                                    <td style=" background-color: silver; text-align: right; font-weight: bold; ">
+                                    <td class="xlCeldatotal">
                                         @if (Valorx != 0)
                                         { @(Valorx.ToString("$#,###"))
                                          
@@ -605,7 +589,7 @@
 
                                 double ValorxT = saldoInicial[1] + (valorIngresosT - valorEgresosT);
                                // xTotSaldoA += Valorx;
-                                <th style="background-color: silver;text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (ValorxT != 0)
                                     {
                                      @ValorxT.ToString("$#,###")
@@ -644,7 +628,7 @@
                                     
                                     if (cuenta.Tipo == "I" || cuenta.Tipo == null)
                                     {
-                                        <td style=" text-align: right; font-weight: bold; ">
+                                        <td class="xlCelda">
                                             @if (valorIngresos != 0)
                                             {@valorIngresos.ToString("$#,###")
                                      
@@ -663,7 +647,7 @@
                                         double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
                                         valorEgresos = valorEgresos - valorRngresos2;
                                         xTot9 += valorEgresos;
-                                        <td style=" text-align: right; font-weight: bold; ">
+                                        <td class="xlCelda">
                                             @if (valorEgresos != 0)
                                             {@valorEgresos.ToString("$#,###")
                                                 {
@@ -682,7 +666,7 @@
                                 }
                          @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="text-align: right; font-weight: bold;">  
+                                <th class="xlCelda">  
                                     @if (xTot9 != 0)
                                     {
                                      @xTot9.ToString("$#,###")
@@ -705,7 +689,7 @@
                                       double valor_ReintegrosE = double.Parse(reintegros.Where(e => (e.CuentaID == 63 || e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Where(d => d.Mes == mesE).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
                                       valorEgresosE = valorEgresosE - valor_ReintegrosE;
                                       xTotEg0 += valorEgresosE;
-                                        <td style="background-color: silver; text-align: right;font-weight: bold; ">
+                                        <td class="xlCeldatotal">
                                        @if (valorEgresosE != 0)
                                        {
                                             @(valorEgresosE.ToString("$#,###"))
@@ -718,7 +702,7 @@
                                   }
                               @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (xTotEg0 != 0)
                                     {
                                      @xTotEg0.ToString("$#,###")
@@ -741,7 +725,7 @@
                                     valorIngresos = valorIngresos - (valorEgresosE);
                                     xTotFinam  +=  valorIngresos;
                                     
-                                    <td style=" background-color: silver;text-align: right; font-weight: bold; ">
+                                    <td class="xlCeldatotal">
                                         @if (valorIngresos != 0)
                                         {@valorIngresos.ToString("$#,###")
                            
@@ -756,7 +740,7 @@
                                 }
                               @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (xTotFinam != 0)
                                     {
                                      @xTotFinam.ToString("$#,###")
@@ -797,7 +781,7 @@
                                     
 
       
-                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
+                                    <td class="xlCeldatotal">
                                         @if (Valorx != 0)
                                         {
                                             @(Valorx.ToString("$#,###"))
@@ -833,7 +817,7 @@
 
 
                                 double ValorxT = saldoInicial[1] + (valorIngresosT - valorEgresosT) + valorIngresosFinanT;
-                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (ValorxT != 0)
                                     {
                                      @ValorxT.ToString("$#,###")
@@ -906,7 +890,7 @@
                                     xxTotOperac += xTotOperac;
                                     
                                     
-                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
+                                    <td class="xlCeldatotal">
                                         @if (xTotOperac != 0)
                                         {@xTotOperac.ToString("$#,###")
                                             {
@@ -927,7 +911,7 @@
                                 }
                                @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (xxTotOperac != 0)
                                     {
                                      @xxTotOperac.ToString("$#,###")
@@ -978,7 +962,7 @@
                                     xxTot71 += xTot71;
                                  
                                     
-                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
+                                    <td class="xlCeldatotal">
                                         @if (xTot71 != 0)
                                         {@xTot71.ToString("$#,###")
                                             {
@@ -999,7 +983,7 @@
                                 }
                                @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (xxTot71 != 0)
                                     {
                                      @xxTot71.ToString("$#,###")
@@ -1030,7 +1014,7 @@
                                     double DifEgresos = valorEgresos - valorPresupuestoE;
                                     double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
        
-                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
+                                    <td class="xlCeldatotal">
                                         @if (valorEgresos != 0)
                                         {@valorEgresos.ToString("$#,###")
                                             {
@@ -1051,7 +1035,7 @@
                                 }
                               @if (@ViewBag.Mes > 12)
                             { 
-                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
+                                <th class="xlCeldatotal">  
                                     @if (xTotInversion != 0)
                                     {
                                      @xTotInversion.ToString("$#,###")
@@ -1068,14 +1052,13 @@
                 }
 
             </table>
-        </div>
+  
     }
     catch (Exception)
     {
 
     }
 }
-else
-{
-    @Html.Raw("No hay presupuesto para el proyecto");
-}
+    </body>
+
+</html>

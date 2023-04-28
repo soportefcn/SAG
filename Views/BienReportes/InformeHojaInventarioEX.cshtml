@@ -96,21 +96,19 @@
             }
             </td>
 
-            @if (item.Egreso != null)
-            {
-                <td>@item.Egreso.NDocumento</td>
-            }
-            else
-            {
-                <td>@{
-                try
-                {
-                    @item.Reintegro.NDocumento
-                }
-                catch (Exception) { } 
-                        }</td>
-            }
-
+                 @{try{
+                            if (item.Movimiento.TipoComprobanteID == 2)
+                            {
+                                <td>@item.Egreso.NDocumento</td>
+                            }
+                            else
+                            {
+                                <td>@item.Reintegro.NDocumento </td>
+                            }
+                          }catch(Exception) {
+                                <td> </td>
+                            }
+                           } 
 
             <td colspan="2"></td>
 

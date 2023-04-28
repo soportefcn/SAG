@@ -103,6 +103,7 @@
     <Compile Include="Controllers\BienOrigenController.cs" />
     <Compile Include="Controllers\BienReportesController.cs" />
     <Compile Include="Controllers\BienSubFamiliaController.cs" />
+    <Compile Include="Controllers\CuentaGlosaController.cs" />
     <Compile Include="Controllers\CuentasPadresController.cs" />
     <Compile Include="Controllers\DetalleInformesController.cs" />
     <Compile Include="Controllers\EstadoIntervencionController.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Models\chequesNo.cs" />
     <Compile Include="Models\CInformeCierre.cs" />
     <Compile Include="Models\ControlFlujo.cs" />
+    <Compile Include="Models\CuentaGlosa.cs" />
     <Compile Include="Models\cuentaGrupo.cs" />
     <Compile Include="Models\CuentasPadres.cs" />
     <Compile Include="Models\detalleInformes.cs" />
@@ -136,12 +138,14 @@
     <Compile Include="Models\DetalleReintegro.cs" />
     <Compile Include="Models\EstadoIntervencion.cs" />
     <Compile Include="Models\Estandarvalores.cs" />
+    <Compile Include="Models\FrmEgreso.cs" />
     <Compile Include="Models\GinformeCierre.cs" />
     <Compile Include="Models\HorasExtras.cs" />
     <Compile Include="Models\IndicadorCalidad.cs" />
     <Compile Include="Models\IndicadoresCuenta.cs" />
     <Compile Include="Models\IndicadorGestion.cs" />
     <Compile Include="Models\Informe.cs" />
+    <Compile Include="Models\InicioLog.cs" />
     <Compile Include="Models\IntervencionDetalle.cs" />
     <Compile Include="Models\IntervencionEstado.cs" />
     <Compile Include="Models\IntervencionResumen.cs" />
@@ -338,6 +342,15 @@
     <Content Include="App_Data\ASPNETDB_TMP_log.LDF">
       <DependentUpon>ASPNETDB_TMP.MDF</DependentUpon>
     </Content>
+    <Content Include="Content\asset_login\anchor.html" />
+    <Content Include="Content\asset_login\fondo.jpg" />
+    <Content Include="Content\asset_login\jquery.toast.css" />
+    <Content Include="Content\asset_login\login-register-lock.css" />
+    <Content Include="Content\asset_login\logo_cdn_2019.png" />
+    <Content Include="Content\asset_login\saved_resource%281%29.html" />
+    <Content Include="Content\asset_login\saved_resource.html" />
+    <Content Include="Content\asset_login\style.min.css" />
+    <Content Include="Content\asset_login\styles__ltr.css" />
     <Content Include="Content\Ayuda\guia.html" />
     <Content Include="Content\Ayuda\menu.html" />
     <Content Include="Content\Ayuda\principal1.htm" />
@@ -478,6 +491,7 @@
     <Content Include="Content\dist\css\bootstrap-submenu.min.css" />
     <Content Include="Content\dist\js\bootstrap-submenu.js" />
     <Content Include="Content\dist\js\bootstrap-submenu.min.js" />
+    <Content Include="Content\fondo.jpg" />
     <Content Include="Content\font-awesome\css\font-awesome.css" />
     <Content Include="Content\font-awesome\css\font-awesome.min.css" />
     <Content Include="Content\ie.css" />
@@ -1408,9 +1422,14 @@
     <Content Include="Views\Herramientas\IngresoCuentaCorriente.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="archivos\desktop.ini" />
     <Content Include="Addons\desktop.ini" />
     <Content Include="Addons\file-upload\desktop.ini" />
+    <Content Include="Content\asset_login\api.js.descargar" />
+    <Content Include="Content\asset_login\bootstrap.min.js.descargar" />
+    <Content Include="Content\asset_login\jquery-3.2.1.min.js.descargar" />
+    <Content Include="Content\asset_login\jquery.toast.js.descargar" />
+    <Content Include="Content\asset_login\popper.min.js.descargar" />
+    <Content Include="Content\asset_login\recaptcha__es.js.descargar" />
     <None Include="Content\Ayuda\principal1_archivos\image027.emz" />
     <None Include="Content\Ayuda\principal1_archivos\oledata.mso" />
     <None Include="Content\Ayuda\principal1_archivos\themedata.thmx" />
@@ -1827,16 +1846,6 @@
     <Content Include="Views\BienReportes\InformeTraslado.cshtml" />
     <Content Include="Views\BienReportes\InformeTrasladoInventario.cshtml" />
     <Content Include="Views\BienReportes\InventarioGeneralPrin.cshtml" />
-    <Content Include="Views\BienInventario\Banco\Conciliacion.cshtml" />
-    <Content Include="Views\BienInventario\Banco\ConciliacionMasiva.cshtml" />
-    <Content Include="Views\BienInventario\Banco\Create.cshtml" />
-    <Content Include="Views\BienInventario\Banco\desktop.ini" />
-    <Content Include="Views\BienInventario\Banco\Edit.cshtml" />
-    <Content Include="Views\BienInventario\Banco\Exportar.cshtml" />
-    <Content Include="Views\BienInventario\Banco\ExportarConciliacionMasiva.cshtml" />
-    <Content Include="Views\BienInventario\Banco\Index.cshtml" />
-    <Content Include="Views\BienInventario\Banco\Libro.cshtml" />
-    <Content Include="Views\BienInventario\Banco\Saldos.cshtml" />
     <Content Include="Views\Banco\ListadoConciliacion.cshtml" />
     <Content Include="Views\Banco\LibroVer.cshtml" />
     <Content Include="Views\Administracion\CierreLinea.cshtml" />
@@ -1910,9 +1919,36 @@
     <Content Include="Views\Bodega\TraspasoSaldos.cshtml" />
     <Content Include="Views\Bodega\trasladoBodega.cshtml" />
     <Content Include="Views\Administracion\Apertura.cshtml" />
+    <Content Include="Views\Informes\CuentaConsolidado.cshtml" />
+    <Content Include="Views\Informes\CuentaExcelConsolidado.cshtml" />
+    <Content Include="Views\Informes\FondosrendirConsolidado.cshtml" />
+    <Content Include="Views\Informes\FondosrendirConsolidadoExcel.cshtml" />
+    <Content Include="Views\Personal\PopUpTipoPrograma.cshtml" />
+    <Content Include="Views\Proveedores\PopUpTipoPrograma.cshtml" />
+    <Content Include="Views\Proyectos\ListadoProyectos.cshtml" />
+    <Content Include="Views\CuentaCorriente\cuentaPresupuesta.cshtml" />
+    <Content Include="Views\Cuentas\CuentasPresupuesto.cshtml" />
+    <Content Include="Views\Proyectos\ListadoProyectosPresupuesto.cshtml" />
+    <Content Include="Views\BienModInventario\CreateDonacion.cshtml" />
+    <Content Include="Views\Proyectos\ListadoProyectosPresupuestoExcel.cshtml" />
+    <Content Include="Views\CuentaGlosa\Index.cshtml" />
+    <Content Include="Views\CuentaGlosa\Details.cshtml" />
+    <Content Include="Views\CuentaGlosa\Create.cshtml" />
+    <Content Include="Views\CuentaGlosa\Edit.cshtml" />
+    <Content Include="Views\CuentaGlosa\Delete.cshtml" />
+    <Content Include="Views\Shared\_Menu.cshtml" />
+    <Content Include="Views\Shared\_Layoutinf2.cshtml" />
+    <Content Include="Views\Shared\PopUp_.cshtml" />
+    <Content Include="Views\BoletasHonorarios\CorregirHonorario.cshtml" />
+    <Content Include="Views\BoletasHonorarios\ReporteExcel.cshtml" />
+    <Content Include="Views\BoletasHonorarios\EditarPopUp.cshtml" />
+    <Content Include="Views\DeudasPendientes\CerrarPopUp.cshtml" />
+    <Content Include="Views\Administracion\InicioLog.cshtml" />
+    <Content Include="Views\Administracion\InicioLogExcel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uploads\" />
+    <Folder Include="archivos\" />
     <Folder Include="pdf\" />
     <Folder Include="reportes\" />
   </ItemGroup>

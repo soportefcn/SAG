@@ -33,7 +33,7 @@
         <td>@ViewBag.Proyecto </td>
     </tr>
     <tr>
-        <td>Cod. Sename: @ViewBag.CodSename </td>
+        <td>Cod. Sename/Servicio Mejor Ni&ntilde;ez: @ViewBag.CodSename </td>
     </tr>
 </table>
 <h2>@ViewBag.Title</h2>
@@ -104,9 +104,9 @@ Entre Fechas Desde :  @ViewBag.Desde Hasta :@ViewBag.Hasta<br>
                 @if (@item.Cuenta != null)
                 {
                     @item.Cuenta.NombreLista }
-                else
-                {
-                    @Html.Raw(cuentas.Where(c => c.CuentaID == item.CuentaID).First().NombreLista)}
+               
+                   
+              
             </td>
             <td>
                 @System.Web.HttpUtility.UrlDecode(item.Descripcion)

@@ -1,0 +1,106 @@
+﻿@{
+	SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario) Session["Usuario"];
+	SAG2.Models.Proyecto Proyecto = (SAG2.Models.Proyecto) Session["Proyecto"];
+	var FondoFijoUtilizado = @ViewBag.FondoFijoUtilizado;
+    if (Session["FondoFijoUtilizado"] != null)
+    {
+        FondoFijoUtilizado = float.Parse(Session["FondoFijoUtilizado"].ToString());
+    }
+    var autorizacionesPendientes = @ViewBag.AutorizacionesPendientes;
+    if (Session["AutorizacionesPendientes"] != null)
+    {
+        autorizacionesPendientes = Int32.Parse(Session["AutorizacionesPendientes"].ToString());
+    }
+    
+    var respuestaAuditoria = @ViewBag.RespuestaAuditoria;
+    if (Session["RespuestaAuditoria"] != null)
+    {
+        respuestaAuditoria = Int32.Parse(Session["RespuestaAuditoria"].ToString());
+    }
+
+    var alertas = @ViewBag.Alertas;
+    if (Session["Alertas"] != null)
+    {
+        alertas = Session["Alertas"].ToString();
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<title>SAG2/ @ViewBag.Title</title>
+	<script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/modernizr-1.7.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery-ui-1.8.11.min.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>   
+	<script src="@Url.Content("~/Scripts/jquery.ui.datepicker-es.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.Rut.js?" + @DateTime.Now.Ticks)" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.price_format.min.js")" type="text/javascript"></script>
+      <script src="@Url.Content("~/Scripts/select2.min.js")" type="text/javascript" language="javascript"></script>
+     <link href="@Url.Content("~/Content/select2.min.css")" rel="stylesheet">
+	<!-- link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection" />
+	<!--[if lte IE 7]>
+		<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ie.css?" + @DateTime.Now.Ticks)" media="screen" />
+	css/bootstrap-submenu.min.css
+        <![endif]-->
+    <link rel="stylesheet" href="@Url.Content("~/Content/style.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="@Url.Content("~/Content/jquery-ui-1.8.18.custom.css?" + @DateTime.Now.Ticks)" type="text/css" media="screen, projection" />
+
+ 
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.dropdownPlain.js?" + @DateTime.Now.Ticks)"></script>
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/jquery.chromatable.js?" + @DateTime.Now.Ticks)"></script>	
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Scripts/funciones.js?" + @DateTime.Now.Ticks)"></script>
+   
+     <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+      <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >
+        <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+    <link href="@Url.Content("~/Content/dist/css/bootstrap-submenu.min.css")" rel="stylesheet" >
+     <script src="@Url.Content("~/Content/dist/js/bootstrap-submenu.min.js")" defer></script>
+     <link href="@Url.Content("~/Content/blog.css")" rel="stylesheet" >
+        @*datatables*@
+    <link href="@Url.Content("~/Content/DataTables/DataTables-1.10.15/css/jquery.dataTables.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/DataTables/buttons.dataTables.min.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Content/DataTables/DataTables-1.10.15/js/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/DataTables/dataTables.buttons.min.js")"></script>
+    <script src="@Url.Content("~/Content/DataTables/buttons.flash.min.js")"></script>
+    <script src="@Url.Content("~/Content/DataTables/jszip.min.js")"></script>
+    <script src="@Url.Content("~/Content/DataTables/pdfmake.min.js")"></script>
+    <script src="@Url.Content("~/Content/DataTables/vfs_fonts.js")"></script>
+    <script src="@Url.Content("~/Content/DataTables/buttons.html5.min.js")"></script>
+    <script src="@Url.Content("~/Content/DataTables/buttons.print.min.js")"></script>
+    <link href="@Url.Content("~/Content/sweetalert2/sweetalert2.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Content/sweetalert2/sweetalert2.js")"></script>
+	<script type="text/javascript" language="javascript">
+		@Html.Raw(@ViewBag.Script)
+	</script>
+    <style media="print" type="text/css">
+        .no-imprimir 
+        {
+            display:none;
+        }
+    </style>
+</head>
+<body>  
+
+    @RenderPage("_Menu.cshtml")
+
+
+	<div class="contenedor">
+            @if (Proyecto.estaCerrado)
+            {
+                <div class="warning" style="z-index:0; top: 20px; height: 16px; width:100%; text-align: center; padding: 5px 0; margin-bottom: 0; position: fixed;">Este Proyecto se encuentra CERRADO, algunas opciones del menú no están disponibles.</div>
+            }
+
+			@RenderBody()
+
+	</div>
+	<div class="blog-footer siteFooter"">
+		 <div class="ocultoImpresion">
+		@Session["InformacionPie"].ToString()&nbsp;&nbsp;
+             </div>
+	</div>
+  
+
+  
+
+</body>
+</html>

@@ -400,6 +400,18 @@ namespace SAG2.Controllers
             lista = db.DetalleEgreso.Where(d => d.MovimientoID == id).ToList();
             Session.Add("DetalleEgreso", lista);
 
+
+            // Verificar Periodo 
+            var Periododocumento = egreso.Periodo;
+            var MesDocumento = egreso.Mes;
+            var ProyectoDocumento = egreso.ProyectoID;
+            int PeriodoEstado = 0;
+            var DatosPeriodo = db.Periodo.Where(d => d.Mes == MesDocumento && d.Ano == Periododocumento && d.ProyectoID == ProyectoDocumento).Count();
+            if (DatosPeriodo != 0) {
+                PeriodoEstado = 1;
+            }
+            ViewBag.PeriodoEstado = PeriodoEstado;
+ 
             return View(egreso);
         }
 
@@ -593,68 +605,131 @@ namespace SAG2.Controllers
                     // Guardar detalle del egreso
                     if (Session["DetalleEgreso"] != null)
                     {
-                        
 
+                        List<DetalleEgreso> Detalle = new List<Models.DetalleEgreso>();
 
-                        List<DetalleEgreso> lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+                        // Carga tabla de Base de Datos
+                        Detalle = db.DetalleEgreso.Where(d => d.MovimientoID == egresoID).ToList();
 
-                        // ACA DUPLICA
-                        db.Database.ExecuteSqlCommand("UPDATE BoletaHonorario SET EgresoID = NULL WHERE EgresoID = " + egresoID);
+                        // Libera Relaciones
                         db.Database.ExecuteSqlCommand("UPDATE BoletaHonorario SET EgresoID = NULL WHERE EgresoID = " + egresoID);
                         db.Database.ExecuteSqlCommand("UPDATE DeudaPendiente SET EgresoID = NULL WHERE EgresoID = " + egresoID);
                         db.Database.ExecuteSqlCommand("UPDATE FondoFijoGrupo SET EgresoID = NULL, Activo = 'S' WHERE EgresoID = " + egresoID);
                         db.Database.ExecuteSqlCommand("UPDATE FondoFijo SET EgresoID = NULL WHERE EgresoID = " + egresoID);
-                        db.Database.ExecuteSqlCommand("DELETE FROM DetalleEgreso WHERE MovimientoID = " + egresoID);
 
-                        foreach (DetalleEgreso detalle in lista)
+                        // Carga tabla Temporal
+                        List<DetalleEgreso> lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+
+                        // Modifica registros 
+
+                        foreach (DetalleEgreso data in Detalle )
                         {
-                            int idDetalleEgreso = detalle.ID;
-                            monto_egresos += detalle.Monto;
-                            if (detalle.FondoFijoID != null)
-                            {
-                                //FondoFijo ff = new FondoFijo();
-                                //ff = detalle.FondoFijo;
-                                FondoFijo ff = db.FondoFijo.Find(detalle.FondoFijoID);
-                                ff.EgresoID = egresoID;
-                                db.Entry(ff).State = EntityState.Modified;
-                                db.SaveChanges();
-                                //detalle.FondoFijoID = ff.ID;
+                            int ID = data.ID;
 
-                                fondo_fijo = true;
-                            }
-                            else if (detalle.DeudaPendienteID != null)
+                            var DataTemporal = lista.Where(d => d.ID == ID).FirstOrDefault();
+                            if (DataTemporal != null)
                             {
-                                //DeudaPendiente dp = new DeudaPendiente();
-                                //dp = detalle.DeudaPendiente;
-                                DeudaPendiente dp = db.DeudaPendiente.Find(detalle.DeudaPendienteID);
-                                dp.EgresoID = egresoID;
-                                db.Entry(dp).State = EntityState.Modified;
-                                db.SaveChanges();
-                                //detalle.DeudaPendienteID = dp.ID;
-                            }
-                            else if (detalle.BoletaHonorarioID != null)
-                            {
-                                //BoletaHonorario bh = new BoletaHonorario();
-                                //bh = detalle.BoletaHonorario;
-                                BoletaHonorario bh = db.BoletaHonorario.Find(detalle.BoletaHonorarioID);
-                                bh.EgresoID = egresoID;
-                                db.Entry(bh).State = EntityState.Modified;
-                                db.SaveChanges();
-                                //detalle.BoletaHonorarioID = bh.ID;
-                            }
+                                monto_egresos += DataTemporal.Monto;
+                                if (DataTemporal.FondoFijoID != null)
+                                {
+                                    FondoFijo ff = db.FondoFijo.Find(DataTemporal.FondoFijoID);
+                                    ff.EgresoID = egresoID;
+                                    db.Entry(ff).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                    //detalle.FondoFijoID = ff.ID;
+                                    fondo_fijo = true;
+                                }
+                                else if (DataTemporal.DeudaPendienteID != null)
+                                {
+                                    DeudaPendiente dp = db.DeudaPendiente.Find(DataTemporal.DeudaPendienteID);
+                                    dp.EgresoID = egresoID;
+                                    db.Entry(dp).State = EntityState.Modified;
+                                    db.SaveChanges();
 
-                            if (detalle.NDocumento == null || detalle.NDocumento <= 0)
-                            {
-                                detalle.NDocumento = 1;
-                            }
+                                }
+                                else if (DataTemporal.BoletaHonorarioID != null)
+                                {
+                                    BoletaHonorario bh = db.BoletaHonorario.Find(DataTemporal.BoletaHonorarioID);
+                                    bh.EgresoID = egresoID;
+                                    db.Entry(bh).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                }
 
-                            detalle.MovimientoID = egresoID;
-                            db.DetalleEgreso.Add(detalle);
-                            int rev = detalle.ID;
-                            db.SaveChanges();
-                            rev = detalle.ID;
-                            db.Database.ExecuteSqlCommand("UPDATE BienModInventario SET EgresoID = " + rev + "  WHERE EgresoID = " + idDetalleEgreso);
+                                if (DataTemporal.NDocumento == null || DataTemporal.NDocumento <= 0)
+                                {
+                                    DataTemporal.NDocumento = 1;
+                                }
+
+
+
+                                data.Monto = DataTemporal.Monto;
+                                data.BoletaHonorarioID = DataTemporal.BoletaHonorarioID;
+                                data.CuentaID = DataTemporal.CuentaID;
+                                data.DeudaPendienteID = DataTemporal.DeudaPendienteID;
+                                data.DocumentoID = DataTemporal.DocumentoID;
+                                data.FechaEmision = DataTemporal.FechaEmision;
+                                data.FechaVencimiento = DataTemporal.FechaVencimiento;
+                                data.Glosa = DataTemporal.Glosa;
+                                data.FondoFijoID = DataTemporal.FondoFijoID;
+                                data.NComprobanteDP = DataTemporal.NComprobanteDP;
+                                data.NDocumento = DataTemporal.NDocumento;
+                                db.Entry(data).State = EntityState.Modified;
+                                db.SaveChanges();
+
+                            }
+                            else {
+                                db.DetalleEgreso.Remove(data);
+                                db.SaveChanges();
+                            
+                            }
+                            
+                        
                         }
+                   // Ingresar Nuevas Filas
+                        var DataTemporalDetalle = lista.Where(d => d.ID == 0).ToList();
+                        foreach (DetalleEgreso data in DataTemporalDetalle)
+                        {
+                            int ID = data.ID;
+                
+                                monto_egresos += data.Monto;
+                                if (data.FondoFijoID != null)
+                                {
+                                    FondoFijo ff = db.FondoFijo.Find(data.FondoFijoID);
+                                    ff.EgresoID = egresoID;
+                                    db.Entry(ff).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                    //detalle.FondoFijoID = ff.ID;
+                                    fondo_fijo = true;
+                                }
+                                else if (data.DeudaPendienteID != null)
+                                {
+                                    DeudaPendiente dp = db.DeudaPendiente.Find(data.DeudaPendienteID);
+                                    dp.EgresoID = egresoID;
+                                    db.Entry(dp).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                    
+                                }
+                                else if (data.BoletaHonorarioID != null)
+                                {
+                                    BoletaHonorario bh = db.BoletaHonorario.Find(data.BoletaHonorarioID);
+                                    bh.EgresoID = egresoID;
+                                    db.Entry(bh).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                }
+
+                                if (data.NDocumento == null || data.NDocumento <= 0)
+                                {
+                                    data.NDocumento = 1;
+                                }
+                                data.MovimientoID = egresoID;
+                                db.DetalleEgreso.Add(data);
+                            }
+
+
+
+
+
+
                         Session.Remove("DetalleEgreso");
 
                         egreso.Monto_Egresos = monto_egresos;
@@ -721,21 +796,13 @@ namespace SAG2.Controllers
                     ViewBag.DocumentoIDD = new SelectList(db.Documento, "ID", "NombreLista");
                     ViewBag.ItemGastoID = new SelectList(db.ItemGasto, "ID", "NombreLista");
                     ViewBag.Arbol = utils.generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaEgresos));
-                    /*ViewBag.UltimoIdentificador = "0";
-                    try
-                    {
-                        ViewBag.UltimoIdentificador = db.Movimiento.Where(m => m.ProyectoID == egreso.ProyectoID && m.TipoComprobanteID == ctes.tipoEgreso && m.Periodo == periodo).Max(a => a.ID).ToString();
-                    }
-                    catch (Exception)
-                    { }
-                    */
-                    //return View(egreso);
+  
                 }
                 
-                //return View(egreso);
+            
             }
 
-            // No se puede modificar el egreso
+       
             
             egreso = null;
             egreso = db.Movimiento.Find(originalID);
@@ -850,7 +917,7 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             CuentaCorriente CuentaCorriente = (CuentaCorriente)Session["CuentaCorriente"];
             // Buscar cuenta corriente segun movimiento !!!
-
+            // validar sumatoria de linea 
             // Verificamos que haya saldo disponible para guardar el detalle de egreso
             try
             {
@@ -870,10 +937,12 @@ namespace SAG2.Controllers
             if (Session["DetalleEgreso"] != null)
             {
                 lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
-                if (lista.Count == 0) {
+                if (lista.Count == 0)
+                {
                     lista = new List<DetalleEgreso>();
                     DetalleEgresoIndex = -1;
                 }
+    
             }
             else
             {
@@ -941,7 +1010,8 @@ namespace SAG2.Controllers
                         dp.Glosa = Glosa;
                         dp.FechaEmision = DateTime.Parse(FechaEmision);
                         dp.FechaVencimiento = DateTime.Parse(FechaVencimiento);
-
+                        dp.Periodo = periodo;
+                        dp.Mes = mes;
                         db.Entry(dp).State = EntityState.Modified;
                         db.SaveChanges();
 
@@ -1013,18 +1083,64 @@ namespace SAG2.Controllers
             }
         }
 
+        [HttpGet]
+        public string GuardarLinea(FormCollection data)
+        {
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            CuentaCorriente CuentaCorriente = (CuentaCorriente)Session["CuentaCorriente"];
+            // Buscar cuenta corriente segun movimiento !!!
+
+            // Verificamos que haya saldo disponible para guardar el detalle de egreso
+            try
+            {
+                Saldo Saldo = db.Saldo.Where(s => s.CuentaCorrienteID == CuentaCorriente.ID && s.Periodo == periodo && s.Mes == mes).Single();
+                if (Saldo.SaldoFinal < 0)
+                {
+                    return "No hay saldo suficiente en la Cuenta Corriente para registrar este detalle. Saldo actual: $" + Saldo.SaldoFinal.ToString("#,##0");
+                }
+            }
+            catch (Exception)
+            {
+                return "No hay saldo definido para este Proyecto.";
+            }
+
+            List<DetalleEgreso> lista = null;
+
+            if (Session["DetalleEgreso"] != null)
+            {
+                lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+                if (lista.Count == 0)
+                {
+                    lista = new List<DetalleEgreso>();
+ 
+                }
+
+            }
+            else
+            {
+                lista = new List<DetalleEgreso>();
+ 
+            }
+
+            // Se limpia la lista temporal
+            //Session.Remove("DetalleEgreso");
+
+                return "OK";
+        }
+
         // Liberar comprobante de egreso
         public ActionResult LiberarEgreso(int id)
         {
-            db.Database.ExecuteSqlCommand("UPDATE BoletaHonorario SET EgresoID = NULL WHERE EgresoID = " + id);
-            db.Database.ExecuteSqlCommand("UPDATE BoletaHonorario SET EgresoID = NULL WHERE EgresoID = " + id);
+            
             db.Database.ExecuteSqlCommand("UPDATE DeudaPendiente SET EgresoID = NULL WHERE EgresoID = " + id);
             db.Database.ExecuteSqlCommand("UPDATE FondoFijoGrupo SET EgresoID = NULL, Activo = 'S' WHERE EgresoID = " + id);
             db.Database.ExecuteSqlCommand("UPDATE FondoFijo SET EgresoID = NULL WHERE EgresoID = " + id);
             db.Database.ExecuteSqlCommand("DELETE FROM DetalleEgreso WHERE MovimientoID = " + id);
             db.Database.ExecuteSqlCommand("DELETE FROM BienMovimientoInventario WHERE BienID in  ( SELECT ID  FROM  BienModInventario where MovimientoID  =  " + id + " )");
             db.Database.ExecuteSqlCommand("DELETE FROM BienModInventario WHERE MovimientoID  =  " + id + " ");
-
+            db.Database.ExecuteSqlCommand("DELETE FROM BoletaHonorario WHERE EgresoID = " + id);
             Movimiento Egreso = db.Movimiento.Find(id);
             int monto = Egreso.Monto_Egresos;
 
@@ -1037,12 +1153,12 @@ namespace SAG2.Controllers
 
             utils.actualizarSaldoEgreso(Egreso, ModelState, monto);
 
-            return RedirectToAction("Create");
+            return RedirectToAction("Edit", new { id = id });
         }
 
         public string BorrarLinea(int DetalleEgresoID = 0, int DetalleEgresoIndex = -1)
         {
-            int? boletaID = null;
+           // int? boletaID = null;
 
             try
             {
@@ -1053,12 +1169,18 @@ namespace SAG2.Controllers
                     {
                         // Edicion de detalle de egreso ya registrado
                         int index = lista.FindIndex(d => d.ID == DetalleEgresoID);
-                        boletaID = lista[index].BoletaHonorarioID;
-                        lista.RemoveAt(index);
+                        //boletaID = lista[index].BoletaHonorarioID;
+                        if (index >= 0)
+                        {
+                            lista.RemoveAt(index);
+                        }
+                        else {
+                            lista.RemoveAt(DetalleEgresoID - 1);
+                        }
                     }
                     else if (DetalleEgresoIndex > -1)
                     {
-                        boletaID = lista[DetalleEgresoIndex - 1].BoletaHonorarioID;
+                        //boletaID = lista[DetalleEgresoIndex - 1].BoletaHonorarioID;
                         lista.RemoveAt(DetalleEgresoIndex - 1);
                     }
 
@@ -1068,9 +1190,9 @@ namespace SAG2.Controllers
 
                 try
                 {
-                    BoletaHonorario bh = db.BoletaHonorario.Find(boletaID);
-                    db.BoletaHonorario.Remove(bh);
-                    db.SaveChanges();
+                    //BoletaHonorario bh = db.BoletaHonorario.Find(boletaID);
+                    //db.BoletaHonorario.Remove(bh);
+                    //db.SaveChanges();
                 }
                 catch (Exception)
                 { }

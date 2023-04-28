@@ -8,9 +8,11 @@
     List<SAG2.Models.Rol> snRol = new List<SAG2.Models.Rol>();
     IList<SAG2.Models.Proyecto> ListaProyecto = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;  
     List<SAG2.Models.Cuenta> Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.Cuentas;
+    List<SAG2.Models.Contrato> DContrato = new List<SAG2.Models.Contrato>();
     try
     {
         snRol = (List<SAG2.Models.Rol>)@ViewBag.Roles;
+        DContrato = (List<SAG2.Models.Contrato>)@ViewBag.Contratos;
 
     }
     catch (Exception)
@@ -39,7 +41,7 @@
 <table border="1">
     <thead>
         <tr>
-            <th>COD SAG</th>
+            <th> COD SAG</th>
             <th> COD SENAME</th>
             <th> NOMBRE PROGRAMA</th>
             <th> FONO</th>
@@ -53,7 +55,11 @@
             <th> FECHA DE INICIO</th>
             <th> FECHA DE TERMINO</th>
             <th> DETALLE CONTRATOS</th>
-            <th> RESPONSABILIDADES ADMINISTRATIVAS</th>
+            <th> ID</th>
+            <th> CARGO</th>
+            <th> NOMBRE</th>
+            <th> CORREO</th>
+            <th> ID Contrato </th> <th>Nombre Servicio</th><th>Nombre</th><th>Valor Servicio</th><th>Moneda</th><th>Comentario</th>
             <th> VALOR SUBVENCION</th><th> VALOR SUBVENCION MENSUAL</th><th> VALOR SUBVENCION ANUAL</th>
             <th> NUMERO DE CTA CTE</th>   
             <th> BANCO</th>     
@@ -69,7 +75,16 @@
     int Egresos = 0;
     int PresupuestoID = 0;
     string  Presupuesto = "Sin Presupuesto";
-    var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();  
+    var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();
+    var ContratoProyecto = DContrato.Where(d => d.ProyectoID == item.ID).ToList();
+    int Totcontrato = ContratoProyecto.Count();
+    int TotRol = rolProyecto.Count();
+    int Maximo = 0;
+    if (TotRol > Totcontrato) {
+        Maximo = TotRol;
+    } else {
+        Maximo = Totcontrato;
+    }
     int Pres = 0;
     try {
         int PrID = item.ID;
@@ -98,73 +113,75 @@
     catch (Exception e) { 
         
     }
-    
-    
-    <tr >
-        <td> @Html.DisplayFor(modelItem => item.CodCodeni  ) </td>
-        <td> @Html.DisplayFor(modelItem => item.CodSename)   </td>
-        <td> @Html.DisplayFor(modelItem => item.Nombre ) </td>
-        <td> @Html.DisplayFor(modelItem => item.Fono  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.TipoProyecto.LineaAtencion.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.TipoProyecto.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Region.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Nombre  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Direccion.DireccionLista  )  </td>
-        <td> @Html.DisplayFor(modelItem => item.Convenio.ResEx   )  </td>
-         <td> @Html.DisplayFor(modelItem => item.Convenio.NroPlazas    )  </td>
-         <td> 
-         @{
-                if (item.Convenio.FechaInicio != null) {
-                    @Html.Raw(item.Convenio.FechaInicio.Value.ToShortDateString());
-                }else{
-                     @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-               }
-           }
-         </td>
-         <td> 
-         @{
-                if (item.Convenio.FechaTermino != null) {
-                    @Html.Raw(item.Convenio.FechaTermino.Value.ToShortDateString());
-                }else{
-                     @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-               }
-           }
-         </td>
-         <td> @Html.DisplayFor(modelItem => item.Convenio.Comentarios  )  </td>
-        <td>
-                <table style="width: 100%;" class="table table-striped table-bordered table-hover">
-        <tbody>
-            @{ 
+          
     int i = 1;
-                }
-            @foreach (SAG2.Models.Rol rol in rolProyecto)
+
+            while (i <= Maximo)
             {
                 <tr>
+                    <td> @Html.DisplayFor(modelItem => item.CodCodeni  ) </td>
+                    <td> @Html.DisplayFor(modelItem => item.CodSename)   </td>
+                    <td> @Html.DisplayFor(modelItem => item.Nombre ) </td>
+                    <td> @Html.DisplayFor(modelItem => item.Fono  )  </td>
+                    <td> @Html.DisplayFor(modelItem => item.TipoProyecto.LineaAtencion.Nombre  )  </td>
+                    <td> @Html.DisplayFor(modelItem => item.TipoProyecto.Nombre  )  </td>
+                    <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Region.Nombre  )  </td>
+                    <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Nombre  )  </td>
+                    <td> @Html.DisplayFor(modelItem => item.Direccion.DireccionLista  )  </td>
+                    <td> @Html.DisplayFor(modelItem => item.Convenio.ResEx   )  </td>
+                    <td> @Html.DisplayFor(modelItem => item.Convenio.NroPlazas    )  </td>
+                    <td> 
+                        @{
+                            if (item.Convenio.FechaInicio != null) {
+                                @Html.Raw(item.Convenio.FechaInicio.Value.ToShortDateString());
+                            }else{
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                         }
+                    </td>
+                    <td> 
+                        @{
+                            if (item.Convenio.FechaTermino != null) {
+                                @Html.Raw(item.Convenio.FechaTermino.Value.ToShortDateString());
+                            }else{
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        }
+                    </td>
+                    <td> @Html.DisplayFor(modelItem => item.Convenio.Comentarios  )  </td>
+                    @if (TotRol >= i)
+                      {
                     <td style="width: 15px;">@i</td>
-                    <td>@Html.Raw(rol.TipoRol.Nombre.ToUpper())</td>
-                    <td>@Html.Raw(rol.Persona.NombreLista.ToUpper())</td>
+                    <td>@Html.Raw(rolProyecto[(i-1)].TipoRol.Nombre.ToUpper())</td>
+                    <td>@Html.Raw(rolProyecto[(i-1)].Persona.NombreLista.ToUpper())</td>
                     <td>
-                        @if (rol.Persona.CorreoElectronico != null)
+                        @if (rolProyecto[(i - 1)].Persona.CorreoElectronico != null)
                         {
-                            <a href="mailto:@Html.Raw(rol.Persona.CorreoElectronico.ToLower())"> @Html.Raw(rol.Persona.CorreoElectronico.ToUpper())</a>
+                            <a href="mailto:@Html.Raw(rolProyecto[(i-1)].Persona.CorreoElectronico.ToLower())"> @Html.Raw(rolProyecto[(i-1)].Persona.CorreoElectronico.ToUpper())</a>
                         }
                         else
                         {
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                         }
                     </td>
-                </tr>
-                i++;
-            }
-        </tbody>
-    </table>
-
-
-
-        </td>
-        <td> 
-          @{
-               if (item.ValorSubvencion != null)
+                    }else{
+                        <td></td><td></td><td></td><td></td>
+                    }
+                      @if (Totcontrato >= i)
+                      {
+                            <td> @i </td> 
+                            <td> @ContratoProyecto[(i-1)].Servicio.Nombre.ToUpper()</td>
+                          <td> @ContratoProyecto[(i-1)].Nombre.ToUpper()</td>
+                          <td> @ContratoProyecto[(i-1)].Monto.ToString("#,###")</td>
+                          <td> @ContratoProyecto[(i-1)].Moneda</td>
+                          <td> @ContratoProyecto[(i-1)].Comentario</td>
+                      }else
+                      {
+                          <td></td><td></td><td></td><td></td><td></td><td></td>
+                      }
+                    <td> 
+                    @{
+                        if (item.ValorSubvencion != null)
                         {
                             @Html.Raw("$" + item.ValorSubvencion.Value.ToString("#,###"));
                         }
@@ -173,9 +190,8 @@
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                         }
                     }
-
-        </td>
-       <td style="width: 16.6%">
+                    </td>
+                    <td style="width: 16.6%">
                     @{
                         if (item.Convenio.NroPlazas != null && item.ValorSubvencion != null)
                         {
@@ -186,8 +202,8 @@
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                         }
                     }
-                </td>
-                 <td style="width: 16.6%">
+                    </td>
+                    <td style="width: 16.6%">
                     @{
                         if (item.Convenio.NroPlazas != null && item.ValorSubvencion != null)
                         {
@@ -198,30 +214,32 @@
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                         }
                     }
-                </td>
-        <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().NumeroLista   ) </td>
-           <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().Banco.NombreLista   ) </td>
-         <td  @if (Ingresos == 0)
-              {@Html.Raw(" style='background-color: Red;color:white'");}>
-              @if (Ingresos == 0)
-              {
-                  @Html.Raw(Presupuesto); 
-              }else{
-                  @Ingresos.ToString("#,##0")  
-              }
-        </td>
-                 <td  @if (Egresos == 0)
-                      {@Html.Raw(" style='background-color: Red;color:white'");}>
-              @if (Egresos == 0)
-              {
-                  @Html.Raw(Presupuesto); 
-              }else{
-                  @Egresos.ToString("#,##0")  
-              }
-        </td>
- 
-        
-    </tr>
+                    </td>
+                    <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().NumeroLista   ) </td>
+                    <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().Banco.NombreLista   ) </td>
+                    <td  @if (Ingresos == 0)
+                        {@Html.Raw(" style='background-color: Red;color:white'");}>
+                        @if (Ingresos == 0)
+                        {
+                            @Html.Raw(Presupuesto); 
+                        }else{
+                            @Ingresos.ToString("#,##0")  
+                        }
+                    </td>
+                    <td  @if (Egresos == 0)
+                          {@Html.Raw(" style='background-color: Red;color:white'");}>
+                        @if (Egresos == 0)
+                        {
+                            @Html.Raw(Presupuesto); 
+                        }else{
+                            @Egresos.ToString("#,##0")  
+                        }
+                    </td>
+
+                </tr>
+                i++;
+            }
+
 }
  </tbody>
 

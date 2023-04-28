@@ -14,6 +14,8 @@
     window.opener.document.getElementById("FechaEmision").value = "@{@Model.Fecha.ToShortDateString()}";
     window.opener.document.getElementById("Glosa").value = "@{@Model.Concepto}";
     window.opener.document.getElementById("BoletaHonorarioID").value = "@{@Model.ID}";
+    window.opener.document.getElementById("ActualizarGrilla").value = "SI";
+    window.opener.document.getElementById("Ldetalle").focus();
     window.close();
 </script>
 <body>

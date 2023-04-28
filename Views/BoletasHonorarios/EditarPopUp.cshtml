@@ -1,0 +1,150 @@
+﻿@model SAG2.Models.BoletaHonorario
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+}
+
+<div >
+    <style>
+/* Conversion a mayusculas */
+    input[type="text"], textarea
+    {
+        text-transform: uppercase;
+    }
+    areaWidth
+    {
+        width: 679px; 
+        height: 75px;
+    }
+</style>
+<fieldset>
+        
+@using (Html.BeginForm())
+{
+        @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.Periodo)
+    @Html.HiddenFor(model => model.Mes)
+    @Html.HiddenFor(model => model.ProyectoID) 
+     @Html.HiddenFor(model => model.EgresoID) 
+   
+    <input type="hidden" name="VPorce" id="VPorce" value="@ViewBag.ValorPorcentaje" />
+    
+    <input id="PersonaID" name="PersonaID" type="hidden" value="@ViewBag.PersonalID" />
+    <input id="ProveedorID" name="ProveedorID" type="hidden" value="@ViewBag.ProveedorID" />
+    <input id="Rut" name="Rut" type="hidden" value="@ViewBag.Rut" />
+    <input id="DV" name="DV" type="hidden" value="@ViewBag.DV" />
+    <input id="Beneficiario" name="Beneficiario" type="hidden" value="@ViewBag.Beneficiario" />
+
+    <div class="panel panel-info">
+  <div class="panel-heading"><b>Ingresar Boleta Honorarios :  @ViewBag.NombreLista </b></div>
+  <div class="panel-body">
+ 
+      <div class="form-inline">
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.NroBoleta)
+            <br />
+            @Html.EditorFor(model => model.NroBoleta)
+        </div>
+
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Fecha)
+            <br />
+            @Html.TextBoxFor(model => model.Fecha, new { @Value = Model.Fecha.ToShortDateString(), @class = "calendario form-control" })
+        </div>
+        </div>
+        <div class="form-inline" >
+            <div class="form-group" style="margin-left: 20px;">
+                <label>Porcentaje</label>     <br />
+                @Html.DropDownList("PORCENTAJE", null, "%", new { @class = "form-control" })      
+            </div>
+            <div class="form-group" style="margin-left: 5px;">
+                @Html.LabelFor(model => model.Bruto)
+        <br />
+                  @Html.TextBoxFor(model => model.Bruto, new { @class = "form-control" })
+           
+        </div>
+        <div class="form-group" style="margin-left: 5px;">
+            @Html.LabelFor(model => model.Retencion)
+        <br />
+            @Html.TextBoxFor(model => model.Retencion, new { @readonly = "readonly", @class = "form-control" })
+        </div>
+        
+        <div class="form-group" style="margin-left: 10px;">
+            @Html.LabelFor(model => model.Neto)
+         <br />
+             @Html.TextBoxFor(model => model.Neto, new { @readonly = "readonly", @class = "form-control" })
+           
+        </div>
+           </div>
+        <div class="form-inline" >
+            <label>Cuenta</label><br />
+                 <div class="form-group">
+               <select class="form-control" id="CuentaID" name="CuentaID">
+                @Html.Raw(ViewBag.Arbol)
+            </select>
+             </div>
+
+      </div>
+       <div class="form-inline" >
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Concepto)
+        <br />
+           
+            @Html.TextAreaFor(model => model.Concepto, new { @cols = "57", @rows = "3", @class = "form-control", @style = " width: 679px; height: 75px;" })
+        </div>
+           </div>
+        <div class="form-group form-inline" style="margin-left: 20px;">
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Electronica)
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            <input type="checkbox" name="Electronica" id="Electronica" value="1" />
+        </div>
+
+        <div class="form-group" style="margin-left: 20px;">
+            @Html.LabelFor(model => model.Nula)
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+            <input type="checkbox" name="Nula" id="Nula" value="1" />
+        </div>
+            </div>
+     <hr />
+          @if (ViewBag.Mensaje != "Si")
+     {
+      <div class="alert alert-warning">
+           @Html.Raw(ViewBag.Mensaje)
+      </div>
+     }else{
+         <input type="submit" value="Guardar" class="btn btn-primary guardar-boleta-pop-up"  />   
+          } 
+  </div>
+
+</div>
+    
+   
+
+        
+}
+</fieldset>
+</div>
+
+<script>
+
+$(document).ready(function () {
+
+    $("#PORCENTAJE").change(function () {
+      
+        var valor = $("#PORCENTAJE").val();
+        $("#VPorce").val(valor);
+        $('#VPorce').val($('#VPorce').val().replace(",", "."));
+        var bruto = new Number($('#Bruto').val());
+        var porce = new Number($('#VPorce').val());
+        var retencion = bruto * porce / 100;
+        var neto = bruto - retencion;
+        $('#Retencion').val(Math.round(retencion));
+        $('#Neto').val(Math.round(neto));
+    });
+
+
+
+});
+</script>

@@ -244,8 +244,11 @@ input[type="text"], textarea
     </div>
 </div>
 <script>
+    var baseUrl = "";
 
     $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
         $(".validarCeroN").change(function () {
             var ceID = $('#CuentaID').val();
             if(ceID != 60){
@@ -307,15 +310,17 @@ input[type="text"], textarea
         $("#GuardarReintegro").click(function () {
 
             $.post("@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Reintegros/Guardar", $("#general form").serialize(),
-function (data) {
-  
-    if (data == "0") {
- 
-        alert("Egreso tiene Reintegro asociado");
-
-    } else {
-        alert("guardado con exito!");
-        $("form").submit();
+        function (data) { 
+        if (data == "0") { 
+            alert("Egreso tiene Reintegro asociado");
+        } else {
+            alert("guardado con exito!");
+            var url = '@Url.Action("Edit2", "Reintegros", new { id = "ID_cambiar",  imprimir ="true"})';
+            url = url.replace("&amp;", "&");
+            url = url.replace("ID_cambiar", data);
+            url = baseUrl + url;
+            window.open(url,"_self");
+       // $("form").submit();
         
         return true;
     }

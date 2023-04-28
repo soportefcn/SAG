@@ -44,7 +44,7 @@ input[type="text"], textarea
    <div class="panel-body">
     <div class="btn-group">
        <a href="./Index" id="linkGeneral" class ="btn btn-default">GENERAL</a>
-       <a href="./Index" class="linkDetalle btn btn-default">DETALLE</a>
+       <a href="./Index" class="linkDetalle btn btn-default" id="Ldetalle">DETALLE</a>
     </div>
     <div id="contenido" class="cuentacorriente egreso">
 
@@ -54,6 +54,7 @@ input[type="text"], textarea
 {
     @Html.Hidden("FondoFijoGrupoID", null);
     @Html.Raw(@ViewBag.Mensaje)
+     <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="no" />
     <input type="hidden" name="Periodo" id="Periodo" value="@Periodo.ToString("####")" />
     <input type="hidden" name="Mes" id="Mes" value="@Mes.ToString("00")" />
     <input type="hidden" name="ImprimirComprobante" id="ImprimirComprobante" value="false" />
@@ -163,6 +164,7 @@ input[type="text"], textarea
             @Html.TextBox("NComprobanteDP", String.Empty, new { @class = "form-control"})
         </div>
             </div>
+    <div id="Fingreso">
     <div class="form-group form-inline">
         <div class="form-group" style="margin-left: 7px; margin-right:10px">
             @Html.Label("Tipo Documento")
@@ -221,6 +223,7 @@ input[type="text"], textarea
         <div class="form-group">
             @Html.TextArea("Glosa", new { @class = "form-control" })
         </div>
+    </div>
     <div class="form-group" >
         <p>
             
@@ -249,6 +252,7 @@ input[type="text"], textarea
     </div>
 </div>
 <script>
+
     function CargaGrilla() {
         $.get('/SAG_5/Data/DetalleEgreso', function (data) {
 
@@ -258,10 +262,15 @@ input[type="text"], textarea
             if (Detalle.length > 0) {
                 var html = "<table class='table table-bordered'> <tr class='info'> <td>#</td><td>N° Comp. D/P</td><td> Documento</td><td>N° Doc</td><td>Monto</td><td>Emision</td><td>Vencimiento</td><td>Cuenta</td><td>Glosa</td></tr> "
                 for (i = 0; i < Detalle.length; i++) {
+                    var documento = "";
+                    if (Detalle[i].Documento != null) {
+                        documento = Detalle[i].Documento;
+                    }
+
                     html = html + "<tr onclick='LDetalle(" + (i + 1) + ")' style='cursor: pointer;' ID=" + "Linea_" + (i + 1) + " >";
                     html = html + "<td>" + (i + 1) + "</td>";
                     html = html + "<td>" + Detalle[i].NComprobanteDP + "</td>";
-                    html = html + "<td>" + Detalle[i].Documento + "</td>";
+                    html = html + "<td>" + documento + "</td>";
                     html = html + "<td>" + Detalle[i].NDocumento + "</td>";
                     html = html + "<td>" + Detalle[i].Monto + "</td>";
                     html = html + "<td>" + Detalle[i].FechaEmision + "</td>";
@@ -273,6 +282,15 @@ input[type="text"], textarea
 
                 }
                 html = html + "</table>";
+                $('#Origen').prop('disabled', true);
+                if (window.parent.document.getElementById("Origen").value != "oo") {
+                    if (window.parent.document.getElementById("Origen").value != "dp") {
+                        $("#GuardarLinea").hide();
+                        $("#Fingreso").hide();
+                    }
+                }
+            } else {
+                $('#Origen').prop('disabled', false);
             }
             var xpress = document.getElementById("DetalleData");
             $("#BorrarLinea").hide();
@@ -287,11 +305,11 @@ input[type="text"], textarea
             $(".egreso #NDocumentoD").val("");
             $(".egreso #Monto").val("");
             $(".egreso #CuentaID").val("");
-            $(".egreso #Glosa").val("");
-            $(".egreso #Origen").val("");
+            $(".egreso #Glosa").val("");         
             $(".egreso #DeudaPendienteID").val("");
             $(".egreso #BoletaHonorarioID").val("");
             $(".egreso #texto").val("");
+            $('#DRespaldo').css('display', 'none')
         });
     };
 
@@ -351,9 +369,10 @@ input[type="text"], textarea
                     $(".egreso #Monto").val("");
                     $(".egreso #CuentaID").val("");
                     $(".egreso #Glosa").val("");
-                    $(".egreso #Origen").val("");
+     
                     $(".egreso #DeudaPendienteID").val("");
                     $(".egreso #BoletaHonorarioID").val("");
+                    CargaGrilla();
                 }
                 $('body').css('opacity', '1');
             });
@@ -411,7 +430,7 @@ input[type="text"], textarea
         window.parent.document.getElementById("CuentaID").value = "";
         window.parent.document.getElementById("Glosa").value = "";
         window.parent.document.getElementById("DeudaPendienteID").value = "";
-        window.parent.document.getElementById("Origen").value = "";
+       
         window.parent.document.getElementById("BoletaHonorarioID").value = "";
         window.parent.document.getElementById("texto").innerHTML = "";
         $("#BorrarLinea").hide();
@@ -452,7 +471,134 @@ input[type="text"], textarea
             });
         }
     }
+    $(".egreso #DocumentoIDD").change(function () {
 
+        if ($(this).val() == 3) {
+            var tipoBeneficiario = $(".tipobeneficiario #tipoBeneficiario").val();
+            var personalID = 0;
+            var proveedorID = 0;
+            var rut = "", dv = "", beneficiario = "";
+            if (tipoBeneficiario == "1" && $(".tipobeneficiario #PersonaID").val() != "") {
+                personalID = $(".tipobeneficiario #PersonaID").val();
+            } else if (tipoBeneficiario == "2" && $(".tipobeneficiario #ProveedorID").val() != "") {
+                proveedorID = $(".tipobeneficiario #ProveedorID").val();
+            } else if (tipoBeneficiario == "3" && $(".tipobeneficiario #Rut").val() != "" && $(".tipobeneficiario #DVBuscar").val() != "" && $(".tipobeneficiario #Beneficiario").val() != "") {
+                rut = $(".tipobeneficiario #Rut").val();
+                dv = $(".tipobeneficiario #DVBuscar").val();
+                beneficiario = $(".tipobeneficiario #Beneficiario").val();
+            }
+            if (personalID != 0) {
+                window.open("/SAG_5/BoletasHonorarios/IngresarPopUp/?personalID=" + personalID, 'SeleccionBoletaHonorarios', 'width=800,height=600');
+            } else if (proveedorID != 0) {
+                window.open("/SAG_5/BoletasHonorarios/IngresarPopUp/?proveedorID=" + proveedorID, 'SeleccionBoletaHonorarios', 'width=800,height=600');
+            } else {
+                window.open("/SAG_5/BoletasHonorarios/IngresarPopUp/?rut=" + rut + "&dv=" + dv + "&beneficiario=" + beneficiario, 'SeleccionBoletaHonorarios', 'width=800,height=600');
+            }
+
+            $(".egreso #NComprobanteDP").attr("disabled", true);
+            $(".egreso #NDocumento").attr("readonly", "readonly");
+            $(".egreso #FechaEmision").attr("readonly", "readonly");
+            $(".egreso #FechaVencimiento").attr("disabled", true);
+            //$(".egreso #Monto").attr("readonly", "readonly");
+            // $(".egreso #DocumentoID").val("3");
+            $(".egreso #Origen").val("hs");
+        }
+    });
+
+    $(".egreso #Origen").change(function () {
+
+
+        $(".egreso #NComprobanteDP").removeAttr("disabled");
+        $(".egreso #NDocumento").removeAttr("disabled");
+        $(".egreso #FechaEmision").removeAttr("disabled");
+        $(".egreso #FechaVencimiento").removeAttr("disabled");
+        $(".egreso #CuentaID").removeAttr("disabled");
+        $(".egreso #Glosa").removeAttr("disabled");
+        $(".egreso #Monto").removeAttr("disabled");
+        $(".egreso #NDocumento").removeAttr("readonly");
+        $(".egreso #Monto").removeAttr("readonly");
+
+        var tipoBeneficiario = $(".tipobeneficiario #tipoBeneficiario").val();
+        var personalID = 0;
+        var proveedorID = 0;
+        var rut = "", dv = "", beneficiario = "";
+        if (tipoBeneficiario == "1" && $(".tipobeneficiario #PersonaID").val() != "") {
+            personalID = $(".tipobeneficiario #PersonaID").val();
+        } else if (tipoBeneficiario == "2" && $(".tipobeneficiario #ProveedorID").val() != "") {
+            proveedorID = $(".tipobeneficiario #ProveedorID").val();
+        } else if (tipoBeneficiario == "3" && $(".tipobeneficiario #Rut").val() != "" && $(".tipobeneficiario #DVBuscar").val() != "" && $(".tipobeneficiario #Beneficiario").val() != "") {
+            rut = $(".tipobeneficiario #Rut").val();
+            dv = $(".tipobeneficiario #DVBuscar").val();
+            beneficiario = $(".tipobeneficiario #Beneficiario").val();
+        } else {
+            if ($(this).val() != "oo") {
+                $('body').css('opacity', '0.25');
+                alert("Para ingresar el detalle debe seleleccionar el beneficiario del egreso.");
+                $('body').css('opacity', '1');
+                $(".egreso #general").show();
+                $(this).prop('selectedIndex', 0);
+                $(".egreso #detalle").hide();
+                $(".tipobeneficiario #tipoBeneficiario").focus();
+                return false;
+            }
+        }
+
+        if ($(this).val() == "ff") {
+            /****
+            Deshabilitamos campos que no se utilizan
+            *****/
+            $(".egreso #NComprobanteDP").attr("disabled", true);
+            $(".egreso #NDocumento").attr("disabled", true);
+            $(".egreso #FechaEmision").attr("disabled", true);
+            $(".egreso #FechaVencimiento").attr("disabled", true);
+            $(".egreso #CuentaID").attr("disabled", true);
+            $(".egreso #Glosa").attr("disabled", true);
+            $(".egreso #Monto").attr("disabled", true);
+            $(".egreso #DocumentoID").attr("disabled", true);
+
+            /* Desplegamos los fondos fijos activos */
+            window.open("/SAG_5/Egresos/FondoFijo", 'SeleccionCC', 'width=800,height=400');
+
+            /*
+
+*/
+        } else if ($(this).val() == "dp") {
+            if (personalID != 0) {
+                window.open("/SAG_5/DeudasPendientes/ListadoEgreso/?personalID=" + personalID, 'SeleccionDP', 'width=800,height=400');
+            } else if (proveedorID != 0) {
+                window.open("/SAG_5/DeudasPendientes/ListadoEgreso/?proveedorID=" + proveedorID, 'SeleccionDP', 'width=800,height=400');
+            } else {
+                window.open("/SAG_5/DeudasPendientes/ListadoEgreso/", 'SeleccionDP', 'width=300,height=800');
+            }
+            $(".egreso #NComprobanteDP").attr("readonly", "readonly");
+            $(".egreso #NDocumento").attr("readonly", "readonly");
+            $(".egreso #FechaEmision").attr("readonly", "readonly");
+            $(".egreso #FechaVencimiento").attr("readonly", "readonly");
+            $(".egreso #DocumentoID").attr("readonly", "readonly");
+        } else if ($(this).val() == "hs") {
+            if (personalID != 0) {
+                window.open("/SAG_5/BoletasHonorarios/IngresarPopUp/?personalID=" + personalID, 'SeleccionBoletaHonorarios', 'width=800,height=500');
+            } else if (proveedorID != 0) {
+                window.open("/SAG_5/BoletasHonorarios/IngresarPopUp/?proveedorID=" + proveedorID, 'SeleccionBoletaHonorarios', 'width=800,height=500');
+            } else {
+                window.open("/SAG_5/BoletasHonorarios/IngresarPopUp/?rut=" + rut + "&dv=" + dv + "&beneficiario=" + beneficiario, 'SeleccionBoletaHonorarios', 'width=800,height=500');
+            }
+
+            $(".egreso #NComprobanteDP").attr("disabled", true);
+            $(".egreso #NDocumento").attr("readonly", "readonly");
+            $(".egreso #FechaEmision").attr("readonly", "readonly");
+            $(".egreso #FechaVencimiento").attr("disabled", true);
+            //$(".egreso #Monto").attr("readonly", "readonly");
+            $(".egreso #DocumentoID").val("3");
+        } else {
+            $(".egreso #NComprobanteDP").attr("disabled", true);
+            $(".egreso #NComprobanteDP").attr("readonly", true);
+            $(".egreso #DocumentoID").removeAttr("readonly");
+            $(".egreso #DocumentoID").removeAttr("disabled");
+        }
+    });
+
+    $(".egreso #Origen").change();
     $("#CuentaID").change(function () {
         // Así accedemos al Texto de la opción seleccionada
         var valor = $("#CuentaID option:selected").attr('title');
@@ -484,6 +630,7 @@ input[type="text"], textarea
     var baseUrl = "";
 
     function LDetalle(dato) {
+        
         var MuestraDetalle = $("#DetalleEgresoIndex").val();
         $("#Linea_" + MuestraDetalle).css('background-color', 'white');
         if (dato == MuestraDetalle) {
@@ -494,7 +641,7 @@ input[type="text"], textarea
             window.parent.document.getElementById("CuentaID").value = "";
             window.parent.document.getElementById("Glosa").value = "";
             window.parent.document.getElementById("DeudaPendienteID").value = "";
-            window.parent.document.getElementById("Origen").value = "";
+          
             window.parent.document.getElementById("BoletaHonorarioID").value = "";
             window.parent.document.getElementById("texto").innerHTML = "";
             $("#BorrarLinea").hide();
@@ -506,17 +653,20 @@ input[type="text"], textarea
             window.parent.document.getElementById("NComprobanteDP").value = "";
             window.parent.document.getElementById("DocumentoIDD").value = "";
             window.parent.document.getElementById("NDocumentoD").value = "";
-            window.parent.document.getElementById("Monto").value = "";        
+            window.parent.document.getElementById("Monto").value = "";
             window.parent.document.getElementById("CuentaID").value = "";
             window.parent.document.getElementById("Glosa").value = "";
             window.parent.document.getElementById("DeudaPendienteID").value = "";
-            window.parent.document.getElementById("Origen").value = "";
             window.parent.document.getElementById("BoletaHonorarioID").value = "";
             window.parent.document.getElementById("texto").innerHTML = "";
-            $("#BorrarLinea").show();
-       
-            $("#Linea_" + dato).css('background-color', 'yellow');
-
+            if (window.parent.document.getElementById("Origen").value == "oo") {
+                $("#BorrarLinea").show();
+                $("#Linea_" + dato).css('background-color', 'yellow');
+            }
+            if (window.parent.document.getElementById("Origen").value == "dp") {
+                $("#BorrarLinea").show();
+                $("#Linea_" + dato).css('background-color', 'yellow');
+            }
             return $.ajax({
                 url: url,
                 method: 'POST',
@@ -526,28 +676,36 @@ input[type="text"], textarea
                     x: dato
                 },
                 success: function (DEgreso, textStatus, xhr) {
+
                     var Datos = DEgreso;
-                    $('#DetalleEgresoIndex').val(dato);
-                    $('#Monto').val(Datos.Monto);
-                    $('#NDocumentoD').val(Datos.NDocumento);
-                    $('#DocumentoIDD').val(Datos.DocumentoID);
-                    $('#Glosa').val(Datos.Glosa);
-                    $('#CuentaID').val(Datos.CuentaID);
-                   
-                    
-                  
-                    $("#CuentaID").change();
-                    window.parent.document.getElementById("Origen").value = "oo";
-                    window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
-                    window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                    if (Datos.FondoFijoID == null && Datos.DeudaPendienteID == null && Datos.BoletaHonorarioID == null) {
+                        $('#DetalleEgresoIndex').val(dato);
+                        $('#Monto').val(Datos.Monto);
+                        $('#NDocumentoD').val(Datos.NDocumento);
+                        $('#DocumentoIDD').val(Datos.DocumentoID);
+                        $('#Glosa').val(Datos.Glosa);
+                        $('#CuentaID').val(Datos.CuentaID);
+                        $("#CuentaID").change();
+                        window.parent.document.getElementById("Origen").value = "oo";
+                        window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
+                        window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                    }
                     if (Datos.DeudaPendienteID != null) {
                         $('#DeudaPendienteID').val(Datos.DeudaPendienteID);
+                        $('#DetalleEgresoIndex').val(dato);
+                        $('#Monto').val(Datos.Monto);
+                        $('#NDocumentoD').val(Datos.NDocumento);
+                        $('#DocumentoIDD').val(Datos.DocumentoID);
+                        $('#Glosa').val(Datos.Glosa);
+                        $('#CuentaID').val(Datos.CuentaID);
+                        $("#CuentaID").change();
                         window.parent.document.getElementById("Origen").value = "dp";
                     }
                     if (Datos.BoletaHonorarioID != null) {
                         $('#BoletaHonorarioID').val(Datos.BoletaHonorarioID);
                         window.parent.document.getElementById("Origen").value = "hs";
                         window.parent.document.getElementById("DocumentoIDD").value = "3";
+                        window.open("/SAG_5/BoletasHonorarios/EditarPopUp/?ID=" + Datos.BoletaHonorarioID, 'SeleccionBoletaHonorarios', 'width=800,height=500');
                     }
                     if (Datos.FondoFijoID != null) {
                         $('#FondoFijoID').val(Datos.FondoFijoID);
@@ -556,16 +714,25 @@ input[type="text"], textarea
                         $('body').css('opacity', '1');
                         return false;
                     }
+
                 },
                 error: function (request, status, error) {
                     alert("error");
                 }
             });
+        }    }
 
-        }
-			
-	
+    $(document).ready(function () {
 
-    }
+        $(window).focusin(function () {
+            if ($("#ActualizarGrilla").val() == "SI") {
+                
+                $("#ActualizarGrilla").val("NO");
+				if (window.parent.document.getElementById("Origen").value != "hs") {																	 
+                    CargaGrilla();
+                  }              
+            }
+        });
+    });
 
 </script>
