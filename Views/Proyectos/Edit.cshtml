@@ -12,6 +12,7 @@ input[type="text"], textarea
     text-transform: uppercase;
 }
 </style>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <div id="SAGBox">
     <h3>Proyectos</h3>
     <div id="controles">
@@ -236,7 +237,7 @@ input[type="text"], textarea
           
         </div>
          <div style="float :right;display:inline-block">
-	    <input class="btn btn-primary" type="submit" value="Guardar" />
+	    <input class="btn btn-primary" type="button" value="Guardar" id="crearProyecto"/>
 	</div>
 
   </div>
@@ -246,3 +247,95 @@ input[type="text"], textarea
 }
     </div>
 </div>
+<script>
+    function Guardar(){
+
+    Swal.fire({
+            title: '¿Esta Seguro?',
+            text: "Esto es irreversible!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Guardar !',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            $("form").submit();
+        Swal.fire(
+          'Programa',
+          'se ha Modificado',
+          'success'
+        )
+    }
+    })
+
+
+
+
+    }
+        
+    
+    $(document).ready(function () {
+
+
+        $("#crearProyecto").click(function () {
+            // Validar entrada
+            var MensajeError = "";
+            var EdadMinima = $("#EdadMinima").val();
+            var EdadMaxima = $("#EdadMaxima").val();
+            var ValorSubvencion = $("#ValorSubvencion").val();
+            var DiasAtencion = $("#DiasAtencion").val();
+
+            // Validar largo de texto
+
+            var CodCodeni = $("#CodCodeni").val();
+            var CodSename = $("#CodSename").val();
+            var Nombre = $("#Nombre").val();
+            var Institucion = $("#Institucion").val();
+            var Fono = $("#Fono").val();
+          
+            if($("#EdadMinima").val() != ""){
+                if (!$.isNumeric(EdadMinima)) {
+                    MensajeError = "La Edad Minima debe ser numero ";
+                }
+            }
+            if($("#EdadMaxima").val() != ""){
+                if (!$.isNumeric(EdadMaxima)) {
+                MensajeError = MensajeError + ", La Edad Maxima debe ser numero ";
+                }
+            }
+
+            if (!$.isNumeric(ValorSubvencion)) {
+                MensajeError = MensajeError +   ",El Valor Subvencion debe ser numero";
+            }
+            if (!$.isNumeric(DiasAtencion)) {
+                MensajeError = MensajeError + ",El Valor de los días de atencion debe ser numero";
+            }
+            if (CodCodeni.length > 50) {
+                MensajeError = MensajeError + ",El Valor supera el largo al Codigo Codeni que es de 50 caracteres";
+            }
+            if (CodSename.length > 50) {
+                MensajeError = MensajeError + ",El Valor supera el largo al Codigo Sename/ Mejor Niñez que es de 50 caracteres";
+            }
+            if (Nombre.length > 60) {
+                MensajeError = MensajeError + ",El Valor supera el largo al Nombre que es de 60 caracteres";
+            }
+            if (Institucion.length > 100) {
+                MensajeError = MensajeError + ",El Valor supera el largo al Institucion que es de 100 caracteres";
+            }
+            if (Fono.length > 10) {
+                MensajeError = MensajeError + ",El Valor supera el largo al Fono que es de 10 caracteres";
+            }
+        
+
+            if (MensajeError == "") {
+                Guardar();
+            }else{
+               swal(MensajeError); 
+            }
+    });
+
+
+    });
+  </script> 
