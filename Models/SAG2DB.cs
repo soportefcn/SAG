@@ -166,6 +166,8 @@ namespace SAG2.Models
         public DbSet<TipoSename > TipoSename { get; set; }
         public DbSet<CuentaGlosa> CuentaGlosa { get; set; }
         public DbSet<InicioLog> InicioLog { get; set; }
+        public DbSet<ValorUF> ValorUF { get; set; }
+        public DbSet<TipoPago> TipoPago { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {          
@@ -222,6 +224,7 @@ namespace SAG2.Models
             modelBuilder.Entity<TipoPersonal>().ToTable("TipoPersonal");
             modelBuilder.Entity<TipoRol>().ToTable("TipoRol");
             modelBuilder.Entity<TipoProyecto>().ToTable("TipoProyecto");
+            modelBuilder.Entity<TipoPago>().ToTable("TipoPago");
             modelBuilder.Entity<Convenio>().ToTable("Convenios");
             modelBuilder.Entity<Periodo>().ToTable("Periodos");
 
@@ -319,6 +322,7 @@ namespace SAG2.Models
             modelBuilder.Entity<TipoSename>().ToTable("TipoSename");
             modelBuilder.Entity<CuentaGlosa>().ToTable("CuentaGlosa");
             modelBuilder.Entity<InicioLog>().ToTable("InicioLog");
+            modelBuilder.Entity<ValorUF>().ToTable("ValorUF");
         }
         public System.Data.Entity.DbSet<SAG2.Models.DetalleInformes> DetalleInformes { get; set; }
         public System.Data.Entity.DbSet<SAG2.Models.CuentasPadres> CuentasPadres { get; set; }

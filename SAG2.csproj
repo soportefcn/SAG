@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -120,6 +121,8 @@
     <Compile Include="Controllers\RespuestaAuditoriaController.cs" />
     <Compile Include="Controllers\SaldoCierreController.cs" />
     <Compile Include="Controllers\TipoInformeController.cs" />
+    <Compile Include="Controllers\TipoPagoController.cs" />
+    <Compile Include="Controllers\ValorUFController.cs" />
     <Compile Include="Models\BienCondicion.cs" />
     <Compile Include="Models\BienEstadoInventario.cs" />
     <Compile Include="Models\BienFamilia.cs" />
@@ -1945,6 +1948,12 @@
     <Content Include="Views\DeudasPendientes\CerrarPopUp.cshtml" />
     <Content Include="Views\Administracion\InicioLog.cshtml" />
     <Content Include="Views\Administracion\InicioLogExcel.cshtml" />
+    <Content Include="Views\ValorUF\Index.cshtml" />
+    <Content Include="Views\ValorUF\Create.cshtml" />
+    <Content Include="Views\ValorUF\Edit.cshtml" />
+    <Content Include="Views\TipoPago\Index.cshtml" />
+    <Content Include="Views\TipoPago\Create.cshtml" />
+    <Content Include="Views\TipoPago\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uploads\" />

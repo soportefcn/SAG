@@ -109,8 +109,11 @@
         int id = ViewBag.ID;
         int periodo = ViewBag.Periodo;
 
-
-        var presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.ID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
+            
+   
+       var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == id && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
+       ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+       var presupuestoDetalle = db.DetallePresupuesto.Where(p => p.Presupuesto.Proyecto.ID == id && p.Presupuesto.Proyecto.Cerrado == null && p.Presupuesto.Proyecto.Eliminado == null && p.Periodo == periodo).ToList();
         //  int mes = 1;
         var ingresos = db.Movimiento.Where(m => m.Proyecto.ID == id && m.Proyecto.Eliminado == null && m.Proyecto.Cerrado == null && m.Periodo == periodo && m.Temporal == null).ToList();
         var egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.ID == id && e.Egreso.Proyecto.Eliminado == null && e.Egreso.Proyecto.Cerrado == null && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null).ToList();
@@ -142,7 +145,7 @@
             <table border="1" class="table table-bordered table-hover">
                 <tr>
                     <tH>CONTROL PRESUPUESTARIO</tH>
-                    <tH>@db.Proyecto.Find(id).NombreLista</tH>
+                    <tH colspan="4">@db.Proyecto.Find(id).NombreLista</tH>
 
                 </tr>
                 <tr>
@@ -187,8 +190,9 @@
   
             @{
             var i = 1;
-            var SSaldo = ViewBag.SaldoInicial;
-            var SSaldoPre = ViewBag.SaldoInicial;
+            var xSSaldo = ViewBag.SaldoInicial;
+            double SSaldo = xSSaldo;
+            double SSaldoPre = SSaldo;
              foreach (var mes in Meses)           
              {
                  int tope = int.Parse(mes.ToString());
@@ -297,7 +301,7 @@
      
                 </tr>
                 <tr>
-                    <th style="background-color: silver; text-align: left">OPERACIÓN</th>
+                    <th style="background-color: silver; text-align: left">OPERACI&Oacute;N</th>
                                               @foreach (var mes in Meses)
                                 {
                                     double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
@@ -332,7 +336,7 @@
                                 }
                 </tr>
                 <tr>
-                    <th style="background-color: silver; text-align: left">INVERSIÓN</th>
+                    <th style="background-color: silver; text-align: left">INVERSI&Oacute;N</th>
                                                     @foreach (var mes in Meses)
                                 {
                                     double valorEgresos = 0;

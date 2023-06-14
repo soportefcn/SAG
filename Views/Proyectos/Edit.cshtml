@@ -4,6 +4,12 @@
 }
 @{
     SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+    long ValorAnterior = 0;
+    if(Model.ValorSubvencion == null){
+        ValorAnterior = 0;
+    }else{
+        ValorAnterior = long.Parse(Model.ValorSubvencion.ToString());
+    }
 }
 <style>
 /* Conversion a mayusculas */
@@ -200,13 +206,27 @@ input[type="text"], textarea
        <div class="form-group"><lable>Comentarios</lable></div>
             <div class="form-group">@Html.TextAreaFor(model => model.Convenio.Comentarios, new { @class="form-control" })</div>
       <div class="form-group form-inline">
+          	<div class="form-group" style="margin-right: 10px;">
+             <label>Tipo Pago Intervención</label> 
+          </div>
+			<div class="form-group" style="margin-right: 10px;">
+                 <select id="Convenio.Tintervencion" name="Convenio.Tintervencion" class="form-control">
+                    <option value="1"@if (Model.Convenio.Tintervencion == 1) {@Html.Raw(" selected=\"selected\"")}>Valor USS</option>
+                    <option value="2"@if (Model.Convenio.Tintervencion == 2) {@Html.Raw(" selected=\"selected\"")}>Valor UF</option>
+                </select>
+			</div>
             <div  class="form-group">@Html.LabelFor(model => model.ValorSubvencion, "Subvención diaria")</div>
             <div  class="form-group">@Html.TextBoxFor(model => model.ValorSubvencion, new {  @class="form-control" })</div>
          
             <div  class="form-group">@Html.LabelFor(model => model.DiasAtencion, "Dias atención")</div>
             <div  class="form-group">@Html.TextBoxFor(model => model.DiasAtencion, new {  @class="form-control" })</div>
-            <div class="form-group">@Html.LabelFor(model => model.Flexibilizacion)</div>
-            <div class="form-group">
+            
+     
+
+      </div>
+      <div class="form-group form-inline">  
+             <div class="form-group">@Html.LabelFor(model => model.Flexibilizacion)</div>
+             <div class="form-group">
                 @if (Model.Flexibilizacion != null)
                 {
                 <input class="form-control" type="checkbox" name="Flexibilizacion" value="S" checked="checked" tabindex="21" />
@@ -217,8 +237,7 @@ input[type="text"], textarea
                 }
 
             </div>
-
-      </div>
+          </div>
       
   </div>
   <div class="panel-footer">

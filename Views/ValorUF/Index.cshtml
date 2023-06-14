@@ -1,0 +1,54 @@
+﻿@model IEnumerable<SAG2.Models.ValorUF>
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Valor UF";
+    var MesesData = new string[12]
+    {
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
+}
+
+<div id="contenido_popup">
+<table class ="table table-bordered table-hover">
+    <tr class="info">
+        <th> Periodo </th>
+        <th> Mes </th>
+        <th> Fecha UF </th>
+        <th> Valor</th>
+        
+        <th class="controles" style="width: 35px;"></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Periodo)
+        </td>
+        <td>
+           @MesesData[(item.Mes - 1)];
+        </td>
+        <td>
+          @item.FechaIngreso.ToShortDateString();
+        </td>
+         <td>
+            @Html.DisplayFor(modelItem => item.Valor)
+        </td>
+          <td>
+            <a href="@Url.Action("Edit", "ValorUF", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+
+</table>
+</div>

@@ -29,24 +29,46 @@ namespace SAG2.Controllers
         [HttpPost]
         public JsonResult GetProgramaQ(int id)
         {
-            var q = db.ProgramaQ.Where(x => x.ProyectoID == id );
             List<SelectListItem> listprogramaq = new List<SelectListItem>();
+            int Tintervencion = db.Proyecto.Find(id).Convenio.Tintervencion;
+            int periodo = (int)Session["Periodo"];
 
-            foreach (var x in q)
+            if (Tintervencion == 1)
             {
-                listprogramaq.Add(new SelectListItem
+                var q = db.ProgramaQ.Where(x => x.ProyectoID == id);
+                foreach (var x in q)
                 {
-                    Text = string.Format("{0} - ${1} ",x.Codigo , x.Valor),
-                    Value = x.ID.ToString()
-                });
+                    listprogramaq.Add(new SelectListItem
+                    {
+                        Text = string.Format("{0} - ${1} ", x.Codigo, x.Valor),
+                        Value = x.ID.ToString()
+                    });
+                }
             }
+            if (Tintervencion == 2)
+            {
+                var q = db.ValorUF.Where(d => d.Periodo == periodo).OrderBy(d => d.FechaIngreso).ToList();
+                foreach (var x in q)
+                {
+                    listprogramaq.Add(new SelectListItem
+                    {
+                        Text = string.Format("{0} - ${1} ", x.FechaIngreso.ToShortDateString(), x.Valor),
+                        Value = x.ID.ToString()
+                    });
+                }
+            }
+
             return Json(new SelectList(listprogramaq, "Value", "Text"));
         }
 
         public JsonResult GetDatos(int id)
         {
-            string  Sigla = db.Proyecto.Where(x => x.ID == id).FirstOrDefault().TipoProyecto.Sigla.ToString();   
+            string  Sigla = db.Proyecto.Where(x => x.ID == id).FirstOrDefault().TipoProyecto.Sigla.ToString();
+            int Tintervencion = db.Proyecto.Find(id).Convenio.Tintervencion;
+            int periodo = (int)Session["Periodo"];
+            
             List<Listado> listadatos = new List<Listado>();
+
             var q1 = db.ParametroUss.Where(d => d.Tipo.Equals(Sigla)).ToList();
             foreach (var x in q1)
             {
@@ -67,37 +89,58 @@ namespace SAG2.Controllers
                 Datos.Tipo = "VZona";
                 listadatos.Add(Datos);
             }
+            ///
 
-            var q = db.ProgramaQ.Where(x => x.ProyectoID == id  );
-
-            try
+            if (Tintervencion == 1)
             {
+                var q = db.ProgramaQ.Where(x => x.ProyectoID == id);
                 foreach (var x in q)
                 {
-                    if (x.Estado != 1)
-                    {
-                        Listado Datos = new Listado();
-                        Datos.ID = x.ID;
-                        Datos.Nombre = string.Format("{0} - ${1} ", x.Codigo, x.Valor);
-                        Datos.Tipo = "VUSS";
-                        listadatos.Add(Datos);
-                    }
+                    Listado Datos = new Listado();
+                    Datos.ID = x.ID;
+                    Datos.Nombre = string.Format("{0} - ${1} ", x.Codigo, x.Valor);
+                    Datos.Tipo = "VUSS";
+                    listadatos.Add(Datos);
+
                 }
-            }catch(Exception ){} 
+            }
+            if (Tintervencion == 2)
+            {
+                var q = db.ValorUF.Where(d => d.Periodo == periodo).OrderBy(d => d.FechaIngreso).ToList();
+                foreach (var x in q)
+                {
+                    Listado Datos = new Listado();
+                    Datos.ID = x.ID;
+                    Datos.Nombre = string.Format("{0} - ${1} ", x.FechaIngreso.ToShortDateString(), x.Valor);
+                    Datos.Tipo = "VUSS";
+                    listadatos.Add(Datos);
+
+                }
+            }
+
+
+            Listado xDatos = new Listado();
+            xDatos.ID = 777;
+            xDatos.Nombre = (Tintervencion == 1) ? "Valor USS" : "Valor UF";
+            xDatos.Tipo = "TUSS";
+            listadatos.Add(xDatos);
+            
             return Json(listadatos);
         }
         public ActionResult Upload()
         {
             int filtro = int.Parse(Session["Filtro"].ToString());  
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+          
 
             ViewBag.listadoproyecto = utils.ProyectoFiltro(filtro, Proyecto.ID);
-
+            int  prId = Proyecto.ID;
             string sigla = Proyecto.TipoProyecto.Sigla  ;
+            ViewBag.Tintervencion = db.Proyecto.Find(prId).Convenio.Tintervencion;
 
             var q2 = db.ParametroUss.Where(d => d.Tipo.Equals(sigla)).ToList();
             List<SelectListItem> listuss = new List<SelectListItem>();
-            listuss.Add(new SelectListItem { Text = "Seleccione Parámetro USS", Value = "2" });
+            listuss.Add(new SelectListItem { Text = "Seleccione Parámetro ", Value = "2" });
 
             foreach (var x in q2)
             {
@@ -115,7 +158,7 @@ namespace SAG2.Controllers
             }
 
             ViewBag.listadoPorcenZona = listPorc;
-
+            TempData["Message"] = null;
 
             return View();
         }
@@ -138,12 +181,21 @@ namespace SAG2.Controllers
                 List<IntervencionDetalle> lista = new List<IntervencionDetalle>();
                 List<IntervencionDetalle> listaAux = new List<IntervencionDetalle>();
                 ParametroUss parametroUSS = db.ParametroUss.Find(ParametroUSSID);
-                ProgramaQ ProgramaQ = db.ProgramaQ.Find(ProgramaQID);
+               
                 string pathX = "";
                 int prId = int.Parse(model.ProyectoID.ToString());
                 ViewBag.listadoproyecto = utils.ProyectoFiltro(filtro, prId);
                 double VALORUSS = parametroUSS.uss;
-                double Q = ProgramaQ.Valor;
+                double Q = 0;
+                int Tintervencion = db.Proyecto.Find(prId).Convenio.Tintervencion;
+                if (Tintervencion == 1)
+                {
+                    ProgramaQ ProgramaQ = db.ProgramaQ.Find(ProgramaQID);
+                    Q = ProgramaQ.Valor;
+                }
+                if (Tintervencion == 2) {
+                    Q = db.ValorUF.Find(ProgramaQID).Valor;               
+                }
                 int PeriodoI = int.Parse(model.FechaIngreso.Year.ToString());
                 int TotConvenio = db.Convenio.Where(d => d.ProyectoID == model.ProyectoID && d.Periodo == PeriodoI).OrderByDescending(d => d.ID).FirstOrDefault().NroPlazas;          
                 double valorIntervencion = ((VALORUSS*Q)/100)*(100+ValorPorcZona);

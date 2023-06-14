@@ -16,5 +16,6 @@ namespace SAG2.Models
         public string Comentarios { get; set; }
         public int? Periodo { get; set; }
         public int? Mes { get; set; }
+        public int Tintervencion { get; set; }
     }
 }

@@ -87,10 +87,11 @@ input[type="text"], textarea
                    @Html.LabelFor(model => model.CodCodeni, "Cód. CODENI")
                 </div>
                 <div class="form-group" style="margin-right: 168px;">
-                   @Html.TextBoxFor(model => model.CodCodeni, new {@class="form-control", @style="width: 100px;" })
+                    <input class="form-control" id="CodCodeni" name="CodCodeni" style="width: 100px;" type="text" value="@ViewBag.CC">
+                 
                 </div>
                  <div class="form-group" style="margin-right: 45px;">
-                  @Html.LabelFor(model => model.CodSename, "Cód.Sename/Servicio Mejor Niñez")
+                  @Html.LabelFor(model => model.CodSename, "Cód. SENAME")
                 </div>
                 <div class="form-group" style="margin-right: 10px;">
                  @Html.TextBoxFor(model => model.CodSename, new { @class="form-control", @style="width: 100px;"  })
@@ -153,8 +154,16 @@ input[type="text"], textarea
                </div>
             <div class="form-group" style="margin-right: 15px;">
                 @Html.TextBoxFor(model => model.Convenio.NroPlazas, new { @class="form-control"  })
-
             </div>
+            <div class="form-group" style="margin-right: 10px;">
+             <label>Tipo Pago Intervención</label> 
+          </div>
+			<div class="form-group" style="margin-right: 10px;">
+                 <select id="Convenio.Tintervencion" name="Convenio.Tintervencion" class="form-control">
+                    <option value="1">Valor USS</option>
+                    <option value="2"  selected=\"selected\" }>Valor UF</option>
+                </select>
+			</div>
 
           </div>
         <div class="form-group form-inline">
@@ -256,10 +265,7 @@ input[type="text"], textarea
               
              </div>
             </div>
-               @if (TempData["Message"] != null)
-   {
-    @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
-   }
+
      </fieldset>
  <fieldset>
         <h3>Cuenta Corriente</h3>
@@ -286,7 +292,7 @@ input[type="text"], textarea
     </div>
     <div class="panel-footer">
 	<div  style ="width: 500px ; display:inline-block">
-            <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=700,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+            <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=600,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
             <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
             
         </div>

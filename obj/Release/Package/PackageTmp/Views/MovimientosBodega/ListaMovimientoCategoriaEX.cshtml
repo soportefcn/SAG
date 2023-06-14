@@ -186,7 +186,8 @@
             </td>
             <td></td>
             <td style="text-align: center;">      
-                            @if (ProyectTraspasado == ""){
+                            @if (ProyectTraspasado == "" && movimiento.Observaciones != null)
+                            {
                     @movimiento.Observaciones.ToUpper();
                 }else{
                     @ProyectTraspasado;

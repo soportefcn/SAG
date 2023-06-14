@@ -49,32 +49,43 @@ namespace SAG2.Controllers
                 periodo = (int)Session["Periodo"];
                 mes = (int)Session["Mes"];
             }
-
+            int xPeriodoinicio = anioInicio;
             ViewBag.Periodo = periodo;
             ViewBag.PeriodoInicio = anioInicio;
             ViewBag.Mes = mes;
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.nombreProyecto = Proyecto.NombreLista;
             ViewBag.CodSename = Proyecto.CodSename;
-            var movimientosBodega = db.MovimientoBodega.Where(d => d.Mes == 0).ToList();
+            int PrId = Proyecto.ID;
+            List<MovimientosBodega> movBodega = new List<MovimientosBodega>();
             if (anioInicio == aniohasta){
-                movimientosBodega = db.MovimientoBodega.Where(d => d.Mes >= mesInicio && d.Mes <= mesHasta && d.Periodo == anioInicio && d.ProyectoID == Proyecto.ID).ToList();
+                movBodega = db.MovimientoBodega.Where(d => d.Mes >= mesInicio && d.Mes <= mesHasta && d.Periodo == anioInicio && d.ProyectoID == PrId).ToList();
             }
             else
             {
                 while (anioInicio < aniohasta)
                 {
-         
-                        foreach (var item in db.MovimientoBodega.Where(d => (d.Mes >= 1 && d.Mes <= 12) && d.Periodo == anioInicio && d.ProyectoID == Proyecto.ID).ToList())
+
+                    if (xPeriodoinicio == anioInicio)
+                    {
+                        foreach (var item in db.MovimientoBodega.Where(d => d.Mes >= mesInicio && d.Periodo == anioInicio && d.ProyectoID == PrId).ToList())
                         {
-                            movimientosBodega.Add(item);
+                            movBodega.Add(item);
                         }
-                 
+
+                    }
+                    else
+                    {
+                        foreach (var item in db.MovimientoBodega.Where(d => d.Periodo == anioInicio && d.ProyectoID == PrId).ToList())
+                        {
+                            movBodega.Add(item);
+                        }
+                    }
                     anioInicio++;
                 }
-                foreach (var item in db.MovimientoBodega.Where(d => (d.Mes >= 1 && d.Mes <= mesHasta) && d.Periodo == aniohasta && d.ProyectoID == Proyecto.ID).ToList())
+                foreach (var item in db.MovimientoBodega.Where(d => d.Mes <= mesHasta && d.Periodo == aniohasta && d.ProyectoID == PrId).ToList())
                 {
-                    movimientosBodega.Add(item);
+                    movBodega.Add(item);
                 }
               
             }
@@ -83,7 +94,7 @@ namespace SAG2.Controllers
             ViewBag.MesInicio = mesInicio;
             ViewBag.PeriodoHasta = aniohasta;
             ViewBag.MesHasta = mesHasta;
-            return View(movimientosBodega.OrderByDescending(b => b.ArticuloID).ToList());
+            return View(movBodega.OrderBy(b => b.Fecha).ToList());
 
 
         }
@@ -299,6 +310,7 @@ namespace SAG2.Controllers
             }
             ViewBag.Periodo = Periodo;
             ViewBag.PeriodoInicio = anioInicio;
+            int xPeriodoinicio  = anioInicio;
             ViewBag.Mes = Mes;
             ViewBag.ListadoProyecto = db.Proyecto.ToList();   
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
@@ -313,15 +325,25 @@ namespace SAG2.Controllers
             {
                 while (anioInicio < aniohasta)
                 {
-
-                    foreach (var item in db.MovimientoBodega.Where(d => (d.Mes >= 1 && d.Mes <= 12) && d.Periodo == anioInicio && d.ProyectoID == Proyecto.ID).ToList())
+                    if (xPeriodoinicio == anioInicio)
                     {
-                        movimientosBodega.Add(item);
+                        foreach (var item in db.MovimientoBodega.Where(d => d.Mes >= mesInicio && d.Periodo == anioInicio && d.ProyectoID == Proyecto.ID).ToList())
+                        {
+                            movimientosBodega.Add(item);
+                        }
+
+                    }
+                    else {
+                        foreach (var item in db.MovimientoBodega.Where(d =>  d.Periodo == anioInicio && d.ProyectoID == Proyecto.ID).ToList())
+                        {
+                            movimientosBodega.Add(item);
+                        }
+                    
                     }
 
                     anioInicio++;
                 }
-                foreach (var item in db.MovimientoBodega.Where(d => (d.Mes >= 1 && d.Mes <= mesHasta) && d.Periodo == aniohasta && d.ProyectoID == Proyecto.ID).ToList())
+                foreach (var item in db.MovimientoBodega.Where(d =>  d.Mes <= mesHasta && d.Periodo == aniohasta && d.ProyectoID == Proyecto.ID).ToList())
                 {
                     movimientosBodega.Add(item);
                 }
@@ -332,7 +354,7 @@ namespace SAG2.Controllers
             ViewBag.MesInicio = mesInicio;
             ViewBag.PeriodoHasta = aniohasta;
             ViewBag.MesHasta = mesHasta;
-            return View(movimientosBodega.OrderByDescending(b => b.ArticuloID).ToList());
+            return View(movimientosBodega.OrderBy(b => b.Fecha).ToList());
         }
         
         public ActionResult MovimientoDonacion()
@@ -518,8 +540,7 @@ namespace SAG2.Controllers
                 Registro.Tdoc = 1;
                 Registro.Salida = 0;
                 Registro.Saldo = saldo + Cantidad;
-                Registro.ProyectoID = Proyecto.ID;
-                Registro.ProyectoIDTraspaso = 0;
+                Registro.ProyectoID = Proyecto.ID;               
                 Registro.Observaciones = movimientosbodega.Observaciones;
                 Registro.Periodo = movimientosbodega.Periodo;
                 Registro.Mes = movimientosbodega.Mes;

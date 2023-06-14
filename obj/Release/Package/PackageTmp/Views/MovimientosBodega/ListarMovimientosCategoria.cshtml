@@ -178,7 +178,7 @@
                     entrada = entrada + Int32.Parse(movimiento.Entrada.ToString());
                     <td align="center" nowrap="nowrap">
                         <a @*href="@Url.Action("IndexBodega", "Egresos", new { numero = movimiento.DetalleEgreso.Egreso.ID })"*@ title="Seleccionar" onclick="window.open('../Egresos/Edit/'+@movimiento.DetalleEgreso.Egreso.ID,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-                        @movimiento.NroDocumento
+                        @movimiento.DetalleEgreso.Egreso.NumeroComprobante
                     </td>
                     <td nowrap="nowrap" style="text-align: center;">@movimiento.DetalleEgreso.FechaEmision.ToShortDateString()</td>
                     <td nowrap="nowrap" style="text-align: center;">@movimiento.Articulo.UnidadMedida.Descripcion </td>
@@ -210,9 +210,10 @@
                     {@movimiento.Salida}
                 </td>
                 <td></td>
-                <td style="text-align: center;">                    @if (ProyectTraspasado == "")
-                                                                    {
+                <td style="text-align: center;">                    @if (ProyectTraspasado == "" && movimiento.Observaciones != null)
+                                                               {
                     @movimiento.Observaciones.ToUpper();
+            
                                                                     }
                                                                     else
                                                                     {

@@ -371,11 +371,20 @@
             </tr>
             <tr>
                 <th class="active">
-                    Valor USS
+                   @{
+                        if (Proyecto.Convenio.Tintervencion == 1 )
+                        {
+                            @Html.Raw("Valor USS")
+                        }
+                        else
+                        {
+                            @Html.Raw("Valor UF")
+                        }
+                    }
                 </th>
-                <td> @ViewBag.ValorUSS.ToString("#,###") </td>
+                <td> @ViewBag.ValorUSS </td>
                 <th class="active">
-                    Fecha Ingreso ( USS)
+                    Fecha Ingreso 
                 </th>
                 <td> @ViewBag.FechaUSS</td>
                 <th class="active">

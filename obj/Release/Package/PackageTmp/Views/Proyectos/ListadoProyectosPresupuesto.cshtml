@@ -29,8 +29,14 @@
         <table class="table table-striped">
            <tr><td>
                <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
-               <div class="col-md-6">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
-               <div class="col-md-4">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+               <div class="col-md-4">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+               <div class="col-md-2">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+                <div class="col-md-4" >Estado 
+                    <select name="filtroPrograma" id="filtroPrograma" class="form-control js-autocomplete" >
+                        <option value="1"> Vigentes Segun Fecha Termino</option>
+                        <option value="2"> Vigentes </option>
+                        </select>
+                </div>
            </td></tr> 
        </table>
                   <div class="form-group">
@@ -59,7 +65,7 @@
             <th> NUMERO DE PLAZAS</th>
             <th> FECHA DE INICIO</th>
             <th> FECHA DE TERMINO</th>
-            <th> DETALLE CONTRATOS</th>
+            <th> COMENTARIOS</th>
             <th> RESPONSABILIDADES ADMINISTRATIVAS</th>
             <th> CONTRATOS </th>
             <th> VALOR SUBVENCION</th><th> VALOR SUBVENCION MENSUAL</th><th> VALOR SUBVENCION ANUAL</th>
@@ -364,9 +370,10 @@
             var TipoProgramaID = $('#TipoProgramaID').val();
             var ProyectoID = $('#ProyectoID').val();
             var regionID = $('#regionID').val();
+            var Estado = $('#filtroPrograma').val();
 
        
-            var url = '@Url.Action("ListadoProyectosPresupuestoExcel", "Proyectos", new {  ProyectoID = "ProyectoID_cambiar", tipoProyectoID = "tipoProyectoID_cambiar", RegionID = "RegionID_cambiar" })';
+            var url = '@Url.Action("ListadoProyectosPresupuestoExcel", "Proyectos", new {  ProyectoID = "ProyectoID_cambiar", tipoProyectoID = "tipoProyectoID_cambiar", RegionID = "RegionID_cambiar", filtroPrograma = "filtroPrograma_cambiar" })';
 
             if (regionID == "") {
                 regionID = 0;
@@ -386,6 +393,8 @@
                 url = url.replace("tipoProyectoID_cambiar", TipoProgramaID);
                 url = url.replace("&amp;", "&");
                 url = url.replace("RegionID_cambiar", regionID);
+                url = url.replace("&amp;", "&");
+                url = url.replace("filtroPrograma_cambiar", Estado);
                 window.open(url);
             }
             else {

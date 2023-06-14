@@ -89,7 +89,7 @@ namespace SAG2.Controllers
             ViewBag.Busq = q;
             return View(proyecto.ToList());
         }
-        public ViewResult ListadoProyectosPresupuestoExcel(int ProyectoID, int tipoProyectoID, int RegionID)
+        public ViewResult ListadoProyectosPresupuestoExcel(int ProyectoID, int tipoProyectoID, int RegionID, int filtroPrograma)
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
             int periodo = (int)Session["Periodo"];
@@ -97,13 +97,29 @@ namespace SAG2.Controllers
             List<Proyecto> proyecto = new List<Proyecto>();
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proto = (Proyecto)Session["Proyecto"];
+            string fecha = DateTime.Now.ToShortDateString();
+            DateTime FechaActual = DateTime.Now;
             ViewBag.Contratos = db.Contrato.ToList();
             ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
             ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
             ViewBag.Periodo = db.Periodo.ToList();
-            proyecto = utils.FiltroProyecto(filtro);
+            // Vigentes
+
+
+            switch (filtroPrograma)
+            {
+                case 1:
+                    proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
+                    break;
+                case 2:
+                    proyecto = utils.FiltroProyecto(1);
+                    break;
+                default:
+                    proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
+                    break;
+            }
 
             if (ProyectoID > 1)
             {
@@ -131,10 +147,12 @@ namespace SAG2.Controllers
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
             int periodo = (int)Session["Periodo"];
+            int SelTipo = 0;
             Usuario usuario = (Usuario)Session["Usuario"];
             List<Proyecto> proyecto = new List<Proyecto>();
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proto = (Proyecto)Session["Proyecto"];
+            DateTime FechaActual = DateTime.Now;
              //
             int prfiltro_id = 1;
             int RegionId = 0;
@@ -151,18 +169,39 @@ namespace SAG2.Controllers
             {
                 tipoProyectoID = int.Parse(form["TipoProgramaID"].ToString());
             }
-
+            if (form["filtroPrograma"].ToString() != "")
+            {
+                SelTipo = int.Parse(form["filtroPrograma"].ToString());
+            }
              //
+            ViewBag.SelTipo = SelTipo;
             ViewBag.Contratos = db.Contrato.ToList();
             ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
             ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
             ViewBag.Periodo = db.Periodo.ToList();
-            proyecto = utils.FiltroProyecto(filtro);
+             // Vigentes
+            switch (SelTipo)
+            {
+                case 1:
+                    proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
+                    break;
+                case 2:
+                    proyecto = utils.FiltroProyecto(1);
+                    break;
+                default:
+                    proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
+                    break;
+            }
+           
+           // proyecto = utils.FiltroProyecto(SelTipo);
             ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
             ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
-            if (prfiltro_id != 1)
+            
+             
+             
+             if (prfiltro_id != 1)
             {
                 ViewBag.Proyectos = proyecto.Where(d => d.ID == prfiltro_id).ToList();
                 if (!usuario.esUsuario)
@@ -210,7 +249,7 @@ namespace SAG2.Controllers
             List<Proyecto> proyecto = new List<Proyecto>();
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proto = (Proyecto)Session["Proyecto"];
-
+            ViewBag.SelTipo = 1;
             ViewBag.Cuentas = db.Cuenta.Where(d => d.Presupuesto == 1).ToList();   
             ViewBag.DetallePresupuesto = db.DetallePresupuesto.Where(d => d.Periodo == periodo && d.Cuenta.Presupuesto == 1).ToList();
             ViewBag.Presupuestos = db.Presupuesto.Where(d => d.Periodo == periodo).ToList();
@@ -290,6 +329,8 @@ namespace SAG2.Controllers
                 Proyecto proyecto = (Proyecto)Session["Proyecto"];
                 return RedirectToAction("Edit", new { id = proyecto.ID });
             }
+
+            ViewBag.CC = ( int.Parse(db.Proyecto.Where(d => d.Eliminado == null).OrderByDescending(d => d.ID).FirstOrDefault().CodCodeni) + 1 );
 
             ViewBag.PersonaID = new SelectList(db.Persona.OrderBy(p => p.Nombres).ThenBy(p => p.ApellidoParterno).ThenBy(p => p.ApellidoMaterno), "ID", "NombreLista");
             ViewBag.SistemaAsistencialID = new SelectList(db.SistemaAsistencial, "ID", "NombreLista");
@@ -562,6 +603,7 @@ namespace SAG2.Controllers
                     Convenio.ResEx = proyecto.Convenio.ResEx;
                     Convenio.NroPlazas = proyecto.Convenio.NroPlazas;
                     Convenio.Comentarios = proyecto.Convenio.Comentarios;
+                    Convenio.Tintervencion = proyecto.Convenio.Tintervencion;
 
                     if (Request.Form["FechaInicio"] != null && Request.Form["FechaTermino"] != null && !Request.Form["FechaTermino"].ToString().Equals("") && !Request.Form["FechaInicio"].ToString().Equals(""))
                     {
@@ -588,6 +630,7 @@ namespace SAG2.Controllers
                     Convenio.ProyectoID = proyecto.ID;
                     Convenio.Periodo = periodo;
                     Convenio.Mes = mes;
+                    Convenio.Tintervencion = proyecto.Convenio.Tintervencion;
 
                     if (Request.Form["FechaInicio"] != null && Request.Form["FechaTermino"] != null && !Request.Form["FechaTermino"].ToString().Equals("") && !Request.Form["FechaInicio"].ToString().Equals(""))
                     {
@@ -606,8 +649,25 @@ namespace SAG2.Controllers
                     convenioID = Convenio.ID;
                 }
                 // Verificar Valor Subvencion 
-               int ValorS =  Int32.Parse(Request.Form["ValorS"].ToString());
-                if(ValorS != proyecto.ValorSubvencion){
+                try
+                {
+                    int ValorS = Int32.Parse(Request.Form["ValorS"].ToString());
+                    if (ValorS != proyecto.ValorSubvencion)
+                    {
+                        InicioLog log = new InicioLog();
+                        log.Tipo = "Ant Administrativos, Financieros y Contables";
+                        log.ProyectoId = proyecto.ID;
+                        log.Fecha = DateTime.Now;
+                        log.Mes = mes;
+                        log.Periodo = periodo;
+                        log.RegistroID = proyecto.ID;
+                        log.UsuarioID = usuario.ID;
+                        log.Descripcion = "VS :" + ValorS + " VsNuevo:" + proyecto.ValorSubvencion;
+                        db.InicioLog.Add(log);
+                        db.SaveChanges();
+
+                    }
+                }catch(Exception ){
                     InicioLog log = new InicioLog();
                     log.Tipo = "Ant Administrativos, Financieros y Contables";
                     log.ProyectoId = proyecto.ID;
@@ -616,10 +676,9 @@ namespace SAG2.Controllers
                     log.Periodo = periodo;
                     log.RegistroID = proyecto.ID;
                     log.UsuarioID = usuario.ID;
-                    log.Descripcion = "VS :" + ValorS + " VsNuevo:" + proyecto.ValorSubvencion ;
+                    log.Descripcion = "VS :0 VsNuevo:" + proyecto.ValorSubvencion;
                     db.InicioLog.Add(log);
                     db.SaveChanges();
-                
                 }
 
 

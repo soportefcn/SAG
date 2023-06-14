@@ -1,0 +1,29 @@
+﻿@model IEnumerable<SAG2.Models.TipoPago>
+
+@{
+    Layout = "~/Views/Shared/PopUp.cshtml";
+    ViewBag.Title = "Medio Pago";
+}
+
+<div id="contenido_popup">
+<table class ="table table-bordered table-hover">
+    <tr class="info">
+        <th>
+            Nombre
+        </th>
+        <th class="controles" style="width: 35px;"></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+          <a href="@Url.Action("Edit", "TipoPago", new { id = item.TipoPagoID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+        </td>
+    </tr>
+}
+
+</table>
+ </div>

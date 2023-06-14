@@ -650,9 +650,14 @@ namespace SAG_5.Controllers
             ViewBag.CuentaFinancimiento = db.cuentaGrupo.Where(d => d.grupo.Equals(1)).ToList();
             ViewBag.CuentaApoyo = db.cuentaGrupo.Where(d => d.grupo.Equals(2)).ToList();
             ViewBag.Mes = Mes;
-
-            var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
-            ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            try
+            {
+                var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            }
+            catch (Exception) {
+                ViewBag.SaldoInicial = 0;
+            }
             if (Mes < 13)
             {
                 ViewBag.GrupoMeses = new int[1] {
@@ -744,9 +749,13 @@ namespace SAG_5.Controllers
             ViewBag.egresos = db.DetalleEgreso.Where(e => e.Egreso.Proyecto.ID == id && e.Egreso.Periodo == periodo && e.Egreso.Temporal == null && e.Egreso.Nulo == null).ToList();
             ViewBag.reintegros = db.Movimiento.Where(m => m.ProyectoID == id).Where(m => m.TipoComprobanteID == 3).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == periodo).OrderBy(m => m.Cuenta.Orden).ToList();
             ViewBag.reintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == periodo && m.Reintegro.Nulo == null).OrderBy(m => m.CuentaIDD).ToList();
-           
-            var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
-            ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            try
+            {
+                var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            }catch(Exception){
+                ViewBag.SaldoInicial = 0;
+            }
             if (Mes < 13)
             {
                 ViewBag.GrupoMeses = new int[1] {
@@ -814,14 +823,17 @@ namespace SAG_5.Controllers
 
             ViewBag.Proyectos = utils.ProyectoFiltro(filtro, Proyectos);
 
-            ViewBag.Proyectos = new SelectList(db.Proyecto.Where(p => p.estado == 1), "ID", "NombreLista");
+         
             ViewBag.ID = Proyectos;
             ViewBag.Periodo = periodo;
-            ViewBag.Periodo = periodo;
             ViewBag.Mes = Mes;
-            ViewBag.Mes = Mes;
-            var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
-            ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            try
+            {
+                var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            }catch(Exception){
+                 ViewBag.SaldoInicial = 0;
+            }
             if (Mes < 13)
             {
                 ViewBag.GrupoMeses = new int[1] {
@@ -890,9 +902,15 @@ namespace SAG_5.Controllers
             ViewBag.CuentaFinancimiento = db.cuentaGrupo.Where(d => d.grupo.Equals(1)).ToList();
             ViewBag.CuentaApoyo = db.cuentaGrupo.Where(d => d.grupo.Equals(2)).ToList();
             ViewBag.Mes = Mes;
-
-            var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
-            ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            try
+            {
+                var presupuesto = db.Presupuesto.Where(m => m.ProyectoID == Proyectos && m.Activo != null && m.Activo.Equals("S") && m.Periodo == periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                ViewBag.SaldoInicial = presupuesto.SaldoInicial;
+            }
+            catch (Exception)
+            {
+                ViewBag.SaldoInicial = 0;
+            }
             if (Mes < 13)
             {
                 ViewBag.GrupoMeses = new int[1] {

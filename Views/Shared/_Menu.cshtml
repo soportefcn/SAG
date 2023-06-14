@@ -92,6 +92,7 @@
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoIntervencion/Create">Estados de Pago</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ParametroUSS/Create">Cantidad de la USS</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ProgramaQ/Create">Valor USS</a></li>
+									 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ValorUF/Create">Valor UF</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/PorcentajeZona/Create">Porcentaje Zona</a></li>
                                 </ul>
                         </li>
@@ -122,7 +123,7 @@
                             <ul class="dropdown-menu"> 
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/Create">Programas</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Contratos/Create">Contratos</a></li>
-                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create">Resolucion</a></li>
+                               
                             @if (!Usuario.esUsuario)
                             {
 	                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/ListadoProyectos">Listado Programas</a></li>

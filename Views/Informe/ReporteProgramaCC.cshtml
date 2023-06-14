@@ -93,8 +93,14 @@
                 @Html.DropDownList("Mes", new List<SelectListItem> { new SelectListItem { Value = "1", Text = "Enero" }, new SelectListItem { Value = "2", Text = "Febrero" }, new SelectListItem { Value = "3", Text = "Marzo" }, new SelectListItem { Value = "4", Text = "Abril" }, new SelectListItem { Value = "5", Text = "Mayo" }, new SelectListItem { Value = "6", Text = "Junio" }, new SelectListItem { Value = "7", Text = "Julio" }, new SelectListItem { Value = "8", Text = "Agosto" }, new SelectListItem { Value = "9", Text = "Septiembre" }, new SelectListItem { Value = "10", Text = "Octubre" }, new SelectListItem { Value = "11", Text = "Noviembre" }, new SelectListItem { Value = "12", Text = "Diciembre" }, new SelectListItem { Value = "13", Text = "Primer Semestre" }, new SelectListItem { Value = "14", Text = "Segundo Semestre" }, new SelectListItem { Value = "15", Text = "Anual" } }, new { @class = "form-control js-autocomplete" })
         </div>
         <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6">
-            <label class="control-label" for="Periodo">Año</label>
-            @Html.DropDownList("periodo", new List<SelectListItem> { new SelectListItem { Value = "2017", Text = "2017" }, new SelectListItem { Value = "2018", Text = "2018" }, new SelectListItem { Value = "2019", Text = "2019" }, new SelectListItem { Value = "2020", Text = "2020" }, new SelectListItem { Value = "2021", Text = "2021" }, new SelectListItem { Value = "2022", Text = "2022" } }, new { @class = "form-control js-autocomplete" })
+          <label class="control-label" for="Periodo">Año</label>
+                <select class="form-control" name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 3; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                            {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>  
         </div>
     </div>
     <br />

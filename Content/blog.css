@@ -30,7 +30,8 @@ h3, .h3
 
 @media (min-width: 1200px) {
   .container {
-    width: 1200px;
+    width: 90%;
+
   }
 }
 

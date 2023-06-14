@@ -36,4 +36,15 @@ namespace SAG2.Models
         public virtual Documento Documento { get; set; }
         public virtual Cuenta Cuenta { get; set; }
     }
+    public class TipoPago
+    {
+        public int TipoPagoID { get; set; }
+        public string Nombre { get; set; }
+        public int UsuarioID { get; set; }
+        public DateTime Fecha { get; set; }
+        public int Estado { get; set; }
+
+    }
+    
+ 
 }

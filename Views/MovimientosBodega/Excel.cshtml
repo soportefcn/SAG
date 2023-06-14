@@ -66,7 +66,11 @@
             <td align="center" nowrap="nowrap">@if (@movimiento.Salida > 0){ @movimiento.Salida }</td>
             @if (@movimiento.Entrada > 0)
             {
-            <td align="center" nowrap="nowrap">@movimiento.NroDocumento</td>
+                try{
+            <td align="center" nowrap="nowrap">@movimiento.DetalleEgreso.Egreso.NumeroComprobante</td>
+            }catch(Exception){
+         
+            }
             <td nowrap="nowrap"> </td>
             }
             else
@@ -77,7 +81,8 @@
             <td nowrap="nowrap">
                 @try
                 {
-                    if (ProyectTraspasado == ""){
+                    if (ProyectTraspasado == "" && movimiento.Observaciones != null)
+                    {
                     @movimiento.Observaciones.ToUpper();
                 }else{
                     @ProyectTraspasado;

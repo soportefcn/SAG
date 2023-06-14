@@ -84,7 +84,10 @@
             string ProyectTraspasado = "";
             if (movimiento.ProyectoIDTraspaso != null)
             {
-                ProyectTraspasado = ProyectoLista.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().CodCodeni ;
+                if (movimiento.ProyectoIDTraspaso != 0)
+                {
+                    ProyectTraspasado = ProyectoLista.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().CodCodeni;
+                }
             }
             <tr class="MovimientoBodega" MovimientosBodegaID="@movimiento.ID" Fecha="@movimiento.Fecha.ToShortDateString()" ArticuloID="@movimiento.ArticuloID" Cantidad="@if (@movimiento.Entrada > 0){ @movimiento.Entrada } else { @movimiento.Salida }" tipo_movimiento="@if (@movimiento.Entrada > 0){ @Html.Raw("E") } else { @Html.Raw("S") }" Observaciones="@movimiento.Observaciones" NroDocumento="@movimiento.NroDocumento" style="cursor: pointer;">
                 <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
@@ -101,7 +104,7 @@
                         @try
                         {
                          <a  title="Seleccionar" onclick="window.open('../Egresos/Edit/'+@movimiento.DetalleEgreso.Egreso.ID  ,'width=750,height=350,scrollbars=yes,menubar=no,toolbars=no');"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-                          @movimiento.NroDocumento
+                          @movimiento.DetalleEgreso.Egreso.NumeroComprobante
                         }
                            catch (Exception)
                         {
@@ -124,14 +127,21 @@
                     <td align="center" nowrap="nowrap"></td>
                     <td nowrap="nowrap"></td>
                 }
+                 @try
+                        {
                 <td>                
-                    @if (ProyectTraspasado != ""){
-					@ProyectTraspasado;
+                    @if (ProyectTraspasado == ""){
+                    @movimiento.Observaciones.ToUpper();
                 }else{
-                    
+                    @ProyectTraspasado;
                     } 
 
                 </td>
+                             }
+                        catch (Exception)
+                        {
+                            <td> </td>
+                        }
             </tr>
         }
     </table>

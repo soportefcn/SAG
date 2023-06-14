@@ -48,7 +48,16 @@
 
                         <div class="form-group">
                             <div class="form-group" style="margin-right: 24px;">
-                                @Html.Label("Valor USS:")
+                       @{  //Posible mejora agregar tabla de moneda de pago
+                        if (ViewBag.Tintervencion == 1)
+                        {
+                            @Html.Raw("<label class='Tintervencion'>Valor USS</label>")
+                        }
+                        else
+                        {
+                            @Html.Raw("<label class='Tintervencion'>Valor UF</label>")
+                        }
+                    }
                             </div>
                             <div class="form-group" style="margin-right: 10px;">
                                 @Html.DropDownList("ProgramaQID", new SelectList(String.Empty, "Value", "Text"), new { style = "width: 200px;", @class = "form-control js-autocomplete", required = "required" })
@@ -154,6 +163,11 @@
                         {
                             $("#ProgramaQID").append('<option value="' + programaq.id + '">' +
                                programaq.Nombre + '</option>');
+                        }
+                        if(programaq.Tipo == "TUSS")
+                        {
+                      
+                            $(".Tintervencion").html(programaq.Nombre);
                         }
                         });
                     },

@@ -46,6 +46,8 @@
 {
     <table cellspacing="0" cellpadding="5" style="width: 100%;" border="1">
         <tr>
+             <th nowrap="nowrap">Periodo</th>
+             <th nowrap="nowrap">Mes</th>
             <th nowrap="nowrap">Fecha</th>
             <th nowrap="nowrap">Descripci&oacute;n</th>
             <th nowrap="nowrap">Ingreso de Articulos</th>
@@ -62,6 +64,8 @@
                 ProyectTraspasado = "Traspasado desde  " + dp.Where(d => d.ID == movimiento.ProyectoIDTraspaso).FirstOrDefault().Nombre;
             }
         <tr>
+            <td nowrap="nowrap" align="center">@movimiento.Periodo</td>
+            <td nowrap="nowrap" align="center">@movimiento.Mes</td>
             <td nowrap="nowrap" align="center">@movimiento.Fecha.ToShortDateString()</td>
             <td nowrap="nowrap">@movimiento.Articulo.Nombre.ToUpper() (@movimiento.Articulo.UnidadMedida.Descripcion)</td>
             <td align="center" nowrap="nowrap">@if (@movimiento.Entrada > 0){ @movimiento.Entrada }</td>

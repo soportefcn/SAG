@@ -74,6 +74,7 @@ namespace SAG2.Models
         public int? DocumentoID { get; set; }
         public long? NDocumento { get; set; }
         public int auto { get; set; }
+       // public int TipoPagoID { get; set; }
       //  public HttpPostedFileBase? MyFile { get; set; }
         // Entidades relacionadas con los movimientos
         public virtual Proyecto Proyecto { get; set; }

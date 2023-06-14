@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<SAG2.Models.MovimientosBodega>
 @{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
     ViewBag.Title = "ListarLineas";
     var Meses = new string[12]
     {
@@ -77,6 +78,8 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr class="info">
+                <th style="text-align: center;">Periodo</th>
+                <th style="text-align: center;">Mes</th>
                 <th style="text-align: center;">Fecha</th>
 
                 <th style="text-align: center;">Descripción</th>
@@ -98,7 +101,9 @@
             }
             
             <tr class="MovimientoBodega" MovimientosBodegaID="@movimiento.ID" Fecha="@movimiento.Fecha.ToShortDateString()" ArticuloID="@movimiento.ArticuloID" Cantidad="@if (@movimiento.Entrada > 0){ @movimiento.Entrada } else { @movimiento.Salida }" tipo_movimiento="@if (@movimiento.Entrada > 0){ @Html.Raw("E") } else { @Html.Raw("S") }" Observaciones="@movimiento.Observaciones" NroDocumento="@movimiento.NroDocumento" style="cursor: pointer;">
-                <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
+               <td nowrap="nowrap">@movimiento.Periodo</td>
+                <td nowrap="nowrap">@movimiento.Mes</td>
+                 <td nowrap="nowrap">@movimiento.Fecha.ToShortDateString()</td>
 
                 <td nowrap="nowrap">@movimiento.Articulo.Nombre</td>
                 <td nowrap="nowrap">@movimiento.Articulo.UnidadMedida.Descripcion</td>

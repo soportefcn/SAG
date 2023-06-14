@@ -64,32 +64,59 @@ namespace SAG2.Controllers
             
             @ViewBag.CuentaCorriente = db.CuentaCorriente.Find(cuentacorrienteID);
             @ViewBag.Proyecto = db.Proyecto.Find(proyectoID);
+            int Pinter = 1;
+            try
+            {
+                Pinter = db.Proyecto.Find(proyectoID).Convenio.Tintervencion;
+            }
+            catch (Exception) { 
+            
+            }
             @ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.ProyectoID == proyectoID).Where(r => r.TipoRolID != 9).OrderBy( r => r.TipoRol.Nombre).ToList()   ;
             @ViewBag.Auditorias = db.IndicadorCalidad.Where(d=> d.ProyectoID == proyectoID).Where(d => d.Periodo == periodo).Where(d => d.Tipo == 2).OrderByDescending(d => d.FechaInforme).ToList();
             @ViewBag.Supervisiones = db.IndicadorCalidad.Where(d => d.ProyectoID == proyectoID).Where(d => d.Periodo == periodo).Where(d => d.Tipo == 1).OrderByDescending(d => d.FechaInforme).ToList(); // Supervision.OrderByDescending(a => a.Fecha).ToList();
           //  Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 1).Sum(d => d.GastoObjetado);
             // Rem aqui va cambiar supervisiones
             @ViewBag.Contratos = db.Contrato.Include(c => c.Servicio).Where(c => c.ProyectoID == proyectoID).OrderBy(c => c.Servicio.Nombre).ToList();
-            int ValorUSS = 0;
-            try
-            {
-                ValorUSS = int.Parse(db.ProgramaQ.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).FirstOrDefault().Valor.ToString());
-            }
-            catch (Exception) {
-                ValorUSS = 0;
-            }
-            @ViewBag.ValorUSS = ValorUSS;
-
-            
+            string ValorUSS = "";
             string FechaUSS = "";
-            try
+
+            if (Pinter == 1)
             {
-                FechaUSS = db.ProgramaQ.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).FirstOrDefault().FechaIngreso.ToShortDateString();
+                try {
+                    ValorUSS = db.ProgramaQ.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).FirstOrDefault().Valor.ToString();
+                }catch (Exception) {
+                    ValorUSS = "";
+                }
+               
+                try {
+                    FechaUSS = db.ProgramaQ.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).FirstOrDefault().FechaIngreso.ToShortDateString();
+                } catch (Exception) {
+                    FechaUSS = "";
+               }
             }
-            catch (Exception)
+            if (Pinter == 2)
             {
-                FechaUSS = "";
+                try
+                {
+                    ValorUSS = db.ValorUF.Where(d => d.Predeterminado == 1).OrderByDescending(d => d.ID).FirstOrDefault().Valor.ToString();
+                }
+                catch (Exception)
+                {
+                    ValorUSS = "";
+                }
+
+                try
+                {
+                    FechaUSS = db.ValorUF.Where(d => d.Predeterminado == 1).OrderByDescending(d => d.ID).FirstOrDefault().FechaIngreso.ToShortDateString();
+                }
+                catch (Exception)
+                {
+                    FechaUSS = "";
+                }
             }
+
+            @ViewBag.ValorUSS = ValorUSS;
             @ViewBag.FechaUSS = FechaUSS;
 
             int PZona = 0;

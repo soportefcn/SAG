@@ -54,7 +54,7 @@ input[type="text"], textarea
 {
     @Html.Hidden("FondoFijoGrupoID", null);
     @Html.Raw(@ViewBag.Mensaje)
-     <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="NO" />
+     <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="no" />
     <input type="hidden" name="Periodo" id="Periodo" value="@Periodo.ToString("####")" />
     <input type="hidden" name="Mes" id="Mes" value="@Mes.ToString("00")" />
     <input type="hidden" name="ImprimirComprobante" id="ImprimirComprobante" value="false" />
@@ -726,10 +726,11 @@ input[type="text"], textarea
 
         $(window).focusin(function () {
             if ($("#ActualizarGrilla").val() == "SI") {
-                //if ($('#Fingreso').is(':hidden')) {
+                
                 $("#ActualizarGrilla").val("NO");
-                   CargaGrilla();
-                                
+				if (window.parent.document.getElementById("Origen").value != "hs") {																	 
+                    CargaGrilla();
+                  }              
             }
         });
     });
