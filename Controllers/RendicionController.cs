@@ -230,6 +230,7 @@ namespace SAG2.Controllers
                     Convenio.Mes = prox_mes;
                     Convenio.FechaInicio = proyecto.Convenio.FechaInicio;
                     Convenio.FechaTermino = proyecto.Convenio.FechaTermino;
+                    Convenio.Tintervencion = proyecto.Convenio.Tintervencion;
                     db.Convenio.Add(Convenio);
                     db.SaveChanges();
                 

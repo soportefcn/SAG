@@ -230,16 +230,21 @@ namespace SAG2.Controllers
             Usuario usuario = (Usuario)Session["Usuario"];
             int periodo = (int)Session["Periodo"];
             int Mes = (int)Session["Mes"];
+            int numberOfDays = DateTime.DaysInMonth(periodo, Mes);
+            DateTime Inicio = new DateTime(periodo, Mes, 1);
+            DateTime Fin = new DateTime(periodo, Mes, numberOfDays);
+            ViewBag.Desde = Inicio.ToShortDateString();
+            ViewBag.Hasta = Fin.ToShortDateString();
              Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.Programa = db.Proyecto.ToList();
             List<InicioLog> IniLog = new List<InicioLog>();
             if (usuario.esUsuario)
             {
-                IniLog = db.InicioLog.Where(d => d.Periodo == periodo && d.Mes == Mes && d.ProyectoId == Proyecto.ID).OrderByDescending(d => d.Fecha).ToList();
+                IniLog = db.InicioLog.Where(d => d.Fecha >= Inicio).Where( d =>  d.Fecha <= Fin).Where( d =>  d.ProyectoId == Proyecto.ID).OrderByDescending(d => d.Fecha).ToList();
                
             }
             else {
-                IniLog = db.InicioLog.Where(d => d.Periodo == periodo && d.Mes == Mes).OrderByDescending(d => d.Fecha).ToList();
+                IniLog = db.InicioLog.Where(d => d.Fecha >= Inicio).Where(d => d.Fecha <= Fin).OrderByDescending(d => d.Fecha).ToList();
             }
             ViewBag.Periodo = periodo;
             ViewBag.Mes = Mes; 
@@ -249,13 +254,16 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult InicioLog(FormCollection data)
         {
-            int periodo = int.Parse(data["PeriodoApertura"]);
-            int Mes = int.Parse(data["MesApertura"]);
+    
             int ProyectoID = int.Parse(data["Proyecto"]);
-            int tipo = int.Parse(data["Proyecto"]);
+           
+            DateTime Inicio = DateTime.Parse(data["Desde"]);
+            DateTime Fin = DateTime.Parse(data["Hasta"]);
+            ViewBag.Desde = data["Desde"];
+            ViewBag.Hasta = data["Hasta"];
             List<InicioLog> IniLog = new List<InicioLog>();
-
-            IniLog = db.InicioLog.Where(d => d.Periodo == periodo && d.Mes == Mes).OrderByDescending(d => d.Fecha).ToList();
+            // cambiar por entre fecha
+            IniLog = db.InicioLog.Where(d => d.Fecha >= Inicio).Where( d =>  d.Fecha <= Fin).OrderByDescending(d => d.Fecha).ToList();
 
             if (ProyectoID != 0) {
                 IniLog = IniLog.Where(d => d.ProyectoId == ProyectoID).ToList();
@@ -263,8 +271,7 @@ namespace SAG2.Controllers
 
 
             ViewBag.Programa = db.Proyecto.ToList();
-            ViewBag.Periodo = periodo;
-            ViewBag.Mes = Mes;
+
             ViewBag.ProyectoSel = ProyectoID;
             return View(IniLog);
 
@@ -272,10 +279,13 @@ namespace SAG2.Controllers
 
         }
 
-        public ActionResult InicioLogExcel(int Periodo, int Mes, int ProyectoID, int Tipo) {
+        public ActionResult InicioLogExcel(string Desde = "", string Hasta = "", int ProyectoID = 0)
+        {
             List<InicioLog> IniLog = new List<InicioLog>();
+            DateTime Inicio = DateTime.Parse(Desde);
+            DateTime Fin = DateTime.Parse(Hasta);
 
-            IniLog = db.InicioLog.Where(d => d.Periodo == Periodo && d.Mes == Mes).OrderByDescending(d => d.Fecha).ToList();
+            IniLog = db.InicioLog.Where(d => d.Fecha >= Inicio).Where( d =>  d.Fecha <= Fin).OrderByDescending(d => d.Fecha).ToList();
 
             if (ProyectoID != 0)
             {

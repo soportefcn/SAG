@@ -989,8 +989,8 @@ namespace SAG2.Controllers
 
 
 
-          try
-          {
+          //try
+          //{
                 List<BienModInventario> listamodel = new List<BienModInventario>();
                 if (comboproyecto != null)
                 {
@@ -1045,18 +1045,18 @@ namespace SAG2.Controllers
 
 
                 model.ID = (int)comboproyecto;
-                    }
-                      catch
-                      {
-                          if (comboproyecto == null)
-                          {
+                    //}
+                    //  catch
+                    //  {
+                    //      if (comboproyecto == null)
+                    //      {
 
-                          }
-                          else
-                          {
-                              TempData["Message"] = "Error en la operación.";
-                          }
-                      }
+                    //      }
+                    //      else
+                    //      {
+                    //          TempData["Message"] = "Error en la operación.";
+                    //      }
+                    //  }
                
 
             model.Ubicacion = dependencia;

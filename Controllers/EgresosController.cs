@@ -107,6 +107,7 @@ namespace SAG2.Controllers
                 }
             }
 
+            ViewBag.TipoPagoID = new SelectList(db.TipoPago.Where(d => d.Estado == 1).ToList(), "TipoPagoID", "Nombre",1);
             ViewBag.DocumentoIDD = new SelectList(db.Documento, "ID", "NombreLista");
             ViewBag.ItemGastoID = new SelectList(db.ItemGasto, "ID", "NombreLista");
             ViewBag.Arbol = utils.generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaEgresos));
@@ -353,7 +354,7 @@ namespace SAG2.Controllers
             ViewBag.ItemGastoID = new SelectList(db.ItemGasto, "ID", "NombreLista");
             ViewBag.Arbol = utils.generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaEgresos));
             ViewBag.Imprimir = imprimir;
-            
+            ViewBag.TipoPagoID = new SelectList(db.TipoPago.Where(d => d.Estado == 1).ToList(), "TipoPagoID", "Nombre", egreso.TipoPagoID);
 
             try
             {

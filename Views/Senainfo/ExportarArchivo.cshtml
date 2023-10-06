@@ -11,6 +11,7 @@
     System.Text.RegularExpressions.Regex replace_o_Accents = new System.Text.RegularExpressions.Regex("[ó|ò|ö|ô][Ó]", System.Text.RegularExpressions.RegexOptions.Compiled);
     System.Text.RegularExpressions.Regex replace_u_Accents = new System.Text.RegularExpressions.Regex("[ú|ù|ü|û]", System.Text.RegularExpressions.RegexOptions.Compiled);
     System.Text.RegularExpressions.Regex replace_n_Accents = new System.Text.RegularExpressions.Regex("[ñ][Ñ]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    System.Text.RegularExpressions.Regex replace_Peso = new System.Text.RegularExpressions.Regex("[$]", System.Text.RegularExpressions.RegexOptions.Compiled);
    // textBox1.Text = replace_a_Accents.Replace(textBox1.Text, "a");
    // textBox1.Text = replace_e_Accents.Replace(textBox1.Text, "e");
    // textBox1.Text = replace_i_Accents.Replace(textBox1.Text, "i");
@@ -168,7 +169,8 @@
             descripcion.Replace("Ó", "O").Replace("Ñ","N");
             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion,"Ó", "O");
             descripcion = replace_u_Accents.Replace(descripcion.ToLower(), "u");
-            descripcion = replace_n_Accents.Replace(descripcion.ToLower(), "n"); 
+            descripcion = replace_n_Accents.Replace(descripcion.ToLower(), "n");
+            descripcion = replace_Peso.Replace(descripcion.ToLower(), " ");
             try
             {
                 descripcion = descripcion.Substring(0, 20).Trim();
@@ -322,6 +324,7 @@
                    // descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
                    // descripcion = replace_u_Accents.Replace(descripcion.ToLower(), "u");
                     descripcion = replace_n_Accents.Replace(descripcion.ToLower(), "n");
+                    descripcion = replace_Peso.Replace(descripcion.ToLower(), " ");
                     if (descripcion.Length > 20)
                     {
                         descripcion = descripcion.Substring(0, 20);
@@ -383,6 +386,7 @@
                 destino = replace_u_Accents.Replace(destino.ToLower(), "u");
                 destino = replace_n_Accents.Replace(destino.ToLower(), "n");
                 destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ó", "O");
+                destino = replace_Peso.Replace(destino.ToLower(), " ");
                 destino.Replace("Ó", "O").Replace("Ñ", "N");
                 if (destino.Length > 40)
                 {
@@ -513,6 +517,7 @@
                     descripcion = replace_n_Accents.Replace(descripcion.ToLower(), "n");
                     descripcion.Replace("Ó", "").Replace("Ñ", "N");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
+                    descripcion = replace_Peso.Replace(descripcion.ToLower(), " ");
                     if (descripcion.Length > 20)
                     {
                         descripcion = descripcion.Substring(0, 20);
@@ -576,6 +581,7 @@
                 destino = replace_n_Accents.Replace(destino.ToLower(), "n");
                 destino.Replace("Ó", "").Replace("Ñ", "N"); 
                 destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ó", "O");
+                destino = replace_Peso.Replace( destino.ToLower(), " ");
                 if (destino.Length > 40)
                 {
                     destino = destino.Substring(0, 40);
@@ -697,6 +703,7 @@
                 descripcion = replace_n_Accents.Replace(descripcion, "n");
                 descripcion.Replace("Ó", "").Replace("Ñ", "N"); 
                 descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
+                descripcion = replace_Peso.Replace(descripcion.ToLower(), " ");
               // descripcion = 
                // descripcion.
                 if (descripcion.Length > 20)

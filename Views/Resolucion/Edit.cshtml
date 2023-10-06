@@ -1,7 +1,10 @@
 ﻿@model SAG2.Models.Resolucion
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Editar";
+    List<SAG2.Models.ResolucionDescarga> TDocumento = new List<SAG2.Models.ResolucionDescarga>();
+    TDocumento = ViewBag.TrasladoDocumento;
+    
 }
 
 
@@ -18,62 +21,78 @@
         @Html.HiddenFor(model => model.ProyectoID)
          @Html.HiddenFor(model => model.Estado)
 
+    <div class="panel panel-default">
+    <div class="panel-heading"><h3><b> Resolución</b></h3></div>
+    <div class="panel-body">
 
-                   <div class="panel panel-default">
-  <div class="panel-heading"><h3><b> Resolución</b></h3></div>
-  <div class="panel-body">
-
-        <div class="form-inline">
-
-        <div class="form-group" style="margin-right: 90px; margin-left: 7px;">
-            @Html.LabelFor(model => model.ResEx)
-        <br />
-            @Html.EditorFor(model => model.ResEx)
-            @Html.ValidationMessageFor(model => model.ResEx)
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.NroPlazas)
-     <br />
-            @Html.EditorFor(model => model.NroPlazas)
-            @Html.ValidationMessageFor(model => model.NroPlazas)
-        </div>
-
+        <div class="form-inline" style="margin-top: 10px;margin-left: 7px;">
+            <div class="col-md-6" >
+               <label>N° Resolucion</label>
+                <br />
+                @Html.EditorFor(model => model.ResEx)
+                @Html.ValidationMessageFor(model => model.ResEx)
+            </div>  
+            <div class="col-md-6"> 
+                <label>Tipo Resolución</label><br />
+                <select id="tipo" name="tipo" class="form-control"> 
+                 @if (Model.tipo == "Prorroga")
+                 {               
+                    <option value="Prorroga" selected>Por Prorroga</option>
+                    <option value="Urgencia">Por Urgencia</option>              
+                 }else{
+                    <option value="Prorroga">Por Prorroga</option>
+                    <option value="Urgencia" selected>Por Urgencia</option>                                  
+                 }
+                 </select>
             </div>
+        </div>
+      <div class="col-md-12">
+        <div class="form-inline" style="margin-top: 10px;">
+        <div class="form-group" style="margin-left: 7px;">
+            <label>Fecha Inicio</label>
+            <br />
+            <input name="FechaInicio" id="FechaInicio" class="calendario form-control" value="@Html.Raw(@Model.FechaInicio.ToShortDateString())" maxlength="10" />
+            
+       
+        </div>
 
-              <div class="form-group">
-            @Html.LabelFor(model => model.FechaInicio)
-           <br />
-            @Html.EditorFor(model => model.FechaInicio)
-            @Html.ValidationMessageFor(model => model.FechaInicio)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.FechaTermino)
-        </div>
         <div class="form-group">
-            @Html.EditorFor(model => model.FechaTermino)
-            @Html.ValidationMessageFor(model => model.FechaTermino)
+         <label>Fecha Termino</label>
+            <br />
+            
+             <input name="FechaTermino" id="FechaTermino" class="calendario form-control" value="@Html.Raw(@Model.FechaTermino.ToShortDateString())" maxlength="10" />
         </div>
-
-
-
-
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Comentarios)
         </div>
-        <div class="form-group">
-            @Html.EditorFor(model => model.Comentarios)
-            @Html.ValidationMessageFor(model => model.Comentarios)
+          </div>
+      <div class="col-md-12">
+        <div class="form-group" style="margin-top: 10px;margin-left: 7px;">
+           <label>Comentarios</label>
+            <br />
+              @Html.TextAreaFor(model => model.Comentarios, new { @class = "form-control" })
+
         </div>
+          </div>
+      <div class="col-md-12">
+               <div class="form-group form-inline">
+                <div class="alert alert-warning">
+                       @if (ViewBag.Archivo == "si") { 
+                foreach(var Documento in TDocumento  ){
+                    
+                    <a class="btn btn-info" href="@Url.Action("Download","Traslado",new {ImageName = Documento.NombreArchivo })">Descargar</a>
+                }
+            }
+                    <div class ="form-group form-inline" style=" margin-left: 40px;">
+                        <div class="form-group">
+                            @Html.Label("Seleccione Documento en PDF")
+                        </div>
+                        <div class="form-group"><input type="file" name="file" id="file" /></div>
+                    </div>            
+                  </div>
+             </div>
+          </div>
 
-
-
-
-        <p>
-           
-        </p>
     </div>
-                       	<div class="panel-footer">
+     <div class="panel-footer">
     <div  style ="width: 500px ; display:inline-block">
              <a class="btn btn-success" href="../Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
         <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>

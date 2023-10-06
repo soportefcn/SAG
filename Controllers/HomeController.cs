@@ -78,6 +78,9 @@ namespace SAG2.Controllers
           //  Calidad.Where(d => d.Mes < 7).Where(d => d.Tipo == 1).Sum(d => d.GastoObjetado);
             // Rem aqui va cambiar supervisiones
             @ViewBag.Contratos = db.Contrato.Include(c => c.Servicio).Where(c => c.ProyectoID == proyectoID).OrderBy(c => c.Servicio.Nombre).ToList();
+            @ViewBag.Resolucion = db.Resolucion.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).ToList();
+            @ViewBag.ResolucionDoc = db.ResolucionDescarga.Where(d => d.Resolucion.ProyectoID == proyectoID).ToList(); 
+            
             string ValorUSS = "";
             string FechaUSS = "";
 
@@ -215,7 +218,49 @@ namespace SAG2.Controllers
 
             Session.Add("Alertas", ViewBag.Alertas);
             Session.Add("RespuestaAuditoria", ViewBag.RespuestaAuditoria);
-            
+            // REvisar Fecha de Terminp
+            DateTime FechaTermino = new DateTime();
+            var resol = db.Resolucion.Where(d => d.ProyectoID == proyecto.ID && d.Estado == 1).FirstOrDefault();
+
+            if (resol == null)
+            {
+                try
+                {
+                    FechaTermino = DateTime.Parse(proyecto.Convenio.FechaTermino.ToString());
+                }
+                catch {
+
+                    FechaTermino = DateTime.Now;
+                }
+            }
+            else
+            {
+                FechaTermino = DateTime.Parse(resol.FechaTermino.ToString());
+            }
+            int dias = (FechaTermino - DateTime.Now).Days;
+            int fin = 30;
+            string MensajeFechafin = "";
+            if (FechaTermino > DateTime.Now)
+            {
+                if (FechaTermino.Year == DateTime.Now.Year)
+                {
+                    if (FechaTermino.Month == DateTime.Now.Month)
+                    {
+                        MensajeFechafin = "El Programa finaliza mes en curso ";
+
+                    }
+                }
+            }
+            else
+            {
+                MensajeFechafin = "La fecha de Termino del convenio caduco ";
+                dias = dias + fin;
+            }
+            ViewBag.FechaMensaje = MensajeFechafin;
+            Session.Add("FechaMensaje", MensajeFechafin);
+            ViewBag.DiasMensaje = dias;
+            Session.Add("DiasMensaje", dias);
+
             return View();
         }
 

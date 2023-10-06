@@ -139,6 +139,8 @@ namespace SAG2.Models
         public DbSet<BienProcedencia> BienProcedencia { get; set; }
         // agregado por Resoluciones
         public DbSet<Resolucion> Resolucion { get; set; }
+        public DbSet<ResolucionDescarga> ResolucionDescarga { get; set; }
+
         public DbSet<Estandarvalores> Estandarvalores { get; set; }
         //Reportes
 
@@ -301,6 +303,7 @@ namespace SAG2.Models
             modelBuilder.Entity<BienCondicion>().ToTable("BienCondicion");
             modelBuilder.Entity<BienProcedencia>().ToTable("BienProcedencia");
             modelBuilder.Entity<Resolucion>().ToTable("Resolucion");
+            modelBuilder.Entity<ResolucionDescarga>().ToTable("ResolucionDescarga");
             //Agregado Intervencion
             modelBuilder.Entity<ProgramaQ>().ToTable("programa_q");
             modelBuilder.Entity<EstadoIntervencion>().ToTable("estado_intervencion");

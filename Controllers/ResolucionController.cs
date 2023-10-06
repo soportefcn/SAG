@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
+using System.IO;
 
 namespace SAG2.Controllers
 { 
@@ -18,10 +19,8 @@ namespace SAG2.Controllers
 
         public ViewResult Index()
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-
-            
-            return View(db.Resolucion.Where(d => d.ProyectoID == Proyecto.ID).ToList());
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];          
+            return View(db.Resolucion.Where(d => d.ProyectoID == Proyecto.ID).OrderByDescending(d => d.ID).ToList());
         }
 
         //
@@ -38,6 +37,31 @@ namespace SAG2.Controllers
 
         public ActionResult Create()
         {
+            //
+            DateTime FechaInicio =  new DateTime();
+            DateTime FechaTermino = new DateTime();
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            try
+            {
+                var resol = db.Resolucion.Where(d => d.ProyectoID == Proyecto.ID && d.Estado == 1).FirstOrDefault();
+                FechaInicio = resol.FechaTermino.AddDays(1);
+                FechaTermino = FechaInicio.AddMonths(6);               
+
+            }
+            catch (Exception) {
+                var resol = db.Convenio.Find(Proyecto.ConvenioID);
+                try
+                {
+                    FechaInicio = DateTime.Parse(resol.FechaTermino.ToString()).AddDays(1);
+                    FechaTermino = FechaInicio.AddMonths(6);
+                }catch(Exception){
+                    FechaInicio = DateTime.Now.AddDays(1);
+                    FechaTermino = FechaInicio.AddMonths(6);
+                }
+            }
+            ViewBag.Desde = FechaInicio.ToShortDateString();
+            ViewBag.Hasta = FechaTermino.ToShortDateString();
+
             return View();
         } 
 
@@ -45,7 +69,7 @@ namespace SAG2.Controllers
         // POST: /Resolucion/Create
 
         [HttpPost]
-        public ActionResult Create(Resolucion resolucion)
+        public ActionResult Create(Resolucion resolucion, HttpPostedFileBase file)
         {
             SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
             if (ModelState.IsValid)
@@ -54,17 +78,36 @@ namespace SAG2.Controllers
 
                 db.Database.ExecuteSqlCommand("UPDATE Resolucion SET estado = 0 WHERE ProyectoID = " + Proyecto.ID);
 
-                if (!Usuario.esAdministrador)
-                {
-                    resolucion.FechaProrroga = resolucion.FechaTermino.AddMonths(6);
-                }
+                resolucion.UsuarioID = Usuario.ID;
+                resolucion.Fecha = DateTime.Now;
                 resolucion.ProyectoID = Proyecto.ID;
                 resolucion.Estado = 1;
        
                 db.Resolucion.Add(resolucion);
                 db.SaveChanges();
+
+                try
+                {
+                    if (file.ContentLength > 0)
+                    {
+                        string filename = "Res" + resolucion.ProyectoID + "_" + resolucion.ID +  ".pdf";
+                        string _path = Path.Combine(Server.MapPath("~/archivos"), filename);
+                        file.SaveAs(_path);
+
+                        ResolucionDescarga trDocumento = new ResolucionDescarga();
+                        trDocumento.NombreArchivo = _path;
+                        trDocumento.ResolucionID = resolucion.ID;
+                        db.ResolucionDescarga.Add(trDocumento);
+                        db.SaveChanges();
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
                 TempData["Message"] = "Creado con exito " + resolucion.ResEx ;
-                return RedirectToAction("Create");  
+                return RedirectToAction("Edit", new { id = resolucion.ID });  
             }
 
             return View(resolucion);
@@ -76,6 +119,14 @@ namespace SAG2.Controllers
         public ActionResult Edit(int id)
         {
             Resolucion resolucion = db.Resolucion.Find(id);
+            ViewBag.Archivo = "no";
+            var doc = db.ResolucionDescarga.Where(d => d.ResolucionID == id).ToList();
+            if (doc.Count() > 0)
+            {
+                ViewBag.Archivo = "si";
+                ViewBag.TrasladoDocumento = doc;
+
+            }
             return View(resolucion);
         }
 
@@ -83,13 +134,13 @@ namespace SAG2.Controllers
         // POST: /Resolucion/Edit/5
 
         [HttpPost]
-        public ActionResult Edit(Resolucion resolucion)
+        public ActionResult Edit(Resolucion resolucion, HttpPostedFileBase file)
         {
             if (ModelState.IsValid)
             {
                 var a = resolucion.Estado;
                 var d = resolucion.ID;
-                resolucion.FechaProrroga = resolucion.FechaTermino.AddMonths(6);
+ 
                 db.Entry(resolucion).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Create");
@@ -97,27 +148,28 @@ namespace SAG2.Controllers
             return RedirectToAction("Create");
         }
 
+
+        public FileResult Download(string ImageName)
+        {
+            return File(ImageName, System.Net.Mime.MediaTypeNames.Application.Octet, string.Format("Doc{0}", "Documento.pdf"));
+        }
+
         //
         // GET: /Resolucion/Delete/5
  
-        public ActionResult Delete(int id)
-        {
-            Resolucion resolucion = db.Resolucion.Find(id);
-            return View(resolucion);
-        }
+
 
         //
         // POST: /Resolucion/Delete/5
 
-        [HttpPost, ActionName("Delete")]
+        [HttpGet, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {            
             Resolucion resolucion = db.Resolucion.Find(id);
-            if (resolucion.Estado != 1)
-            {
+    
                 db.Resolucion.Remove(resolucion);
                 db.SaveChanges();
-            }
+            
             TempData["Message"] = "Modificado con Exito " ;
             return RedirectToAction("Create");
         }

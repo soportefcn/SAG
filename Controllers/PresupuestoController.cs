@@ -938,25 +938,40 @@ namespace SAG2.Controllers
             }
            
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            var resol = db.Resolucion.Where(d => d.ProyectoID == Proyecto.ID && d.Estado == 1).FirstOrDefault();
             int PeriodoTermino =0;
             int MesTermino = 0;
             int PeriodoInicio = 0;
             int MesInicio = 0;
-            try
+            if (resol == null)
             {
-                DateTime FechaTermino = DateTime.Parse(Proyecto.Convenio.FechaTermino.ToString());
+                try
+                {
+                    DateTime FechaTermino = DateTime.Parse(Proyecto.Convenio.FechaTermino.ToString());
+                    MesTermino = FechaTermino.Month + 1;
+                    PeriodoTermino = FechaTermino.Year;
+                    DateTime Fechainicio = DateTime.Parse(Proyecto.Convenio.FechaInicio.ToString());
+                    PeriodoInicio = Fechainicio.Year;
+                    MesInicio = Fechainicio.Month;
+                }
+                catch (Exception)
+                {
+                    PeriodoTermino = 0;
+                    MesTermino = 0;
+                    MesInicio = 13;
+
+                }
+            }
+            else {
+                DateTime FechaTermino = DateTime.Parse(resol.FechaTermino.ToString());
                 MesTermino = FechaTermino.Month + 1;
                 PeriodoTermino = FechaTermino.Year;
-                DateTime Fechainicio = DateTime.Parse(Proyecto.Convenio.FechaInicio.ToString());
+                DateTime Fechainicio = DateTime.Parse(resol.FechaInicio.ToString());
                 PeriodoInicio = Fechainicio.Year;
                 MesInicio = Fechainicio.Month;
+            
+            
             }
-            catch (Exception) {
-                PeriodoTermino = 0;
-                MesTermino = 0;
-                MesInicio = 13;
-
-            }  
            
             if (PeriodoTermino > Periodo)
             {

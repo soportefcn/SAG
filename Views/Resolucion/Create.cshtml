@@ -10,80 +10,78 @@
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
 
-@using (Html.BeginForm()) {
-    @Html.ValidationSummary(true)
+
+@using (Html.BeginForm("Create", "Resolucion", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+@Html.ValidationSummary(true)
+
     <fieldset>
        
 
            <div class="panel panel-default">
   <div class="panel-heading"><h3><b> Resolución</b></h3></div>
   <div class="panel-body">
-
-           <div class="form-inline">
-               <div class="form-group" style="margin-right: 90px; margin-left: 7px;"> 
-                    <label>Tipo Resolución</label>
-                <select id="tipo" name="tipo" class="form-control">
-                <option value="PorConvenio">Por convenio</option>
-                <option value="PorProrroga">Por Prorroga</option>
-                <option value="PorUrgencia">Por Urgencia</option>
-               
-            </select></div>
-        <div class="form-group" >
-           <label>N° Resolucion</label>
-            <br />
-            @Html.EditorFor(model => model.ResEx)
-            @Html.ValidationMessageFor(model => model.ResEx)
+    
+        <div class="form-inline" style="margin-top: 10px;margin-left: 7px;">
+            <div class="col-md-6" >
+               <label>N° Resolucion</label>
+                <br />
+                @Html.EditorFor(model => model.ResEx)
+                @Html.ValidationMessageFor(model => model.ResEx)
+            </div>  
+            <div class="col-md-6"> 
+                <label>Tipo Resolución</label><br />
+                <select id="tipo" name="tipo" class="form-control">                
+                    <option value="Prorroga" selected>Por Prorroga</option>
+                    <option value="Urgencia">Por Urgencia</option>              
+                </select>
+            </div>
         </div>
-      
-         <div class="form-group">
-            <label>N° Plazas</label>
-    <br />
-            @Html.EditorFor(model => model.NroPlazas)
-            @Html.ValidationMessageFor(model => model.NroPlazas)
-        </div>
-        </div>
+      <div class="col-md-12">
         <div class="form-inline" style="margin-top: 10px;">
         <div class="form-group" style="margin-left: 7px;">
             <label>Fecha Inicio</label>
             <br />
-            @Html.TextBoxFor(model => model.FechaInicio, new { @class = "calendario form-control"})
+            <input name="FechaInicio" id="FechaInicio" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" />
+            
        
         </div>
 
         <div class="form-group">
          <label>Fecha Termino</label>
             <br />
-             @Html.TextBoxFor(model => model.FechaTermino, new { @class = "calendario form-control"})
-
+            
+             <input name="FechaTermino" id="FechaTermino" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" />
         </div>
-   @if (Usuario.esAdministrador)
-   {
-               <div class="form-group">
-         <label>Fecha Prorroga</label>
-            <br />
-             @Html.TextBoxFor(model => model.FechaProrroga , new { @class = "calendario form-control"})
-
         </div>
-
-   }
-
-        </div>
-
-
+          </div>
+      <div class="col-md-12">
         <div class="form-group" style="margin-top: 10px;margin-left: 7px;">
            <label>Comentarios</label>
             <br />
               @Html.TextAreaFor(model => model.Comentarios, new { @class = "form-control" })
 
         </div>
+          </div>
+      <div class="col-md-12">
+               <div class="form-group form-inline">
+                <div class="alert alert-warning">
+                    <div class ="form-group form-inline" style=" margin-left: 40px;">
+                        <div class="form-group">
+                            @Html.Label("Seleccione Documento en PDF")
+                        </div>
+                        <div class="form-group"><input type="file" name="file" id="file" /></div>
+                    </div>            
+                  </div>
+             </div>
+          </div>
+
 </div>
-                 <div class="panel-footer">
-	<div  style ="width: 500px ; display:inline-block">
-           @if (Usuario.esAdministrador)
-   {
+     <div class="panel-footer">
+	<div  style ="width: 500px ; display:inline-block">  
 	     <a class="btn btn-success" href="./Index" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
         
-           }       
+           
         <a class="btn btn-default" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
         </div>
          <div style="float :right;display:inline-block">

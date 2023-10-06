@@ -164,7 +164,7 @@
                     <tr>
                         <th width="16,6%">Monto Total:</th>
                         <th width="16,6%">$@Html.Raw(Model.Monto_Egresos.ToString("#,###"))***</th>
-                        <th width="16,6%">Cheque:</th>
+                        <th width="16,6%">@ViewBag.MedioPago</th>
                         <th width="16,6%">@Html.Raw(Model.Cheque.ToString())</th>
                         <th width="16,6%">Cta. Cte.</th>
                         <th width="16,6%">@Html.Raw(Model.CuentaCorriente.NumeroLista)</th>

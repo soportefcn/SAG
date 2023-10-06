@@ -74,7 +74,12 @@ namespace SAG2.Controllers
             @ViewBag.Ejecutor = Persona.NombreCompleto;
             @ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
             @ViewBag.Detalles = db.DetalleEgreso.Where(m => m.Egreso.auto == 0).Where(d => d.MovimientoID == movimiento.ID).ToList();
-
+            try
+            {
+                @ViewBag.MedioPago = db.TipoPago.Find(movimiento.TipoPagoID).Nombre;
+            }catch(Exception){
+                @ViewBag.MedioPago = "Cheque";
+            }
             try
             {
                 @ViewBag.Director = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID == 1).Where(r => r.ProyectoID == movimiento.ProyectoID).Single().Persona.NombreCompleto;

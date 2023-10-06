@@ -80,6 +80,7 @@
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Comuna/Create">Comunas</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Region/Create">Regiones</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Pais/Create">Pa&iacute;ses</a></li>
+                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoPago/Create">Medio de Pago</a></li>
                             </ul>
                             
                             
@@ -92,7 +93,7 @@
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoIntervencion/Create">Estados de Pago</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ParametroUSS/Create">Cantidad de la USS</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ProgramaQ/Create">Valor USS</a></li>
-									 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ValorUF/Create">Valor UF</a></li>
+                                    <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ValorUF/Create">Valor UF</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/PorcentajeZona/Create">Porcentaje Zona</a></li>
                                 </ul>
                         </li>
@@ -123,7 +124,7 @@
                             <ul class="dropdown-menu"> 
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/Create">Programas</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Contratos/Create">Contratos</a></li>
-                               
+                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create">Resolucion</a></li>
                             @if (!Usuario.esUsuario)
                             {
 	                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/ListadoProyectos">Listado Programas</a></li>
@@ -262,7 +263,7 @@
                                          <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/CreateDonacion">Donaci&oacute;n de  Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Baja">Baja de Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Traslado">Traslado de Bienes</a></li>                                        
-                                        @if (Usuario.esAdministrador || Usuario.esSupervisor)
+                                        @if (Usuario.esAdministrador)
                                         {
                                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienAutorizacion">Autorizaci&oacute;n de Bienes</a></li>}
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienAutorizacion/BienesAnulados">Movimientos Rechazados</a></li>
