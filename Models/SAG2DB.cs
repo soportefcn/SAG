@@ -170,6 +170,12 @@ namespace SAG2.Models
         public DbSet<InicioLog> InicioLog { get; set; }
         public DbSet<ValorUF> ValorUF { get; set; }
         public DbSet<TipoPago> TipoPago { get; set; }
+        public DbSet<Clasificacion> Clasificacion { get; set; }
+        public DbSet<ConceptosClasificacion> ConceptosClasificacion { get; set; }
+        public DbSet<Etapa> Etapa { get; set; }
+        public DbSet<HallazgoCierre> HallazgoCierre { get; set; }
+        public DbSet<HallazgoAvance> HallazgoAvance { get; set; }
+        public DbSet<Grupo> Grupo { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {          
@@ -326,6 +332,12 @@ namespace SAG2.Models
             modelBuilder.Entity<CuentaGlosa>().ToTable("CuentaGlosa");
             modelBuilder.Entity<InicioLog>().ToTable("InicioLog");
             modelBuilder.Entity<ValorUF>().ToTable("ValorUF");
+            modelBuilder.Entity<Clasificacion>().ToTable("Clasificacion");
+            modelBuilder.Entity<ConceptosClasificacion>().ToTable("ConceptosClasificacion");
+            modelBuilder.Entity<Etapa>().ToTable("Etapa");
+            modelBuilder.Entity<HallazgoCierre>().ToTable("HallazgoCierre");
+            modelBuilder.Entity<HallazgoAvance>().ToTable("HallazgoAvance");
+            modelBuilder.Entity<Grupo>().ToTable("Grupo");
         }
         public System.Data.Entity.DbSet<SAG2.Models.DetalleInformes> DetalleInformes { get; set; }
         public System.Data.Entity.DbSet<SAG2.Models.CuentasPadres> CuentasPadres { get; set; }

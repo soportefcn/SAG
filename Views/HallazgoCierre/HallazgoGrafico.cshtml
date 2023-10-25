@@ -1,0 +1,510 @@
+﻿@{
+    ViewBag.Title = "Hallazgo Grafico";
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+
+
+
+
+    var LineaGrafico = @ViewBag.LineaGrafico;
+    var TipoGrafico = @ViewBag.TipoGrafico;
+    var ConceptoGrafico = @ViewBag.ConceptoGrafico;
+    var EstadoGrafico = @ViewBag.EstadoGrafico;
+    var Grupo = @ViewBag.Grupo;
+
+
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<h2>Hallazgo Grafico</h2>
+@using (Html.BeginForm())
+{
+    <div class="form-inline form-group">
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Desde</label>
+        </div>
+        <div class="form-group">
+            <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)"
+                maxlength="10" />
+        </div>
+        <div class="form-group" style="margin-right: 10px;margin-left:8px">
+            <label>Hasta</label>
+        </div>
+        <div class="form-group">
+            <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10"
+                style="margin-right: 20px;" />
+        </div>
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" value="Ver resultados" style="height:100%" />
+        </div>
+    </div>
+}
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Linea de Programa</h3>
+            </div>
+            <div class="panel-body">
+                <h3></h3>
+                <div class="col-md-4">
+
+                    <table class="table table-bordered">
+                        <tr class="info">
+                            <td>Sigla</td>
+                            <td>Total</td>
+                        </tr>
+                        @foreach (var dato in LineaGrafico)
+                        {
+                            <tr>
+                                <td>@dato.Sigla </td>
+                                <td>@dato.Total</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <canvas id="LineaGrafico" style="width: 40%;"></canvas>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tipo de Programa</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="col-md-4">
+                    <table class="table table-bordered">
+                        <tr class="info">
+                            <td>Sigla</td>
+                            <td>Total</td>
+                        </tr>
+                        @foreach (var dato in TipoGrafico)
+                        {
+                            <tr>
+                                <td>@dato.Sigla </td>
+                                <td>@dato.Total</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="col-md-8">
+                    <canvas id="TipoGrafico" style="width: 100%; max-width:  100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Concepto</h3>
+            </div>
+            <div class="panel-body">
+                <h3></h3>
+                <div class="col-md-4">
+                    <table class="table table-bordered">
+                        <tr class="info">
+                            <td>Descripción</td>
+                            <td>Total</td>
+                        </tr>
+                        @foreach (var dato in ConceptoGrafico)
+                        {
+                            <tr>
+                                <td>@dato.Sigla </td>
+                                <td>@dato.Total</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+
+                <div class="col-md-8">
+                    <canvas id="ConceptoGrafico" style="width: 100%; max-width:  100%;"></canvas>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Estado</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="col-md-4">
+                    <table class="table table-bordered">
+                        <tr class="info">
+                            <td>Descripción</td>
+                            <td>Total</td>
+                        </tr>
+                        @foreach (var dato in EstadoGrafico)
+                        {
+                            <tr>
+                                <td>@dato.Sigla </td>
+                                <td>@dato.Total</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <canvas id="EstadoGrafico" style="width: 40%;"></canvas>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Diagrama de Pareto</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="col-md-5">
+                    <br /><br />
+                    <table class="table table-bordered">
+                        <tr class="info">
+                            <td colspan="2">Clasificacion</td>
+                            <td>Frecuencia</td>
+                            <td>% Fr</td>
+                            <td>Acumulado</td>
+                            <td>% Ac</td>
+                        </tr>
+                        @foreach (var dato in Grupo)
+                        {
+                            <tr>
+                                <td>@dato.ClasificacionID </td>
+                                <td>@dato.Clasificacion </td>
+                                <td>@dato.Frecuencia</td>
+                                <td>@dato.PorcentajeFrecuencia.ToString("##") % </td>
+                                <td>@dato.Acumulado</td>
+                                <td>@dato.PorcentajeAcumulado.ToString("##") % </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+
+
+                <div class="col-md-7">
+                    <canvas id="GrupoGrafico" tyle="width: 100%; max-width:  100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function DataLinea() {
+        var DesdeSel = $("#Desde").val();
+        var HastaSel = $("#Hasta").val();
+        return $.ajax({
+            type: "POST",
+            url: '@Url.Action("GraficoLinea")',
+            data: {
+                Desde: DesdeSel,
+                Hasta: HastaSel
+
+            },
+            success: function (mems) {
+                var Datos = mems;
+                var xValues = new Array();
+                var yValues = new Array(12);
+                var barColors = [
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                ];
+                for (i = 0; i < Datos.length; i++) {
+                    xValues[i] = Datos[i].Sigla;
+                    yValues[i] = Datos[i].Total;
+
+                }
+                new Chart("LineaGrafico", {
+                    type: "pie",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false,
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function DataTipo() {
+        var DesdeSel = $("#Desde").val();
+        var HastaSel = $("#Hasta").val();
+
+        return $.ajax({
+            type: "POST",
+            url: '@Url.Action("GraficoTipo")',
+            data: {
+                Desde: DesdeSel,
+                Hasta: HastaSel
+            },
+            success: function (mems) {
+                var Datos = mems;
+                var xValues = new Array();
+                var yValues = new Array(12);
+                var barColors = [
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                ];
+                for (i = 0; i < Datos.length; i++) {
+                    xValues[i] = Datos[i].Sigla;
+                    yValues[i] = Datos[i].Total;
+
+                }
+                new Chart("TipoGrafico", {
+                    type: "bar",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Tipo'
+                            }
+                        }
+                    },
+                });
+            }
+        });
+    }
+
+
+    function DataConcepto() {
+        var DesdeSel = $("#Desde").val();
+        var HastaSel = $("#Hasta").val();
+        return $.ajax({
+            type: "POST",
+            url: '@Url.Action("GraficoConcepto")',
+            data: {
+                Desde: DesdeSel,
+                Hasta: HastaSel
+            },
+            success: function (mems) {
+                var Datos = mems;
+                var xValues = new Array();
+                var yValues = new Array(12);
+                var barColors = [
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                ];
+                for (i = 0; i < Datos.length; i++) {
+                    xValues[i] = Datos[i].Sigla;
+                    yValues[i] = Datos[i].Total;
+
+                }
+                new Chart("ConceptoGrafico", {
+                    type: "line",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Concepto'
+                            }
+                        }
+                    },
+                });
+            }
+        });
+    }
+    function DataEstado() {
+        var DesdeSel = $("#Desde").val();
+        var HastaSel = $("#Hasta").val();
+        return $.ajax({
+            type: "POST",
+            url: '@Url.Action("GraficoEstado")',
+            data: {
+                Desde: DesdeSel,
+                Hasta: HastaSel
+            },
+            success: function (mems) {
+                var Datos = mems;
+                var xValues = new Array();
+                var yValues = new Array(12);
+                var barColors = [
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                ];
+                for (i = 0; i < Datos.length; i++) {
+                    xValues[i] = Datos[i].Sigla;
+                    yValues[i] = Datos[i].Total;
+
+                }
+                new Chart("EstadoGrafico", {
+                    type: "pie",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: true,
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function DataGrupo() {
+        var DesdeSel = $("#Desde").val();
+        var HastaSel = $("#Hasta").val();
+        return $.ajax({
+            type: "POST",
+            url: '@Url.Action("GraficoGrupo")',
+            data: {
+                Desde: DesdeSel,
+                Hasta: HastaSel
+            },
+            success: function (mems) {
+                var Datos = mems;
+                var xValues = new Array();
+                var yValues = new Array();
+                var lValues = new Array();
+                var barColors = [
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                    "#FFCC00",
+                    "#0297D5",
+                    "#C3D208",
+                ];
+                for (i = 0; i < Datos.length; i++) {
+                    xValues[i] = Datos[i].Clasificacion;
+                    yValues[i] = Datos[i].Frecuencia;
+                    lValues[i] = Datos[i].Acumulado;
+                }
+                new Chart("GrupoGrafico", {
+                    type: "line",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            label: 'Clasificacion',
+                            backgroundColor: barColors,
+                            data: yValues,
+                            type: "bar"
+                        },
+                        {
+                            label: 'Acumulado',
+                            data: lValues,
+                            backgroundColor: barColors,
+                            stack: 'combined'
+                        }
+                        ]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Diagrama de Pareto'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Clasificación'
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'Frecuencia'
+                                }
+                            }
+                        }
+                    },
+                });
+            }
+        });
+
+    }
+
+    $(document).ready(function () {
+        window.onload = function () {
+            DataLinea();
+            DataTipo();
+            DataConcepto();
+            DataEstado();
+            DataGrupo();
+        }
+
+
+    });
+</script>
