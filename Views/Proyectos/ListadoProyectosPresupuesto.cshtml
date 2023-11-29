@@ -9,10 +9,12 @@
     IList<SAG2.Models.Proyecto> ListaProyecto = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;  
     List<SAG2.Models.Cuenta> Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.Cuentas;
     List<SAG2.Models.Contrato> DContrato =  new List<SAG2.Models.Contrato>();
+    List<SAG2.Models.Resolucion> Resoluciones = new List<SAG2.Models.Resolucion>();
     try
     {
         snRol = (List<SAG2.Models.Rol>)@ViewBag.Roles;
         DContrato = (List<SAG2.Models.Contrato>)@ViewBag.Contratos;
+        Resoluciones = (List<SAG2.Models.Resolucion>)@ViewBag.Resoluciones;
 
     }
     catch (Exception)
@@ -27,17 +29,27 @@
         @using (Html.BeginForm())
    {
         <table class="table table-striped">
-           <tr><td>
-               <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
-               <div class="col-md-4">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
-               <div class="col-md-2">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
-                <div class="col-md-4" >Estado 
-                    <select name="filtroPrograma" id="filtroPrograma" class="form-control js-autocomplete" >
-                        <option value="1"> Vigentes Segun Fecha Termino</option>
-                        <option value="2"> Vigentes </option>
-                        </select>
-                </div>
-           </td></tr> 
+           <tr>
+               <td>
+                   <div class="row">
+                       <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
+                       <div class="col-md-4">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+                       <div class="col-md-2">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+                        <div class="col-md-4" >Estado 
+                            <select name="filtroPrograma" id="filtroPrograma" class="form-control js-autocomplete" >
+                                <option value="1"> Vigentes Segun Fecha Termino</option>
+                                <option value="2" selected> Vigentes </option>
+                                   <option value="3"> Todos </option>
+                                </select>
+                        </div>
+                   </div>
+                   <div class="row">
+                        <div class="col-md-2"> Codigo Sename  <input class="form-control" id="CodSename" name="CodSename" style="width: 100%;" type="text" value="@ViewBag.CodSename"> </div> 
+                         <div class="col-md-2"> Codigo Codeni  <input class="form-control" id="CodCodeni" name="CodCodeni" style="width: 100%;" type="text" value="@ViewBag.CodCodeni"></div> 
+                   </div>
+                </td>
+           </tr> 
+
        </table>
                   <div class="form-group">
               <br />
@@ -61,11 +73,7 @@
             <th> REGION</th>
             <th> COMUNA</th>
             <th> CALLE</th>
-            <th> RES EX</th>
-            <th> NUMERO DE PLAZAS</th>
-            <th> FECHA DE INICIO</th>
-            <th> FECHA DE TERMINO</th>
-            <th> COMENTARIOS</th>
+            <th>CONVENIOS / PRORROGA / URGENCIAS</th>
             <th> RESPONSABILIDADES ADMINISTRATIVAS</th>
             <th> CONTRATOS </th>
             <th> VALOR SUBVENCION</th><th> VALOR SUBVENCION MENSUAL</th><th> VALOR SUBVENCION ANUAL</th>
@@ -130,33 +138,30 @@
         <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Region.Nombre)  </td>
         <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Nombre)  </td>
         <td> @Html.DisplayFor(modelItem => item.Direccion.DireccionLista)  </td>
-        <td> @Html.DisplayFor(modelItem => item.Convenio.ResEx)  </td>
-         <td> @Html.DisplayFor(modelItem => item.Convenio.NroPlazas)  </td>
-         <td> 
-         @{
-    if (item.Convenio.FechaInicio != null)
-    {
-                    @Html.Raw(item.Convenio.FechaInicio.Value.ToShortDateString());
-    }
-    else
-    {
-                     @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-    }
-           }
-         </td>
-         <td> 
-         @{
-    if (item.Convenio.FechaTermino != null)
-    {
-                    @Html.Raw(item.Convenio.FechaTermino.Value.ToShortDateString());
-    }
-    else
-    {
-                     @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-    }
-           }
-         </td>
-         <td> @Html.DisplayFor(modelItem => item.Convenio.Comentarios)  </td>
+        <td>
+               <table style="width: 100%;" class="table table-striped table-bordered table-hover">
+               <tbody>
+            @{  int ii = 0;
+                var Listado = Resoluciones.Where(d => d.ProyectoID == item.ID).ToList();
+                }
+            @foreach (SAG2.Models.Resolucion Resolucion in Listado)
+            {
+                ii = ii + 1;
+               <tr>
+                    <td style="width: 15px;">@ii</td>                    
+                    <td>@Resolucion.tipo</td>
+                    <td>@Resolucion.ResEx</td>
+                    <td>@item.Convenio.NroPlazas</td>
+                    <td>@Resolucion.FechaInicio.ToShortDateString()</td>
+                    <td>@Resolucion.FechaTermino.ToShortDateString()</td>
+                    <td>@Resolucion.Comentarios</td>
+                </tr>
+               
+            }
+                   </tbody>
+
+               </table>
+        </td>
         <td>
                 <table style="width: 100%;" class="table table-striped table-bordered table-hover">
         <tbody>
@@ -371,9 +376,11 @@
             var ProyectoID = $('#ProyectoID').val();
             var regionID = $('#regionID').val();
             var Estado = $('#filtroPrograma').val();
+            var CC = $('#CodCodeni').val();
+            var CS = $('#CodSename').val();
 
        
-            var url = '@Url.Action("ListadoProyectosPresupuestoExcel", "Proyectos", new {  ProyectoID = "ProyectoID_cambiar", tipoProyectoID = "tipoProyectoID_cambiar", RegionID = "RegionID_cambiar", filtroPrograma = "filtroPrograma_cambiar" })';
+            var url = '@Url.Action("ListadoProyectosPresupuestoExcel", "Proyectos", new {  ProyectoID = "ProyectoID_cambiar", tipoProyectoID = "tipoProyectoID_cambiar", RegionID = "RegionID_cambiar", filtroPrograma = "filtroPrograma_cambiar", CS = "CS_cambiar", CC = "CC_cambiar" })';
 
             if (regionID == "") {
                 regionID = 0;
@@ -395,6 +402,10 @@
                 url = url.replace("RegionID_cambiar", regionID);
                 url = url.replace("&amp;", "&");
                 url = url.replace("filtroPrograma_cambiar", Estado);
+                url = url.replace("&amp;", "&");
+                url = url.replace("CS_cambiar", CS);
+                url = url.replace("&amp;", "&");
+                url = url.replace("CC_cambiar", CC);
                 window.open(url);
             }
             else {

@@ -89,7 +89,8 @@ namespace SAG2.Controllers
             ViewBag.Busq = q;
             return View(proyecto.ToList());
         }
-        public ViewResult ListadoProyectosPresupuestoExcel(int ProyectoID, int tipoProyectoID, int RegionID, int filtroPrograma)
+      
+        public ViewResult ListadoProyectosPresupuestoExcel(int ProyectoID, int tipoProyectoID, int RegionID, int filtroPrograma, string CS, string CC)
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
             int periodo = (int)Session["Periodo"];
@@ -106,26 +107,24 @@ namespace SAG2.Controllers
             ViewBag.Roles = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID != 9).OrderBy(r => r.TipoRol.Nombre).ToList();
             ViewBag.Periodo = db.Periodo.ToList();
             // Vigentes
-
-
-            switch (filtroPrograma)
-            {
-                case 1:
-                    proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
-                    break;
-                case 2:
-                    proyecto = utils.FiltroProyecto(1);
-                    break;
-                default:
-                    proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
-                    break;
-            }
-
             if (ProyectoID > 1)
             {
-                ViewBag.Proyectos = proyecto.Where(d => d.ID == ProyectoID).ToList();
+                proyecto = db.Proyecto.Where(p => p.ID == ProyectoID).ToList();
+                ViewBag.Proyectos = proyecto.Where(d => d.ID == ProyectoID).ToList();               
             }
-            else { 
+            else {
+                switch (filtroPrograma)
+                {
+                    case 1:
+                        proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
+                        break;
+                    case 2:
+                        proyecto = utils.FiltroProyecto(1);
+                        break;
+                    default:
+                        proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
+                        break;
+                }
                 if ( RegionID != 0){           
                     proyecto = proyecto.Where(d => d.Direccion.Comuna.RegionID == RegionID).ToList();
                 }
@@ -136,8 +135,73 @@ namespace SAG2.Controllers
                 ViewBag.Proyectos = proyecto.ToList();
             
             }
-            //
 
+            if (CC != "")
+            {
+                proyecto = db.Proyecto.Where(d => d.CodCodeni == CC).ToList();
+                ViewBag.Proyectos = proyecto;
+
+            }
+            if (CS != "")
+            {
+                proyecto = db.Proyecto.Where(d => d.CodSename == CS).ToList();
+                ViewBag.Proyectos = proyecto;
+            }
+
+            List<Resolucion> Listado = new List<Resolucion>();
+            int xx = 1;
+            foreach (var RegProyecto in proyecto)
+            {
+                string ResEx = "";
+                string Comentarios = "";
+                int FIni = 0;
+                int Fter = 0;
+
+                if (RegProyecto.Convenio.ResEx != null)
+                {
+                    ResEx = RegProyecto.Convenio.ResEx;
+                }
+                if (RegProyecto.Convenio.Comentarios != null)
+                {
+                    Comentarios = RegProyecto.Convenio.Comentarios;
+                }
+                if (RegProyecto.Convenio.FechaInicio != null)
+                {
+                    FIni = 1;
+                }
+                if (RegProyecto.Convenio.FechaTermino != null)
+                {
+                    Fter = 1;
+                }
+
+                Resolucion Registro = new Resolucion();
+                Registro.ID = xx;
+                Registro.ProyectoID = RegProyecto.ID;
+                Registro.tipo = "Convenio";
+                Registro.ResEx = ResEx;
+                if (FIni == 1)
+                {
+                    Registro.FechaInicio = DateTime.Parse(RegProyecto.Convenio.FechaInicio.ToString());
+                }
+                if (Fter == 1)
+                {
+                    Registro.FechaTermino = DateTime.Parse(RegProyecto.Convenio.FechaTermino.ToString());
+                }
+                Registro.Comentarios = RegProyecto.Convenio.Comentarios;
+                Registro.UsuarioID = usuario.ID;
+                Registro.Fecha = DateTime.Now;
+                Registro.Estado = 1;
+
+                Listado.Add(Registro);
+
+                var Datos = db.Resolucion.Where(d => d.ProyectoID == RegProyecto.ID).ToList();
+                Listado.AddRange(Datos);
+                xx = xx + 1;
+            }
+
+
+
+            ViewBag.Resoluciones = Listado.ToList();
 
             return View();
 
@@ -153,10 +217,15 @@ namespace SAG2.Controllers
             Persona Persona = (Persona)Session["Persona"];
             Proyecto Proto = (Proyecto)Session["Proyecto"];
             DateTime FechaActual = DateTime.Now;
+  
              //
+
             int prfiltro_id = 1;
             int RegionId = 0;
             int tipoProyectoID = 0;
+            string CC = "";
+            string  CS = "";
+
             if (form["ProyectoID"].ToString() != "")
             {
                 prfiltro_id = int.Parse(form["ProyectoID"].ToString());
@@ -173,6 +242,15 @@ namespace SAG2.Controllers
             {
                 SelTipo = int.Parse(form["filtroPrograma"].ToString());
             }
+            if (form["CodSename"].ToString() != "")
+            {
+                CS = form["CodSename"].ToString();
+            }
+            if (form["CodCodeni"].ToString() != "")
+            {
+                CC = form["CodCodeni"].ToString();
+            }
+
              //
             ViewBag.SelTipo = SelTipo;
             ViewBag.Contratos = db.Contrato.ToList();
@@ -188,7 +266,10 @@ namespace SAG2.Controllers
                     proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
                     break;
                 case 2:
-                    proyecto = utils.FiltroProyecto(1);
+                    proyecto =  db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null).ToList();
+                    break;
+                case 3:
+                    proyecto = db.Proyecto.Where(p => p.Eliminado == null).ToList();
                     break;
                 default:
                     proyecto = db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.Convenio.FechaTermino > FechaActual).ToList();
@@ -198,10 +279,13 @@ namespace SAG2.Controllers
            // proyecto = utils.FiltroProyecto(SelTipo);
             ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
             ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+
+            ViewBag.CodSename = CS;
+            ViewBag.CodCodeni = CC;
             
              
              
-             if (prfiltro_id != 1)
+            if (prfiltro_id != 1)
             {
                 ViewBag.Proyectos = proyecto.Where(d => d.ID == prfiltro_id).ToList();
                 if (!usuario.esUsuario)
@@ -233,9 +317,65 @@ namespace SAG2.Controllers
                 ViewBag.Proyectos = proyecto.ToList();
             }
 
-           
-            //
-     
+            if (CC != "") {
+                proyecto = db.Proyecto.Where(d => d.CodCodeni == CC).ToList();
+                ViewBag.Proyectos = proyecto;
+            
+            }
+            if (CS != "")
+            {
+                proyecto = db.Proyecto.Where(d => d.CodSename == CS).ToList();
+                ViewBag.Proyectos = proyecto;
+            }
+
+             List<Resolucion> Listado = new List<Resolucion>();
+             int xx = 1;
+             foreach (var RegProyecto in proyecto)
+             {
+                 string ResEx = "";
+                 string Comentarios = "";
+                 int FIni = 0;
+                 int Fter = 0;
+
+                 if (RegProyecto.Convenio.ResEx != null) {
+                     ResEx = RegProyecto.Convenio.ResEx;
+                 }
+                 if (RegProyecto.Convenio.Comentarios != null) {
+                     Comentarios = RegProyecto.Convenio.Comentarios;
+                 }
+                 if (RegProyecto.Convenio.FechaInicio != null) {
+                     FIni = 1;
+                 }
+                 if (RegProyecto.Convenio.FechaTermino != null)
+                 {
+                     Fter = 1;
+                 }
+
+                 Resolucion Registro = new Resolucion();
+                 Registro.ID = xx;
+                 Registro.ProyectoID = RegProyecto.ID;
+                 Registro.tipo = "Convenio";
+                 Registro.ResEx = ResEx;
+                 if (FIni == 1)
+                 {
+                     Registro.FechaInicio = DateTime.Parse(RegProyecto.Convenio.FechaInicio.ToString());
+                 }
+                 if (Fter == 1)
+                 {
+                     Registro.FechaTermino = DateTime.Parse(RegProyecto.Convenio.FechaTermino.ToString());
+                 }
+                 Registro.Comentarios = RegProyecto.Convenio.Comentarios;
+                 Registro.UsuarioID = usuario.ID;
+                 Registro.Fecha = DateTime.Now;
+                 Registro.Estado = 1;
+
+                 Listado.Add(Registro);
+
+                 var Datos = db.Resolucion.Where(d => d.ProyectoID == RegProyecto.ID).ToList();
+                 Listado.AddRange(Datos);
+                 xx = xx + 1;
+             }
+             ViewBag.Resoluciones = Listado.ToList();
          
             return View();
 
@@ -258,6 +398,8 @@ namespace SAG2.Controllers
             proyecto = utils.FiltroProyecto(filtro);
             ViewBag.Proyectos = proyecto.Where(d => d.ID ==  Proto.ID).ToList();
             ViewBag.Contratos = db.Contrato.Where(d => d.ProyectoID == Proto.ID).ToList();
+            ViewBag.CodSename = "";
+            ViewBag.CodCodeni = "";
             //
             if (!usuario.esUsuario)
             {
@@ -269,6 +411,43 @@ namespace SAG2.Controllers
             }
             ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
             ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+            // Obtener Resoluciones y convenio 
+
+
+            DateTime FechaInicio = new DateTime();
+            DateTime FechaTermino = new DateTime();
+            try
+            {
+                FechaInicio = DateTime.Parse(Proto.Convenio.FechaInicio.ToString());
+                FechaTermino = DateTime.Parse(Proto.Convenio.FechaTermino.ToString());
+
+            }
+            catch (Exception) {
+
+                FechaInicio = DateTime.Now;
+                FechaTermino = DateTime.Now;
+            }
+
+            List<Resolucion> Listado = new List<Resolucion>();
+         
+            Resolucion Registro = new Resolucion();
+            Registro.ID = 1000;
+            Registro.ProyectoID = Proto.ID;
+            Registro.tipo = "Convenio";
+            Registro.ResEx = Proto.Convenio.ResEx;
+            Registro.FechaInicio = FechaInicio;
+            Registro.FechaTermino = FechaTermino;
+            Registro.Comentarios = Proto.Convenio.Comentarios;
+            Registro.UsuarioID = usuario.ID;
+            Registro.Fecha = DateTime.Now;
+            Registro.Estado = 1;
+
+            Listado.Add(Registro);
+
+            var Datos = db.Resolucion.Where(d => d.ProyectoID == Proto.ID).ToList();
+            Listado.AddRange(Datos);
+
+            ViewBag.Resoluciones = Listado.ToList();
             return View();
 
         }
