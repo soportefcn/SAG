@@ -226,7 +226,7 @@
     <tr></tr>
     <tr></tr>
     <tr>
-        <td>Proyecto</td>
+        <td>Programa</td>
         <td>
 
             <select name="ProyectoCierreID" id="ProyectoCierreID" class="form-control js-autocomplete">
@@ -406,7 +406,27 @@
 
                 }
             </table>
-               <input type="submit" id="Procesar" value="Grabar" class="btn btn-primary " />
+            <div class="row">
+                
+                <div class="col-md-12" >
+                   
+                      <div class="col-md-8">   
+                           <div class="form-group">   
+                                <label class="control-label col-md-2">Comentarios</label>                                
+                                <div class="col-md-12">
+                                    <textarea class="form-control" name="HallazgoComentario" id="HallazgoComentario" rows="4">@ViewBag.ComentarioHallazgo</textarea>                
+                                </div>  
+                            </div>                    
+                        </div>
+                         <div class="col-md-4">
+                             <br /><br /><br /><br /><br />
+                                <input type="submit" id="Procesar" value="Grabar" class="btn btn-primary " />
+                            </div>
+                </div>
+            </div>
+
+                       
+                           
         }
            </div>
 

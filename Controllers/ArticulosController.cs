@@ -41,13 +41,10 @@ namespace SAG2.Controllers
         public ActionResult Create(Articulo articulo)
         {
             SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
-
-
             if (ModelState.IsValid)
             {
                 if (!Usuario.esUsuario)
                 {
-
                     db.Articulo.Add(articulo);
                     db.SaveChanges();
                     TempData["Message"] = "Creado con exito " + articulo.Nombre;
@@ -145,6 +142,22 @@ namespace SAG2.Controllers
                                Value = c.ID,
                                Text = c.Nombre
                            }).ToList();
+
+            return new JavaScriptSerializer().Serialize(Articulos);
+        }
+        public string ArticuloSaldo(int id, int periodo, int mes)
+        {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int prID = Proyecto.ID;
+            var Articulos = (from c in db.Articulo
+                             join b in db.Bodega on c.ID equals b.ArticuloID
+                             where c.CategoriaID == id && b.Periodo == periodo && b.Mes == mes && b.Saldo > 0 && b.ProyectoID == prID
+                             orderby c.Nombre
+                             select new
+                             {
+                                 Value = c.ID,
+                                 Text = c.Nombre
+                             }).ToList();
 
             return new JavaScriptSerializer().Serialize(Articulos);
         }

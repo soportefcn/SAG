@@ -16,52 +16,59 @@
 	    "Noviembre",
 	    "Diciembre"
 	};
+    string CateSel = "";
 }
 <div id="SAGBox">
 <h2>Consulta de Saldos</h2>
-@using (Html.BeginForm("Saldos", "Bodega", FormMethod.Get))
-{
-
+<div class="panel panel-default">
+    <div class="panel-body">
+        @using (Html.BeginForm("Saldos", "Bodega", FormMethod.Get))
+        {
             <fieldset>
-                <h3>Saldos a</h3>
-                
-                <div class="form-group form-inline" >
+                <h3>Saldos a</h3>                
+                <div class="form-group form-inline" >  
+                                 
                     <div class="form-group">
-                        <label>Mes</label>
-                    </div>
-                    <div class="form-group">
-                            <select name="Mes" id="Mes" class="form-control">
+                        <label>Mes</label><br />
+                        <select name="Mes" id="Mes" class="form-control">
                             @for (var i = 0; i < 12; i++)
                             {
                                 <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1)) {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
                             }
-                            </select>
+                        </select>
                     </div>
                     <div class="form-group"> 
-                        <label>Año</label>
-                    </div>
-                        <div class="form-group"> 
-                         <select name="Periodo" id="Periodo" class="form-control">
+                        <label>Año</label><br />                
+                        <select name="Periodo" id="Periodo" class="form-control">
                             @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
-                            {
-                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
-                            }
-                            </select>
+                                {
+                                    <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                                }
+                         </select>
                     </div>
-                     <input type="submit" name="BodegaPeriodo" id="BodegaPeriodo" value="Ver" class="btn btn-default" />
-                      <a class="btn btn-default"  name="ImprimirSaldoBodega" id="ImprimirSaldoBodega"  data-toggle="tooltip" data-placement="top" title="Imprimir" >
-                    <span class ="fa fa-print fa-2x"></span>  
-                </a>
-                     <input type="button" name="ExcelSaldoBodega" id="ExcelSaldoBodega" value="Excel" class="btn btn-default" />
-                 
-                    
-                     </div>
+                     <div class="form-group">
+                         <label></label>
+                          <br />
+                        <input type="submit" name="BodegaPeriodo" id="BodegaPeriodo" value="Ver" class="btn btn-primary" />
+                    </div>
+               </div>
+                <div class="form-group form-inline">
+                    <div class="form-group" style="margin-right: 44px;">
+                        <label>Categoría</label><br />         
+                        @Html.DropDownList("CategoriaID", null, "-- SELECCIONE UNA CATEGORIA --", new { @class = "form-control"} )         
+                    </div> 
+                    <div class="form-group" style="margin-right: 10px;">
+                        <label>Artículo</label><br />
+                        <select name="ArticuloID" id="ArticuloID" tabindex="5" class="form-control">
+                            <option>Seleccione Categoría</option>
+                        </select>
+                    </div>    
+                </div>                         
+            </fieldset>     
+        }
+     </div>
 
-                      
-                          
-            </fieldset>
-      
-}
+    </div>
     <p>&nbsp;</p>
     <div  id="tableContainer" class="tableContainer">
     <table class="table table-bordered scrollTable" id="table">
@@ -82,6 +89,7 @@
              int? Tsalida = 0;
              int? Tsaldo = 0;
              int Tsaldoinicial = 0;
+             string Categoria = "";
              }
         @foreach (var saldosbodega in Model)
         {
@@ -99,9 +107,16 @@
             Tsalida += salida;
             Tsaldoinicial += saldoinicial;   
             Tsaldo  += saldo ;
+            if (Categoria != saldosbodega.Articulo.Categoria.nombre) {
+                Categoria = saldosbodega.Articulo.Categoria.nombre;
+                <tr>
+                    <td colspan="7" class="success">@Categoria</td>
+                </tr>
+            
+            }
         <tr @if (saldo == 0) { @Html.Raw("style=\"background-color: #f0f0f0;\""); } else { @Html.Raw("style=\"font-weight: bold;\""); }>
             
-            <td style="width:450px;" >@saldosbodega.Articulo.Categoria.nombre a / @saldosbodega.Articulo.Nombre</td>
+            <td style="width:450px;" > @saldosbodega.Articulo.Nombre</td>
             <td style="width: 56px;text-align: center;" >@saldosbodega.Articulo.UnidadMedida.Unidad</td>
             <td style="width: 87px;text-align: center;" >@saldoinicial.ToString()</td>
             <td style="width: 87px;text-align: center;" >@entrada.ToString()</td>
@@ -132,79 +147,74 @@
    
     </table>
         <table>
-                 <tr class="info">
-            <td style="text-align: right;width:432px;">Totales</td>
-            <td  style="text-align: center;width: 51px;"></td>
-         <th style="text-align: center;width: 87px;">Saldo Inicial</th>
-             <th style="text-align: center;width: 87px;">Total Entradas</th>
-            <th style="text-align: center;width: 87px;">Total Salida</th>
-            <th style="text-align: center;width: 87px;">Saldo Final</th>
-           
-        </tr>
-  <tr class="info">
-            <td style="text-align: right;width:432px;"></td>
-            <td  style="text-align: center;width: 51px;"></td>
-            <td style="text-align: center;width: 87px;">@Tsaldoinicial </td>
-             <td style="text-align: center;width: 87px;">@Tentrada</td>
-            <td style="text-align: center;width: 87px;">@Tsalida</td>
-            <td style="text-align: center;width: 87px;">@Tsaldo</td>
-           
-        </tr>
+            <tr>
+                <td style="width:332px;" rowspan="2">
+                        <a class="btn btn-default"  name="ImprimirSaldoBodega" id="ImprimirSaldoBodega"  data-toggle="tooltip" data-placement="top" title="Imprimir" >
+                            <span class ="fa fa-print fa-2x"></span>  
+                        </a>
+                        <input type="button" name="ExcelSaldoBodega" id="ExcelSaldoBodega" value="Excel" class="btn btn-success" /
+                </td>
+                <td  style="text-align: center;width: 151px;">Totales</td>
+                <th style="text-align: center;width: 87px;">Saldo Inicial</th>
+                <th style="text-align: center;width: 87px;">Total Entradas</th>
+                <th style="text-align: center;width: 87px;">Total Salida</th>
+                <th style="text-align: center;width: 87px;">Saldo Final</th>           
+            </tr>
+            <tr class="info">
+               
+                <td  style="text-align: center;width: 51px;"></td>
+                <td style="text-align: center;width: 87px;">@Tsaldoinicial </td>
+                <td style="text-align: center;width: 87px;">@Tentrada</td>
+                <td style="text-align: center;width: 87px;">@Tsalida</td>
+                <td style="text-align: center;width: 87px;">@Tsaldo</td>          
+            </tr>
         </table>
     </div>
 </div>
 <script>
     $(document).ready(function () {
+        var periodo = $("#Periodo").val();
+        var mes = $("#Mes").val();
+        $("#CategoriaID").change(function () {
+            $.get('/SAG_5/Articulos/ArticuloSaldo/?id=' + $(this).val() + "&periodo=" + periodo + "&mes=" + mes, function (response) {
+                var articulos = $.parseJSON(response);
+                var ddlArticulos = $('#ArticuloID');
+                $('#ArticuloID > option').remove();
+                if (articulos.length == 0) {
+                    ddlArticulos.append($("<option />").val("1").text("Sin información"));
+                } else {
+                    ddlArticulos.append($("<option />").val("1").text("Seleccione Articulos"));
+                    for (i = 0; i < articulos.length; i++) {
+                        ddlArticulos.append($("<option />").val(articulos[i].Value).text(articulos[i].Text));
+                    }
+                }
+            });
+        });
 
         if ($.browser.msie) //si es IE
-
         {
-
             if ($.browser.version == '7.0') {
-
                 $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'scroll', 'height': '250px' });
-
                 $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
-
                 $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block' });
-
             };//if browser IE7
-
-
             if ($.browser.version == '8.0') {
-
                 $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden', 'height': '250px' });
-
                 $('.tableContainer table').css({ 'float': 'left', 'width': '98%' });
-
                 $('.fixedHeader').css({ 'float': 'left', 'width': '98%' });
-
                 $('.scrollContent').css({ 'float': 'left', 'height': '250px', 'overflow': 'scroll', 'width': '100%', 'clear': 'left' });
-
                 $('.scrollTable th').css({ 'border': 'auto', 'width': '200px' });
-
                 $('.scrollTable td').css({ 'border': 'auto', 'width': '200px' });
-
             };//if browser IE8
-
         }
-
         else // si es FF o Chrome
-
         {
-
             $('.tableContainer').css({ 'clear': 'both', 'width': '100%', 'overflow': 'hidden' });
-
             $('.tableContainer table').css({ 'float': 'left', 'width': '100%' });
-
             $('.fixedHeader tr').css({ 'position': 'relative', 'display': 'block', 'width': '98%' });
-
             $('.scrollContent').css({ 'display': 'block', 'height': '250px', 'overflow': 'auto', 'width': '100%' });
-
         }//if browser
-
-
-    }) //ready
+    }); //ready
 
 
 </script>

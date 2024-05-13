@@ -6,6 +6,8 @@
     
     List<SAG2.Models.Resolucion> Resolucion = (List<SAG2.Models.Resolucion>)ViewBag.Resolucion;
     List<SAG2.Models.ResolucionDescarga> ResolDoc = (List<SAG2.Models.ResolucionDescarga>)@ViewBag.ResolucionDoc;
+	 SAG2.Models.ConvenioDescarga ConvenioArchivo = (SAG2.Models.ConvenioDescarga)@ViewBag.ConvenioArchivo;
+
 
     int periodo = (int)Session["Periodo"];
     int mes = (int)Session["Mes"];
@@ -119,13 +121,12 @@
 
     <h3>Antecedentes del Convenio</h3>
     <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+	      <table class="table table-hover table-bordered">
             <tbody>
                 <tr>
                     <th class="active">Res. Ex.</th>
                     <td>
                         @{
-                            try{
                             if (Proyecto.Convenio.ResEx != null)
                             {
                                 @Html.Raw(Proyecto.Convenio.ResEx)
@@ -134,24 +135,17 @@
                             {
                                 @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                             }
-                            }catch(Exception){
-                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                            }
                         }
                     </td>
                     <th class="active">Nº de Plazas</th>
                     <td>
                         @{
-                            try{
                             if (Proyecto.Convenio.NroPlazas != null)
                             {
                                 @Html.Raw(Proyecto.Convenio.NroPlazas.ToString())
                             }
                             else
                             {
-                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                            }
-                            }catch(Exception){
                                 @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                             }
                         }
@@ -161,16 +155,12 @@
                     <th class="active">Fecha inicio</th>
                     <td>
                         @{
-                            try{
-                                if (Proyecto.Convenio.FechaInicio != null)
-                                {
-                                    @Html.Raw(Proyecto.Convenio.FechaInicio.Value.ToShortDateString());
-                                }
-                                else
-                                {
-                                    @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                                }
-                            }catch(Exception){
+                            if (Proyecto.Convenio.FechaInicio != null)
+                            {
+                                @Html.Raw(Proyecto.Convenio.FechaInicio.Value.ToShortDateString());
+                            }
+                            else
+                            {
                                 @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                             }
                         }
@@ -178,16 +168,12 @@
                     <th class="active">Fecha termino</th>
                     <td>
                         @{
-                            try{
-                                if (Proyecto.Convenio.FechaTermino != null)
-                                {
-                                    @Html.Raw(Proyecto.Convenio.FechaTermino.Value.ToShortDateString());
-                                }
-                                else
-                                {
-                                    @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                                }
-                            }catch(Exception){
+                            if (Proyecto.Convenio.FechaTermino != null)
+                            {
+                                @Html.Raw(Proyecto.Convenio.FechaTermino.Value.ToShortDateString());
+                            }
+                            else
+                            {
                                 @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                             }
                         }
@@ -197,7 +183,6 @@
 
                     <td colspan="3" style="text-transform: capitalize;text-align:justify ">
                         @{
-                            try{
                             if (Proyecto.Convenio.Comentarios != null)
                             {
                                 @Html.Raw(Proyecto.Convenio.Comentarios);
@@ -206,14 +191,55 @@
                             {
                                 @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                             }
-                            }catch(Exception){
-                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                            }
                         }
                     </td>
                
                 </tr>
-                @{
+                <tr>
+                    <th class="active">   Convenio Docto :     </th>
+                    <td>
+                       @{
+                            if(ConvenioArchivo != null){
+                             <a  href="@Url.Action("Download","Resolucion",new {ImageName = ConvenioArchivo.NombreArchivo })"> <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color:red;"></i></a>
+                           
+                            }
+                            
+                            }
+                    </td>
+
+                    <td >
+                        <span class="label label-warning">Convenio <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Convenio"><span class="glyphicon glyphicon-paperclip"></span></a></span>  
+                    </td>
+                    <td>
+                        <div>
+                            <div>
+                                @if (Resolucion.Count() > 0){
+                                    <span class="badge">@Resolucion.Count()</span>
+                                  }   
+                                @if (Resolucion.Count() == 0){       
+                                    <label class="label label-success">                                      
+                                        Prorroga/ Urgencia <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create"><span class="glyphicon glyphicon-plus"></span></a>                                                 
+                                    </label> 
+                                 }else{
+                                    <label class="label label-success">                                      
+                                        Prorroga/ Urgencia <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Listado"><span class="glyphicon glyphicon-plus"></span></a>                                                 
+                                    </label> 
+                                 }
+                                   
+                            </div>
+							 @if (Resolucion.Count() > 3){
+                                <div style="text-align:right">
+                                    <span>Se Mostraran las ultimas 3 Prorroga/Urgencia</span>
+                                </div>
+							 }
+                        
+                          </div>
+
+                    </td>
+                </tr>
+
+
+                           @{
                     int ContadorProrroga = 1;
                     foreach (var Registro in Resolucion)
                     {
@@ -223,7 +249,7 @@
                             <th class="active">@Registro.tipo</th>
                             <td>
                                 @foreach(var Documento in TDocumento  ){                   
-                                      <a class="btn btn-success" href="@Url.Action("Download","Traslado",new {ImageName = Documento.NombreArchivo })">Resolucion</a>
+                                      <a class="btn btn-success" href="@Url.Action("Download","BienAutorizacion",new {ImageName = Documento.NombreArchivo })">Resolucion</a>
                                  }
                             </td>
                             <th class="active">Res. EX. </th><td>@Registro.ResEx </td>
@@ -240,18 +266,12 @@
                     }
                        
                  }
-                <tr>
-                    <td colspan="4">
-                        <span class="label label-success">Prorroga/ Urgencia <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create"><span class="glyphicon glyphicon-plus"></span></a></span>  
-                    </td>
-                </tr>
-                </tr>
+  
             </tbody>
         </table>
         <p>&nbsp;</p>
     </div>
     <hr/>
-
     <h3>Responsabilidades administrativas</h3>
     <table style="width: 100%;" class="table table-striped table-bordered table-hover">
         <tbody>
@@ -314,18 +334,12 @@
                 <th class="active">Valor subvención</th>
                 <td style="width: 16.6%">
                     @{
-                        try
+                        if (Proyecto.ValorSubvencion != null)
                         {
-                            if (Proyecto.ValorSubvencion != null)
-                            {
                             @Html.Raw("$" + Proyecto.ValorSubvencion.Value.ToString("#,###"));
-                            }
-                            else
-                            {
-                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                            }
                         }
-                        catch (Exception) {
+                        else
+                        {
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                         }
                     }
@@ -333,7 +347,6 @@
                 <th class="active">Subvención mes</th>
                 <td style="width: 16.6%">
                     @{
-                        try{
                         if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
                         {
                             @Html.Raw("$" + (Proyecto.Convenio.NroPlazas * Proyecto.ValorSubvencion.Value).ToString("#,###"));
@@ -342,24 +355,17 @@
                         {
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                         }
-                        }catch(Exception){
-                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                        }
                     }
                 </td>
                 <th class="active">Subvención año</th>
                 <td colspan="3">
                     @{
-                        try{
-                            if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
-                            {
-                                @Html.Raw("$" + (12 * Proyecto.Convenio.NroPlazas * Proyecto.ValorSubvencion.Value).ToString("#,###"))
-                            }
-                            else
-                            {
-                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                            }
-                        }catch(Exception){
+                        if (Proyecto.Convenio.NroPlazas != null && Proyecto.ValorSubvencion != null)
+                        {
+                            @Html.Raw("$" + (12 * Proyecto.Convenio.NroPlazas * Proyecto.ValorSubvencion.Value).ToString("#,###"))
+                        }
+                        else
+                        {
                             @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
                         }
                     }
@@ -374,7 +380,6 @@
             <tr>
                 <th class="active">
                    @{
-                       try{
                         if (Proyecto.Convenio.Tintervencion == 1 )
                         {
                             @Html.Raw("Valor USS")
@@ -382,9 +387,6 @@
                         else
                         {
                             @Html.Raw("Valor UF")
-                        }
-                        }catch(Exception){
-                         @Html.Raw("Valor USS")
                         }
                     }
                 </th>

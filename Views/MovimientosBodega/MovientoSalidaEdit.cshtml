@@ -1,86 +1,114 @@
 ﻿@model SAG2.Models.MovimientosBodega
 
 @{
-    ViewBag.Title = "MovientoEntradaEdit";
+    ViewBag.Title = "Movimientos de mercadería e insumos";
+    string descripcion = Model.Observaciones;
+    var Meses = new string[12]
+    {
+	    "Enero","Febrero","Marzo","Abril","Mayo","Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre",  "Diciembre"
+	};
 }
-
-
 
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
 <style>
 /* Conversion a mayusculas */
-input[type="text"], textarea
-{
-    text-transform: uppercase;
-}
+    input[type="text"], textarea
+    {
+        text-transform: uppercase;
+    }
 </style>
+
 @using (Html.BeginForm()) {
-    @Html.ValidationSummary(true)
-    <fieldset>
+@Html.Hidden("ID")
+@Html.Hidden("ArticuloID") 
+@Html.Hidden("ProyectoID") 
+<input type="hidden" name="SalidaDocumento" id="SalidaDocumento" value="@Model.Salida" />  
+<fieldset>
         
-          <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Movimiento de Salida</h3>
-  </div>
-  <div class="panel-body">
-      
-    <h3>Articulo</h3>
-      <div class="form-group form-inline">
-          <div class="form-group">
-           <label>Artículo</label>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Movimiento de Salida</h3>
         </div>
-            <div class="form-group" style="margin-right: 10px;">
-              <select name="ArticuloID" id="ArticuloID" class="form-control" >
-            <option value="-1"> - Seleccione proyecto</option>
-             @foreach (SAG2.Models.Articulo art2 in ViewBag.Articulos)
-            {
-                if (@Model.ArticuloID == art2.ID)
-                {
-                    <option selected="selected" value="@Model.ArticuloID">@Model.Articulo.Nombre </option>
-                }
-                else
-                {
-                    <option value="@art2.ID">@art2.Nombre</option>
-                }
-            }
-        </select>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group form-inline">
+                        <div class="form-group" style="margin-right: 15px;">
+                               Fecha
+                         </div>
+                        <div class="form-group">
+                            <input class="form-control" type="text" value="@Model.Fecha.ToShortDateString()" readonly="readonly" />
+                        </div>
+                     </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group form-inline"  style="text-align:right">
+                        <div class="form-group" style="margin-right: 15px;">
+                            Período
+                        </div>
+                        <div class="form-group" style="margin-right: 15px;">
+                            <input class="form-control" type="text" value="@Model.Periodo" readonly="readonly" />
+                        </div>
+                        <div class="form-group" style="margin-right: 15px;">
+                            Mes
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="text" value="@Meses[@Model.Mes - 1]" readonly="readonly" />
+                        </div>   
+                     </div>
+                 </div>
+             </div>
+            <hr />
+            <div class="form-inline" style="margin-bottom: 20px;">
+                <div class="form-group" style="margin-right: 10px;">
+                    <label>Categoría</label>
+                </div>
+                <div class="form-group" style="margin-right: 10px;">
+                    <input type="text" name="CategoriaID" id="CategoriaID" class="form-control"  readonly="readonly" value ="@Model.Articulo.Categoria.nombre" style="width: 100%" />             
+                </div>
+                <div class="form-group" style="margin-right: 10px;">
+                    <label>Artículo</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="CategoriaID" id="CategoriaID" class="form-control"  readonly="readonly" value ="@Model.Articulo.Nombre" style="width: 100%" />             
+                </div>
+                <div class="form-group">
+                    <label>Cantidad</label>
+                </div>
+                <div class="form-group">   
+                    @Html.TextBoxFor(model =>  model.Salida  , new {  @class="form-control", style ="width:200px;" })
+                </div> 
+            </div>  
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Observaciones)
             </div>
+            <div class="editor-field">
+                @Html.TextArea("Observaciones", new {@class = "form-control", @value = descripcion})
+            </div>
+            <hr />
+            <div class="form-group form-inline">
+               <div class="form-group" style="margin-right: 25px;">
+                   <label>Saldo Actual</label>
+               </div>
+               <div class="form-group"><input type="text" name="Saldo" id="Saldo" class="form-control" value="@ViewBag.Saldo" readonly="readonly" /></div>
 
-          <div class="form-group">
-           <label>Cantidad</label>
+           </div>    
         </div>
-          <div class="form-group">    @Html.TextBoxFor(model =>  model.Salida  , new {   style ="width:200px;" })</div> 
+        <div class="panel-footer">
+            <div  style ="width: 500px ; display:inline-block">
+                <a class="btn btn-success" href="../ListarSalidas" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
+                <a class="btn btn-default" href="/SAG_5_desarrollo/MovimientosBodega/MovimientoSalida"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
+                <a class="btn btn-danger" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-fw"></span>ELIMINAR</a>
+                <a class="btn btn-default" href="/SAG_5_desarrollo/MovimientosBodega/MovimientoSalida"><span class ="fa fa-undo fa-fw"></span> CANCELAR</a>            
+            </div>
+            <div style="float :right;width:150px;display:inline-block">
+                <input class="btn btn-primary" type="submit" value="Guardar" />
+            </div>
+        </div>
+    </div>
             
-  </div>
-
-        
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Observaciones)
-        </div>
-        <div class="editor-field">
-           @Html.TextArea("Destino y Observaciones", new { @class = "form-control", @value = Model.Observaciones, style ="width:200px;"  })
-        </div>
-
-        
-       
-  </div> </div>
-      	<div class="panel-footer">
-    <div  style ="width: 500px ; display:inline-block">
-             <a class="btn btn-success" href="../ListarSalidas" onclick="window.open(this.href, 'Buscar','width=750,height=350,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-fw"></span>BUSCAR</a>
-        <a class="btn btn-default" href="/SAG_5_desarrollo/MovimientosBodega/MovimientoSalida"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
-        <a class="btn btn-danger" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-fw"></span>ELIMINAR</a>
-        <a class="btn btn-default" href="/SAG_5_desarrollo/MovimientosBodega/MovimientoSalida"><span class ="fa fa-undo fa-fw"></span> CANCELAR</a>
-            
-        </div>
-         <div style="float :right;width:150px;display:inline-block">
- <input class="btn btn-primary" type="submit" value="Guardar" />
- </div>
-
-</div>
-
-            
-    </fieldset>
+</fieldset>
 }
    @if (TempData["Message"] != null)
     {

@@ -51,7 +51,21 @@ namespace SAG2.Models
         public int Estado { get; set; }
         public string Clase { get; set; }    
     }
+    public class Hallazgo {
+        [Key]
+        public int ID { get; set; }
+        public int ProyectoID { get; set; }
+        public int Periodo { get; set; }
+        public int Mes { get; set; }
+        public string Comentario { get; set; }
+        public DateTime Fecha { get; set; }
+        public int UsuarioID { get; set; }
+        public DateTime FechaPeriodo { get; set; }
 
+        public virtual Proyecto proyecto { get; set; }
+        public virtual Usuario usuario { get; set; }
+    
+    }
     public class HallazgoCierre{
         [Key]
         public int ID { get; set; }

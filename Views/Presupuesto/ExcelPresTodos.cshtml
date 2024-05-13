@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "Presupuesto";
+    Layout = null;
+    List<SAG2.Models.DetallePresupuesto> dp = new List<SAG2.Models.DetallePresupuesto>();  
+    List<SAG2.Models.Presupuesto> Presupuesto = new List<SAG2.Models.Presupuesto>();
+
+
+
+    SAG2.Models.Cuenta cuentaAnterior = new SAG2.Models.Cuenta();
+    int xPresupuesto = 0;
+
+
+    try
+    {
+        dp = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.Detalle;       
+        Presupuesto = (List<SAG2.Models.Presupuesto>)@ViewBag.Presupuesto;
+
+    }
+    catch (Exception)
+    { }
+
+    int j = 0;
+
+    string proyecto_file = "Fundacion";
+    
+    
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.Charset = "utf-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=Presupuesto-" + proyecto_file + "-ANUAL-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Control Presupuestario</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+
+        }
+    </style>
+</head>
+<body>
+    <table align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+        <tr>
+          <td>Tipo Programa</td><td>Region</td><td>CC</td><td>Nombre</td><td>Periodo</td><td>Mes</td><td>Cuenta</td><td>T</td><td>Valor</td>
+        </tr>
+
+            @foreach(var registro in dp ){
+                var monto = 0;
+                if (registro.Cuenta.Tipo.Equals("E"))
+                {
+                    monto = registro.Monto * -1;
+                }
+                else {
+                    monto = registro.Monto;                
+                }
+                if (registro.PresupuestoID != xPresupuesto) {
+                    xPresupuesto = registro.PresupuestoID;
+                    if (registro.Presupuesto.SaldoInicial > 0){
+                         <tr>
+                            <td>@registro.Presupuesto.Proyecto.TipoProyecto.Sigla</td>
+                            <td>@registro.Presupuesto.Proyecto.Direccion.Comuna.Region.Nombre</td>
+                            <td>@registro.Presupuesto.Proyecto.CodCodeni</td>
+                            <td>@registro.Presupuesto.Proyecto.Nombre</td>
+                            <td>@registro.Periodo</td>
+                            <td>1</td>
+                            <td>0 Saldo Inicial</td>
+                          
+                            <td>I</td>
+                            <td class="num">@registro.Presupuesto.SaldoInicial</td>
+                        </tr>
+                     }                
+                }
+                <tr>
+                    <td>@registro.Presupuesto.Proyecto.TipoProyecto.Sigla</td>
+                    <td>@registro.Presupuesto.Proyecto.Direccion.Comuna.Region.Nombre</td>
+                    <td>@registro.Presupuesto.Proyecto.CodCodeni</td>
+                    <td>@registro.Presupuesto.Proyecto.Nombre</td>
+                    <td>@registro.Periodo</td>
+                    <td>@registro.Mes</td>
+                    <td>@registro.Cuenta.NombreLista</td>
+                  
+                    <td>@registro.Cuenta.Tipo</td>
+                    <td class="num">@monto</td>
+                </tr>
+            }
+
+
+
+        
+    </table>
+
+    
+ 
+   
+</body>
+</html>

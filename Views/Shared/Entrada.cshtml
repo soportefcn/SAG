@@ -5,13 +5,13 @@
     <title>SAG2 / @ViewBag.Title</title>
     <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js?" + @DateTime.Now.Ticks)" type="text/javascript" language="javascript"></script>
       <script src="@Url.Content("~/Scripts/select2.min.js")" type="text/javascript" language="javascript"></script>
-   
-	<!--[if lte IE 7]>
+
+    <!--[if lte IE 7]>
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ie.css")" media="screen" />
     <![endif]-->
-	
-	
-	<link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
+
+
+    <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.css")" rel="stylesheet">
     <link href="@Url.Content("~/Content/select2.min.css")" rel="stylesheet">
        <link href="@Url.Content("~/Content/blog.css")" rel="stylesheet" >
        <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" >
@@ -42,7 +42,7 @@
 
             $("#NombreUsuario").focus();
         });
-	</script>
+    </script>
 </head>
 <body>
 
@@ -53,14 +53,15 @@
        <div class="container">
 <nav class="blog-nav">
       <a class="navbar-brand">
-            <img  class ="brand_logo svgLogo" src ="@Url.Content("~/Content/Logo_Codeni3.png")" style="padding-bottom: 0px; border-top-width: 0px; margin-top: -15px;width: 45px; margin-right: -16px;">
-         <m style="color:white">SAG Ciudad del Niño</m>
+          <m style="color:white">SAG </m>   <img  class ="brand_logo svgLogo" src ="@Url.Content("~/Content/Logo_Codeni3.png")" style="padding-bottom: 0px; border-top-width: 0px; margin-top: -15px;width: 45px; margin-right: -16px;">
+         <m style="color:white">Ciudad del Niño</m>
              </a>
-			 <a class="blog-nav-item" target="_blank" href="https://sag.ciudaddelnino.cl/SAG_5/Login/">Version Produccion</a>
-<a class="blog-nav-item" target="_blank" href="https://www.facebook.com/ciudaddelninocl?fref=ts"><i class="fa fa-facebook-square fa-2x"></i></a>
+             <a class="blog-nav-item" target="_blank" href="http://desarrollo.ciudaddelnino.cl/SAG_5/Login/"> Sag Capacitacion</a>
+  <a class="blog-nav-item" target="_blank" href="http://sagdesarrollo.ciudaddelnino.cl/SAG_5_desarrollo/Login/"> Sag Desarrollo</a>
+<a class="blog-nav-item" target="_blank" href="https://www.facebook.com/fciudaddelninocl"><i class="fa fa-facebook-square fa-2x"></i></a>
 <a class="blog-nav-item" target="_blank" href="http://www.twitter.com/ciudaddelninocl"><i class="fa fa-twitter-square fa-2x"></i></a>
 <a class="blog-nav-item" target="_blank" href="http://www.ciudaddelnino.cl/"><i class="fa fa-reddit fa-2x"></i></a>
-<a class="blog-nav-item" target="_blank" href="https://www.youtube.com/channel/UC0RjNg5fVl2kudcS5lWQEaw"><i class="fa fa-youtube-square fa-2x"></i></a>
+<a class="blog-nav-item" target="_blank" href="https://www.youtube.com/channel/UCwYf_0730psY3QfXRcNoLlQ"><i class="fa fa-youtube-square fa-2x"></i></a>
 
 </nav>
 </div>
@@ -68,16 +69,14 @@
 
 
         @RenderBody()
-
             </div>
 
 
 
 <div class="blog-footer siteFooter"">
 
-  
-  
-    SAG2 / Codeni &nbsp;&nbsp</div>
-  
+         <m style="color:white">SAG </m>   <img  class ="brand_logo svgLogo" src ="@Url.Content("~/Content/Logo_Codeni3.png")" style="padding-bottom: 0px; border-top-width: 0px; margin-top: -15px;width: 45px; margin-right: -16px;">
+         <m style="color:white">Ciudad del Niño</m></div>
+
 </body>
 </html>

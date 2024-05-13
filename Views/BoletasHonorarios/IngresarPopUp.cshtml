@@ -124,7 +124,7 @@ $(document).ready(function () {
         var bruto = new Number($('#Bruto').val());
         var porce = new Number($('#VPorce').val());
         var retencion = bruto * porce / 100;
-        var neto = bruto - retencion;
+        var neto = bruto - Math.round(retencion);
         $('#Retencion').val(Math.round(retencion));
         $('#Neto').val(Math.round(neto));
     });

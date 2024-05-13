@@ -22,10 +22,10 @@
      <div class="panel panel-default">
     <div class="panel-body">
 
-        <h3>Proyecto</h3>
+        <h3>Programa</h3>
             <div class="form-group">
         <select name="ProyID" id="ProyID"  class="js-autocomplete" style="width: 400px;">
-            <option> - Seleccione proyecto</option>
+            <option> - Seleccione Programa</option>
             @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
             { 
             <option value="@Proyecto.ID" @if (@Proyecto.ID.Equals(ViewBag.ProSel)) { @Html.Raw("selected=\"selected\"") }>@Proyecto.NombreEstado</option>

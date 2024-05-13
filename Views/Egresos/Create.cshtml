@@ -36,13 +36,6 @@ input[type="text"], textarea
 {
     text-transform: uppercase;
 }
-
-input::placeholder {
- color:blue !important;
- 
-  font-size: 10px;
-  font-style: italic;
-}
 </style>
 <div id="SAGBox">
     
@@ -61,7 +54,7 @@ input::placeholder {
 {
     @Html.Hidden("FondoFijoGrupoID", null);
     @Html.Raw(@ViewBag.Mensaje)
-     <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="NO" />
+     <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="no" />
     <input type="hidden" name="Periodo" id="Periodo" value="@Periodo.ToString("####")" />
     <input type="hidden" name="Mes" id="Mes" value="@Mes.ToString("00")" />
     <input type="hidden" name="ImprimirComprobante" id="ImprimirComprobante" value="false" />
@@ -82,20 +75,20 @@ input::placeholder {
                 @Html.TextBoxFor(model => model.Fecha, new { @Value = Fecha.ToShortDateString(), @class = "calendario_mov form-control" })
             </div>
              </div>
-      
+        
         <div class="form-group form-inline">
-               <div class="form-group" style="margin-left: 7px;">
+                 <div class="form-group" style="margin-left: 7px;">
                     <label>Medio Pago</label>
                     <br />
                     @Html.DropDownList("TipoPagoID", null,String.Empty, new { @class = "form-control"})
             </div>
             <div class="form-group" style="margin-left: 7px;">
-              <label id="LPago1"> N° </label>
-                <br />
-             <input id="Cheque" class="form-control" type="text" maxlength="9" placeholder="Max 9 digitos" value="" name="Cheque" data-val-number="The field N&#186; Cheque must be a number." data-val="true">
-            </div>
+            <label>N°</label>
+            <br />
+           <input id="Cheque" class="form-control" type="text" value="" name="Cheque" maxlength="9" data-val-number="The field N&#186; Cheque must be a number." data-val="true">
+        </div>
         <div class="form-group">
-            <label id="LPago1">Fecha</label>
+           <label>Fecha</label>
         <br />
             @Html.TextBoxFor(model => model.FechaCheque, new { @Value = Fecha.ToShortDateString(), @class = "calendario form-control" })
             </div>
@@ -627,13 +620,17 @@ input::placeholder {
         $("#texto").html(valor)
         var idCuenta = $("#CuentaID option:selected").attr('value');
         Glosa(idCuenta);
-
+        // alert(valor);
+        // Si seleccionamos la opción "Texto 2"
+        // nos mostrará por pantalla "Texto 2"
     });
     $("#CuentaID").keyup(function () {
         // Así accedemos al Texto de la opción seleccionada
         var valor = $("#CuentaID option:selected").attr('title');
         $("#texto").html(valor)
-
+        // alert(valor);
+        // Si seleccionamos la opción "Texto 2"
+        // nos mostrará por pantalla "Texto 2"
     });
     var baseUrl = "";
 
@@ -734,10 +731,11 @@ input::placeholder {
 
         $(window).focusin(function () {
             if ($("#ActualizarGrilla").val() == "SI") {
-                //if ($('#Fingreso').is(':hidden')) {
+                
                 $("#ActualizarGrilla").val("NO");
-                   CargaGrilla();
-                                
+				if (window.parent.document.getElementById("Origen").value != "hs") {																	 
+                    CargaGrilla();
+                  }              
             }
         });
     });

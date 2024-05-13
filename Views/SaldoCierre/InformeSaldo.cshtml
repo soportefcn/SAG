@@ -105,7 +105,7 @@
          $("#ExcelsaldoCorp").click(function () {
              var periodo = $("#Periodo").val();
              var mes = $("#Mes").val();
-             window.open("/SAG_5_desarrollo/SaldoCierre/InformeSaldoExcel?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
+             window.open("/SAG_5/SaldoCierre/InformeSaldoExcel?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
              return false;
          });
 
@@ -123,7 +123,7 @@
                  cancelButtonText: 'Cancelar'
              }).then((result) => {
                  if (result.isConfirmed) {
-                window.open("/SAG_5_desarrollo/SaldoCierre/InformeSaldoEliminar?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
+                window.open("/SAG_5/SaldoCierre/InformeSaldoEliminar?Periodo=" + periodo + '&Mes=' + mes, 'LibroBanco');
              Swal.fire(
                'Saldo Corporativo !',
                'Se procedio a Eliminar mes Seleccionado',

@@ -17,4 +17,18 @@ namespace SAG2.Models
         public virtual Presupuesto Presupuesto { get; set; }
         public virtual Cuenta Cuenta { get; set; }
     }
+
+       public class PreDetalle{
+		public int ProyectoID {get; set;}
+		public int mes {get; set;}
+		public int Tipo {get; set;}
+		public int Monto {get; set;}	   
+   }
+       public class DetalleArch
+       {
+           public int CuentaID { get; set; }
+           public int Monto { get; set; }
+           public int Periodo { get; set; }
+           public int Mes { get; set; }
+       }
 }

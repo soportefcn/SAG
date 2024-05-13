@@ -69,7 +69,7 @@
         $(document).ready(function () {
             var periodo = $("#Periodo").val();
             var mes = $("#Mes").val();
-            window.open("/SAG_5_desarrollo/Imprimir/Conciliacion?Periodo=" + periodo + '&Mes=' + mes, 'Conciliacion');
+            window.open("/SAG_5/Imprimir/Conciliacion?Periodo=" + periodo + '&Mes=' + mes, 'Conciliacion');
         });
 	</script>
 }
@@ -339,7 +339,9 @@ else
                 <td align="right">
                     @Html.Raw(@detalle.Monto.ToString("#,##0"))
                     @{
-                        Saldo = Saldo - detalle.Monto;
+                        if(item.Mes == mesSeleccionado && item.Periodo == PeriodoSeleccionado ){
+                            Saldo = Saldo - detalle.Monto;
+                        }
                     }
                 </td>
                 <td align="right"@{

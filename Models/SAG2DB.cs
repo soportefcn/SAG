@@ -50,6 +50,7 @@ namespace SAG2.Models
         public DbSet<TipoRol> TipoRol { get; set; }
         public DbSet<Periodo> Periodo { get; set; }
         public DbSet<Convenio> Convenio { get; set; }
+        public DbSet<ConvenioDescarga> ConvenioDescarga { get; set; }
         public DbSet<Auditoria> Auditoria { get; set; }
         public DbSet<Supervision> Supervision { get; set; }
         public DbSet<Permiso> Permiso { get; set; }
@@ -173,6 +174,7 @@ namespace SAG2.Models
         public DbSet<Clasificacion> Clasificacion { get; set; }
         public DbSet<ConceptosClasificacion> ConceptosClasificacion { get; set; }
         public DbSet<Etapa> Etapa { get; set; }
+        public DbSet<Hallazgo> Hallazgo { get; set; }
         public DbSet<HallazgoCierre> HallazgoCierre { get; set; }
         public DbSet<HallazgoAvance> HallazgoAvance { get; set; }
         public DbSet<Grupo> Grupo { get; set; }
@@ -234,6 +236,7 @@ namespace SAG2.Models
             modelBuilder.Entity<TipoProyecto>().ToTable("TipoProyecto");
             modelBuilder.Entity<TipoPago>().ToTable("TipoPago");
             modelBuilder.Entity<Convenio>().ToTable("Convenios");
+            modelBuilder.Entity<ConvenioDescarga>().ToTable("ConvenioDescarga");
             modelBuilder.Entity<Periodo>().ToTable("Periodos");
 
             modelBuilder.Entity<Supervision>().ToTable("Supervisiones");
@@ -335,6 +338,7 @@ namespace SAG2.Models
             modelBuilder.Entity<Clasificacion>().ToTable("Clasificacion");
             modelBuilder.Entity<ConceptosClasificacion>().ToTable("ConceptosClasificacion");
             modelBuilder.Entity<Etapa>().ToTable("Etapa");
+            modelBuilder.Entity<Hallazgo>().ToTable("Hallazgo");
             modelBuilder.Entity<HallazgoCierre>().ToTable("HallazgoCierre");
             modelBuilder.Entity<HallazgoAvance>().ToTable("HallazgoAvance");
             modelBuilder.Entity<Grupo>().ToTable("Grupo");

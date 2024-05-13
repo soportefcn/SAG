@@ -3,6 +3,10 @@
 @{
     ViewBag.Title = "ConsolidadoMensual";
     SAG2.Models.Usuario Usuario = (SAG2.Models.Usuario)Session["Usuario"];
+    List<SAG2.Models.Hallazgo> HallazgoComentario = new List<SAG2.Models.Hallazgo>();
+    HallazgoComentario = ViewBag.Hallazgocometario;
+   
+    int HallazgoTabla = 0;
     var Meses = new string[12]
     {
         "Enero",
@@ -59,9 +63,9 @@
 
 
 <hr />
-
+<h4>Hallazgos </h4>
 <table class="table-condensed table-bordered">
-    <tr class="info">
+    <tr class="alert-info">
         <th>
            Periodo
         </th>
@@ -116,6 +120,37 @@
 }
 
 </table>
+
+       @foreach (var dato in HallazgoComentario) { 
+            if(dato.Comentario != "" ){
+                HallazgoTabla = 1; 
+            }
+        }
+
+<hr />
+@if(HallazgoTabla == 1 ){
+<h3>Comentarios</h3>
+
+<table  class="table-condensed table-bordered">
+    <thead>
+        <tr class="alert-info">
+            <th>Periodo </th><th>Nombre Programa</th><th colspan="5" nowrap="nowrap" style="width: 612px;">Comentarios</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dato in HallazgoComentario) { 
+            if(dato.Comentario != "" ){
+        <tr>
+            <td> @Meses[(dato.Mes - 1)] - @dato.Periodo</td> <td> @dato.proyecto.NombreLista</td><td style="text-align:justify;" colspan="5">@dato.Comentario</td>
+        </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+}
+
   <script>
       $(document).ready(function () {
           $("#ExcelCC").click(function () {

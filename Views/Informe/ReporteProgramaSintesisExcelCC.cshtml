@@ -75,13 +75,6 @@
     th {
         font-size: 11px !important;
     }
-         .xlCelda {       
-            font-family: "Arial Narrow", sans-serif !important        
-            text-align: right !important;
-            vertical-align: middle !important;
-            border: .5pt solid black !important;
-            width:200px !important;
-        }
 </style>
 
 
@@ -174,19 +167,19 @@
                 <tr>
                     @foreach (var mes in Meses)
                     {
-                        <th class="xlCelda">Pres. $</th>
-                        <th class="xlCelda">Real $</th>
-                        <th class="xlCelda"> Desv. $</th>
-                        <th class="xlCelda"> Desv. %</th>
+                        <th style="width:80px !important;">Pres. $</th>
+                        <th style="width:80px !important;">Real $</th>
+                        <th style="width:80px !important;"> Desv. $</th>
+                        <th style="width:80px !important;"> Desv. %</th>
                         if (mes == 12 || (mes == 6 && mesSeleccion == 13))
                         {
                             if (ViewBag.Mes > 12)
                             {
-                            <th class="xlCelda">Pres. $</th>
-                            <th class="xlCelda">Real $</th>
-                            <th class="xlCelda"> Desv. $</th>
-                            <th class="xlCelda"> Desv. %</th>
-                            <th class="xlCelda"> % Ingr.</th>
+                            <th style="width:80px !important;">Pres. $</th>
+                            <th style="width:80px !important;">Real $</th>
+                            <th style="width:80px !important;"> Desv. $</th>
+                            <th style="width:80px !important;"> Desv. %</th>
+                            <th style="width:80px !important;"> % Ingr.</th>
                             }
 
                         }
@@ -308,7 +301,7 @@
      
                 </tr>
                 <tr>
-                    <th style="background-color: silver; text-align: left">OPERACIÓN</th>
+                    <th style="background-color: silver; text-align: left">OPERACI&Oacute;N</th>
                                               @foreach (var mes in Meses)
                                 {
                                     double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
@@ -343,7 +336,7 @@
                                 }
                 </tr>
                 <tr>
-                    <th style="background-color: silver; text-align: left">INVERSIÓN</th>
+                    <th style="background-color: silver; text-align: left">INVERSI&Oacute;N</th>
                                                     @foreach (var mes in Meses)
                                 {
                                     double valorEgresos = 0;

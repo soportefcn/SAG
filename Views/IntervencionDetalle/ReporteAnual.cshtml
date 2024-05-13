@@ -34,27 +34,21 @@
                     Seleccionar Año Inicio:
                     <select name="anioInicio" id="anioInicio" class="js-autocomplete" onchange="funcion()">
                         <option selected="selected" value="-1"> - Seleccione Año</option>
-                        <option value="2014">2014</option>
-                        <option value="2015">2015</option>
-                        <option value="2016">2016</option>
-                        <option value="2017">2017</option>
-                        <option value="2018">2018</option>
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
+                @for (var i = 2024; i <= DateTime.Now.Year ; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                            {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
                     </select><br />
                     <br />
                     Seleccionar Año Hasta:
                     <select name="anioHasta" id="anioHasta" class="js-autocomplete" onchange="funcion()">
                         <option selected="selected" value="-1"> - Seleccione Año</option>
-                        <option value="2014">2014</option>
-                        <option value="2015">2015</option>
-                        <option value="2016">2016</option>
-                        <option value="2017">2017</option>
-                        <option value="2018">2018</option>
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
+                @for (var i = 2024; i <= DateTime.Now.Year ; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                            {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
                     </select><br />
                     <br />
                     <div class="ocultoImpresion">

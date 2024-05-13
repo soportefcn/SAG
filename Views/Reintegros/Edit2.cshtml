@@ -425,17 +425,12 @@ input[type="text"], textarea
             }
             var monto = new Number($("#Monto").val());
             var MontoOriginal = new Number($("#MontoOriginal").val());
-            var montoEgreso = new Number($("#Monto_Ingresos").val());
+            var montoEgreso = new Number($("#eMonto").val());
             var montoR = $("#MontoI").val();
             var cuenta = new Number(($("#CuentaID").val()));
 
             if (cuenta != 60) {
-                var montoTotal = (monto - MontoOriginal) + montoEgreso;
 
-                if (montoTotal > montoR) {
-                    alert("Supera el monto del Documento");
-                    exit;
-                }
             } else {
                 if (montoEgreso == 0) {
                     montoEgreso = montoR;

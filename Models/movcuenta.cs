@@ -28,6 +28,7 @@ namespace SAG2.Models
         public string Region { get; set; }
         public string codCodeni { get; set; }
         public int ProyectoID { get; set; }
+        public string ProyectoNombre { get; set; }
         public int TipoComprobanteID { get; set; }
         public int IDComprobante { get; set; }
         public int NumeroComprobante { get; set; }

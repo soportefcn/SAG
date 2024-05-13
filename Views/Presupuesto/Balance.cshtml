@@ -6,10 +6,17 @@
     List<SAG2.Models.Movimiento> ingresos = new List<SAG2.Models.Movimiento>();
     List<SAG2.Models.DetalleEgreso> egresos = new List<SAG2.Models.DetalleEgreso>();
     List<SAG2.Models.Movimiento> reintegros = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleReintegro> reintegrosGastos = new List<SAG2.Models.DetalleReintegro>();
+    
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+    
+    dp = (List<SAG2.Models.DetallePresupuesto>)@ViewBag.Detalle;
+    ingresos = (List<SAG2.Models.Movimiento>)@ViewBag.Ingresos;
+    egresos = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Egresos;
+    reintegros = (List<SAG2.Models.Movimiento>)@ViewBag.Reintegros;   
+    reintegrosGastos = (List<SAG2.Models.DetalleReintegro>)@ViewBag.ReintegrosGastos;
 
-    var Ingresos = ViewBag.Ingresos;
-    var Egresos = ViewBag.Egresos;
+    
     int PresupuestoID = 0;
     try
     {
@@ -21,11 +28,10 @@
     }
 
     int proyectoid = ViewBag.pr_id;
-    ingresos = Ingresos;
-    egresos = Egresos;
+
     var Presupuesto = db.Presupuesto.Where(p => p.ID == PresupuestoID);
     //dp = ViewBag.detallePresupuesto;
-    dp = db.DetallePresupuesto.Where(p => p.Presupuesto.ID == PresupuestoID).ToList();
+  
 
     SAG2.Models.Cuenta cuentaAnterior = new SAG2.Models.Cuenta();
     //string Proyecto = ((SAG2.Models.Proyecto)Session["Proyecto"]).NombreLista;
@@ -357,7 +363,19 @@
                                         int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
                                         int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
                                         int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
-
+                                        int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta1.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                        int valorg = 0;
+                                        if (cuenta1.Codigo.Equals("7.1.9"))
+                                        {
+                                            int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                            // int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                            valorg = (valor_egresos + valor_GastosReintegros) - (valor_reintegros + valor_reintegrosgastos);
+                                        }
+                                        else
+                                        {
+                                            valorg = (valor_egresos + valor_GastosReintegros) - valor_reintegros;
+                                        } 
+                           
                                         <td style="text-align: right; display: none;" class="@Html.Raw("Periodo" + mes_inicio)">@valor_presupuesto.ToString("#,##0") </td>
                                                     if (cuenta1.Tipo.Equals("I"))
                                                     {
@@ -397,13 +415,13 @@
                                                                                                             }
                                                                                                             else
                                                                                                             {
-                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style=" text-align: right;">@((valor_egresos - valor_reintegros).ToString("#,##0"))</td>
-                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="display: none;text-align: right;">@((valor_presupuesto - valor_egresos).ToString("#,##0"))</td>
-                                                                                                                if (valor_presupuesto == 0 && valor_egresos == 0)
+                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style=" text-align: right;">@valorg.ToString("#,##0")</td>
+                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="display: none;text-align: right;">@((valor_presupuesto - valorg).ToString("#,##0"))</td>
+                                                                                                                if (valor_presupuesto == 0 && valorg == 0)
                                                                                                                 {
                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">0,0%</td>
                                                                                                                 }
-                                                                                                                else if (valor_egresos == 0)
+                                                                                                                else if (valorg == 0)
                                                                                                                 {
                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right; color: blue;">100,0%</td>
                                                                                                                 }
@@ -413,13 +431,13 @@
                                                                                                                 }
                                                                                                                 else
                                                                                                                 {
-                                                                                                                    <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                    <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                           {@Html.Raw("color: red;");
                                                                                                                           }
-                                                                                                                          else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                          else if (valor_presupuesto - valorg > 0)
                                                                                                                           {@Html.Raw("color: blue;");
                                                                                                                           }">
-                                                                                                                        @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valor_egresos.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
+                                                                                                                        @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valorg.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
                                                                                                                     </td>
                                                                                                                 }
                                                                                                             }
@@ -458,7 +476,18 @@
                                                                                                                     int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
                                                                                                                     int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
                                                                                                                     int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
-
+                                                                                                                    int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta2.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                    int valorg = 0;
+                                                                                                                    if (cuenta2.Codigo.Equals("7.1.9"))
+                                                                                                                    {
+                                                                                                                        int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                        valorg = (valor_egresos + valor_GastosReintegros) - (valor_reintegros + valor_reintegrosgastos);
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        valorg = (valor_egresos + valor_GastosReintegros) - valor_reintegros;
+                                                                                                                    } 
+                                                                                                                    
                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">@valor_presupuesto.ToString("#,##0")</td>
                                                                                                                     if (cuenta1.Tipo.Equals("I"))
                                                                                                                     {
@@ -497,20 +526,20 @@
                                                                                                                     }
                                                                                                                     else
                                                                                                                     {
-                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@((valor_egresos - valor_reintegros).ToString("#,##0"))</td>
-                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valorg.ToString("#,##0")</td>
+                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                               {@Html.Raw("color: red;");
                                                                                                                               }
-                                                                                                                              else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                              else if (valor_presupuesto - valorg > 0)
                                                                                                                               {@Html.Raw("color: blue;");
                                                                                                                               }">
-                                                                                                                            @(( valor_egresos - valor_reintegros).ToString("#,##0"))
+                                                                                                                           @valorg.ToString("#,##0")
                                                                                                                         </td>
-                                                                                                                        if (valor_presupuesto == 0 && valor_egresos == 0)
+                                                                                                                        if (valor_presupuesto == 0 && valorg == 0)
                                                                                                                         {
                                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">0,0%</td>
                                                                                                                         }
-                                                                                                                        else if (valor_egresos == 0)
+                                                                                                                        else if (valorg == 0)
                                                                                                                         {
                                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right; color: blue;">100,0%</td>
                                                                                                                         }
@@ -520,13 +549,13 @@
                                                                                                                         }
                                                                                                                         else
                                                                                                                         {
-                                                                                                                            <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                            <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                                   {@Html.Raw("color: red;");
                                                                                                                                   }
-                                                                                                                                  else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                                  else if (valor_presupuesto - valorg > 0)
                                                                                                                                   {@Html.Raw("color: blue;");
                                                                                                                                   }">
-                                                                                                                                @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valor_egresos.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
+                                                                                                                                @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valorg.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
                                                                                                                             </td>
                                                                                                                         }
                                                                                                                     }
@@ -565,7 +594,18 @@
                                                                                                                             int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
                                                                                                                             int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Egreso.Mes == mes_inicio).Where(d => d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
                                                                                                                             int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
-
+                                                                                                                            int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta3.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                            int valorg = 0;
+                                                                                                                            if (cuenta3.Codigo.Equals("7.1.9"))
+                                                                                                                            {
+                                                                                                                                // int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                                int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals(cuenta3.Codigo)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                                valorg = (valor_egresos + valor_GastosReintegros) - (valor_reintegros + valor_reintegrosgastos);
+                                                                                                                            }
+                                                                                                                            else
+                                                                                                                            {
+                                                                                                                                valorg = (valor_egresos + valor_GastosReintegros) - valor_reintegros;
+                                                                                                                            } 
                                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">@valor_presupuesto.ToString("#,##0")</td>
                                                                                                                             if (cuenta1.Tipo.Equals("I"))
                                                                                                                             {
@@ -604,20 +644,20 @@
                                                                                                                             }
                                                                                                                             else
                                                                                                                             {
-                                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@((valor_egresos - valor_reintegros).ToString("#,##0"))</td>
-                                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valorg.ToString("#,##0")</td>
+                                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                                       {@Html.Raw("color: red;");
                                                                                                                                       }
-                                                                                                                                      else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                                      else if (valor_presupuesto - valorg > 0)
                                                                                                                                       {@Html.Raw("color: blue;");
                                                                                                                                       }">
-                                                                                                                                    @((valor_presupuesto - valor_egresos).ToString("#,##0"))
+                                                                                                                                    @((valor_presupuesto - valorg).ToString("#,##0"))
                                                                                                                                 </td>
-                                                                                                                                if (valor_presupuesto == 0 && valor_egresos == 0)
+                                                                                                                                if (valor_presupuesto == 0 && valorg == 0)
                                                                                                                                 {
                                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">0,0%</td>
                                                                                                                                 }
-                                                                                                                                else if (valor_egresos == 0)
+                                                                                                                                else if (valorg == 0)
                                                                                                                                 {
                                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right; color: blue;">100,0%</td>
                                                                                                                                 }
@@ -627,13 +667,13 @@
                                                                                                                                 }
                                                                                                                                 else
                                                                                                                                 {
-                                                                                                                                    <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                                    <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                                           {@Html.Raw("color: red;");
                                                                                                                                           }
-                                                                                                                                          else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                                          else if (valor_presupuesto - valorg > 0)
                                                                                                                                           {@Html.Raw("color: blue;");
                                                                                                                                           }">
-                                                                                                                                        @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valor_egresos.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
+                                                                                                                                        @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valorg.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
                                                                                                                                     </td>
                                                                                                                                 }
                                                                                                                             }
@@ -670,7 +710,18 @@
                                                                                                                     int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta2.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
                                                                                                                     int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta2.Codigo + ".") && d.Egreso.Mes == mes_inicio && d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
                                                                                                                     int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
-
+                                                                                                                    int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta2.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                    int valorg = 0;
+                                                                                                                    if (cuenta2.Codigo.Equals("7.1.9"))
+                                                                                                                    {
+                                                                                                                         int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals(cuenta2.Codigo)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                        valorg = (valor_egresos + valor_GastosReintegros) - (valor_reintegros + valor_reintegrosgastos);
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        valorg = (valor_egresos + valor_GastosReintegros) - valor_reintegros;
+                                                                                                                    }
+                                                                                                                    
                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">@valor_presupuesto.ToString("#,##0")</td>
                                                                                                                     if (cuenta.Tipo.Equals("I"))
                                                                                                                     {
@@ -709,20 +760,20 @@
                                                                                                                     }
                                                                                                                     else
                                                                                                                     {
-                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@((valor_egresos - valor_reintegros).ToString("#,##0"))</td>
-                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valorg.ToString("#,##0")</td>
+                                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                               {@Html.Raw("color: red;");
                                                                                                                               }
-                                                                                                                              else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                              else if (valor_presupuesto - valorg > 0)
                                                                                                                               {@Html.Raw("color: blue;");
                                                                                                                               }">
-                                                                                                                            @((valor_presupuesto - valor_egresos).ToString("#,##0"))
+                                                                                                                            @((valor_presupuesto - valorg).ToString("#,##0"))
                                                                                                                         </td>
-                                                                                                                        if (valor_presupuesto == 0 && valor_egresos == 0)
+                                                                                                                        if (valor_presupuesto == 0 && valorg == 0)
                                                                                                                         {
                                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">0,0%</td>
                                                                                                                         }
-                                                                                                                        else if (valor_egresos == 0)
+                                                                                                                        else if (valorg == 0)
                                                                                                                         {
                                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right; color: blue;">100,0%</td>
                                                                                                                         }
@@ -732,13 +783,13 @@
                                                                                                                         }
                                                                                                                         else
                                                                                                                         {
-                                                                                                                            <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                            <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                                   {@Html.Raw("color: red;");
                                                                                                                                   }
                                                                                                                                   else if (valor_presupuesto - valor_egresos > 0)
                                                                                                                                   {@Html.Raw("color: blue;");
                                                                                                                                   }">
-                                                                                                                                @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valor_egresos.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
+                                                                                                                                @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valorg.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
                                                                                                                             </td>
                                                                                                                         }
                                                                                                                     }
@@ -769,7 +820,9 @@
                                                                                                             int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta1.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
                                                                                                             int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta1.Codigo + ".") && d.Egreso.Mes == mes_inicio && d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
                                                                                                             int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
-
+                                                                                                            int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta1.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                            int valorg = 0;
+                                                                                                            
                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">@valor_presupuesto.ToString("#,##0")</td>
                                                                                                             if (cuenta.Tipo.Equals("I"))
                                                                                                             {
@@ -808,20 +861,20 @@
                                                                                                             }
                                                                                                             else
                                                                                                             {
-                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@((valor_egresos - valor_reintegros).ToString("#,##0"))</td>
-                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valorg.ToString("#,##0")</td>
+                                                                                                                <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                       {@Html.Raw("color: red;");
                                                                                                                       }
-                                                                                                                      else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                      else if (valor_presupuesto - valorg > 0)
                                                                                                                       {@Html.Raw("color: blue;");
                                                                                                                       }">
-                                                                                                                    @((valor_presupuesto - valor_egresos).ToString("#,##0"))
+                                                                                                                    @((valor_presupuesto - valorg).ToString("#,##0"))
                                                                                                                 </td>
-                                                                                                                if (valor_presupuesto == 0 && valor_egresos == 0)
+                                                                                                                if (valor_presupuesto == 0 && valorg == 0)
                                                                                                                 {
                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;" style="text-align: right;">0,0%</td>
                                                                                                                 }
-                                                                                                                else if (valor_egresos == 0)
+                                                                                                                else if (valorg == 0)
                                                                                                                 {
                                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right; color: blue;">100,0%</td>
                                                                                                                 }
@@ -831,13 +884,13 @@
                                                                                                                 }
                                                                                                                 else
                                                                                                                 {
-                                                                                                                    <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                                    <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                           {@Html.Raw("color: red;");
                                                                                                                           }
-                                                                                                                          else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                          else if (valor_presupuesto - valorg > 0)
                                                                                                                           {@Html.Raw("color: blue;");
                                                                                                                           }">
-                                                                                                                        @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valor_egresos.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
+                                                                                                                        @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valorg.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
                                                                                                                     </td>
                                                                                                                 }
                                                                                                             }
@@ -868,7 +921,20 @@
                                                                                                     int valor_ingresos = ingresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Mes == mes_inicio && d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
                                                                                                     int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.StartsWith(cuenta.Codigo + ".") && d.Egreso.Mes == mes_inicio && d.Egreso.Periodo == periodo_actual).Sum(d => d.Monto);
                                                                                                     int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
-
+                                                                                                    int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                    int valorg = 0;
+                                                                                                    if (cuenta.Codigo.Equals("7.1.9"))
+                                                                                                    {
+                                                                                                        int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals(cuenta.Codigo)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                        // int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                        valorg = (valor_egresos + valor_GastosReintegros) - (valor_reintegros + valor_reintegrosgastos);
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        valorg = (valor_egresos + valor_GastosReintegros) - valor_reintegros;
+                                                                                                    } 
+                           
+                                                                                                    
                                                                                                     <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">@valor_presupuesto.ToString("#,##0")</td>
                                                                                                     if (cuenta.Tipo.Equals("I"))
                                                                                                     {
@@ -907,20 +973,20 @@
                                                                                                     }
                                                                                                     else
                                                                                                     {
-                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@((valor_egresos - valor_reintegros).ToString("#,##0"))</td>
-                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style="text-align: right;">@valorg.ToString("#,##0")</td>
+                                                                                                        <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                               {@Html.Raw("color: red;");
                                                                                                               }
-                                                                                                              else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                              else if (valor_presupuesto - valorg > 0)
                                                                                                               {@Html.Raw("color: blue;");
                                                                                                               }">
-                                                                                                            @((valor_presupuesto - valor_egresos).ToString("#,##0"))
+                                                                                                            @((valor_presupuesto - valorg).ToString("#,##0"))
                                                                                                         </td>
-                                                                                                        if (valor_presupuesto == 0 && valor_egresos == 0)
+                                                                                                        if (valor_presupuesto == 0 && valorg == 0)
                                                                                                         {
                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">0,0%</td>
                                                                                                         }
-                                                                                                        else if (valor_egresos == 0)
+                                                                                                        else if (valorg == 0)
                                                                                                         {
                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right; color: blue;">100,0%</td>
                                                                                                         }
@@ -930,13 +996,13 @@
                                                                                                         }
                                                                                                         else
                                                                                                         {
-                                                                                                            <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valor_egresos < 0)
+                                                                                                            <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;@if (valor_presupuesto - valorg < 0)
                                                                                                                   {@Html.Raw("color: red;");
                                                                                                                   }
-                                                                                                                  else if (valor_presupuesto - valor_egresos > 0)
+                                                                                                                  else if (valor_presupuesto - valorg > 0)
                                                                                                                   {@Html.Raw("color: blue;");
                                                                                                                   }">
-                                                                                                                @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valor_egresos.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
+                                                                                                                @(((decimal.Parse(valor_presupuesto.ToString()) - decimal.Parse(valorg.ToString())) * 100 / decimal.Parse(valor_presupuesto.ToString())).ToString("#,##0.0#"))%
                                                                                                             </td>
                                                                                                         }
                                                                                                     }

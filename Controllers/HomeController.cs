@@ -79,8 +79,9 @@ namespace SAG2.Controllers
             // Rem aqui va cambiar supervisiones
             @ViewBag.Contratos = db.Contrato.Include(c => c.Servicio).Where(c => c.ProyectoID == proyectoID).OrderBy(c => c.Servicio.Nombre).ToList();
             @ViewBag.Resolucion = db.Resolucion.Where(d => d.ProyectoID == proyectoID).OrderByDescending(d => d.ID).ToList();
-            @ViewBag.ResolucionDoc = db.ResolucionDescarga.Where(d => d.Resolucion.ProyectoID == proyectoID).ToList(); 
-            
+            @ViewBag.ResolucionDoc = db.ResolucionDescarga.Where(d => d.Resolucion.ProyectoID == proyectoID).ToList();
+            @ViewBag.ConvenioArchivo = db.ConvenioDescarga.Where(d => d.ProyectoID == proyectoID && d.Estado == 1).FirstOrDefault();
+
             string ValorUSS = "";
             string FechaUSS = "";
 

@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "Reporte Linea Estandar";
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+   
+    var MesesData = new string[12]
+    {
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
+
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+</script>
+
+<style media="print">
+    @@page {
+        size: landscape;
+        margin: 1cm !important;
+    }
+
+    body {
+        font-family: "Times New Roman" !important;
+        margin: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+    }
+
+    td {
+        font-size: 10px !important;
+    }
+
+    th {
+        font-size: 12px !important;
+    }
+
+    h2 {
+        font-size: 16px !important;
+        text-align: center;
+    }
+
+    .pie {
+        display: none;
+    }
+
+    .permisos, .body, .contenedor {
+        padding: 0 !important;
+        border: 0 !important;
+        display: block !important;
+    }
+
+    .permisos {
+        width: 90% !important;
+    }
+
+    .ocultoImpresion, .menu, .top {
+        display: none;
+    }
+
+    .soloImpresion {
+        display: block;
+    }
+
+    .DatosPresupuesto {
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    th {
+        font-size: 11px !important;
+    }
+</style>
+<style media="screen">
+    th {
+        font-size: 11px !important;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+   <h2><i class="fa fa-file-text-o"></i> Reporte Estandar por Línea de Atención</h2>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6">
+            <label class="control-label" for="Programas">Linea</label>
+          @Html.DropDownList("LineaID", null, htmlAttributes: new { @class = "form-control js-autocomplete" });
+        </div>
+        <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6">
+           <label class="control-label" for="Mes">Mes</label>  
+                    	    <select class="form-control" name="Mes" id="Mes">
+                                @for (var i = 0; i < 12; i++)
+                                {
+                                    <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1))
+                                                                                  {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@MesesData[@i])</option>
+                                }
+                                <option value="13" @if (@ViewBag.mes == 13)
+                                                   {@Html.Raw("selected=\"selected\"")}>Primer Semestre</option>
+                                <option value="14" @if (@ViewBag.mes == 14)
+                                                   {@Html.Raw("selected=\"selected\"")}>Segundo Semestre</option>
+                                 <option value="15" @if (@ViewBag.mes == 15)
+                                                    {@Html.Raw("selected=\"selected\"")}>Anual</option>
+                               </select>    
+        </div>
+          <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6">
+            <label class="control-label" for="Periodo">Año</label>
+                         <select class="form-control" name="Periodo" id="Periodo">
+                            @for (var i = DateTime.Now.Year - 3; i <= DateTime.Now.Year + 1; i++)
+                            {
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                           {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                            }
+                            </select>
+        </div>
+
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 centrado">
+            <input type="submit" name="ReportePrograma" value="Procesar" class="btn btn-primary" />
+            @if (ViewBag.Entrada == 2)
+            {  
+                @Html.ActionLink("Excel", "ReporteLineaEstandarExcel", "EstadoResultado", new { LineaID = ViewBag.ID, Mes = ViewBag.Mes, periodo = ViewBag.Periodo }, new { @class = "btn btn-success" })
+            }
+        </div>
+    </div>
+    <hr/>
+}
+
+ @RenderPage("_EstandarReal.cshtml")  
+

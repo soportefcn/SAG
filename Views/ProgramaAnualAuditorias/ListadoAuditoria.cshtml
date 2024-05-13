@@ -18,11 +18,11 @@
 
     <div class="form-group form-inline"  style="margin-top: 20px;">
         <div class="form-group">
-       Proyecto
+       Programa
     </div>
     <div class="form-group">
         <select name="ProyectoID" id="ProyectoID"  class="js-autocomplete" style="width: 300px;">
-            <option value="0" > - Seleccione proyecto</option>
+            <option value="0" > - Seleccione Programa</option>
             @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
             { 
             <option value="@Proyecto.ID">@Proyecto.NombreEstado</option>
@@ -58,7 +58,7 @@
             Supervisor 
         </th>
         <th>
-            Proyecto
+            Programa
         </th>
 
         <th>

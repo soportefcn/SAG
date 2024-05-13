@@ -1,0 +1,69 @@
+﻿@model IEnumerable<SAG2.Models.Resolucion>
+
+@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SAG2.Models.ResolucionDescarga> ResolDoc = (List<SAG2.Models.ResolucionDescarga>)@ViewBag.ResolucionDoc;
+}
+
+<h2>Prorroga/Urgencia</h2>
+
+<p style="text-align:right">   
+     <a class="btn btn-primary" href="@Url.Action("Create","Resolucion")"><i class="fa fa-plus-square" aria-hidden="true"></i> Resolucion</a>
+</p>
+<table class="table table-bordered">
+    <tr class="success">
+        <th>
+           Tipo
+        </th>
+        <th>
+            Res. Ex
+        </th>
+        <th>
+            Fecha Inicio
+        </th>
+        <th>
+            Fecha Termino
+        </th>
+        <th>
+            Comentarios
+        </th>
+        <th colspan ="2">Accion</th>
+        
+    </tr>
+
+@foreach (var item in Model) {
+    DateTime FechInicio = item.FechaInicio;
+    DateTime FecTermino = item.FechaTermino;
+    var TDocumento = ResolDoc.Where(d => d.ResolucionID == item.ID).ToList();
+    <tr>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.tipo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ResEx)
+        </td>
+        <td>
+            @FechInicio.ToShortDateString()
+        </td>
+        <td>
+            @FecTermino.ToShortDateString()
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comentarios)
+        </td>
+        <td>
+           @foreach(var Documento in TDocumento  ){                   
+                <a  href="@Url.Action("Download","BienAutorizacion",new {ImageName = Documento.NombreArchivo })"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color:red"></i></a>
+            }
+        </td>
+        <td>
+          
+             <a  href="@Url.Action("Edit", "Resolucion", new { id=item.ID })">  <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true" style="color:green"></i></a>
+           
+        </td>
+    </tr>
+}
+
+</table>

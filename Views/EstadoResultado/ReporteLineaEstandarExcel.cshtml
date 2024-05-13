@@ -1,0 +1,46 @@
+﻿
+@{
+      
+    Layout = null;
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.Charset = "utf-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=RptstLinea_" + @ViewBag.Sigla +"_" + DateTime.Now.ToShortDateString() + ".xls");
+
+
+    string FechaSis = DateTime.Now.ToShortDateString();
+
+}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reporte Programa Estandar</title>
+        <style>
+            .text{
+                mso-number-format:"\@@"; /*force text*/
+                white-space: nowrap;
+                text-align: left;
+                mso-protection:locked;
+            }
+
+            .por100 {
+                white-space: nowrap;
+                mso-number-format:"Percent";
+                text-align: right;
+                mso-number-format:"\[Black\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+            }
+
+            .num {
+                white-space: nowrap;
+                text-align: right;
+                mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+            }
+        </style>
+    </head>
+    
+    <body>
+          @RenderPage("_EstandarRealExcel.cshtml")  
+    </body>
+
+</html>

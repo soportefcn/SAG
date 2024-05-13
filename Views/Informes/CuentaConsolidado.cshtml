@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<SAG2.Models.movcuentatr>
 @{
     ViewBag.Title = "Cuentas";
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
 }
     <script type="text/javascript">
         $(document).ready(function() {
@@ -70,8 +71,9 @@
             <th>Tipo</th>
             <th>Region</th>
             <th>CC</th>
+            <th>Nombre Programa</th>
         <th>Tipo Movimiento</th>
-        <th>N° Comprobante</th>
+        <th>N° </th>
         <th>Fecha</th>
        <th>Cuenta </th>
         <th>N° Cheque</th>
@@ -91,6 +93,7 @@
              <td>@item.Tipo  </td>
             <td>@item.Region   </td>
             <td>@item.codCodeni </td>
+            <td>@item.ProyectoNombre </td>
             <td align="center">
                 @{ 
             if (item.TipoComprobanteID == 1)
@@ -133,6 +136,7 @@
              <td>@item.Tipo  </td>
             <td>@item.Region   </td>
             <td>@item.codCodeni </td>
+            <td>@item.ProyectoNombre </td>
             <td align="center">
                 @{ 
             if (item.TipoComprobanteID == 1)

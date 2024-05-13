@@ -32,8 +32,15 @@ namespace SAG2.Controllers
                 mes = (int)Session["Mes"];
                 ProyectoID = Proyecto.ID;
             }
-
-          
+            string ComentarioHallazgo = "";
+            try
+            {
+                ComentarioHallazgo = db.Hallazgo.Where(d => d.ProyectoID == ProyectoID && d.Periodo == periodo && d.Mes == mes).FirstOrDefault().Comentario;
+            }
+            catch (Exception) {
+                ComentarioHallazgo = "";
+            }
+            ViewBag.ComentarioHallazgo = ComentarioHallazgo;
             ViewBag.DesdeMes = mes;
             ViewBag.DesdePeriodo = periodo;           
             ViewBag.ProyectoID = ProyectoID;
@@ -112,7 +119,17 @@ namespace SAG2.Controllers
 
             Proyecto Proyecto = db.Proyecto.Find(ProyectoID);
 
-           
+
+            string ComentarioHallazgo = "";
+            try
+            {
+                ComentarioHallazgo = db.Hallazgo.Where(d => d.ProyectoID == ProyectoID && d.Periodo == periodo && d.Mes == mes).FirstOrDefault().Comentario;
+            }
+            catch (Exception)
+            {
+                ComentarioHallazgo = "";
+            }
+            ViewBag.ComentarioHallazgo = ComentarioHallazgo;
 
             ViewBag.DesdeMes = mes;
             ViewBag.DesdePeriodo = periodo;
@@ -193,6 +210,40 @@ namespace SAG2.Controllers
             int mes = Int32.Parse(form["Mes"]);
             DateTime FechaPeriodo = new DateTime(periodo, mes, 1);
             int ProyectoID = Int32.Parse(form["ProyectoID"]);
+            string comentario = form["HallazgoComentario"];
+            try
+            {
+                if (comentario.Trim() != "")
+                {
+                    Hallazgo VerRegistroHC = db.Hallazgo.Where(d => d.ProyectoID == ProyectoID && d.Periodo == periodo && d.Mes == mes).FirstOrDefault();
+                    if (VerRegistroHC == null)
+                    {
+                        Hallazgo hallazgo = new Hallazgo();
+                        hallazgo.ProyectoID = ProyectoID;
+                        hallazgo.Periodo = periodo;
+                        hallazgo.Mes = mes;
+                        hallazgo.UsuarioID = Usuario.ID;
+                        hallazgo.Fecha = DateTime.Now;
+                        hallazgo.Comentario = comentario;
+                        hallazgo.FechaPeriodo = FechaPeriodo;
+                        db.Hallazgo.Add(hallazgo);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        VerRegistroHC.Comentario = comentario;
+                        db.Entry(VerRegistroHC).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                    }
+                }
+            
+            }
+            catch (Exception) { 
+            
+            }
+
+
             foreach (string dato in form)
             {
                 if (dato.Contains("OBS"))
@@ -253,6 +304,9 @@ namespace SAG2.Controllers
 
             List<HallazgoCierre> Hallazgo = new List<HallazgoCierre>();
             Hallazgo = db.HallazgoCierre.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();
+            List<Hallazgo> HC = new List<Models.Hallazgo>();
+            HC = db.Hallazgo.Where(d => d.Mes == mes && d.Periodo == periodo).ToList();
+            ViewBag.Hallazgocometario = HC.ToList();
             ViewBag.periodo = periodo;
             ViewBag.mes = mes;
             return View(Hallazgo);       
@@ -266,6 +320,11 @@ namespace SAG2.Controllers
             List<HallazgoCierre> Hallazgo = new List<HallazgoCierre>();
         
             Hallazgo = db.HallazgoCierre.Where(d => d.FechaPeriodo >= Inicio && d.FechaPeriodo <= Fin).OrderBy(d => d.FechaPeriodo).ToList();
+
+            List<Hallazgo> HallazgoComentario = new List<Hallazgo>();
+            HallazgoComentario = db.Hallazgo.Where(d => d.FechaPeriodo >= Inicio && d.FechaPeriodo <= Fin).OrderBy(d => d.FechaPeriodo).ToList();
+
+            ViewBag.Hallazgocometario = HallazgoComentario.ToList();
            
             return View(Hallazgo);
         }
@@ -280,6 +339,11 @@ namespace SAG2.Controllers
             //   IniLog = db.InicioLog.Where(d => d.Fecha >= Inicio).Where( d =>  d.Fecha <= Fin).OrderByDescending(d => d.Fecha).ToList();
             List<HallazgoCierre> Hallazgo = new List<HallazgoCierre>();
             Hallazgo = db.HallazgoCierre.Where(d => d.FechaPeriodo >= Inicio && d.FechaPeriodo <= Fin).OrderBy(d => d.FechaPeriodo).ToList();
+
+            List<Hallazgo> HallazgoComentario = new List<Hallazgo>();
+            HallazgoComentario = db.Hallazgo.Where(d => d.FechaPeriodo >= Inicio && d.FechaPeriodo <= Fin).OrderBy(d => d.FechaPeriodo).ToList();
+
+            ViewBag.Hallazgocometario = HallazgoComentario.ToList();
 
             return View(Hallazgo);
 

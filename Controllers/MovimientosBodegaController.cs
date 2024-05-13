@@ -25,14 +25,15 @@ namespace SAG2.Controllers
             ViewBag.ArticuloID = new SelectList(db.Articulo.OrderBy(a => a.Nombre), "ID", "NombreLista");
             ViewBag.periodo = Session["Periodo"].ToString();
             ViewBag.mes = Session["Mes"].ToString();
-
             return View();
         }
 
         public ActionResult MovimientosArticulos(int articuloID)
         {
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            Bodega bodega = db.Bodega.Where(bb => bb.ProyectoID == Proyecto.ID).Where(bb => bb.ArticuloID == articuloID).Take(1).Single();
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];          
+            int periodo = int.Parse(Session["Periodo"].ToString());
+            int mes = int.Parse(Session["Mes"].ToString());
+            Bodega bodega = db.Bodega.Where(bb => bb.ProyectoID == Proyecto.ID && bb.ArticuloID == articuloID && bb.Periodo == periodo && bb.Mes == mes).FirstOrDefault();
             Articulo articulo = db.Articulo.Where(a => a.ID == articuloID).Take(1).Single();
             
             ViewBag.saldo = bodega.Saldo;
@@ -228,7 +229,7 @@ namespace SAG2.Controllers
             int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
-            return View(db.MovimientoBodega.Where(b => b.Periodo == periodo).Where(b => b.Mes == mes).Where(b => b.ProyectoID == Proyecto.ID).Where(b => b.Tdoc ==  2).OrderByDescending(b => b.ID).ToList());
+            return View(db.MovimientoBodega.Where(b => b.Periodo == periodo).Where(b => b.Mes == mes).Where(b => b.ProyectoID == Proyecto.ID).Where(b => b.Salida >  0).OrderByDescending(b => b.ID).ToList());
             
         }
         public ActionResult ListarDonaciones()
@@ -403,18 +404,12 @@ namespace SAG2.Controllers
         {
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.Periodo = (int)Session["Periodo"];
-            ViewBag.Mes = (int)Session["Mes"];
-
-           ViewBag.ArticuloID = new SelectList(db.Articulo.OrderBy(a => a.Nombre), "ID", "NombreLista");
-           ViewBag.CategoriaID = new SelectList(db.Categoria, "ID", "nombre");
-            //if (ViewBag.Fecha == "")
-            //{
-                ViewBag.Fecha = DateTime.Now.ToString("yyyy/MM/dd");
-            //}
-            
-   
+            ViewBag.Mes = (int)Session["Mes"];       
+            ViewBag.CategoriaID = new SelectList(db.Categoria, "ID", "nombre");
+            ViewBag.Fecha = DateTime.Now.ToString("dd/MM/yyyy");
             return View();
         }
+
         [HttpPost]
         public ActionResult MovimientoSalida(MovimientosBodega movimientosbodega)
         {
@@ -648,16 +643,19 @@ namespace SAG2.Controllers
         }
         public ActionResult MovientoSalidaEdit(int id)
         {
+            int periodo = (int)Session["Periodo"];
+            int mes = (int)Session["Mes"];
             MovimientosBodega Entrada = db.MovimientoBodega.Find(id);
             ViewBag.Articulos = db.Articulo.Where(a => a.CategoriaID == Entrada.Articulo.CategoriaID).ToList();
+            ViewBag.Saldo = db.Bodega.Where(d => d.Mes == mes && d.Periodo == periodo && d.ArticuloID == Entrada.ArticuloID && d.ProyectoID == Entrada.ProyectoID).FirstOrDefault().Saldo;
             return View(Entrada);
         }
         [HttpPost]
         public ActionResult MovientoSalidaEdit(MovimientosBodega movimientosbodega)
         {
-
             int paso = 0;
             //revisar pro
+            int SaldoDoc = Int32.Parse(Request.Form["SalidaDocumento"].ToString());
             MovimientosBodega Entrada = db.MovimientoBodega.Find(movimientosbodega.ID);
             int saldorevisar = 0;
             int saldorevisar2 = 0;
@@ -843,10 +841,9 @@ namespace SAG2.Controllers
             try
             {
                 MovimientosBodega mb = db.MovimientoBodega.Find(id);
-                Bodega bodega = db.Bodega.Where(b => b.ProyectoID == mb.ProyectoID).Where(b => b.ArticuloID == mb.ArticuloID).Where(b => b.Periodo == mb.Periodo).Where(b => b.Mes == mb.Mes).Take(1).Single();
-                
+                Bodega bodega = db.Bodega.Where(b => b.ProyectoID == mb.ProyectoID).Where(b => b.ArticuloID == mb.ArticuloID).Where(b => b.Periodo == mb.Periodo).Where(b => b.Mes == mb.Mes).Take(1).Single();              
         
-                if (mb.Tdoc == 2)
+                if (mb.Salida > 0)
                 {
 
                     bodega.Salida = bodega.Salida - mb.Salida;

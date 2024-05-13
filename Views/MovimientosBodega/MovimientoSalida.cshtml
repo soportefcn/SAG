@@ -24,71 +24,76 @@ input[type="text"], textarea
 }
 </style>
 <div id="SAGBox" class="control_bodega">
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $(".js-autocomplete").select2();
-                });
+    <script type="text/javascript">
+        $(document).ready(function() {
+             $(".js-autocomplete").select2();
+            });
     </script>
     <h2>Control de bodega</h2>
 @using (Html.BeginForm())
 {
-    @Html.Hidden("MovimientosBodegaID")
-               <fieldset>
-         <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Movimiento de Egreso de Articulo</h3>
-  </div>
-  <div class="panel-body">
-   <div class="form-group form-inline" style="text-align:right" >
-        <div class="form-group">
-            <label>Mes</label>
-         </div>
-         <div class="form-group">
-         <select name="Mes" id="Mes" class="form-control">
-          @{ if (@ViewBag.mes == 1)
-            {
-                <option value="12">@Html.Raw(@Meses[11])</option>
-                <option value="@Html.Raw((@ViewBag.mes).ToString())"@Html.Raw("selected=\"selected\"")>@Html.Raw(@Meses[@ViewBag.mes - 1])</option>
-
-            }
-            else
-             {
-                 <option value="@Html.Raw((@ViewBag.mes - 1).ToString())">@Html.Raw(@Meses[@ViewBag.mes - 2])</option>
-                  <option value="@Html.Raw((@ViewBag.mes).ToString())"@Html.Raw("selected=\"selected\"")>@Html.Raw(@Meses[@ViewBag.mes - 1])</option>
-                                
-             }  
-          }                      
-          </select>
-          </div>
-          <div class="form-group"> 
-            <label>Año</label>
+    <fieldset>             
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        <h3 class="panel-title">Movimiento de Egreso de Articulo</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group form-inline">
+                    <div class="form-group"> <label>Fecha</label>   </div>            
+                    <input name="Fecha" id="Fecha"  value="@ViewBag.Fecha" maxlength="12" class="calendario form-control"/>
+                </div>
+            </div>
+           <div class="col-md-8">
+                <div class="form-group form-inline" style="text-align:right" >
+                    <div class="form-group">
+                        <label>Mes</label>
+                    </div>
+                <div class="form-group">
+                    <select name="Mes" id="Mes" class="form-control">
+                    @{ if (@ViewBag.mes == 1)
+                        {
+                            <option value="12">@Html.Raw(@Meses[11])</option>
+                            <option value="@Html.Raw((@ViewBag.mes).ToString())"@Html.Raw("selected=\"selected\"")>@Html.Raw(@Meses[@ViewBag.mes - 1])</option>
+                        }
+                    else
+                     {
+                         <option value="@Html.Raw((@ViewBag.mes - 1).ToString())">@Html.Raw(@Meses[@ViewBag.mes - 2])</option>
+                         <option value="@Html.Raw((@ViewBag.mes).ToString())"@Html.Raw("selected=\"selected\"")>@Html.Raw(@Meses[@ViewBag.mes - 1])</option>                              
+                     }  
+                  }                      
+                </select>
+            </div>
+            <div class="form-group"> 
+                <label>Año</label>
            </div>
            <div class="form-group"> 
-                <input type="text" name="Periodo" id="Periodo" class="form-control"  readonly="readonly" value ="@ViewBag.Periodo" style="width: 57px" /> 
-            
+                <input type="text" name="Periodo" id="Periodo" class="form-control"  readonly="readonly" value ="@ViewBag.Periodo" style="width: 57px" />            
             </div>         
          </div>
+        </div>
+
+      </div>
       <hr />
     <h3>Articulo</h3>
     <div class="form-inline" style="margin-bottom: 20px;">
         <div class="form-group" style="margin-right: 10px;">
-            <label>Categoría</label>
+            <label>Categoría</label> <br /> 
+          @Html.DropDownList("CategoriaID", null, "-- SELECCIONE UNA CATEGORIA --", new { @class = "form-control js-autocomplete"} ) 
         </div>
         <div class="form-group" style="margin-right: 10px;">
-            @Html.DropDownList("CategoriaID", null, new { @class= "form-control" })
-
-        </div>
-
-            <div class="form-group" style="margin-right: 10px;">
-                <label>Artículo</label>
-            </div>
-
-
-        <div class="form-group">
-            <select name="ArticuloID" id="ArticuloID" tabindex="5" class="form-control js-autocomplete">
-                <option>Seleccione Categoría</option>
+                <label>Artículo</label><br />
+   
+            <select name="ArticuloID" id="ArticuloID" tabindex="5" class="form-control js-autocomplete" style="width:200px">
+                <option>-- SELECCIONE UNA CATEGORIA --</option>
             </select>
         </div>
+         <div class="form-group" style="margin-right: 25px;">
+                   <label>Saldo Actual</label><br />
+             <input type="text" name="Saldo" id="Saldo" class="form-control" readonly="readonly" />
+
+         </div>
     </div>
        <div class="form-inline" style="margin-bottom: 20px;">
            <div class="form-group" style="margin-right: 10px;">
@@ -97,21 +102,13 @@ input[type="text"], textarea
            <div class="form-group">
                <input type="text" name="Salida" id="Salida" class="form-control" />
            </div>
-           <div class="form-group">
-               <label>Fecha</label>
-               <label></label>
-               <input name="Fecha" id="Fecha"  value="@ViewBag.Fecha" maxlength="12" class="calendario form-control"/>
-           </div>
-               </div>
-           <div class="form-group form-inline">
-               <div class="form-group" style="margin-right: 25px;">
-                   <label>Saldo</label>
-               </div>
-               <div class="form-group"><input type="text" name="Saldo" id="Saldo" class="form-control" /></div>
+      </div>
+             <label>Destino y Observaciones </label>
+              @Html.TextArea("Observaciones", new {@class = "form-control"})          
+      <hr />
+      <div class="form-group form-inline">
 
            </div>
-           <label>Destino y Observaciones </label>
-           <input class="form-control" type="text" name="Observaciones" id="Observaciones" style="width: 610px;" />
        </div>
       <div class="panel-footer">
     <div  style ="width: 400px ; display:inline-block">
@@ -119,22 +116,17 @@ input[type="text"], textarea
             <a class="btn btn-default" href="/SAG_5/MovimientosBodega/movimientoSalida"><span class ="fa fa-file-o  fa-fw"></span>NUEVO</a>
         </div>
          <div style="float :right;width:150px;display:inline-block">
-         <input class ="btn btn-primary" type="submit" value="Guardar" />
+         <input class ="btn btn-primary" type="button" value="Guardar" id="GBmv" name ="GBmv" />
          </div>
    
 </div>
-                 
-                                      
-                   </fieldset>
+                                                       
+   </fieldset>
     if (TempData["Message"] != null)
     {
         @Html.Raw("<script>alert('" + TempData["Message"] + ".');</script>");
     }
-                <fieldset style="height: 18px;">
-                    <img src="@Url.Content("~/Content/Images/Empty.png")" id="LimpiarFormulario" width="20" height="20" style="cursor: pointer;" title="Limpiar formulario" />
-                    <img src="@Url.Content("~/Content/Images/Delete.png")" id="BorrarMovimientoBodega" width="20" height="20" style="cursor: pointer;" title="Borrar movimiento" />
-                </fieldset>
-           
+         
 
    
 }
@@ -142,21 +134,25 @@ input[type="text"], textarea
 <script type="text/javascript" language="javascript">
     $(document).ready(function () {
         $('#Mes').change(function () {
-            var mesactual = @ViewBag.mes  
-                    if(mesactual == 1) {
-                        if ($('#Mes').val() == 12) {
-                            var anio = $('#Periodo').val();
-                            var valor = anio - 1;
-                            $('#Periodo').val(valor);
-                        } else {
-                            var anio = $('#Periodo').val();
-                            var valor = @ViewBag.Periodo
+            var mesactual = @ViewBag.mes;  
+            if(mesactual == 1) {
+                if ($('#Mes').val() == 12) {
+                    var anio = $('#Periodo').val();
+                    var valor = anio - 1;
+                    $('#Periodo').val(valor);
+                } else {
+                    var anio = $('#Periodo').val();
+                    var valor = @ViewBag.Periodo;
                     $('#Periodo').val(valor);
                 }
             }
-                });
+        });
+
         $("#CategoriaID").change(function () {
-            $.get('/SAG_5/Articulos/Articulos/' + $(this).val(), function (response) {
+            var periodo = $("#Periodo").val();
+            var mes = $("#Mes").val();
+            $("#Saldo").val("0");
+            $.get('/SAG_5/Articulos/ArticuloSaldo/?id=' + $(this).val() +"&periodo="+ periodo + "&mes=" + mes , function (response) {       
                 var articulos = $.parseJSON(response);
                 var ddlArticulos = $('#ArticuloID');
                 $('#ArticuloID > option').remove();
@@ -169,27 +165,24 @@ input[type="text"], textarea
                     }
                 }
             });
-        });
-     
+        });     
 
 
         $("#ArticuloID").change(function () {
             var periodo = $("#Periodo").val();
             var mes = $("#Mes").val();
             $.get('/SAG_5/Bodega/darsaldo/?articuloID=' + $(this).val() +"&periodo="+ periodo + "&mes=" + mes , function (response) {
-            var saldo = $.parseJSON(response);
-            if (saldo.length == 0) {
-                alert("El producto no tiene Saldo");
-                $("#Saldo").val("0");
-            }
-            else {
+                var saldo = $.parseJSON(response);
+                if (saldo.length == 0) {
+                    alert("El producto no tiene Saldo");
+                    $("#Saldo").val("0");
+                }
+                else {
+                    $("#Saldo").val(saldo[0].saldos);
+                }           
+            });      
+        });
 
-                $("#Saldo").val(saldo[0].saldos);
-            }
-           
-        });
-       
-        });
         $("#Mes").change(function () {
             var periodo = $("#Periodo").val();
             var mes = $("#Mes").val();
@@ -203,7 +196,6 @@ input[type="text"], textarea
                         $("#Saldo").val("0");
                     }
                     else {
-
                         $("#Saldo").val(saldo[0].saldos);
                     }
 
@@ -211,6 +203,65 @@ input[type="text"], textarea
             }
 
         });
+
+        $("#GBmv").click(function () {
+            var articulo = $("#ArticuloID").val();
+            var Salida = $("#Salida").val();
+            var Saldo = $("#Saldo").val();
+            var xpaso = 1;
+            var mensaje = "";
+          
+            if (isNaN(Saldo)) {
+                xpaso = 0;            
+            }   
+            if (isNaN(Salida)) {
+                xpaso = 0;            
+            }  
+            if (isNaN(articulo)) {
+             
+                xpaso = 0;
+            }  
+            if (articulo == 1) {
+             
+                xpaso = 0;
+            }
+            if ( Salida === '') {
+                xpaso = 0;  
+            }
+            if (Salida > Saldo ) {
+             
+                xpaso = 0;
+            }
+            if( xpaso == 1 ){
+                Swal.fire({
+                    title: '¿Esta Seguro?',
+                    text: "Se realizara la salida ",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si ',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("form").submit();
+            }
+        })
+    }else{
+       
+
+        	Swal.fire(
+					  'Bodega!',
+					  'Revise Informacion Ingresada  ',
+					  'error'
+					);
+    }
+
+
+    });
+
+
+
     });
 
 </script>

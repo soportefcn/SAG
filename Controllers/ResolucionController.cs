@@ -22,7 +22,11 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];          
             return View(db.Resolucion.Where(d => d.ProyectoID == Proyecto.ID).OrderByDescending(d => d.ID).ToList());
         }
-
+        public ViewResult Listado() {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            ViewBag.ResolucionDoc = db.ResolucionDescarga.Where(d => d.Resolucion.ProyectoID == Proyecto.ID).ToList();
+            return View(db.Resolucion.Where(d => d.ProyectoID == Proyecto.ID).OrderByDescending(d => d.ID).ToList());
+        }
         //
         // GET: /Resolucion/Details/5
 
@@ -32,6 +36,79 @@ namespace SAG2.Controllers
             return View(resolucion);
         }
 
+
+
+        public ActionResult Convenio()
+        {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int proyectoID = Proyecto.ID;
+            int ConvenioId = Proyecto.ConvenioID;
+            Convenio convemio = db.Convenio.Find(ConvenioId);
+            FormConvenio ConvenioF = new FormConvenio();
+            ConvenioF.ID = ConvenioId;
+            ConvenioF.NroPlazas = convemio.NroPlazas;
+            ConvenioF.ResEx = convemio.ResEx;
+
+            ConvenioF.Comentarios = convemio.Comentarios;
+            ConvenioF.FechaInicio = convemio.FechaInicio;
+            ConvenioF.FechaTermino = convemio.FechaTermino;
+            ViewBag.ConvenioArchivo = db.ConvenioDescarga.Where(d => d.ProyectoID == proyectoID && d.Estado == 1).FirstOrDefault();
+            TempData["Message"] = null;
+            return View(ConvenioF);
+        }
+
+
+
+        [HttpPost]
+        public ActionResult Convenio(FormConvenio ConvenioF, HttpPostedFileBase file)
+        {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario Usuario = (Usuario)Session["Usuario"];
+
+            int proyectoID = Proyecto.ID;
+
+            Convenio Registro = db.Convenio.Find(ConvenioF.ID);
+
+            Registro.Comentarios = ConvenioF.Comentarios;
+            Registro.FechaInicio = ConvenioF.FechaInicio;
+            Registro.FechaTermino = ConvenioF.FechaTermino;
+            Registro.ResEx = ConvenioF.ResEx;
+            Registro.NroPlazas = ConvenioF.NroPlazas;
+            db.Entry(Registro).State = EntityState.Modified;
+            db.SaveChanges();
+
+
+            try
+            {
+                if (file.ContentLength > 0)
+                {
+                    string fE = DateTime.Now.Year + "" + DateTime.Now.Month + "" + DateTime.Now.Day;
+                    string filename = "Cn" + Proyecto.CodCodeni + "_" + fE + ".pdf";
+                    string _path = Path.Combine(Server.MapPath("~/archivos"), filename);
+                    file.SaveAs(_path);
+
+                    db.Database.ExecuteSqlCommand("UPDATE ConvenioDescarga SET Estado = 2 WHERE ProyectoID = " + proyectoID);
+
+
+                    ConvenioDescarga trDocumento = new ConvenioDescarga();
+                    trDocumento.NombreArchivo = _path;
+                    trDocumento.ProyectoID = proyectoID;
+                    trDocumento.UsuarioID = Usuario.ID;
+                    trDocumento.Fecha = DateTime.Now;
+                    trDocumento.Estado = 1;
+                    db.ConvenioDescarga.Add(trDocumento);
+
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+
+            return RedirectToAction("Index", "Home");
+        }
         //
         // GET: /Resolucion/Create
 
@@ -143,9 +220,37 @@ namespace SAG2.Controllers
  
                 db.Entry(resolucion).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Create");
+
+               
+                try
+                {
+                    if (file.ContentLength > 0)
+                    {
+                        DateTime fec = DateTime.Now;
+                        string FecX = fec.ToString("ddMMyyyy");
+                        string filename = "Res" + resolucion.ProyectoID + "_" + resolucion.ID + "_" + FecX + ".pdf";
+                        string _path = Path.Combine(Server.MapPath("~/archivos"), filename);
+                        file.SaveAs(_path);
+                        ResolucionDescarga trDocumento = db.ResolucionDescarga.Where(dx => dx.ResolucionID == resolucion.ID).FirstOrDefault();
+                        
+                        trDocumento.NombreArchivo = _path;
+                        trDocumento.ResolucionID = resolucion.ID;
+                        db.Entry(trDocumento).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+
+
+
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Create");
+
+            return RedirectToAction("Index", "Home");
         }
 
 

@@ -165,7 +165,7 @@ input[type="text"], textarea
             var CuentaID = $("#CuentaID").val();
             var NroDocumento = $("#NroDocumento").val();
             var Entrada = $("#Entrada").val();
-            var Vdatos = $.isNumeric(Entrada);
+
             if( !$.isNumeric(ArticuloID)  ){
                 ValidarDatos = 1;
             }
@@ -183,14 +183,12 @@ input[type="text"], textarea
                 ValidarDatos = 1;
             }
 
-            if(!Vdatos ){
+            if(Entrada == "" ){
                 ValidarDatos = 1
             }
-            if(Entrada == "0" ){
-                ValidarDatos = 1
-            }
+    
             if ( ValidarDatos == 1 ) {
-                alert("Verifique el ingreso");
+                alert("error");
  
             }else{
                 $("form").submit();

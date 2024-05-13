@@ -9,11 +9,12 @@
     IList<SAG2.Models.Proyecto> ListaProyecto = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;  
     List<SAG2.Models.Cuenta> Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.Cuentas;
     List<SAG2.Models.Contrato> DContrato = new List<SAG2.Models.Contrato>();
+    List<SAG2.Models.Resolucion> Resoluciones = new List<SAG2.Models.Resolucion>();
     try
     {
         snRol = (List<SAG2.Models.Rol>)@ViewBag.Roles;
         DContrato = (List<SAG2.Models.Contrato>)@ViewBag.Contratos;
-
+        Resoluciones = (List<SAG2.Models.Resolucion>)@ViewBag.Resoluciones;
     }
     catch (Exception)
     { }
@@ -50,6 +51,7 @@
             <th> REGION</th>
             <th> COMUNA</th>
             <th> CALLE</th>
+            <th> TIPO</th>
             <th> RES EX</th>
             <th> NUMERO DE PLAZAS</th>
             <th> FECHA DE INICIO</th>
@@ -62,7 +64,8 @@
             <th> ID Contrato </th> <th>Nombre Servicio</th><th>Nombre</th><th>Valor Servicio</th><th>Moneda</th><th>Comentario Contrato</th>
             <th> VALOR SUBVENCION</th><th> VALOR SUBVENCION MENSUAL</th><th> VALOR SUBVENCION ANUAL</th>
             <th> NUMERO DE CTA CTE</th>   
-            <th> BANCO</th>     
+            <th> BANCO</th>    
+             <th> Confirmado</th>  
             <th>Presupuesto Ingresos</th>
              <th>Presupuesto Egresos</th>
      </tr>
@@ -77,13 +80,19 @@
     string  Presupuesto = "Sin Presupuesto";
     var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();
     var ContratoProyecto = DContrato.Where(d => d.ProyectoID == item.ID).ToList();
+    var ResolucionProyecto = Resoluciones.Where(d => d.ProyectoID == item.ID).ToList();
     int Totcontrato = ContratoProyecto.Count();
     int TotRol = rolProyecto.Count();
+    int TotResolucion = ResolucionProyecto.Count();
     int Maximo = 0;
+    string Confirmado = "No";
     if (TotRol > Totcontrato) {
         Maximo = TotRol;
     } else {
         Maximo = Totcontrato;
+    }
+    if (TotResolucion > Maximo) {
+        Maximo = TotResolucion;
     }
     int Pres = 0;
     try {
@@ -93,7 +102,24 @@
         }
         SaldoInicial = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().SaldoInicial;
         PresupuestoID =  EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().ID;
-        
+       
+        try
+        {
+            Confirmado = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().Confirmado;
+            if (Confirmado == "S")
+            {
+                Confirmado = "SI";
+            }
+            else
+            {
+                Confirmado = "No";
+            }
+        }
+        catch (Exception)
+        {
+            Confirmado = "No";
+        }
+
         var DatosPResupuesto = DPresupuesto.Where(d => d.PresupuestoID == PresupuestoID).ToList();
         foreach (var DatPres in DatosPResupuesto) {
             int cuentaID = DatPres.CuentaID;
@@ -128,49 +154,40 @@
                     <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Region.Nombre  )  </td>
                     <td> @Html.DisplayFor(modelItem => item.Direccion.Comuna.Nombre  )  </td>
                     <td> @Html.DisplayFor(modelItem => item.Direccion.DireccionLista  )  </td>
-                    <td> @Html.DisplayFor(modelItem => item.Convenio.ResEx   )  </td>
-                    <td> @Html.DisplayFor(modelItem => item.Convenio.NroPlazas    )  </td>
-                    <td> 
-                        @{
-                            if (item.Convenio.FechaInicio != null) {
-                                @Html.Raw(item.Convenio.FechaInicio.Value.ToShortDateString());
-                            }else{
-                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                            }
-                         }
-                    </td>
-                    <td> 
-                        @{
-                            if (item.Convenio.FechaTermino != null) {
-                                @Html.Raw(item.Convenio.FechaTermino.Value.ToShortDateString());
-                            }else{
-                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                            }
-                        }
-                    </td>
-                    <td> @Html.DisplayFor(modelItem => item.Convenio.Comentarios  )  </td>
+                    @if(TotResolucion >= i ){
+                        <td>@Html.Raw(ResolucionProyecto[(i-1)].tipo.ToUpper())</td>
+                        <td>@Html.Raw(ResolucionProyecto[(i-1)].ResEx)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Convenio.NroPlazas)</td>
+                        <td>@Html.Raw(ResolucionProyecto[(i-1)].FechaInicio.ToShortDateString())</td>
+                        <td>@Html.Raw(ResolucionProyecto[(i-1)].FechaTermino.ToShortDateString())</td>
+                        <td>@Html.Raw(ResolucionProyecto[(i-1)].Comentarios)</td>
+                    }else{
+                        <td></td><td></td><td></td><td></td><td></td><td></td>
+                    }
+
+
                     @if (TotRol >= i)
                       {
-                    <td style="width: 15px;">@i</td>
-                    <td>@Html.Raw(rolProyecto[(i-1)].TipoRol.Nombre.ToUpper())</td>
-                    <td>@Html.Raw(rolProyecto[(i-1)].Persona.NombreLista.ToUpper())</td>
-                    <td>
-                        @if (rolProyecto[(i - 1)].Persona.CorreoElectronico != null)
-                        {
-                            <a href="mailto:@Html.Raw(rolProyecto[(i-1)].Persona.CorreoElectronico.ToLower())"> @Html.Raw(rolProyecto[(i-1)].Persona.CorreoElectronico.ToUpper())</a>
-                        }
-                        else
-                        {
-                            @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
-                        }
-                    </td>
+                        <td style="width: 15px;">@i</td>
+                        <td>@Html.Raw(rolProyecto[(i-1)].TipoRol.Nombre.ToUpper())</td>
+                        <td>@Html.Raw(rolProyecto[(i-1)].Persona.NombreLista.ToUpper())</td>
+                        <td>
+                            @if (rolProyecto[(i - 1)].Persona.CorreoElectronico != null)
+                            {
+                                <a href="mailto:@Html.Raw(rolProyecto[(i-1)].Persona.CorreoElectronico.ToLower())"> @Html.Raw(rolProyecto[(i-1)].Persona.CorreoElectronico.ToUpper())</a>
+                            }
+                            else
+                            {
+                                @Html.Raw("<span class='label label-danger'>SIN INFORMACIÓN</span>");
+                            }
+                        </td>
                     }else{
                         <td></td><td></td><td></td><td></td>
                     }
                       @if (Totcontrato >= i)
                       {
-                            <td> @i </td> 
-                            <td> @ContratoProyecto[(i-1)].Servicio.Nombre.ToUpper()</td>
+                          <td> @i </td> 
+                          <td> @ContratoProyecto[(i-1)].Servicio.Nombre.ToUpper()</td>
                           <td> @ContratoProyecto[(i-1)].Nombre.ToUpper()</td>
                           <td> @ContratoProyecto[(i-1)].Monto.ToString("#,###")</td>
                           <td> @ContratoProyecto[(i-1)].Moneda</td>
@@ -217,6 +234,7 @@
                     </td>
                     <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().NumeroLista   ) </td>
                     <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().Banco.NombreLista   ) </td>
+                    <td>@Confirmado </td>
                     <td  @if (Ingresos == 0)
                         {@Html.Raw(" style='background-color: Red;color:white'");}>
                         @if (Ingresos == 0)

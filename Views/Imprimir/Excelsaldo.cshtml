@@ -86,30 +86,31 @@
     </style>
 </head>
 <body>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td valign="top" colspan="8"><strong>Fundaci&oacute;n Ciudad del Ni&ntilde;o<br />
-    @Html.Raw(@ViewBag.Proyecto)</strong></td>
-    <td align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
-  </tr>
-</table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td valign="top" colspan="3"><strong>Fundaci&oacute;n Ciudad del Ni&ntilde;o<br />
+        @Html.Raw(@ViewBag.Proyecto)</strong></td>
+        <td colspan="2" align="right" valign="top">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
+    </tr>
+    </table>
+
     <table>
     <tr>
-        <td colspan="9" style="text-align: center;">
+        <td colspan="5" style="text-align: center;">
             <h2>Saldo Libro Banco</h2>
         </td>
     </tr>
     <tr>
-        <td colspan="9" style="text-align: center;">
+        <td colspan="5" style="text-align: center;">
             Per&iacute;odo @Meses[@ViewBag.mes - 1] de @ViewBag.periodo
         </td>
-    </tr>
-    <tr>
-        </table>
-   <table align="center" style="width: 100%;" id="" cellspacing="3">
+    </tr> 
+    <tr><td></td></tr>
+    </table>
+   <table align="center" style="width: 100%;" border="1" cellspacing="3">
     <thead>
         <tr>
-            <th>Proyecto</th>
+            <th>Programa</th>
              <th>Periodo</th>
             <th>Mes</th>
             <th>Saldo Inicial</th>
@@ -137,8 +138,6 @@
                                <td>@saldo_inicial.ToString("#,##0")</td>
                                <td>@resul.ToString("#,##0")</td>
                           </tr>
-
-                                   }
 
                        }
     </table>

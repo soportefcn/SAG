@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/Entrada.cshtml";
-    ViewBag.Title = "Seleccionar proyecto";
+    ViewBag.Title = "Seleccionar Programa";
 
     int proyectoID = 0;
 
@@ -10,17 +10,17 @@
     }
 }
  <div style="margin: 30px auto; border: 1px solid #DDDDDD; width: 500px; border-radius: 5px; text-align:center; padding: 8px; background:white; box-shadow: 2px 2px 5px #D8D8D8;"><a href="http://www.codeni.cl">
-<img src="@Url.Content("~/Content/Images/SAG2.png")" alt="CodeniSAG2" border="0"  style="margin-bottom: 10px; height: 200px;" /></a>
+<img src="@Url.Content("~/Content/Images/logo_cdn_2019.PNG")" alt="SAG2" border="0"  style="margin-bottom: 10px; height: 200px;" /></a>
 
-<h2 style="margin-left: 15px;">Seleccionar Proyecto</h2>
+<h2 style="margin-left: 15px;">Seleccionar Programa</h2>
 @{
     if (ViewBag.Administrador)
     {
-        <p style="margin-left: 15px;">Seleccione un Proyecto uno para comenzar a trabajar.</p>
+        <p style="margin-left: 15px;">Seleccione un Programa uno para comenzar a trabajar.</p>
     }
     else
     {
-        <p style="margin-left: 15px;">SAG2 ha detectado que usted tiene permisos sobre más de un Proyecto, por favor seleccione uno para comenzar a trabajar.</p>
+        <p style="margin-left: 15px;">SAG2 ha detectado que usted tiene permisos sobre más de un Programa, por favor seleccione uno para comenzar a trabajar.</p>
     }
 }
 <br />
@@ -29,7 +29,7 @@
 <fieldset>
     <div class="form-inline">
     <div class="form-group">
-       <label>Proyecto</label> 
+       <label>Programa</label> 
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -38,7 +38,7 @@
     </script>
 
         <select name="Proyecto" id="Proyecto" class="js-autocomplete" >
-            <option value="-1"> - Seleccione proyecto</option>
+            <option value="-1"> - Seleccione Programa</option>
             @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
             {
                 if (proyectoID == Proyecto.ID)
@@ -52,7 +52,7 @@
             }
         </select>
    <br /><br />
-        <input type="submit" value="Seleccionar proyecto" class="btn btn-primary" id="elegirProyecto" />
+        <input type="submit" value="Seleccionar Programa" class="btn btn-primary" id="elegirProyecto" />
         </div>
 </fieldset>
 }

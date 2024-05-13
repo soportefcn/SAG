@@ -6,7 +6,7 @@
 @model IEnumerable<SAG2.Models.TipoProyecto>
 @{
     Layout = "~/Views/Shared/_Layoutinf.cshtml";
-    ViewBag.Title = "Intervenciones por Tipo de Proyecto";
+    ViewBag.Title = "Intervenciones por Tipo de Programa";
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
     //List<SAG2.Models.IntervencionResumen> inter = db.IntervencionResumen.ToList();
     List<SAG2.Models.IntervencionResumen> intervenciones = new List<SAG2.Models.IntervencionResumen>();
@@ -31,7 +31,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <select name="Proyecto" id="Proyecto" class="js-autocomplete" onchange="funcion()">
-                        <option value="-1"> - Seleccione el tipo de proyecto</option>
+                        <option value="-1"> - Seleccione el tipo de Programa</option>
                         @foreach (SAG2.Models.TipoProyecto Proyecto in tipoPro)
                         {
                             if (proyectoID == Proyecto.ID)

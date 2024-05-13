@@ -16,21 +16,36 @@ namespace SAG2.Controllers
         private SAG2DB db = new SAG2DB();
         private Util utils = new Util();
 
-        public ActionResult Saldos(int Periodo = 0, int Mes = 0)
+        public ActionResult Saldos(int Periodo = 0, int Mes = 0, int? CategoriaID = null, int? ArticuloID = null)
         {
+            int Ppid;
+            Ppid = ((Proyecto)Session["Proyecto"]).ID;
+
             if (Periodo == 0 || Mes == 0)
             {
                 Periodo = (int)Session["Periodo"];
                 Mes = (int)Session["Mes"];
-            }
-            int Ppid;
-            Ppid = ((Proyecto)Session["Proyecto"]).ID;
-            List<Bodega> saldos = db.Bodega.Where(s => s.Mes == Mes).Where(s => s.Periodo == Periodo).Where(s=> s.ProyectoID == Ppid).ToList();
+            }         
 
+            List<Bodega> saldos = db.Bodega.Where(s => s.Mes == Mes).Where(s => s.Periodo == Periodo).Where(s=> s.ProyectoID == Ppid).OrderBy(d => d.Articulo.CategoriaID).ToList();
+
+            if (ArticuloID != null  ){
+                if (ArticuloID != 1)
+                {
+                    saldos = saldos.Where(d => d.ArticuloID == ArticuloID).ToList();
+                }
+                else {
+                    if (CategoriaID != null)
+                    {
+                        saldos = saldos.Where(d => d.Articulo.CategoriaID == CategoriaID).ToList();
+                    }
+                }
+            }
+            
+            ViewBag.CategoriaID = new SelectList(db.Categoria, "ID", "nombre",0);
             ViewBag.periodo = Periodo;
             ViewBag.mes = Mes;
-            ViewBag.proyectoID = ((Proyecto)Session["Proyecto"]).ID;
-
+            ViewBag.proyectoID = Ppid;
             return View(saldos);
         }
 

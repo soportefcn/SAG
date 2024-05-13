@@ -33,8 +33,8 @@
         <th style="width: 94px;">Fecha</th>
         <th style="width: 82px;">Cta. Cte.</th>
         <th style="width: 90px;">Monto $</th>
-     
-        <th style="width: 92px;">Nº Medio Pago</th>
+        <!--<th>Cuenta</th>-->
+        <th style="width: 92px;">Nº Cheque</th>
        <th style="width: 92px;">Beneficiario</th>
         <th style="width: 300px;">Glosa</th>
     </tr>
@@ -66,7 +66,11 @@
                 $@item.Monto_Egresos.ToString("#,##0")
                 </strong>
             </td>
-
+            <!--
+                <td>
+                @Html.DisplayFor(modelItem => item.Cuenta.NombreLista)
+            </td>
+                -->
             <td style="width: 94px;" align="right">
                 @Html.DisplayFor(modelItem => item.Cheque)
             </td>
@@ -74,7 +78,16 @@
                 @Html.DisplayFor(modelItem => item.Beneficiario)
             </td>
             <td>
-                @item.Descripcion
+			 @if (item.Nulo == null || item.Nulo.Equals("N"))
+            {
+               @Html.DisplayFor(modelItem => item.Descripcion)
+            }
+            else
+            {
+                @Html.Raw("<label>COMPROBANTE NULO</label>")
+            }
+              
+				
             </td>
         
     </tr>

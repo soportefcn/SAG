@@ -79,6 +79,7 @@
             <th> VALOR SUBVENCION</th><th> VALOR SUBVENCION MENSUAL</th><th> VALOR SUBVENCION ANUAL</th>
             <th> NUMERO DE CTA CTE</th>   
             <th> BANCO</th>     
+             <th>Confirmado</th>
             <th>Presupuesto Ingresos</th>
              <th>Presupuesto Egresos</th>
      </tr>
@@ -94,12 +95,27 @@
     var rolProyecto = snRol.Where(d => d.ProyectoID == item.ID).ToList();
     var ContratoProyecto = DContrato.Where(d => d.ProyectoID == item.ID).ToList();
     int Pres = 0;
+    string Confirmado = "No";
     try
     {
         int PrID = item.ID;
         if (PrID == 492)
         {
             PrID = item.ID;
+        }
+     
+        try
+        {
+            Confirmado = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().Confirmado;
+            if (Confirmado == "S")
+            {
+                Confirmado = "SI";
+            }
+            else {
+                Confirmado = "No";
+            }
+        }catch(Exception){
+            Confirmado = "No";
         }
         SaldoInicial = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().SaldoInicial;
         PresupuestoID = EPresupuesto.Where(d => d.ProyectoID == PrID).FirstOrDefault().ID;
@@ -252,6 +268,7 @@
                 </td>
         <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().NumeroLista) </td>
            <td> @Html.DisplayFor(modelItem => item.CuentasCorrientes.LastOrDefault().Banco.NombreLista) </td>
+        <td>@Confirmado</td>
          <td  @if (Ingresos == 0)
               {@Html.Raw(" style='background-color: Red;color:white'");
               }>

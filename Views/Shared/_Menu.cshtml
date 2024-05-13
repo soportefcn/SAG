@@ -27,7 +27,7 @@
 
     <div class="blog-nav navbar-default navbar-fixed-top navbar-closed notscrolled">
     <div class="ocultoImpresion">
-        <a class="navbar-brand">
+        <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home" class="navbar-brand">
             <img  class ="brand_logo svgLogo" src ="@Url.Content("~/Content/Logo_Codeni3.png")" style="padding-bottom: 0px; border-top-width: 0px; margin-top: -15px;width: 45px; margin-right: -16px;">
             Sag
              </a>
@@ -80,7 +80,7 @@
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Comuna/Create">Comunas</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Region/Create">Regiones</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Pais/Create">Pa&iacute;ses</a></li>
-                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoPago/Create">Medio de Pago</a></li>
+								  <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoPago/Create">Medio de Pago</a></li>
                             </ul>
                             
                             
@@ -93,7 +93,7 @@
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoIntervencion/Create">Estados de Pago</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ParametroUSS/Create">Cantidad de la USS</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ProgramaQ/Create">Valor USS</a></li>
-                                    <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ValorUF/Create">Valor UF</a></li>
+									 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ValorUF/Create">Valor UF</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/PorcentajeZona/Create">Porcentaje Zona</a></li>
                                 </ul>
                         </li>
@@ -124,7 +124,7 @@
                             <ul class="dropdown-menu"> 
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/Create">Programas</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Contratos/Create">Contratos</a></li>
-                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create">Resolucion</a></li>
+                               
                             @if (!Usuario.esUsuario)
                             {
 	                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/ListadoProyectos">Listado Programas</a></li>
@@ -245,10 +245,10 @@
                                                     <li class="dropdown-submenu">
                                                         <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte Estandar</a>
                                                         <ul class="dropdown-menu">
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteProgramaEstandar">Por Programa</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteRegionEstandar">Por Regi&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteLineaEstandar">L&iacute;nea Atenci&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteTipoEstandar">Tipo Programa</a></li>
+                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteProgramaEstandar">Por Programa</a></li>
+                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteRegionEstandar">Por Regi&oacute;n</a></li>
+                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteLineaEstandar">L&iacute;nea Atenci&oacute;n</a></li>
+                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteTipoEstandar">Tipo Programa</a></li>
                                                         </ul>
                                                     </li>
                                                 }
@@ -263,7 +263,7 @@
                                          <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/CreateDonacion">Donaci&oacute;n de  Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Baja">Baja de Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Traslado">Traslado de Bienes</a></li>                                        
-                                        @if (Usuario.esAdministrador)
+                                        @if (Usuario.esAdministrador || Usuario.esSupervisor)
                                         {
                                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienAutorizacion">Autorizaci&oacute;n de Bienes</a></li>}
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienAutorizacion/BienesAnulados">Movimientos Rechazados</a></li>
@@ -274,6 +274,7 @@
                         @if (!Proyecto.estaCerrado)
                         {
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/Formulacion">Formulaci&oacute;n</a></li>
+							 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/PresVisualizar">Ver Formulaci&oacute;n</a></li> 
                         }
 							                      
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/Control">Control Presupuestario</a></li>
@@ -381,6 +382,14 @@
                                  <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/SaldoCierre/ReporteCierre">Reporte Cierre</a></li>                                   
                             </ul>
                         </li>
+						               <li class="dropdown-submenu">
+                          <a href="javascript:void();">Hallazgo Cierre</a>
+						<ul class="dropdown-menu">
+							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/HallazgoCierre/Index">Ingreso Hallazgo Mensual</a></li>
+							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/HallazgoCierre/ConsolidadoMensual">Consolidado Mensual </a></li>
+                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/HallazgoCierre/HallazgoGrafico">Grafico Cierre </a></li>
+						</ul>
+					    </li>
                         }  
 				</ul>
  

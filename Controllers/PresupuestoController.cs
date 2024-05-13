@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using SAG2.Models;
 using SAG2.Classes;
 using System.Data;
+using System.Web.Script.Serialization;
+using System.IO;
+using System.Text;
 
 namespace SAG2.Controllers
 {
@@ -163,6 +166,7 @@ namespace SAG2.Controllers
             var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
+       
         public ActionResult Control(int Periodo = 0, int pr_id = 0)
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
@@ -315,8 +319,221 @@ namespace SAG2.Controllers
             return View(cuenta.ToList());
         }
 
+        // Visualizar Presupuesto
+        public ActionResult PresVisualizar(int Periodo = 0, int pr_id = 0)
+        {
+            int filtro = int.Parse(Session["Filtro"].ToString());
+           // int Miva = 0;
+           
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Persona Persona = (Persona)Session["Persona"];
+
+            if (pr_id == 0)
+            {
+                Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+                pr_id = Proyecto.ID;
+               // Miva = Proyecto.MI;
+            }
+            if (!usuario.esUsuario)
+            {
+
+                ViewBag.Proyectos = utils.FiltroProyecto(filtro);
+            }
+            else
+            {
+                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+            }
+
+            if (Periodo == 0)
+            {
+                Periodo = DateTime.Now.Year;
+            }
+
+            ViewBag.Periodo_Inicio = Periodo.ToString();
+            ViewBag.Mes_Inicio = "1";
+            ViewBag.pr_id = pr_id;
+            //Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            try
+            {
+                Presupuesto Presupuesto = db.Presupuesto.Where(m => m.ProyectoID == pr_id && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).OrderByDescending(p => p.ID).Take(1).Single();
+
+                List<DetallePresupuesto> dp = new List<DetallePresupuesto>();
+
+                try
+                {
+                    Presupuesto = db.Presupuesto.Where(m => m.ProyectoID == pr_id && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                    ViewBag.PresupuestoID = Presupuesto.ID.ToString();
+
+                    ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
+
+                    int mes = 1;
+                    int periodo = Periodo;
 
 
+
+                    List<int> IngresosPre = new List<int>();
+                    List<int> EgresosPre = new List<int>();
+
+                    for (int i = 0; i < 12; i++)
+                    {
+                        if (mes > 12)
+                        {
+                            mes = 1;
+                            periodo++;
+                        }
+
+                        try
+                        {
+                            IngresosPre.Add(dp.Where(d => d.Cuenta.Tipo.Equals("I")).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(m => m.Monto));
+                        }
+                        catch (Exception)
+                        {
+                            IngresosPre.Add(0);
+                        }
+
+                        try
+                        {
+                            EgresosPre.Add(dp.Where(d => d.Cuenta.Tipo.Equals("E")).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(m => m.Monto));
+                        }
+                        catch (Exception)
+                        {
+                            EgresosPre.Add(0);
+                        }
+
+                        mes++;
+                    }
+
+
+                    ViewBag.PreIngresos = IngresosPre;
+                    ViewBag.PreEgresos = EgresosPre;
+                }
+                catch (Exception)
+                {
+                    ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
+                }
+
+                ViewBag.Detalle = dp;
+            }
+            catch (Exception)
+            {
+                ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
+            }
+           
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.Presupuesto == 1).OrderBy(c => c.Orden);
+           
+            return View(cuenta.ToList());
+        }
+
+        [HttpPost]
+        public ActionResult PresVisualizar(FormCollection form)
+        {
+            int filtro = int.Parse(Session["Filtro"].ToString());
+            int pr_id;
+            int Periodo = 0;
+            if (Periodo == 0)
+            {
+                Periodo = Int32.Parse(form["periodoControlPresupuesto"].ToString());
+            }
+            pr_id = Int32.Parse(form["Proyectos2"].ToString());
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Persona Persona = (Persona)Session["Persona"];
+
+            if (!usuario.esUsuario)
+            {
+
+                ViewBag.Proyectos = utils.FiltroProyecto(filtro);
+
+            }
+            else
+            {
+
+                ViewBag.Proyectos = db.Rol.Where(r => r.PersonaID == Persona.ID).Select(r => r.Proyecto).Where(r => r.Eliminado == null && r.Cerrado == null).OrderBy(p => p.CodCodeni).Distinct().ToList();
+
+            }
+
+
+            ViewBag.Periodo_Inicio = Periodo.ToString();
+            ViewBag.Mes_Inicio = "1";
+            ViewBag.pr_id = pr_id;
+            // Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            try
+            {
+                Presupuesto Presupuesto = db.Presupuesto.Where(m => m.ProyectoID == pr_id && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).OrderByDescending(p => p.ID).Take(1).Single();
+
+
+                List<DetallePresupuesto> dp = new List<DetallePresupuesto>();
+
+                try
+                {
+                    Presupuesto = db.Presupuesto.Where(m => m.ProyectoID == pr_id && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                    ViewBag.PresupuestoID = Presupuesto.ID.ToString();
+
+                    ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
+
+                    int mes = 1;
+                    int periodo = Periodo;
+
+
+
+                    List<int> IngresosPre = new List<int>();
+                    List<int> EgresosPre = new List<int>();
+
+                    for (int i = 0; i < 12; i++)
+                    {
+                        if (mes > 12)
+                        {
+                            mes = 1;
+                            periodo++;
+                        }
+
+
+
+
+                        try
+                        {
+                            IngresosPre.Add(dp.Where(d => d.Cuenta.Tipo.Equals("I")).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(m => m.Monto));
+                        }
+                        catch (Exception)
+                        {
+                            IngresosPre.Add(0);
+                        }
+
+                        try
+                        {
+                            EgresosPre.Add(dp.Where(d => d.Cuenta.Tipo.Equals("E")).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(m => m.Monto));
+                        }
+                        catch (Exception)
+                        {
+                            EgresosPre.Add(0);
+                        }
+
+                        mes++;
+                    }
+
+
+
+                    ViewBag.PreIngresos = IngresosPre;
+                    ViewBag.PreEgresos = EgresosPre;
+                }
+                catch (Exception)
+                {
+                    ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
+                }
+
+                ViewBag.Detalle = dp;
+            }
+            catch (Exception)
+            {
+                ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
+            }
+
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            return View(cuenta.ToList());
+        }
+
+        //
         public ActionResult ControlLinea(int Periodo = 0, int LineaAtencion = 0, int La = 0)
         {
             Usuario usuario = (Usuario)Session["Usuario"];
@@ -804,10 +1021,9 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") ).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
-
 
 
         public ActionResult ControlV2()
@@ -925,6 +1141,125 @@ namespace SAG2.Controllers
             return View(cuenta.ToList());
         }
 
+        public ActionResult CargaExcel(FormCollection form, HttpPostedFileBase file)
+        {
+            int periodoPresupuesto = Int32.Parse(form["XperiodoPresupuesto"].ToString());
+            int XMesTope = Int32.Parse(form["XMesTope"].ToString());
+            List<DetalleArch> ListaData = new List<DetalleArch>();
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            Usuario Usuario = (Usuario)Session["Usuario"];
+            int proyectoID = Proyecto.ID;
+            //
+            string pathX = "";
+            int ArchivoExcelAct = 0;
+            try
+            {
+                if (file.ContentLength > 0)
+                {
+                    ArchivoExcelAct = 1;
+                    string name = String.Format("PPto" + Proyecto.CodCodeni + " {0}.csv", DateTime.Now.ToString().Replace(":", "."));
+                    string _path = Path.Combine(Server.MapPath("~/Archivos"), name);
+                    file.SaveAs(_path);
+                    System.Threading.Thread.Sleep(1000);
+                    pathX = _path;
+                    StreamReader reader = new StreamReader(pathX, Encoding.GetEncoding("iso-8859-1"));
+                 
+                    int linea = 0;
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        if (!String.IsNullOrWhiteSpace(line))
+                        {
+                            string[] values = line.Split(';');
+                            string CCuenta = values[0];
+                            string CodigoCuenta = "";
+                            int largo = CCuenta.Length;
+                            int paso = 0;
+                            foreach (char c in CCuenta)
+                            {
+                                if (char.IsNumber(c))
+                                {
+                                    CodigoCuenta = CodigoCuenta + c;
+                                    paso = 1;
+                                    if (c == '6') {
+                                        paso = 1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (c.Equals('.'))
+                                    {
+                                        CodigoCuenta = CodigoCuenta + c;
+                                        paso = 1;
+                                    }
+                                    else
+                                    {
+                                        if (paso == 1)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if (CodigoCuenta.Length > 1)
+                            {
+
+                                try
+                                {
+                                    int codigoCuenta = db.Cuenta.Where(d => d.Codigo.Equals(CodigoCuenta)).FirstOrDefault().ID;
+                                    for (int i = 0; i < (XMesTope); i++)
+                                    {
+                                        string signoPeso = "$";
+                                        string signopunto = ".";
+                                        string Blanco = "";
+                                        string mmonto = values[i + 1];
+                                        mmonto = mmonto.Replace(signoPeso, Blanco);
+                                        mmonto = mmonto.Replace(signopunto, Blanco);
+
+                                        double ValorX = double.Parse(mmonto);
+                                        int Valor = (int)Math.Round(ValorX);
+                                        if (Valor > 0)
+                                        {
+                                            DetalleArch data = new DetalleArch();
+                                            data.CuentaID = codigoCuenta;
+                                            data.Mes = i + 1;
+                                            data.Periodo = periodoPresupuesto;
+                                            data.Monto = Valor;
+                                            ListaData.Add(data);
+                                        }
+
+                                    }
+
+
+                                }
+                                catch (Exception)
+                                {
+
+
+                                }
+
+                            }
+                        }
+                        linea = linea + 1;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                ArchivoExcelAct = 0;
+            }
+
+            if (ArchivoExcelAct != 0) {
+                Session.Remove("PptoCsv");
+                Session.Add("PptoCsv", ListaData);
+            
+            
+            }
+
+
+            return RedirectToAction("Formulacion", new { Periodo = periodoPresupuesto });
+        }
+
         //
         // GET: /Presupuesto/Formulacion
 
@@ -936,46 +1271,43 @@ namespace SAG2.Controllers
                 Periodo = DateTime.Now.Year;
                 mes = DateTime.Now.Month;   
             }
-           
+            string Confirmado = "N";
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             var resol = db.Resolucion.Where(d => d.ProyectoID == Proyecto.ID && d.Estado == 1).FirstOrDefault();
             int PeriodoTermino =0;
             int MesTermino = 0;
             int PeriodoInicio = 0;
             int MesInicio = 0;
+            DateTime Fechainicio = DateTime.Parse(Proyecto.Convenio.FechaInicio.ToString());
+            PeriodoInicio = Fechainicio.Year;
+            MesInicio = Fechainicio.Month;
+
             if (resol == null)
             {
                 try
                 {
                     DateTime FechaTermino = DateTime.Parse(Proyecto.Convenio.FechaTermino.ToString());
-                    MesTermino = FechaTermino.Month + 1;
+                    MesTermino = FechaTermino.Month ;
                     PeriodoTermino = FechaTermino.Year;
-                    DateTime Fechainicio = DateTime.Parse(Proyecto.Convenio.FechaInicio.ToString());
-                    PeriodoInicio = Fechainicio.Year;
-                    MesInicio = Fechainicio.Month;
+
                 }
                 catch (Exception)
                 {
                     PeriodoTermino = 0;
                     MesTermino = 0;
-                    MesInicio = 13;
+ 
 
                 }
             }
             else {
                 DateTime FechaTermino = DateTime.Parse(resol.FechaTermino.ToString());
-                MesTermino = FechaTermino.Month + 1;
-                PeriodoTermino = FechaTermino.Year;
-                DateTime Fechainicio = DateTime.Parse(resol.FechaInicio.ToString());
-                PeriodoInicio = Fechainicio.Year;
-                MesInicio = Fechainicio.Month;
-            
-            
+                MesTermino = FechaTermino.Month ;
+                PeriodoTermino = FechaTermino.Year;                     
             }
            
             if (PeriodoTermino > Periodo)
             {
-                MesTermino = 12;
+                MesTermino = 13;
             }
             else
             {
@@ -1015,7 +1347,14 @@ namespace SAG2.Controllers
                 ViewBag.Mes_Inicio = "1";
                 ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
                 // desde Saldo
-
+                if (Presupuesto.Confirmado != null)
+                {
+                    Confirmado = Presupuesto.Confirmado;
+                }
+                else
+                {
+                    Confirmado = "N";
+                }
                 dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
             }
             catch (Exception)
@@ -1033,12 +1372,43 @@ namespace SAG2.Controllers
             {
                 SaldoInicial = 0;
             }
+            string mensajeCSV = ""; 
+            ViewBag.comfirmado = Confirmado;
             ViewBag.SaldoInicial = SaldoInicial;
-            ViewBag.Detalle = dp;
+            if (Session["PptoCsv"] != null)
+            {
+                List<DetallePresupuesto> dppTTO = new List<DetallePresupuesto>();
+                List<DetalleArch> lista = new List<DetalleArch>();
+                lista = (List<DetalleArch>)Session["PptoCsv"];
+                if (lista.Count == 0)
+                {
+                    ViewBag.Detalle = dp;
+                }
+                else {
+                    mensajeCSV = "Previsualizar CSV";
+                    foreach (DetalleArch Data in lista) {
+                        DetallePresupuesto Registro = new DetallePresupuesto();
+                        Registro.CuentaID = Data.CuentaID;
+                        Registro.Mes = Data.Mes;
+                        Registro.Monto = Data.Monto;
+                        Registro.Periodo = Data.Periodo;
+                        Registro.PresupuestoID = int.Parse(ViewBag.PresupuestoID);
+                        dppTTO.Add(Registro);
+                    
+                    
+                    }
+                    ViewBag.Detalle = dppTTO;
+                }
+                Session.Remove("PptoCsv");
+            }
+            else
+            {
+                ViewBag.Detalle = dp;
+            }
+            ViewBag.MensajeCSV = mensajeCSV;
             var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.Presupuesto == 1).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
-
 
         [HttpPost]
         public ActionResult Formulacion(FormCollection form)
@@ -1149,6 +1519,69 @@ namespace SAG2.Controllers
             return RedirectToAction("Formulacion", new { Periodo = periodoPresupuesto });
         }
 
+      
+        public string ConfirmacionPresupuesto(int PresupuestoID)
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Presupuesto Registro = db.Presupuesto.Find(PresupuestoID);
+            string Respuesta = "Confirmado";
+            if (Registro != null)
+            {
+                Registro.Confirmado = "S";
+                db.Entry(Registro).State = EntityState.Modified;
+                db.SaveChanges();
+
+                // Registrar LOG Inicio
+                InicioLog log = new InicioLog();
+                log.Tipo = "ConfirmacionPresupuesto";
+                log.ProyectoId = Registro.ProyectoID;
+                log.Fecha = DateTime.Now;
+                log.Mes = Registro.Mes;
+                log.Periodo = Registro.Periodo;
+                log.RegistroID = PresupuestoID;
+                log.UsuarioID = usuario.ID;
+                log.Descripcion = "Confirmacion Presupuesto  :" + Registro.Proyecto.NombreLista;
+                db.InicioLog.Add(log);
+                db.SaveChanges();
+
+                Respuesta = "Confirmado";
+            }
+            else {
+                Respuesta = "Sin Presupuesto";
+            
+            }
+            return new JavaScriptSerializer().Serialize(Respuesta);
+            
+        }
+
+        public string DesConfirmacionPresupuesto(int PresupuestoID)
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            Presupuesto Registro = db.Presupuesto.Find(PresupuestoID);
+
+            Registro.Confirmado = "N";
+            db.Entry(Registro).State = EntityState.Modified;
+            db.SaveChanges();
+
+            // Registrar LOG Inicio
+            InicioLog log = new InicioLog();
+            log.Tipo = "ConfirmacionPresupuesto";
+            log.ProyectoId = Registro.ProyectoID;
+            log.Fecha = DateTime.Now;
+            log.Mes = Registro.Mes;
+            log.Periodo = Registro.Periodo;
+            log.RegistroID = PresupuestoID;
+            log.UsuarioID = usuario.ID;
+            log.Descripcion = "Desconfirmado Presupuesto  :" + Registro.Proyecto.NombreLista;
+            db.InicioLog.Add(log);
+            db.SaveChanges();
+
+            string Respuesta = "Desconfirmado";
+            return new JavaScriptSerializer().Serialize(Respuesta);
+
+        }
+        
+        
         public ActionResult Excel(int Periodo = 0, int pr_id = 0)
         {
             if (Periodo == 0)
@@ -1264,6 +1697,120 @@ namespace SAG2.Controllers
                     ViewBag.MovIngresos = Ingresos;
                     ViewBag.MovEgresos = Egresos;
                     ViewBag.MovReintegros = Reintegros;
+
+                    ViewBag.PreIngresos = IngresosPre;
+                    ViewBag.PreEgresos = EgresosPre;
+                }
+                catch (Exception e)
+                {
+                    ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + e.StackTrace);
+                }
+ 
+                ViewBag.Detalle = dp;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
+            }
+
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            return View(cuenta.ToList());
+        }
+
+        public ActionResult ExcelPresTodos(int Periodo = 0) {
+            if (Periodo == 0)
+            {
+                Periodo = DateTime.Now.Year;
+            }
+
+            List<Presupuesto> ProPresupuesto = new List<Presupuesto>();
+            List<Presupuesto> Proyectos = new List<Presupuesto>();
+            List<DetallePresupuesto> dp = new List<DetallePresupuesto>();
+            List<DetallePresupuesto> detallePresupuesto = new List<DetallePresupuesto>();
+            
+
+            ProPresupuesto = db.Presupuesto.Where(m => m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).OrderByDescending(p => p.ID).ToList();
+            foreach (var Registo in ProPresupuesto) {
+                int prID = Registo.ProyectoID;
+                var xRevisar = Proyectos.Where(d => d.ProyectoID == prID).FirstOrDefault();
+                if (xRevisar == null) {
+                    Proyectos.Add(Registo);
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Registo.ID && d.Cuenta.Presupuesto == 1).ToList();
+                    detallePresupuesto.AddRange(dp);              
+                }                                
+            }
+
+            ViewBag.Detalle = detallePresupuesto.OrderBy(d => d.PresupuestoID).ToList(); 
+            ViewBag.Presupuesto = Proyectos.ToList();
+           
+           
+            return View();
+        } 
+        
+        
+        public ActionResult ExcelPresupuesto(int Periodo = 0, int pr_id = 0)
+        {
+            if (Periodo == 0)
+            {
+                Periodo = DateTime.Now.Year;
+            }
+            if (pr_id == 0)
+            {
+                Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+                pr_id = Proyecto.ID;
+            }
+            ViewBag.pr_id = pr_id;
+            ViewBag.Proyectos = db.Proyecto.Where(p => p.ID == pr_id).OrderBy(p => p.CodCodeni).ToList();
+            try
+            {
+                Presupuesto Presupuesto = db.Presupuesto.Where(m => m.ProyectoID == pr_id && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).OrderByDescending(p => p.ID).Take(1).Single();
+
+                 List<DetallePresupuesto> dp = new List<DetallePresupuesto>();
+
+                try
+                {
+                    Presupuesto = db.Presupuesto.Where(m => m.ProyectoID == pr_id && m.Activo != null && m.Activo.Equals("S") && m.Periodo == Periodo).OrderByDescending(p => p.ID).Take(1).Single();
+                    ViewBag.PresupuestoID = Presupuesto.ID.ToString();
+                    ViewBag.Periodo_Inicio = Presupuesto.Periodo_Inicio.ToString();
+                    ViewBag.Mes_Inicio = Presupuesto.Mes_Inicio.ToString();
+                    ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
+                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
+
+                    int mes = Presupuesto.Mes_Inicio;
+                    int periodo = Presupuesto.Periodo_Inicio;
+
+
+                    List<int> IngresosPre = new List<int>();
+                    List<int> EgresosPre = new List<int>();
+
+                    for (int i = 0; i < 12; i++)
+                    {
+                        if (mes > 12)
+                        {
+                            mes = 1;
+                            periodo++;
+                        }
+                        try
+                        {
+                            IngresosPre.Add(dp.Where(d => d.Cuenta.Tipo.Equals("I")).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(m => m.Monto));
+                        }
+                        catch (Exception)
+                        {
+                            IngresosPre.Add(0);
+                        }
+                        try
+                        {
+                            EgresosPre.Add(dp.Where(d => d.Cuenta.Tipo.Equals("E")).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(m => m.Monto));
+                        }
+                        catch (Exception)
+                        {
+                            EgresosPre.Add(0);
+                        }
+
+                        mes++;
+                    }
+
+
 
                     ViewBag.PreIngresos = IngresosPre;
                     ViewBag.PreEgresos = EgresosPre;
@@ -2897,7 +3444,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") ).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4689,7 +5236,8 @@ namespace SAG2.Controllers
                 group by periodo, mes, cuentaID
                 */
                 ViewBag.Ingresos = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(m => m.CuentaID != null && m.Nulo == null && m.Eliminado == null && m.CuentaID != 1 && m.Nulo == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
-                ViewBag.Reintegros = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
+                ViewBag.Reintegros = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();              
+                ViewBag.ReintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == pr_id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == Periodo).OrderBy(m => m.CuentaIDD).ToList();
 
                 /*
                 SELECT cuentaid, SUM(monto)
@@ -4837,7 +5385,7 @@ namespace SAG2.Controllers
                 */
                 ViewBag.Ingresos = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoIngreso).Where(m => m.CuentaID != null && m.Nulo == null && m.Eliminado == null && m.CuentaID != 1 && m.Nulo == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
                 ViewBag.Reintegros = db.Movimiento.Where(m => m.ProyectoID == pr_id).Where(m => m.TipoComprobanteID == ctes.tipoReintegro).Where(m => m.CuentaID != null && m.CuentaID != 1 && m.Nulo == null && m.Eliminado == null && m.Temporal == null && m.Periodo == Periodo).OrderBy(m => m.Cuenta.Orden).ToList();
-
+                ViewBag.ReintegrosGastos = db.DetalleReintegro.Where(m => m.Reintegro.ProyectoID == pr_id).Where(m => m.CuentaIDD != null && m.Reintegro.Periodo == Periodo).OrderBy(m => m.CuentaIDD).ToList();
                 /*
                 SELECT cuentaid, SUM(monto)
                 FROM DetalleEgreso
@@ -4855,7 +5403,7 @@ namespace SAG2.Controllers
                     ViewBag.PresupuestoID = Presupuesto.ID.ToString();
 
                     ViewBag.SaldoInicial = Presupuesto.SaldoInicial;
-                    dp = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
+                    ViewBag.Detalle = db.DetallePresupuesto.Where(d => d.PresupuestoID == Presupuesto.ID && d.Cuenta.Presupuesto == 1).ToList();
 
                     int mes = 1;
                     int periodo = Periodo;
@@ -4935,7 +5483,7 @@ namespace SAG2.Controllers
                     ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
                 }
 
-                ViewBag.Detalle = dp;
+               // ViewBag.Detalle = dp;
             }
             catch (Exception)
             {
@@ -5043,8 +5591,6 @@ namespace SAG2.Controllers
                             mes = 1;
                             periodo++;
                         }
-
-
 
                         try
                         {
