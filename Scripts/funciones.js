@@ -278,7 +278,7 @@ $(document).ready(function () {
             
             var retencion = bruto * porce / 100;
 
-            var neto = bruto - retencion;
+            var neto = bruto - Math.round(retencion);
             $('#Retencion').val(Math.round(retencion));
             $('#Neto').val(Math.round(neto));
         }
@@ -958,7 +958,20 @@ $(document).ready(function () {
         window.location = '/SAG_5/Presupuesto/LineaResponsabilidad?Periodo=' + periodo + '&Linea=' + linea;
         return false;
     }); 
-    
+        $("#exportarPreExcel").change(function () {
+        var value = $(this).val();
+        var periodo = $("#periodoControlPresupuesto").val();
+        var pr_id = $("#Proyectos2").val();
+        if (value != "") {
+            if (value == "Pro") {
+                window.open('/SAG_5/Presupuesto/ExcelPresupuesto?Periodo=' + periodo + '&pr_id=' + pr_id, '', '');
+            }
+            if (value == "Todos") {
+                window.open('/SAG_5/Presupuesto/ExcelPresTodos?Periodo=' + periodo + ' ');
+            }
+
+        }
+    });
 
     $("#exportarPresupuestoExcel").change(function () {
         var value = $(this).val();
@@ -973,6 +986,9 @@ $(document).ready(function () {
                 }
                 if (td == "r") {               
                     window.open('/SAG_5/Presupuesto/ExcelResumenProyecto?Periodo=' + periodo + '&pr_id=' + pr_id, '', '');
+                }
+                if (td == "rp") {
+                    window.open('/SAG_5/Presupuesto/ExcelRealPptoTodos?Periodo=' + periodo + ' ');
                 }
 
             } else if (value == "1S") {
@@ -1232,6 +1248,11 @@ $(document).ready(function () {
                 window.open('/SAG_5/Presupuesto/Excel', '', '');
             } else if (value == "4T") {
                 window.open('/SAG_5/Presupuesto/Excel', '', '');
+            } else if (value == "TodosReal") {
+                window.open('/SAG_5/Presupuesto/ExcelRealTodos?Periodo=' + periodo + ' ');
+            }
+            else if (value == "TodosRealDetalle") {
+                window.open('/SAG_5/Presupuesto/ExcelRealTodosDetalle?Periodo=' + periodo + ' ');
             }
         }
 

@@ -56,7 +56,8 @@
         {
             PuedeConciliar = true;
         }
-        else {
+        else
+        {
             PuedeConciliar = false;
         }
     }
@@ -81,7 +82,11 @@
     <tr>
         <td>
         <fieldset style="width: @if (Usuario.esAdministrador)
-                        {@Html.Raw("458px;");} else {@Html.Raw("400px;");} height: 100px;">
+                                {@Html.Raw("458px;");
+                                }
+                                else
+                                {@Html.Raw("400px;");
+                                } height: 100px;">
                 <div class="form-group form-inline">
                       
                 <h3>Período</h3>
@@ -92,7 +97,8 @@
                         <select class="form-control" name="Mes" id="Mes">
                             @for (var i = 0; i < 12; i++)
                             {
-                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1)) {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
+                                <option value="@Html.Raw((@i + 1).ToString())"@if (@ViewBag.mes == (i + 1))
+                                                                              {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@i])</option>
                             }
                             </select>
                     </div>
@@ -110,9 +116,10 @@
                        </div>
                        <div  class="form-group" style="margin-right: 45px;">
                               <select class="form-control" name="Periodo" id="Periodo">
-                            @for (var i = DateTime.Now.Year - 2; i <= DateTime.Now.Year + 1; i++)
+                            @for (var i = DateTime.Now.Year - 4; i <= DateTime.Now.Year + 1; i++)
                             {
-                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i) {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
+                                <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
+                                                                           {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
                             }
                             </select>
                        </div>
@@ -231,7 +238,7 @@ else
         if (item.TipoComprobanteID == 2)
         {
             // Egreso !
-            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).Where(d=> d.Egreso.auto == 0).ToList();
+            List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).Where(d => d.Egreso.auto == 0).ToList();
             foreach (var detalle in detalles)
             {
                 bool conciliado = false;
@@ -285,7 +292,7 @@ else
 
                 if (detalle.Conciliado != null && detalle.Conciliado.Equals("S") && !(item.Periodo == PeriodoSeleccionado && item.Mes == mesSeleccionado) && salto)
                 {
-          
+
                     try
                     {
                         SAG2.Models.ConciliacionRegistro cr = db.ConciliacionRegistro.Where(c => c.DetalleID == detalle.ID).Single();
@@ -326,7 +333,9 @@ else
                     totalNoConciliado = totalNoConciliado + detalle.Monto;
                 }
             <tr @if (PuedeConciliar || Usuario.esAdministrador)
-                { @Html.Raw("class=\"conciliar\"")} title="@mensaje" detalleEgresoID="@detalle.ID" Monto="@detalle.Monto.ToString()" style="@if (PuedeConciliar || Usuario.esAdministrador) { @Html.Raw("cursor: pointer;")}@if (conciliado) {@Html.Raw(" background-color: Orange;")}">
+                { @Html.Raw("class=\"conciliar\"")} title="@mensaje" detalleEgresoID="@detalle.ID" Monto="@detalle.Monto.ToString()" style="@if (PuedeConciliar || Usuario.esAdministrador)
+                                                                                                                                            { @Html.Raw("cursor: pointer;")}@if (conciliado)
+                                                                                                                                                                            {@Html.Raw(" background-color: Orange;")}">
                 <td>
                     @item.Fecha.Value.ToShortDateString()
                 </td>
@@ -339,20 +348,21 @@ else
                 <td align="right">
                     @Html.Raw(@detalle.Monto.ToString("#,##0"))
                     @{
-                        if(item.Mes == mesSeleccionado && item.Periodo == PeriodoSeleccionado ){
-                            Saldo = Saldo - detalle.Monto;
-                        }
+                                                                                                                                                                            if (item.Mes == mesSeleccionado && item.Periodo == PeriodoSeleccionado)
+                                                                                                                                                                            {
+                                                                                                                                                                                Saldo = Saldo - detalle.Monto;
+                                                                                                                                                                            }
                     }
                 </td>
                 <td align="right"@{
-                if (Saldo >= 0)
-                {
+                                                                                                                                                                            if (Saldo >= 0)
+                                                                                                                                                                            {
                     @Html.Raw(" style=\"color: Blue;\"");
-                }
-                else if (Saldo < 0)
-                {
+                                                                                                                                                                            }
+                                                                                                                                                                            else if (Saldo < 0)
+                                                                                                                                                                            {
                     @Html.Raw(" style=\"color: Red;\"");
-                }
+                                                                                                                                                                            }
                 }>
                     @Html.Raw(Saldo.ToString("#,##0"))
                 </td>
@@ -386,83 +396,87 @@ else
         {
             bool conciliado = false;
             bool salto = true;
-            
+
             try
             {
                 SAG2.Models.ConciliacionRegistro cr = db.ConciliacionRegistro.Where(c => c.MovimientoID == item.ID).Single();
-                
-                if (cr.Fecha != null && cr.PersonaID != null)
-                    {
-                        mensaje = "Conciliado el " + cr.Fecha.Value.ToShortDateString() + " a las " + cr.Fecha.Value.ToShortTimeString() + " por " + cr.Persona.NombreCompleto;
-                    }
-                    
-                    
-                    if (cr.Periodo < PeriodoSeleccionado)
-                    {
-                        continue;
-                    }
-                    else if (cr.Periodo == PeriodoSeleccionado && cr.Mes < mesSeleccionado)
-                    {
-                        continue;
-                    }
-                    
-                    
-                    if (cr.Mes > mesSeleccionado)
-                    {
-                        conciliado = false;
-                    }
-                    else
-                    {
-                        conciliado = true;
-                    }
-                    
-                    if (cr.Periodo == PeriodoSeleccionado && cr.Mes == mesSeleccionado)
-                    {
-                        salto = false;
-                    }
 
-                    if (cr.Periodo > PeriodoSeleccionado)
-                    {
-                        conciliado = false;
-                    }
-                    
+                if (cr.Fecha != null && cr.PersonaID != null)
+                {
+                    mensaje = "Conciliado el " + cr.Fecha.Value.ToShortDateString() + " a las " + cr.Fecha.Value.ToShortTimeString() + " por " + cr.Persona.NombreCompleto;
                 }
-                catch (Exception)
+
+
+                if (cr.Periodo < PeriodoSeleccionado)
+                {
+                    continue;
+                }
+                else if (cr.Periodo == PeriodoSeleccionado && cr.Mes < mesSeleccionado)
+                {
+                    continue;
+                }
+
+
+                if (cr.Mes > mesSeleccionado)
+                {
+                    conciliado = false;
+                }
+                else
+                {
+                    conciliado = true;
+                }
+
+                if (cr.Periodo == PeriodoSeleccionado && cr.Mes == mesSeleccionado)
+                {
+                    salto = false;
+                }
+
+                if (cr.Periodo > PeriodoSeleccionado)
                 {
                     conciliado = false;
                 }
 
-                if (item.Conciliado != null && item.Conciliado.Equals("S") && !(item.Periodo == PeriodoSeleccionado && item.Mes == mesSeleccionado) && salto)
-                {
-                    continue;
-                }
-            
-        <tr @if (PuedeConciliar || Usuario.esAdministrador)
-            { @Html.Raw("class=\"conciliar\"")} title="@mensaje" movimientoID="@item.ID" Monto="0" style="@if (PuedeConciliar || Usuario.esAdministrador){ @Html.Raw("cursor: pointer;")}@if (conciliado) {@Html.Raw(" background-color: Orange;")}">
-            <td>
-                @item.Fecha.Value.ToShortDateString()
-            </td>
-            <td align="center">
-                @Html.DisplayFor(modelItem => item.NumeroComprobante)
-            </td>
-            <td align="right">
-                @item.Monto_Ingresos.ToString("#,##0")
-                @{
-                    Saldo = Saldo + item.Monto_Ingresos;
-                }
+            }
+            catch (Exception)
+            {
+                conciliado = false;
+            }
+
+            if (item.Conciliado != null && item.Conciliado.Equals("S") && !(item.Periodo == PeriodoSeleccionado && item.Mes == mesSeleccionado) && salto)
+            {
+                continue;
+            }
+            SAG2.Models.DetalleIngresoIva detallesIngreso = db.DetalleIngresoIva.Where(d => d.MovimientoID == item.ID).FirstOrDefault();
+            if (detallesIngreso != null)
+            {
+                <tr @if (PuedeConciliar || Usuario.esAdministrador)
+                                 { @Html.Raw("class=\"conciliar\"")} title="@mensaje" movimientoID="@item.ID" Monto="0" style="@if (PuedeConciliar || Usuario.esAdministrador)
+                                 { @Html.Raw("cursor: pointer;")}@if (conciliado)
+                                 {@Html.Raw(" background-color: Orange;")}">
+                    <td>
+                        @item.Fecha.Value.ToShortDateString()
+                    </td>
+                    <td align="center">
+                        @Html.DisplayFor(modelItem => item.NumeroComprobante)
+                    </td>
+                    <td align="right">
+                        @item.Monto_Ingresos.ToString("#,##0")
+                        @{
+                            Saldo = Saldo + item.Monto_Ingresos;
+                        }
             </td>
             <td align="right">
                 0
             </td>
             <td align="right"@{
-                if (Saldo >= 0)
-                {
+                  if (Saldo >= 0)
+                   {
                     @Html.Raw(" style=\"color: Blue;\"");
-                }
-                else if (Saldo < 0)
-                {
+                    }
+                     else if (Saldo < 0)
+                    {
                     @Html.Raw(" style=\"color: Red;\"");
-                }
+                    }
                 }>
                 @Html.Raw(Saldo.ToString("#,##0"))
             </td>
@@ -486,6 +500,107 @@ else
             @Html.DisplayFor(modelItem => item.Descripcion)           
             </td>
         </tr>
+            <tr @if (PuedeConciliar || Usuario.esAdministrador)
+                    { @Html.Raw("class=\"conciliar\"")} title="@mensaje" movimientoID="@item.ID" Monto="0" style="@if (PuedeConciliar || Usuario.esAdministrador)
+                                                                                                          { @Html.Raw("cursor: pointer;")}@if (conciliado)
+                                                                                                                                                                                         {@Html.Raw(" background-color: Orange;")}">
+            <td>
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td align="right">
+                @detallesIngreso.ValorIva.ToString("#,##0")              
+                @{
+                Saldo = Saldo + detallesIngreso.ValorIva;
+                }
+            </td>
+            <td align="right">
+                0
+            </td>
+            <td align="right"@{
+                 if (Saldo >= 0)
+                  {
+                    @Html.Raw(" style=\"color: Blue;\"");
+                   }
+                 else if (Saldo < 0)
+                    {
+                    @Html.Raw(" style=\"color: Red;\"");
+                    }
+                }>
+                @Html.Raw(Saldo.ToString("#,##0"))
+            </td>
+            <td>
+                    @Html.Raw("Ingreso") 
+            </td>
+            <td>
+                @Html.Raw(@item.NumeroComprobante.ToString())
+            </td>
+            <td>
+                @detallesIngreso.Cuenta.NombreLista
+            </td>
+            <td>      
+            @Html.DisplayFor(modelItem => item.Descripcion)           
+            </td>
+        </tr>
+                     
+            }
+            else
+            {
+            
+        <tr @if (PuedeConciliar || Usuario.esAdministrador)
+            { @Html.Raw("class=\"conciliar\"")} title="@mensaje" movimientoID="@item.ID" Monto="0" style="@if (PuedeConciliar || Usuario.esAdministrador)
+                                                                                                          { @Html.Raw("cursor: pointer;")}@if (conciliado)
+                                                                                                                                          {@Html.Raw(" background-color: Orange;")}">
+            <td>
+                @item.Fecha.Value.ToShortDateString()
+            </td>
+            <td align="center">
+                @Html.DisplayFor(modelItem => item.NumeroComprobante)
+            </td>
+            <td align="right">
+                @item.Monto_Ingresos.ToString("#,##0")
+                @{
+                                                                                                                                          Saldo = Saldo + item.Monto_Ingresos;
+                }
+            </td>
+            <td align="right">
+                0
+            </td>
+            <td align="right"@{
+                                                                                                                                          if (Saldo >= 0)
+                                                                                                                                          {
+                    @Html.Raw(" style=\"color: Blue;\"");
+                                                                                                                                          }
+                                                                                                                                          else if (Saldo < 0)
+                                                                                                                                          {
+                    @Html.Raw(" style=\"color: Red;\"");
+                                                                                                                                          }
+                }>
+                @Html.Raw(Saldo.ToString("#,##0"))
+            </td>
+            <td>
+                @if (item.TipoComprobanteID == 1)
+                { 
+                    @Html.Raw("Ingreso")
+                }
+                else if (item.TipoComprobanteID == 3)
+                { 
+                    @Html.Raw("Reintegro")
+                }
+            </td>
+            <td>
+                @Html.Raw(@item.NumeroComprobante.ToString())
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cuenta.NombreLista)
+            </td>
+            <td>      
+            @Html.DisplayFor(modelItem => item.Descripcion)           
+            </td>
+        </tr>
+            }
         }
     }
     </tbody>

@@ -1,0 +1,1024 @@
+﻿@if (ViewBag.ID != null)
+{
+    //try
+    //{
+    var NombreMeses = new string[12]
+    {
+        "Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.",  "Dic."
+    };
+    var CalMeses = new int[12] {
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12 };
+    
+    int mesSeleccion = ViewBag.Mes;
+    var Meses = ViewBag.GrupoMeses;
+    var celdas = new string[]
+    {
+	    "", "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","AA","AB","AC","AD","AE","AF","AG","AH","AI","AJ","AK","AL","AM","AN","AO","AP","AQ","AR","AS","AT","AU","AV","AW","AX","AY","AZ","BA","BB","BC"
+	};
+
+    //try
+    //{
+
+        int id = ViewBag.ID;
+        int periodo = ViewBag.Periodo;
+       
+        List<SAG2.Models.Movimiento> ingresos = ViewBag.ingresos;
+        List<SAG2.Models.DetalleEgreso> egresos = ViewBag.egresos;
+        List<SAG2.Models.Movimiento> reintegros = ViewBag.reintegros;
+        List<SAG2.Models.DetalleReintegro> reintegrosGastos = ViewBag.reintegrosGastos;
+        List<SAG2.Models.Cuenta> pruebacuentas = ViewBag.cuentasT;
+        List<SAG2.Models.DetalleIngresoIva> ingresoIVA = ViewBag.IngresosIva;
+        List<SAG2.Models.DetallePresupuesto> DetallePresupuesto = ViewBag.DetallePresupuesto;
+        
+        var totalEgreso = new double[13];
+        var totalPresupuestoE = new double[13];
+        var totalIngresosEgreso = new double[13];
+        var totalesIngresos = new double[13];
+        var totalesEgresos = new double[13];
+        var totalPresupuesto = new double[13];
+        var totalesPresupuestosIngresos = new double[13];
+        var totalesPresupuestosEgresos = new double[13];       
+        var TotalesREstandar = new double[26];    
+        var saldoInicial = new double[14];
+        int FinalFila = 0;
+        double xTotSename = 0;
+        int LineaSF = 35;
+        int LineaDAP = 31;
+        int LineaIDAP = 32;
+        int LineaRDap = 33;
+        int LineaTdap = 34;
+        int LineaSFDap = 29; 
+        
+        int ConIva = ViewBag.ConIva;
+        if (ConIva == 1) {
+            LineaSF = 38;
+            LineaDAP = 34;
+            LineaIDAP = 35;
+            LineaRDap = 36;
+            LineaTdap = 37;
+            LineaSFDap = 32; 
+        }
+     
+        var Subvencion = new double[13];
+        var Sobreatencion = new double[13];
+        var BonoAguilnado = new double[13];
+        var Remuneracion = new double[13];
+        var ProvisionIndemnizacion = new double[13];
+        var Funcionamiento = new double[13];
+        var ApTecnico = new double[13];
+        var APBeneficiario = new double[13];
+        var Inversion = new double[13];
+        var FinanciamientoIngreso = new double[13];
+        var FinanciamientoEgreso = new double[13];
+        var IngresosPrestamo = new double[13];
+        var EgresosPrestamo = new double[13];
+        var DAP = new double[13];
+        var InteresesDAP = new double[13];
+        var RescateDAP = new double[13];
+        var IvaIngreso = new double[13];
+        var IvaEgreso = new double[13];
+        // Presupuesto
+        var saldoInicialPre = new double[14];
+        var SubvencionPre = new double[13];
+        var SobreatencionPre = new double[13];
+        var BonoAguilnadoPre = new double[13];
+        var RemuneracionPre = new double[13];
+        var ProvisionIndemnizacionPre = new double[13];
+        var FuncionamientoPre = new double[13];
+        var ApTecnicoPre = new double[13];
+        var APBeneficiarioPre = new double[13];
+        var InversionPre = new double[13];
+        var FinanciamientoIngresoPre = new double[13];
+        var FinanciamientoEgresoPre = new double[13];
+        var IngresosPrestamoPre = new double[13];
+        var EgresosPrestamoPre = new double[13];
+        var DAPPre = new double[13];
+        var InteresesDAPPre = new double[13];
+        var RescateDAPPre = new double[13];
+
+    
+        double xSSaldo = ViewBag.SaldoInicial;
+
+        saldoInicial[1] = xSSaldo;
+        saldoInicialPre[1] = xSSaldo;
+        
+        foreach (var mes in CalMeses)
+        {
+            // Ingresos
+
+            double valorIngresos = ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            xTotSename += valorIngresos;
+            // Ingresos
+            // Real
+            double valorSubencion = ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            double ValorIngresoIva = ingresoIVA.Where(d => d.Ingreso.Mes == mes).Sum(d => d.ValorIva);
+            double valorSobreatencion = ingresos.Where(m => (m.CuentaID == 5) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            double valorBonoAguilnado = ingresos.Where(m => (m.CuentaID == 8) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+
+            Subvencion[mes] = valorSubencion;
+            IvaIngreso[mes] = ValorIngresoIva;
+            Sobreatencion[mes] = valorSobreatencion;
+            BonoAguilnado[mes] = valorBonoAguilnado;
+            // Presupuesto
+            double valorSubencionPre = DetallePresupuesto.Where(m => (m.CuentaID == 3 || m.CuentaID == 4) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            double valorSobreatencionPre = DetallePresupuesto.Where(m => (m.CuentaID == 5) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            double valorBonoAguilnadoPre = DetallePresupuesto.Where(m => (m.CuentaID == 8) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+
+            SubvencionPre[mes] = valorSubencionPre;
+            SobreatencionPre[mes] = valorSobreatencionPre;
+            BonoAguilnadoPre[mes] = valorBonoAguilnadoPre;
+
+
+            // Egresos
+            double valorEgresos = 0;
+            double valor_Reintegros = 0;
+            double valor_GastosReintegros = 0;
+            double valorEgresosPre = 0;
+            // Remuneracion			
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 22 || e.CuentaIDD == 23 || e.CuentaIDD == 25 || e.CuentaIDD == 26 || e.CuentaIDD == 27 || e.CuentaIDD == 28 || e.CuentaIDD == 163)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            Remuneracion[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Sum(m => m.Monto).ToString());
+            RemuneracionPre[mes] = valorEgresosPre;
+            // Próvision de Fondos para Indemnizaciones
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 41)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 41)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            ProvisionIndemnizacion[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+            ProvisionIndemnizacionPre[mes] = valorEgresosPre;
+            // Funcionamiento
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 33 || e.CuentaIDD == 34 || e.CuentaIDD == 35 || e.CuentaIDD == 36 || e.CuentaIDD == 44 || e.CuentaIDD == 123 || e.CuentaIDD == 125 || e.CuentaIDD == 48 || e.CuentaIDD == 49 || e.CuentaIDD == 52 || e.CuentaIDD == 150 || e.CuentaIDD == 151 || e.CuentaIDD == 153 || e.CuentaIDD == 154 || e.CuentaIDD == 53 || e.CuentaIDD == 54 || e.CuentaIDD == 55 || e.CuentaIDD == 56 || e.CuentaIDD == 57 || e.CuentaIDD == 58 || e.CuentaIDD == 147 || e.CuentaIDD == 149 || e.CuentaIDD == 61 || e.CuentaIDD == 62 || e.CuentaIDD == 64 || e.CuentaIDD == 145 || e.CuentaIDD == 44 || e.CuentaIDD == 123 || e.CuentaIDD == 50 || e.CuentaIDD == 59 || e.CuentaIDD == 60)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            Funcionamiento[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Sum(m => m.Monto).ToString());
+            FuncionamientoPre[mes] = valorEgresosPre;
+            // Apoyo Tecnico
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 66 || e.CuentaIDD == 146 || e.CuentaIDD == 68 || e.CuentaIDD == 69 || e.CuentaIDD == 70)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            ApTecnico[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Sum(m => m.Monto).ToString());
+            ApTecnicoPre[mes] = valorEgresosPre;
+            // Apoyo Beneficiarios
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 72 || e.CuentaIDD == 73 || e.CuentaIDD == 74 || e.CuentaIDD == 75 || e.CuentaIDD == 76 || e.CuentaIDD == 77 || e.CuentaIDD == 78 || e.CuentaIDD == 79)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            APBeneficiario[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+            APBeneficiarioPre[mes] = valorEgresosPre;
+            // Inversion
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 127 || e.CuentaIDD == 101 || e.CuentaIDD == 102 || e.CuentaIDD == 104 || e.CuentaIDD == 43)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            Inversion[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+            InversionPre[mes] = valorEgresosPre;
+            // FinanciamientoIngreso
+            double valorFinIngreso = ingresos.Where(m => (m.CuentaID == 10 || m.CuentaID == 12 || m.CuentaID == 14 || m.CuentaID == 20 || m.CuentaID == 158) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            FinanciamientoIngreso[mes] = valorFinIngreso;
+            double valorFinIngresoPre = DetallePresupuesto.Where(m => (m.CuentaID == 10 || m.CuentaID == 12 || m.CuentaID == 14 || m.CuentaID == 20 || m.CuentaID == 158) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            FinanciamientoIngresoPre[mes] = valorFinIngresoPre;
+            // FinanciamientoEgreso
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 155 || e.CuentaIDD == 156 || e.CuentaIDD == 159)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            FinanciamientoEgreso[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Sum(m => m.Monto).ToString());
+            FinanciamientoEgresoPre[mes] = valorEgresosPre;
+            // IngresosPrestamo
+            double valorIngresosPrestamo = ingresos.Where(m => (m.CuentaID == 19) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            IngresosPrestamo[mes] = valorIngresosPrestamo;
+            double valorIngresosPrestamoPre = DetallePresupuesto.Where(m => (m.CuentaID == 19) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            IngresosPrestamoPre[mes] = valorIngresosPrestamoPre;
+            // EgresosPrestamo
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 63)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 63)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 63)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            EgresosPrestamo[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 63)).Sum(m => m.Monto).ToString());
+            EgresosPrestamoPre[mes] = valorEgresosPre;
+            // DAP
+            valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 40)).Sum(m => m.Monto).ToString());
+            valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 40)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+            valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 40)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+            DAP[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+            valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 40)).Sum(m => m.Monto).ToString());
+            DAPPre[mes] = valorEgresosPre;
+            // InteresesDAP
+            InteresesDAP[mes] = ingresos.Where(m => (m.CuentaID == 16) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            InteresesDAPPre[mes] = DetallePresupuesto.Where(m => (m.CuentaID == 16) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            // Rescate DAP
+            RescateDAP[mes] = ingresos.Where(m => (m.CuentaID == 17) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            RescateDAPPre[mes] = DetallePresupuesto.Where(m => (m.CuentaID == 17) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            // SAldo Inicial
+            // Valor IVA
+            double ValorIvaE = double.Parse(egresos.Where(e => e.Cuenta.Codigo.Equals("12.1") && e.Egreso.Mes == mes).Sum(e => e.Monto).ToString());
+            IvaEgreso[mes] = ValorIvaE;
+            // Real
+            double valorIngresosMes = BonoAguilnado[mes] + Sobreatencion[mes] + Subvencion[mes] + ValorIngresoIva;
+            double valorEgresosMes = IvaEgreso[mes] + Inversion[mes] + Funcionamiento[mes] + ApTecnico[mes] + APBeneficiario[mes] + ProvisionIndemnizacion[mes] + Remuneracion[mes]; ;
+            double valorFinancia = (FinanciamientoIngreso[mes] + IngresosPrestamo[mes]) - (EgresosPrestamo[mes] + FinanciamientoEgreso[mes]);
+            double ValorDAP = (InteresesDAP[mes] + RescateDAP[mes]) - DAP[mes];
+            // Presupuesto
+            double valorIngresosMesPre = BonoAguilnadoPre[mes] + SobreatencionPre[mes] + SubvencionPre[mes];
+            double valorEgresosMesPre = InversionPre[mes] + FuncionamientoPre[mes] + ApTecnicoPre[mes] + APBeneficiarioPre[mes] + ProvisionIndemnizacionPre[mes] + RemuneracionPre[mes]; ;
+            double valorFinanciaPre = (FinanciamientoIngresoPre[mes] + IngresosPrestamoPre[mes]) - (EgresosPrestamoPre[mes] + FinanciamientoEgresoPre[mes]);
+            double ValorDAPPre = (InteresesDAPPre[mes] + RescateDAPPre[mes]) - DAPPre[mes];
+
+            saldoInicial[(mes + 1)] = saldoInicial[mes] + (valorIngresosMes - valorEgresosMes) + valorFinancia + ValorDAP;
+            saldoInicialPre[(mes + 1)] = saldoInicialPre[mes] + (valorIngresosMesPre - valorEgresosMesPre) + valorFinanciaPre + ValorDAPPre;
+
+        }
+
+           
+        <table align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+            <tr>
+                <tH style="width:430px;">Estado de Resultado</tH>
+                @if (@ViewBag.Mes == 13 || @ViewBag.Mes == 14)
+                {
+                    FinalFila = 25;
+                <tH colspan="24" style="width:680px">@ViewBag.NombreLista</tH>
+                }
+                @if (@ViewBag.Mes == 15)
+                {
+                    FinalFila = 49;
+                    <tH colspan="48">@ViewBag.NombreLista</tH>
+                }
+                 @if (@ViewBag.Mes < 13)
+                 {
+                     FinalFila = 5;
+                    <tH colspan="4">@ViewBag.NombreLista</tH>
+                 }
+               
+            </tr>
+            <tr>
+                <th rowspan="2">CONCEPTO</th>
+                @foreach (var mes in Meses)
+                {
+                    <th style="width:120px;" colspan="4"> @NombreMeses[mes - 1]</th>
+                }
+                <th colspan="4"> </th>
+            </tr>
+            <tr>
+                @foreach (var mes in Meses)
+                {     
+                    <th style="width:120px !important;">Pres $</th>               
+                    <th style="width:120px !important;">Real $</th>
+                    <th style="width:120px !important;">Desv $</th>               
+                    <th style="width:90px !important;">Desv %</th>  
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+                     <th style="width:120px !important;">Pres $</th>               
+                    <th style="width:120px !important;">Real $</th>
+                    <th style="width:120px !important;">Desv $</th>               
+                    <th style="width:90px !important;">Desv %</th> 
+                } 
+            </tr>         
+            <tr>
+                <th align="left" width="300">SALDO INICIAL</th>
+                 @{
+                  var i = 1;
+                  var Col = 2;
+                  foreach (var mes in Meses)
+                  {                     
+                     if (i == 1) {
+                         double SSaldo = saldoInicial[i]; double SSaldoPre = saldoInicialPre[i];
+                         double Desviacion = SSaldoPre - SSaldo;
+                       
+                        <td class="num"> @SSaldoPre.ToString("#,###") </td>
+                        <td class="num"> @SSaldo.ToString("#,###") </td>
+                        <td class="num">=@celdas[Col]4 - @celdas[(Col + 1)]4 </td>
+                        <td class="por100">=SI( @celdas[Col]4 = 0; 0 ; @celdas[Col + 1]4 / @celdas[Col]4 ) </td>
+                     }else{
+                         Col = ((mes - 2) * 4) + 2;
+                        <td class="num">=@celdas[Col]@LineaSF</td>
+                        <td class="num">=@celdas[(Col + 1) ]@LineaSF</td>
+                        <td class="num">=@celdas[(Col + 2) ]@LineaSF</td>
+                        <td class="por100">=@celdas[(Col + 3) ]@LineaSF</td>
+                     }
+                      i++;                           
+                  }
+                  if (@ViewBag.Mes > 12)
+                  {                    
+                    <th class="num"> @saldoInicial[1].ToString("#,###")</th>
+                    <th class="num"> @saldoInicial[1].ToString("#,###")</th>
+                    <th class="num">= @saldoInicial[1] - @saldoInicial[1]</th>
+                    <th class="por100">=SI( @saldoInicial[1] = 0; 0 ; @saldoInicial[1] / @saldoInicial[1]) </th>
+                  }
+             }          
+            </tr>
+            <tr style="text-align: left">
+                <th width="300">INGRESOS</th>
+            </tr>
+            <tr>
+                <th style="text-align: left;width:300px"> Subvenci&oacute;n</th>
+                 @{ 
+                  double xTot1 = 0; double xTot1Pre = 0;
+                 
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 3 || m.CuentaID == 4)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    xTot1 += valorIngresos;
+                    xTot1Pre += valorIngresosPre;
+                                     
+                    <td class="num">@valorIngresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorIngresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]6 - @celdas[(Col + 1)]6 </td> 
+                    <td class="por100"> =SI( @celdas[Col]6 = 0; 0 ; @celdas[Col + 1]6 / @celdas[Col]6 ) </td>                
+                }
+                @if (@ViewBag.Mes > 12)
+                {
+                    <td class="num">@xTot1Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot1.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]6 - @celdas[(FinalFila + 2)]6 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]6 = 0; 0 ; @celdas[FinalFila + 2]6 / @celdas[FinalFila + 1]6 ) </td>   
+                 } 
+            </tr>
+            <tr>
+                <th style="text-align: left;width: 300px"> Sobreatenciones</th>
+                @{ 
+                  double xTot2 = 0; double xTot2Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 5)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 5) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    xTot2 += valorIngresos;
+                    xTot2Pre += valorIngresosPre;
+                    
+                    <td class="num">@valorIngresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorIngresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]7 - @celdas[(Col + 1)]7 </td> 
+                    <td class="por100"> =SI( @celdas[Col]7 = 0; 0 ; @celdas[Col + 1]7 / @celdas[Col]7 ) </td>                   
+                }
+                 @if (@ViewBag.Mes > 12)
+                 { 
+                    <td class="num">@xTot2Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot2.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]7 - @celdas[(FinalFila + 2)]7 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]7 = 0; 0 ; @celdas[FinalFila + 2]7 / @celdas[FinalFila + 1]7 ) </td>   
+                 } 
+            </tr>
+            <tr>
+                <th style="text-align: left;width: 300px"> Bonos Aguinaldos</th>
+                 @{ 
+                 double xTot3 = 0; double xTot3Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 8) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 8)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    xTot3 += valorIngresos;
+                    xTot3Pre += valorIngresosPre;
+                    <td class="num">@valorIngresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorIngresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]8 - @celdas[(Col + 1)]8 </td> 
+                    <td class="por100"> =SI( @celdas[Col]8 = 0; 0 ; @celdas[Col + 1]8 / @celdas[Col]8 ) </td>    
+                  
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+                    <td class="num">@xTot3Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot3.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]8 - @celdas[(FinalFila + 2)]8 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]8 = 0; 0 ; @celdas[FinalFila + 2]8 / @celdas[FinalFila + 1]8 ) </td>   
+                } 
+            </tr>
+            <tr style="text-align: left;width: 300px">
+                <th>Total Ingr. Sename</th>
+ 
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    <th class="num">=SUMA(@celdas[Col]6:@celdas[Col]8)</th>
+                    <th class="num">=SUMA(@celdas[(Col + 1)]6:@celdas[(Col + 1)]8)</th>
+                    <th class="num">=SUMA(@celdas[(Col + 2)]6:@celdas[(Col + 2)]8)</th> 
+                    <th class="por100">=SI( @celdas[Col]9 = 0; 0 ; @celdas[Col + 1]9 / @celdas[Col]9 )</th> 
+                }
+                  @if (@ViewBag.Mes > 12)
+                  { 
+                     <th class="num">=SUMA(@celdas[FinalFila + 1]6:@celdas[FinalFila + 1]8)</th>
+                    <th class="num">=SUMA(@celdas[(FinalFila + 2)]6:@celdas[(FinalFila + 2)]8)</th>
+                    <th class="num">=SUMA(@celdas[(FinalFila + 3)]6:@celdas[(FinalFila + 3)]8)</th> 
+                    <th class="por100">=SI( @celdas[FinalFila + 1]9 = 0; 0 ; @celdas[FinalFila + 2]9 / @celdas[FinalFila + 1]9 )</th> 
+                  }
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Egresos</th>
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Personal</th>
+            </tr>
+            <tr>
+                <th style="text-align: left ;width: 300px">Remuneraciones</th>
+                 @{ 
+                  double xTot4 = 0; double xTot4Pre = 0;
+                 }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 22 || e.CuentaIDD == 23 || e.CuentaIDD == 25 || e.CuentaIDD == 26 || e.CuentaIDD == 27 || e.CuentaIDD == 28 || e.CuentaIDD == 163)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot4 += valorEgresos;
+                    xTot4Pre += valorEgresosPre;                   
+                    
+                    <td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]12 - @celdas[(Col + 1)]12 </td> 
+                    <td class="por100">=SI( @celdas[Col]12 = 0; 0 ; @celdas[Col + 1]12 / @celdas[Col]12 ) </td>                    
+                }
+               @if (@ViewBag.Mes > 12)
+             { 
+					<td class="num">@xTot4Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot4.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]12 - @celdas[(FinalFila + 2)]12 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]12 = 0; 0 ; @celdas[FinalFila + 2]12 / @celdas[FinalFila + 1]12 ) </td> 
+                 }
+            </tr>
+            <tr>
+                <th style="text-align: left; width: 300px;">Pr&oacute;vision de Fondos para Indemnizaciones</th>
+                 @{ 
+                    double xTot5 = 0; double xTot5Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 41)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 41)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot5 += valorEgresos; xTot5Pre += valorEgresosPre; 
+                  
+					<td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]13 - @celdas[(Col + 1)]13 </td> 
+                    <td class="por100">=SI( @celdas[Col]13 = 0; 0 ; @celdas[Col + 1]13 / @celdas[Col]13 )</td>  
+                }
+                @if (@ViewBag.Mes > 12)
+               { 
+  					<td class="num">@xTot5Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot5.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]13 - @celdas[(FinalFila + 2)]13 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]13 = 0; 0 ; @celdas[FinalFila + 2]13 / @celdas[FinalFila + 1]13 ) </td> 
+               }
+            </tr>
+            <tr style="text-align: left">
+                <th>Total Personal</th>  
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;                    
+                    <th class="num">=SUMA(@celdas[Col]12:@celdas[Col]13)</th>
+                    <th class="num">=SUMA(@celdas[Col + 1]12:@celdas[Col + 1]13)</th>
+                    <th class="num">=SUMA(@celdas[Col + 2]12:@celdas[Col + 2]13)</th>
+                    <th class="por100">=SI( @celdas[Col]14 = 0; 0 ; @celdas[Col + 1]14 / @celdas[Col]14 )</th>                  
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+                    <th class="num">=SUMA(@celdas[FinalFila + 1]12:@celdas[FinalFila + 1]13)</th>
+                    <th class="num">=SUMA(@celdas[(FinalFila + 2)]12:@celdas[(FinalFila + 2)]13)</th>
+                    <th class="num">=SUMA(@celdas[(FinalFila + 3)]12:@celdas[(FinalFila + 3)]13)</th> 
+                    <th class="por100">=SI( @celdas[FinalFila + 1]14 = 0; 0 ; @celdas[FinalFila + 2]14 / @celdas[FinalFila + 1]14 )</th> 
+                }
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Operaci&oacute;n</th>
+            </tr>
+
+            <tr>
+                <th style="text-align: left;width: 300px">Funcionamiento</th>
+                 @{ 
+                double xTot6 = 0; double xTot6Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 33 || e.CuentaIDD == 34 || e.CuentaIDD == 35 || e.CuentaIDD == 36 || e.CuentaIDD == 44 || e.CuentaIDD == 123 || e.CuentaIDD == 125 || e.CuentaIDD == 48 || e.CuentaIDD == 49 || e.CuentaIDD == 52 || e.CuentaIDD == 150 || e.CuentaIDD == 151 || e.CuentaIDD == 153 || e.CuentaIDD == 154 || e.CuentaIDD == 53 || e.CuentaIDD == 54 || e.CuentaIDD == 55 || e.CuentaIDD == 56 || e.CuentaIDD == 57 || e.CuentaIDD == 58 || e.CuentaIDD == 147 || e.CuentaIDD == 149 || e.CuentaIDD == 61 || e.CuentaIDD == 62 || e.CuentaIDD == 64 || e.CuentaIDD == 145 || e.CuentaIDD == 44 || e.CuentaIDD == 123 || e.CuentaIDD == 50 || e.CuentaIDD == 59 || e.CuentaIDD == 60)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot6 += valorEgresos;
+                    xTot6Pre += valorEgresosPre; 
+                    
+ 					<td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]16 - @celdas[(Col + 1)]16 </td> 
+                    <td class="por100">=SI( @celdas[Col]16 = 0; 0 ; @celdas[Col + 1]16 / @celdas[Col]16 ) </td>   
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+                   <td class="num">@xTot6Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot6.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]16 - @celdas[(FinalFila + 2)]16 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]16 = 0; 0 ; @celdas[FinalFila + 2]8 / @celdas[FinalFila + 1]16 ) </td> 
+                   }
+            </tr>
+            <tr>
+                <th style="text-align: left">Ap T&eacute;cnico</th>
+                   @{ 
+                double xTot7 = 0; double xTot7Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Sum(m => m.Monto).ToString());
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 66 || e.CuentaIDD == 146 || e.CuentaIDD == 68 || e.CuentaIDD == 69 || e.CuentaIDD == 70)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot7 += valorEgresos;
+                    xTot7Pre += valorEgresosPre; 
+                    
+					<td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]17 - @celdas[(Col + 1)]17 </td> 
+                    <td class="por100">=SI( @celdas[Col]17 = 0; 0 ; @celdas[Col + 1]17 / @celdas[Col]17 ) </td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    { 
+ 					<td class="num">@xTot7Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot7.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]17 - @celdas[(FinalFila + 2)]17 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]17 = 0; 0 ; @celdas[FinalFila + 2]17 / @celdas[FinalFila + 1]17 ) </td> 
+                    }
+            </tr>
+            <tr>
+            <th style="text-align: left">Ap. Beneficiarios</th>
+             @{ 
+                     double xTot8 = 0; double xTot8Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 72 || e.CuentaIDD == 73 || e.CuentaIDD == 74 || e.CuentaIDD == 75 || e.CuentaIDD == 76 || e.CuentaIDD == 77 || e.CuentaIDD == 78 || e.CuentaIDD == 79)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot8 += valorEgresos;
+                    xTot8Pre += valorEgresosPre;  
+
+                    <td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]18 - @celdas[(Col + 1)]18 </td> 
+                    <td class="por100">=SI( @celdas[Col]18 = 0; 0 ; @celdas[Col + 1]18 / @celdas[Col]18 ) </td>               
+                }
+                    @if (@ViewBag.Mes > 12)
+                    { 
+                        <td class="num">@xTot8Pre.ToString("#,###") </td> 
+                        <td class="num">@xTot8.ToString("#,###") </td> 
+                        <td class="num">=@celdas[FinalFila + 1]18 - @celdas[(FinalFila + 2)]18 </td> 
+                        <td class="por100"> =SI( @celdas[FinalFila + 1]18 = 0; 0 ; @celdas[FinalFila + 2]18 / @celdas[FinalFila + 1]18 ) </td> 
+                    }
+            </tr>
+            <tr style="text-align: left">
+                <th>Total Operaci&oacute;n</th>
+     
+                 @foreach (var mes in Meses)
+                 {
+                     Col = ((mes - 1) * 4) + 2;
+                      <th class="num">=SUMA(@celdas[Col]16:@celdas[Col]18)</th> 
+                      <th class="num">=SUMA(@celdas[Col + 1]16:@celdas[Col + 1]18)</th> 
+                      <th class="num">=SUMA(@celdas[Col + 2]16:@celdas[Col + 2]18)</th> 
+                      <td class="por100">=SI( @celdas[Col]19 = 0; 0 ; @celdas[Col + 1]19 / @celdas[Col]19 ) </td>             
+                 }
+                @if (@ViewBag.Mes > 12)
+                    { 
+                        <th class="num">=SUMA(@celdas[FinalFila + 1]16:@celdas[FinalFila + 1]18)</th>
+                        <th class="num">=SUMA(@celdas[(FinalFila + 2)]16:@celdas[(FinalFila + 2)]18)</th>
+                        <th class="num">=SUMA(@celdas[(FinalFila + 3)]16:@celdas[(FinalFila + 3)]18)</th> 
+                        <th class="por100">=SI( @celdas[FinalFila + 1]19 = 0; 0 ; @celdas[FinalFila + 2]19 / @celdas[FinalFila + 1]19 )</th> 
+                    }                           
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Inversi&oacute;n</th>
+                @{ 
+                double xTot9 = 0; double xTot9Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 127 || e.CuentaIDD == 101 || e.CuentaIDD == 102 || e.CuentaIDD == 104 || e.CuentaIDD == 43)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot9 += valorEgresos;
+                    xTot9Pre += valorEgresosPre;  
+                    
+					<td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]20 - @celdas[(Col + 1)]20 </td> 
+                    <td class="por100">=SI( @celdas[Col]20 = 0; 0 ; @celdas[Col + 1]20 / @celdas[Col]20 ) </td>                 
+ 
+                }
+                 @if (@ViewBag.Mes > 12)
+                     { 
+					<td class="num">@xTot9Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot9.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]20 - @celdas[(FinalFila + 2)]20 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]20 = 0; 0 ; @celdas[FinalFila + 2]20 / @celdas[FinalFila + 1]20 ) </td> 
+                     } 
+            </tr>
+
+   
+            <tr style="text-align: left">
+                <th>Total Egresos</th>
+     
+                 @foreach (var mes in Meses)
+                 {
+                    Col = ((mes - 1) * 4) + 2;
+                    <th class="num">= @celdas[Col]14 + @celdas[Col]19 +  @celdas[Col]20</th>
+                    <th class="num">= @celdas[Col + 1]14 + @celdas[Col + 1]19 +  @celdas[Col + 1]20</th>
+                    <th class="num">= @celdas[Col + 2]14 + @celdas[Col + 2]19 +  @celdas[Col + 2]20</th>
+                    <th class="por100">=SI( @celdas[Col]21 = 0; 0 ; @celdas[Col + 1]21 / @celdas[Col]21 ) </th>      
+                 }
+                 @if (@ViewBag.Mes > 12)
+                 { 
+                     <th class="num">= @celdas[(FinalFila + 1)]14 + @celdas[(FinalFila + 1)]19 +  @celdas[FinalFila + 1]20</th>
+                      <th class="num">= @celdas[(FinalFila + 2)]14 + @celdas[(FinalFila + 2)]19 +  @celdas[FinalFila + 2]20</th>
+                      <th class="num">=@celdas[FinalFila + 1]21 - @celdas[(FinalFila + 2)]21 </th>
+                     <th class="por100"> =SI( @celdas[FinalFila + 1]21 = 0; 0 ; @celdas[FinalFila + 2]21 / @celdas[FinalFila + 1]21 ) </th> 
+                } 
+             </tr>
+            <tr style="text-align: left">
+                <th >Resultado</th>   
+                 @foreach (var mes in Meses)
+                 {
+                      Col = ((mes - 1) * 4) + 2;
+                     <th class="num">= @celdas[Col]9 - @celdas[Col]21</th>        
+                     <th class="num">= @celdas[Col + 1]9 - @celdas[Col + 1]21</th>        
+                     <th class="num">= @celdas[Col + 2]9 - @celdas[Col + 2]21</th>        
+                     <th class="por100">=SI( @celdas[Col]22 = 0; 0 ; @celdas[Col + 1]22 / @celdas[Col]22 )</th>        
+                 }
+                @if (@ViewBag.Mes > 12)
+               {                                  
+                    <th class="num">= @celdas[(FinalFila + 1)]9 - @celdas[(FinalFila + 1)]21</th>
+                    <th class="num">= @celdas[(FinalFila + 2)]9 - @celdas[(FinalFila + 2)]21</th>  
+                   <th class="num">=@celdas[FinalFila + 1]22 - @celdas[(FinalFila + 2)]22 </th>
+                    <th class="por100"> =SI( @celdas[FinalFila + 1]22 = 0; 0 ; @celdas[FinalFila + 2]22 / @celdas[FinalFila + 1]22 ) </th> 
+                }  
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left"> Financimiento </th>
+            </tr>
+            <tr style="">
+                <th style="text-align: left"> Financiamiento Ing</th>
+               @{ 
+                    double xTot10 = 0; double xTot10Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 10 || m.CuentaID == 12 || m.CuentaID == 14 || m.CuentaID == 20 || m.CuentaID == 158) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 10 || m.CuentaID == 12 || m.CuentaID == 14 || m.CuentaID == 20 || m.CuentaID == 158) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    xTot10 += valorIngresos;
+                    xTot10Pre += valorIngresosPre;
+
+					<td class="num">@valorIngresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorIngresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]24 - @celdas[(Col + 1)]24 </td> 
+                    <td class="por100">=SI( @celdas[Col]24 = 0; 0 ; @celdas[Col + 1]24 / @celdas[Col]24 ) </td>                  
+                }
+                 @if (@ViewBag.Mes > 12)
+                 { 
+                    <td class="num">@xTot10Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot10.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]24 - @celdas[(FinalFila + 2)]24 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]24 = 0; 0 ; @celdas[FinalFila + 2]24 / @celdas[FinalFila + 1]24 ) </td> 
+                 } 
+
+            </tr>
+            <tr>
+                <th style="text-align: left">Financiamiento Egr</th>
+                @{ 
+                 double xTot11 = 0; double xTot11Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 155 || e.CuentaIDD == 156 || e.CuentaIDD == 159)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot11 += valorEgresos;
+                    xTot11Pre += valorEgresosPre;
+                   
+				    <td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]25 - @celdas[(Col + 1)]25 </td> 
+                    <td class="por100">=SI( @celdas[Col]25 = 0; 0 ; @celdas[Col + 1]25 / @celdas[Col]25 ) </td>   
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+					<td class="num">@xTot11Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot11.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]25 - @celdas[(FinalFila + 2)]25 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]25 = 0; 0 ; @celdas[FinalFila + 2]25 / @celdas[FinalFila + 1]25 ) </td> 
+                }
+            </tr>
+			<tr>
+                <th style="text-align: left">Ingresos Pr&eacute;stamos (+)</th>
+                @{ 
+                double xTot12 = 0; double xTot12Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 19) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 19) && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    xTot12 +=  valorIngresos;
+                    xTot12Pre += valorIngresosPre;
+                    
+                   	<td class="num">@valorIngresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorIngresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]26 - @celdas[(Col + 1)]26 </td> 
+                    <td class="por100">=SI( @celdas[Col]26 = 0; 0 ; @celdas[Col + 1]26 / @celdas[Col]26 ) </td>   
+
+                }
+                @if (@ViewBag.Mes > 12)
+               { 
+					<td class="num">@xTot12Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot12.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]26 - @celdas[(FinalFila + 2)]26 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]26 = 0; 0 ; @celdas[FinalFila + 2]26 / @celdas[FinalFila + 1]26 ) </td> 
+               }
+            </tr>
+            <tr>
+                <th style="text-align: left">Egresos Pr&eacute;stamos (-)</th> 
+                @{ 
+                    double xTot13 = 0; double xTot13Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 63)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 63)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 63)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 63)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot13 += valorEgresos;
+                    xTot13Pre += valorEgresosPre;
+                   
+					<td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]27 - @celdas[(Col + 1)]27 </td> 
+                    <td class="por100">=SI( @celdas[Col]27 = 0; 0 ; @celdas[Col + 1]27 / @celdas[Col]27 ) </td>  
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+                    <td class="num">@xTot13Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot13.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]27 - @celdas[(FinalFila + 2)]27 </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]27 = 0; 0 ; @celdas[FinalFila + 2]27 / @celdas[FinalFila + 1]27 ) </td> 
+                }
+            </tr>
+             <tr style="text-align: left">
+                <th >Total Financiamiento</th>
+   
+                  @foreach (var mes in Meses)
+                  {
+                      Col = ((mes - 1) * 4) + 2;
+                    <th class="num">=(@celdas[Col]24 + @celdas[Col]26) - (@celdas[Col]25 + @celdas[Col]27)</th>
+                    <th class="num">=(@celdas[Col]24 + @celdas[Col]26) - (@celdas[Col]25 + @celdas[Col]27)</th>
+                    <th class="num">=@celdas[Col]28 - @celdas[(Col + 1)]28 </th> 
+                    <th class="por100">=SI( @celdas[Col]28 = 0; 0 ; @celdas[Col + 1]28 / @celdas[Col]28 ) </th>      
+                  }
+                  @if (@ViewBag.Mes > 12)
+                  { 
+                    <th class="num">=(@celdas[FinalFila + 1]24 + @celdas[FinalFila + 1]26) - (@celdas[FinalFila + 1]25 + @celdas[FinalFila + 1]27)</th>
+                    <th class="num">=(@celdas[FinalFila + 2]24 + @celdas[FinalFila + 2]26) - (@celdas[FinalFila + 2]25 + @celdas[FinalFila + 2]27)</th>
+                    <th class="num">=@celdas[Col]28 - @celdas[(Col + 1)]28 </th> 
+                    <th class="por100">=SI( @celdas[FinalFila + 1]28 = 0; 0 ; @celdas[FinalFila + 2]28 / @celdas[FinalFila + 1]28 ) </th>                        
+                  }
+              </tr>
+            @if(ConIva == 1 ){
+                 <tr>
+                    <th style="background-color: silver; text-align: left">Gestion IVA </th>
+                </tr>
+                  <tr>
+                   <th>11.1 IVA D&eacute;bito Fiscal</th>
+                    @{
+                        
+                        foreach (var mes in Meses )
+                        {                            
+                            int valor_ingresosIva = ingresoIVA.Where(m => m.Ingreso.Mes == mes).Sum(d => d.ValorIva); 
+                            <td class="num"></td>                       
+                            <td class="num">@valor_ingresosIva.ToString("#,##0")</td>
+                            <td class="num"></td>
+                            <td class="por100"></td>                        
+                        }
+                        <th class="num">0</th>
+                        <th class="num">=SUMA(@celdas[2]30:@celdas[FinalFila]30) </th>
+                         <th class="num">0</th>
+                        <th class="por100">=SI( @celdas[FinalFila + 1]9 = 0; 0 ;  @celdas[FinalFila + 1]30 / @celdas[FinalFila + 1]9 ) </th>
+                    }
+                </tr>   
+                <tr>
+                   <th>12.1 IVA Cr&eacute;dito Fiscal</th>
+                    @{
+                       
+                       foreach (var mes in Meses)
+                        {
+                            int valor_egresos = egresos.Where(d => d.Cuenta.Codigo.Equals("12.1")).Where(d => d.Egreso.Mes == mes).Sum(d => d.Monto);
+                             <td class="num"></td>  
+                            <td class="num">@valor_egresos.ToString("#,##0")</td>
+                             <td class="num"></td>
+                            <td class="por100"></td>                         
+                        }
+                         <th class="num"> </th>
+                        <th class="num">=SUMA(@celdas[2]31:@celdas[FinalFila]31) </th>
+                         <th class="num"> </th>
+                        <th class="por100">=SI( @celdas[FinalFila + 1]9 = 0; 0 ;  @celdas[FinalFila + 1]31 / @celdas[FinalFila + 1]9 ) </th>
+                    }
+               </tr>  
+            }
+            <tr>
+                <th style="text-align: right">Saldo Final Sin DAP</th>       
+                                @foreach (var mes in Meses)
+                                {
+                                    Col = ((mes - 1) * 4) + 2;
+                                    if(ConIva == 1 ){
+                                        <th class="num">=@celdas[Col]22 + @celdas[Col]4 +  @celdas[Col]30 -  @celdas[Col]31 </th>
+                                        <th class="num">=@celdas[Col + 1]22 + @celdas[Col + 1]4 +  @celdas[Col + 1]30 -  @celdas[Col + 1]31 </th>  
+                                        <th class="num">=@celdas[Col]32 - @celdas[(Col + 1)]32 </th> 
+                                        <th class="por100">=SI( @celdas[Col]32 = 0; 0 ; @celdas[Col + 1]32 / @celdas[Col]32 ) </th> 
+                                    }else{
+                                        <th class="num">=@celdas[Col]22 + @celdas[Col]4 </th>
+                                        <th class="num">=@celdas[Col + 1]22 + @celdas[Col + 1]4 </th> 
+                                        <th class="num">=@celdas[Col]@LineaSFDap - @celdas[(Col + 1)]@LineaSFDap </th> 
+                                        <th class="por100">=SI( @celdas[Col]@LineaSFDap = 0; 0 ; @celdas[Col + 1]@LineaSFDap / @celdas[Col]@LineaSFDap ) </th>  
+                                    }                
+                                }
+                                
+                              @if (@ViewBag.Mes > 12)
+                              {
+                                    if(ConIva == 1 ){
+                                        <th class="num">=@celdas[FinalFila + 1]22 + @celdas[FinalFila + 1]4 +  @celdas[FinalFila + 1]30 -  @celdas[FinalFila + 1]31 </th>
+                                        <th class="num">=@celdas[Col + 1]22 + @celdas[Col + 1]4 +  @celdas[Col + 1]30 -  @celdas[Col + 1]31 </th>  
+                                        <th class="num">=@celdas[FinalFila + 1]32 - @celdas[(Col + 1)]32 </th> 
+                                        <th class="por100">=SI( @celdas[FinalFila + 1]32 = 0; 0 ; @celdas[Col + 1]32 / @celdas[FinalFila + 1]32 ) </th> 
+                                    }else{
+                                        <th class="num">=@celdas[FinalFila + 1]22 + @celdas[FinalFila + 1]4 </th>
+                                        <th class="num">=@celdas[FinalFila + 2]22 + @celdas[FinalFila + 2]4 </th> 
+                                        <th class="num">=@celdas[FinalFila + 1]@LineaSFDap - @celdas[(FinalFila + 2)]@LineaSFDap </th> 
+                                        <th class="por100">=SI( @celdas[FinalFila + 1]@LineaSFDap = 0; 0 ; @celdas[FinalFila + 2]@LineaSFDap / @celdas[FinalFila + 1]@LineaSFDap ) </th>  
+                                    }         
+                               } 
+                    </tr>
+			<tr>
+			</tr>
+		       <tr>
+                <th style="text-align: left">DAP</th>
+                @{ 
+                   double xTot14 = 0; double xTot14Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 40)).Sum(m => m.Monto).ToString());
+                    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 40)).Sum(m => m.Monto).ToString());
+                    double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 40)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 40)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                    valorEgresos = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                    xTot14 += valorEgresos;
+                    xTot14Pre += valorEgresosPre;
+                   
+   					<td class="num">@valorEgresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorEgresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]@LineaDAP - @celdas[(Col + 1)]@LineaDAP </td> 
+                    <td class="por100">=SI( @celdas[Col]@LineaDAP = 0; 0 ; @celdas[Col + 1]@LineaDAP / @celdas[Col]@LineaDAP ) </td>   
+                }
+                @if (@ViewBag.Mes > 12)
+               { 
+					<td class="num">@xTot14Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot14.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]@LineaDAP - @celdas[(FinalFila + 2)]@LineaDAP </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]@LineaDAP = 0; 0 ; @celdas[FinalFila + 2]@LineaDAP / @celdas[FinalFila + 1]@LineaDAP ) </td> 
+             }
+            </tr>	
+            <tr>
+                <th style="text-align: left">Intereses DAP</th>
+                @{ 
+                    double xTot15 = 0; double xTot15Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 16) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 16)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    xTot15 = xTot15 + valorIngresos;
+                    xTot15Pre = xTot15Pre + valorIngresosPre;
+                   
+					<td class="num">@valorIngresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorIngresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]@LineaIDAP - @celdas[(Col + 1)]@LineaIDAP </td> 
+                    <td class="por100">=SI( @celdas[Col]@LineaIDAP = 0; 0 ; @celdas[Col + 1]@LineaIDAP / @celdas[Col]LineaIDAP ) </td>    
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+                 	<td class="num">@xTot15Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot15.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]@LineaIDAP - @celdas[(FinalFila + 2)]@LineaIDAP </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]@LineaIDAP = 0; 0 ; @celdas[FinalFila + 2]@LineaIDAP / @celdas[FinalFila + 1]@LineaIDAP ) </td>    
+                }
+            </tr>
+			   <tr>
+                <th style="text-align: left">Rescate DAP</th>
+                @{ 
+                    double xTot16 = 0; double xTot16Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 17)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 17) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    xTot16 += valorIngresos;
+                    xTot16Pre += valorIngresosPre;
+                    
+ 	                <td class="num">@valorIngresosPre.ToString("#,###") </td> 
+                    <td class="num">@valorIngresos.ToString("#,###") </td> 
+                    <td class="num">=@celdas[Col]@LineaRDap - @celdas[(Col + 1)]@LineaRDap </td> 
+                    <td class="por100">=SI( @celdas[Col]@LineaRDap = 0; 0 ; @celdas[Col + 1]@LineaRDap / @celdas[Col]@LineaRDap ) </td>   
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+					<td class="num">@xTot16Pre.ToString("#,###") </td> 
+                    <td class="num">@xTot16.ToString("#,###") </td> 
+                    <td class="num">=@celdas[FinalFila + 1]@LineaRDap - @celdas[(FinalFila + 2)]@LineaRDap </td> 
+                    <td class="por100"> =SI( @celdas[FinalFila + 1]@LineaRDap = 0; 0 ; @celdas[FinalFila + 2]@LineaRDap / @celdas[FinalFila + 1]@LineaRDap ) </td>                     
+                }
+            </tr>
+						   <tr>
+                <th style="text-align: left">Total DAP</th>
+
+                @foreach (var mes in Meses)
+                {
+                    Col = ((mes - 1) * 4) + 2;
+                    
+                    <th class="num">=SUMA(@celdas[Col]@LineaIDAP:@celdas[Col]@LineaRDap) - @celdas[Col]@LineaDAP</th>  
+                    <th class="num">=SUMA(@celdas[Col + 1]@LineaIDAP:@celdas[Col + 1]@LineaRDap) - @celdas[Col + 1]@LineaDAP</th> 
+                    <th class="num">=@celdas[Col]@LineaTdap - @celdas[(Col + 1)]@LineaTdap </th> 
+                    <th class="por100">=SI( @celdas[Col]@LineaTdap = 0; 0 ; @celdas[Col + 1]@LineaTdap / @celdas[Col]@LineaTdap ) </th>    
+                }
+                    @if (@ViewBag.Mes > 12)
+                    { 
+                      <th class="num">=SUMA(@celdas[(FinalFila + 1)]@LineaIDAP:@celdas[(FinalFila + 1)]@LineaRDap) - @celdas[(FinalFila + 1)]@LineaDAP</th> 
+                      <th class="num">=SUMA(@celdas[(FinalFila + 2)]@LineaIDAP:@celdas[(FinalFila + 2)]@LineaRDap) - @celdas[(FinalFila + 2)]@LineaDAP</th>
+                      <th class="num">=@celdas[(FinalFila + 1)]@LineaTdap - @celdas[(FinalFila + 2)]@LineaTdap </th>    
+                      <th class="por100">=SI( @celdas[FinalFila + 1]9 = 0; 0 ;  @celdas[FinalFila + 1]@LineaTdap / @celdas[FinalFila + 1]9 )</th>
+                    }
+            </tr>
+            <tr style="text-align: left">
+                <th >Saldo Final</th>  
+                    @foreach (var mes in Meses)
+                    {
+                        Col = ((mes - 1) * 4) + 2;
+                        <th class="num">=@celdas[Col]@LineaSFDap + @celdas[Col]@LineaTdap + @celdas[Col]28 </th> 
+                        <th class="num">=@celdas[Col + 1]@LineaSFDap + @celdas[Col + 1]@LineaTdap + @celdas[Col + 1]28 </th> 
+                       <th class="num">=@celdas[Col]@LineaSF - @celdas[(Col + 1)]@LineaSF </th> 
+                        <th class="por100">=SI( @celdas[Col]@LineaSF = 0; 0 ; @celdas[Col + 1]@LineaSF / @celdas[Col]@LineaSF ) </th>   
+                    }                               
+                     @if (@ViewBag.Mes > 12)
+                   {
+                         <th class="num">=@celdas[FinalFila + 1]@LineaSFDap + @celdas[FinalFila + 1]@LineaTdap + @celdas[FinalFila + 1]28 </th> 
+                        <th class="num">=@celdas[FinalFila + 2]@LineaSFDap + @celdas[FinalFila + 2]@LineaTdap + @celdas[FinalFila + 2]28 </th> 
+                       <th class="num">=@celdas[FinalFila + 1]@LineaSF - @celdas[(FinalFila + 2)]@LineaSF </th> 
+                        <th class="por100">=SI( @celdas[FinalFila + 1]@LineaSF = 0; 0 ; @celdas[(FinalFila + 2)]@LineaSF / @celdas[FinalFila + 1]@LineaSF ) </th>   
+                     } 
+            </tr>
+        </table>
+
+
+
+
+    //}
+    //catch
+    //{
+
+    //}
+
+}

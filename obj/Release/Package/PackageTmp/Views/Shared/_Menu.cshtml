@@ -27,7 +27,7 @@
 
     <div class="blog-nav navbar-default navbar-fixed-top navbar-closed notscrolled">
     <div class="ocultoImpresion">
-        <a class="navbar-brand">
+        <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home" class="navbar-brand">
             <img  class ="brand_logo svgLogo" src ="@Url.Content("~/Content/Logo_Codeni3.png")" style="padding-bottom: 0px; border-top-width: 0px; margin-top: -15px;width: 45px; margin-right: -16px;">
             Sag
              </a>
@@ -73,6 +73,7 @@
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoImputacion/Create">Imputaci&oacute;n</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoOrigenAdquisicion/Create">Origen de adquisici&oacute;n</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoPersonal/Create">Tipo de personal</a></li>
+                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoRol/Create">Roles</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TiposProyectos/Create">Tipo de proyectos</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/LineasAtencion/Create">L&iacute;neas de acci&oacute;n</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Servicios/Create">Servicios</a></li>
@@ -80,7 +81,7 @@
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Comuna/Create">Comunas</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Region/Create">Regiones</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Pais/Create">Pa&iacute;ses</a></li>
-                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoPago/Create">Medio de Pago</a></li>
+								  <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/TipoPago/Create">Medio de Pago</a></li>
                             </ul>
                             
                             
@@ -93,7 +94,7 @@
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoIntervencion/Create">Estados de Pago</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ParametroUSS/Create">Cantidad de la USS</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ProgramaQ/Create">Valor USS</a></li>
-                                    <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ValorUF/Create">Valor UF</a></li>
+									 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/ValorUF/Create">Valor UF</a></li>
                                     <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/PorcentajeZona/Create">Porcentaje Zona</a></li>
                                 </ul>
                         </li>
@@ -124,7 +125,7 @@
                             <ul class="dropdown-menu"> 
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/Create">Programas</a></li>
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Contratos/Create">Contratos</a></li>
-                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create">Resolucion</a></li>
+                               
                             @if (!Usuario.esUsuario)
                             {
 	                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Proyectos/ListadoProyectos">Listado Programas</a></li>
@@ -199,61 +200,60 @@
 					</li>
                     <li class="dropdown-submenu"><a href="javascript:void();">Estado de Resultados</a>
 						<ul class="dropdown-menu">
-						@if (!Usuario.esUsuario)
-                        {
+						    @if (!Usuario.esUsuario)
+                            {
                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/Balance">Ingresos y Gastos </a></li>
-                        }
-                             @if (!Usuario.esUsuario)
-                             {
-                                   
-							  <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaProteccion">EE.RR. Proy. L&iacute;nea P.D. </a></li>
-                                <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaResponsabilidad">EE.RR. Proy. L&iacute;nea R.P.A.</a></li>
-                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaPrevencion?La=7">EE.RR. Proy. L&iacute;nea Prevenci&oacute;n</a></li>
-                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaProyecto">EE.RR. por L&iacute;nea entre fechas</a></li>
-                                 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaProyectoAnual">EE.RR. por L&iacute;nea por Proy. Anual</a></li>
-                                 // href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/Graficos">Gráficos</a></li>-->
+                            }
+                            @if (!Usuario.esUsuario)
+                            {      
+                                <li class="dropdown-submenu">
+                                    <a href="/SAG_5/Informe/"> EE.RR. Proy </a>
+                                    <ul class="dropdown-menu">                             
+							            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaProteccion">EE.RR. Proy. L&iacute;nea P.D. </a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaResponsabilidad">EE.RR. Proy. L&iacute;nea R.P.A.</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaPrevencion?La=7">EE.RR. Proy. L&iacute;nea Prevenci&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaProyecto">EE.RR. por L&iacute;nea entre fechas</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/LineaProyectoAnual">EE.RR. por L&iacute;nea por Proy. Anual</a></li>
+                                    </ul>
+                                </li>
                              }
-                               <li class="dropdown-submenu">
-                                    <a href="/SAG_5/Informe/"> Reportes EERR </a>
+                             @if (Usuario.esAdministrador || Usuario.esSupervisor)
+                             {
+                                <li class="dropdown-submenu">
+                                   <a>Reporte Normal </a> 
                                     <ul class="dropdown-menu">
-                                        @if (Usuario.esAdministrador || Usuario.esSupervisor)
-                                        {
-                                         <li class="dropdown-submenu">
-                                                <a href="/SAG_5/Informe/"> Reporte Normal </a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reportePrograma">Por Programa</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteRegion">Por Regi&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteLinea">L&iacute;nea Atenci&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteTipoPrograma">Tipo Programa</a></li>
-                                                        </ul>
-                                                    </li>
-                                        }
-                                                @if (Usuario.esAdministrador || Usuario.esSupervisor)
-                                                {
-                                                    <li class="dropdown-submenu">
-                                                        <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte S&iacute;ntesis </a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteProgramaSintesis">Por Programa</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteRegionSintesis">Por Regi&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteLineaSintesis">L&iacute;nea Atenci&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteTipoSintesis">Tipo Programa</a></li>
-                                                        </ul>
-                                                    </li>
-                                                }
-                                                @if (Usuario.esAdministrador || Usuario.esSupervisor)
-                                                {
-                                                    <li class="dropdown-submenu">
-                                                        <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte Estandar</a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteProgramaEstandar">Por Programa</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteRegionEstandar">Por Regi&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteLineaEstandar">L&iacute;nea Atenci&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteTipoEstandar">Tipo Programa</a></li>
-                                                        </ul>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        </li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteProgramaEstandar?TipoReporte=1">Por Programa</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteRegionEstandar?TipoReporte=1">Por Regi&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteLineaEstandar?TipoReporte=1">L&iacute;nea Atenci&oacute;n</a></li>
+                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteTipoEstandar?TipoReporte=1">Tipo Programa</a></li>
+                                   </ul>
+                               </li>
+                             }
+                             @if (Usuario.esAdministrador || Usuario.esSupervisor)
+                             {
+                                <li class="dropdown-submenu">
+                                    <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte S&iacute;ntesis </a>
+                                     <ul class="dropdown-menu">
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteProgramaEstandar?TipoReporte=2">Por Programa</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteRegionEstandar?TipoReporte=2">Por Regi&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteLineaEstandar?TipoReporte=2">L&iacute;nea Atenci&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteTipoEstandar?TipoReporte=2">Tipo Programa</a></li>
+                                      </ul>
+                                 </li>
+                            }
+                            @if (Usuario.esAdministrador || Usuario.esSupervisor)
+                            {
+                                <li class="dropdown-submenu">
+                                    <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte Estandar</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteProgramaEstandar?TipoReporte=3">Por Programa</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteRegionEstandar?TipoReporte=3">Por Regi&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteLineaEstandar?TipoReporte=3">L&iacute;nea Atenci&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultado/reporteTipoEstandar?TipoReporte=3">Tipo Programa</a></li>
+                                    </ul>
+                               </li>
+                          }
+                                   
 						</ul>
 					</li>
                                  <li class="dropdown-submenu">
@@ -263,7 +263,7 @@
                                          <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/CreateDonacion">Donaci&oacute;n de  Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Baja">Baja de Bienes</a></li>
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienModInventario/Traslado">Traslado de Bienes</a></li>                                        
-                                        @if (Usuario.esAdministrador)
+                                        @if (Usuario.esAdministrador || Usuario.esSupervisor)
                                         {
                                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienAutorizacion">Autorizaci&oacute;n de Bienes</a></li>}
                                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/BienAutorizacion/BienesAnulados">Movimientos Rechazados</a></li>
@@ -274,54 +274,50 @@
                         @if (!Proyecto.estaCerrado)
                         {
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/Formulacion">Formulaci&oacute;n</a></li>
+							 <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/PresVisualizar">Ver Formulaci&oacute;n</a></li> 
                         }
 							                      
 							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/Control">Control Presupuestario</a></li>
                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/ControlLinea?La=4 ">Ejec. Pptos. Proy. L&iacute;nea P.D.</a></li>
                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/ControlLinea?La=1">Ejec. Pptos. Proy. L&iacute;nea R.P.A.</a></li>
                             <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/ControlLinea?La=7">Ejec. Pptos. Proy. L&iacute;nea Prevenci&oacute;n</a></li>
-					                                                  						
-                           <li class="dropdown-submenu">
-                                            <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reportes Control Presupuestario </a>
-                                            <ul class="dropdown-menu">
-                                                @if (Usuario.esAdministrador || Usuario.esSupervisor)
-                                                {
-                                                    <li class="dropdown-submenu">
-                                                        <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte Normal </a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteProgramaCC">Por Programa</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteRegionCC">Por Regi&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteLineaCC">L&iacute;nea Atenci&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteTipoProgramaCC">Tipo Programa</a></li>
-                                                        </ul>
-                                                    </li>
-                                                }
-                                                @if (Usuario.esAdministrador || Usuario.esSupervisor)
-                                                {
-                                                    <li class="dropdown-submenu">
-                                                        <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte S&iacute;ntesis </a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteProgramaSintesisCC">Por Programa</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteRegionSintesisCC">Por Regi&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteLineaSintesisCC">L&iacute;nea Atenci&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteTipoSintesisCC">Tipo Programa</a></li>
-                                                        </ul>
-                                                    </li>
-                                                }
-                                                @if (Usuario.esAdministrador || Usuario.esSupervisor)
-                                                {
-                                                    <li class="dropdown-submenu">
-                                                        <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Reporte Estandar</a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteProgramaEstandarCC">Por Programa</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteRegionEstandarCC">Por Regi&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteLineaEstandarCC">L&iacute;nea Atenci&oacute;n</a></li>
-                                                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/reporteTipoEstandarCC">Tipo Programa</a></li>
-                                                        </ul>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        </li>
+					                                     @if (Usuario.esAdministrador || Usuario.esSupervisor)
+                             {
+                                <li class="dropdown-submenu">
+                                   <a>Control Presupuestario Normal </a> 
+                                    <ul class="dropdown-menu">
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteProgramaEstandar?TipoReporte=1">Por Programa</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteRegionEstandar?TipoReporte=1">Por Regi&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteLineaEstandar?TipoReporte=1">L&iacute;nea Atenci&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteTipoEstandar?TipoReporte=1">Tipo Programa</a></li>
+                                   </ul>
+                               </li>
+                             }
+                             @if (Usuario.esAdministrador || Usuario.esSupervisor)
+                             {
+                                <li class="dropdown-submenu">
+                                    <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Control Presupuestario S&iacute;ntesis </a>
+                                     <ul class="dropdown-menu">
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteProgramaEstandar?TipoReporte=2">Por Programa</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteRegionEstandar?TipoReporte=2">Por Regi&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteLineaEstandar?TipoReporte=2">L&iacute;nea Atenci&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteTipoEstandar?TipoReporte=2">Tipo Programa</a></li>
+                                      </ul>
+                                 </li>
+                            }
+                            @if (Usuario.esAdministrador || Usuario.esSupervisor)
+                            {
+                                <li class="dropdown-submenu">
+                                    <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informe/"> Control Presupuestario Estandar</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteProgramaEstandar?TipoReporte=3">Por Programa</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteRegionEstandar?TipoReporte=3">Por Regi&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteLineaEstandar?TipoReporte=3">L&iacute;nea Atenci&oacute;n</a></li>
+                                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/EstadoResultadoPresupuesto/reporteTipoEstandar?TipoReporte=3">Tipo Programa</a></li>
+                                    </ul>
+                               </li>
+                          }                                          						
+                          
                             </ul>
 					
                          <li class="dropdown-submenu"><a href="javascript:void();">Bodega</a>
@@ -381,6 +377,14 @@
                                  <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/SaldoCierre/ReporteCierre">Reporte Cierre</a></li>                                   
                             </ul>
                         </li>
+						               <li class="dropdown-submenu">
+                          <a href="javascript:void();">Hallazgo Cierre</a>
+						<ul class="dropdown-menu">
+							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/HallazgoCierre/Index">Ingreso Hallazgo Mensual</a></li>
+							<li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/HallazgoCierre/ConsolidadoMensual">Consolidado Mensual </a></li>
+                            <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/HallazgoCierre/HallazgoGrafico">Grafico Cierre </a></li>
+						</ul>
+					    </li>
                         }  
 				</ul>
  
@@ -434,6 +438,7 @@
                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/CuentaConsolidado">Informe de Cuentas</a></li>
                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/FondosrendirConsolidado">Informe de Fondos a Rendir </a></li>
                         <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Informes/HonorariosFiltros">Informe de Honorarios </a></li>
+                        <li><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Presupuesto/RealTodosDetalle">Exportaci&oacute;n Real Detalle </a></li>
                  	}   
 				</ul>
 			</li>

@@ -83,13 +83,35 @@ namespace SAG2.Controllers
 
         public ActionResult Create()
         {
+            int Iva = 0;
+            int cuentaIva = 0;
             int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];
 
             Session.Remove("DetalleEgreso");
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             ViewBag.NroComprobante = "1";
+            ViewBag.GestionIva = Proyecto.MI;
 
+           
+            try
+            {
+                var ReferenciaIva = db.Referencia.Where(d => d.PREDETERMINADO == 1 && d.GRUPO.Equals("IVA")).FirstOrDefault();
+
+                Iva = int.Parse(ReferenciaIva.VALOR.ToString());
+            }
+            catch (Exception)
+            {
+                Iva = 19;
+            }
+            ViewBag.Iva = Iva;
+            try {
+                var cIva = db.Cuenta.Where(d => d.Equals("E") && d.CuentaIva == 3).FirstOrDefault();
+                cuentaIva = cIva.ID;
+            
+            }
+            catch (Exception) { }
+            ViewBag.CuentaIva = cuentaIva;
             bool senainfo = false;
 
             if (senainfo)
@@ -215,14 +237,12 @@ namespace SAG2.Controllers
                         monto_egresos += detalle.Monto;
                         if (detalle.FondoFijoID != null)
                         {
-                            //FondoFijo ff = new FondoFijo();
-                            //ff = detalle.FondoFijo;
-                            //db.Database.ExecuteSqlCommand("UPDATE FondoFijo SET EgresoID = " + egresoID + " WHERE ID = " + detalle.FondoFijoID);
+
                             FondoFijo ff = db.FondoFijo.Find(detalle.FondoFijoID);
                             ff.EgresoID = egresoID;
                             db.Entry(ff).State = EntityState.Modified;
                             db.SaveChanges();
-                            //detalle.FondoFijoID = ff.ID;
+        
 
                             fondo_fijo = true;
                         } 
@@ -254,6 +274,38 @@ namespace SAG2.Controllers
 
                         db.DetalleEgreso.Add(detalle);
                         db.SaveChanges();
+
+                        // Aqui Anexo Egreso !!!!
+                        //if (detalle.Anexo == 1) {
+                        //    int MontoAnexo = 0;
+                        //    int MontoRegistro = 0;
+                        //    List<AnexoDetalle> Lista = new List<AnexoDetalle>();
+                        //    Lista = db.AnexoDetalle.Where(d => d.anexo.ProyectoID == Proyecto.ID && d.CuentaID == detalle.CuentaID && d.Monto != d.MontoEgreso && d.anexo.Duracion > detalle.FechaEmision ).ToList();
+                        //    MontoAnexo = detalle.Monto;
+                        //    foreach (var Registro in Lista) { 
+                        //        if ( MontoAnexo >= 0 ){
+                        //            if (MontoAnexo <= Registro.Monto){
+                        //                MontoRegistro = MontoAnexo;
+                        //            }else {
+                        //                MontoRegistro = Registro.Monto ;                                    
+                        //            }
+                        //            AnexoEgreso Dato = new AnexoEgreso();
+                        //            Dato.AnexoDetalleID = Registro.ID;
+                        //            Dato.DetalleEgresoID = detalle.ID;
+                        //            Dato.Monto = MontoRegistro;
+                        //            db.AnexoEgreso.Add(Dato);
+                        //            db.SaveChanges();
+
+                        //            Registro.MontoEgreso = Registro.MontoEgreso + MontoRegistro;
+                        //            db.Entry(Registro).State = EntityState.Modified;
+                        //            db.SaveChanges();
+
+                        //            MontoAnexo = MontoAnexo - MontoRegistro;
+                        //        }                            
+                        //    }                                              
+                        //}
+
+
                     }
                     Session.Remove("DetalleEgreso");
                     egreso.Monto_Egresos = monto_egresos;
@@ -400,19 +452,17 @@ namespace SAG2.Controllers
             List<DetalleEgreso> lista = new List<DetalleEgreso>();
             lista = db.DetalleEgreso.Where(d => d.MovimientoID == id).ToList();
             Session.Add("DetalleEgreso", lista);
-
-
             // Verificar Periodo 
             var Periododocumento = egreso.Periodo;
             var MesDocumento = egreso.Mes;
             var ProyectoDocumento = egreso.ProyectoID;
+            ViewBag.GestionIva = db.Proyecto.Find(ProyectoDocumento).MI;
             int PeriodoEstado = 0;
             var DatosPeriodo = db.Periodo.Where(d => d.Mes == MesDocumento && d.Ano == Periododocumento && d.ProyectoID == ProyectoDocumento).Count();
             if (DatosPeriodo != 0) {
                 PeriodoEstado = 1;
             }
             ViewBag.PeriodoEstado = PeriodoEstado;
- 
             return View(egreso);
         }
 
@@ -431,7 +481,16 @@ namespace SAG2.Controllers
             Usuario Usuario = (Usuario)Session["Usuario"];
             CuentaCorriente CuentaCorriente = (CuentaCorriente)Session["CuentaCorriente"];
             egreso.Descripcion = egreso.Descripcion.ToUpper();
-
+            int GestionIva = 0;
+            try
+            {
+                GestionIva = db.Proyecto.Find(egreso.ProyectoID).MI;
+            }
+            catch (Exception)
+            {
+                GestionIva = 0;
+            }
+            ViewBag.GestionIva = GestionIva;
             try
             {
                 ViewBag.UltimoIdentificador = db.Movimiento.Where(m => m.ProyectoID == egreso.ProyectoID).Where(a => a.TipoComprobanteID == ctes.tipoEgreso).Max(a => a.ID).ToString();
@@ -485,7 +544,7 @@ namespace SAG2.Controllers
                //}
                //catch (Exception)
                //{ }
-
+  
                 egreso.ID = 0;
                 egreso.Temporal = "S";
                 egreso.Eliminado = "N";
@@ -913,13 +972,18 @@ namespace SAG2.Controllers
         [HttpPost]
         public string GuardarLinea(string Origen, int Monto, string FechaEmision, int CuentaID, string Glosa, string FechaVencimiento = null, int? NComprobanteDP = null, int? DocumentoIDD = null, long? NDocumentoD = null, string BoletaHonorarioID = "", string DeudaPendienteID = "", int DetalleEgresoID = 0, int DetalleEgresoIndex = -1)
         {
+            //int ValorNeto = 0;
+            //int ValorIva = 0;
+            int cuentaIva = 0;
+            int gesIva = 0;
+         //   int Anexo = 0;
+
             int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            gesIva = Proyecto.MI;
             CuentaCorriente CuentaCorriente = (CuentaCorriente)Session["CuentaCorriente"];
-            // Buscar cuenta corriente segun movimiento !!!
-            // validar sumatoria de linea 
-            // Verificamos que haya saldo disponible para guardar el detalle de egreso
+
             try
             {
                 Saldo Saldo = db.Saldo.Where(s => s.CuentaCorrienteID == CuentaCorriente.ID && s.Periodo == periodo && s.Mes == mes).Single();
@@ -933,6 +997,20 @@ namespace SAG2.Controllers
                 return "No hay saldo definido para este Proyecto.";
             }
 
+            try
+            {
+                //ValorNeto = Int32.Parse(Request.Form["ValorNeto"].ToString());
+                //ValorIva = Int32.Parse(Request.Form["ValorIva"].ToString());
+                //DocumentoIDD = Int32.Parse(Request.Form["DocumentoIDD"].ToString());
+                Cuenta CIva = new Cuenta();
+               CIva = db.Cuenta.Where(d => d.CuentaIva == 3 && d.Tipo.Equals("E")).FirstOrDefault();
+                cuentaIva = CIva.ID;
+            }
+            catch (Exception)
+            {
+
+            }
+
             List<DetalleEgreso> lista = null;
 
             if (Session["DetalleEgreso"] != null)
@@ -942,6 +1020,11 @@ namespace SAG2.Controllers
                 {
                     lista = new List<DetalleEgreso>();
                     DetalleEgresoIndex = -1;
+                }
+                if (DocumentoIDD == 1 && gesIva == 1 && DetalleEgresoID == 0)
+                {
+                      var   detalleIva = lista.Where(d => d.CuentaID == cuentaIva).FirstOrDefault();          
+                      lista.Remove(detalleIva);
                 }
     
             }
@@ -962,20 +1045,18 @@ namespace SAG2.Controllers
                 }
 
                 DetalleEgreso detalle = new DetalleEgreso();
-
+               
                 if (DetalleEgresoID > 0) 
                 { 
-                    // Edicion de detalle de egreso ya registrado
-                    //List<DetalleEgreso> lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+
                     detalle = lista.Where(d => d.ID == DetalleEgresoID).Single();
                 }
                 else if (DetalleEgresoIndex > -1)
                 {
-                    // Edicion de detalle de egreso aun no registrado
-                    //List<DetalleEgreso> lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+
                     detalle = lista.ElementAt(DetalleEgresoIndex - 1);
                 }
-                
+              //  detalle.Anexo = Anexo;
                 detalle.NComprobanteDP = NComprobanteDP;
                 detalle.DocumentoID = DocumentoIDD;
 
@@ -987,8 +1068,16 @@ namespace SAG2.Controllers
                 {
                     detalle.NDocumento = NDocumentoD;
                 }
-                
-                detalle.Monto = Monto;
+                if (DocumentoIDD == 1 && gesIva == 1)
+                {
+                    detalle.Monto = Monto;
+                    detalle.Iva = 1;
+                }
+                else
+                {
+                    detalle.Monto = Monto;
+                    detalle.Iva = 0;
+                }
                 detalle.FechaEmision = DateTime.Parse(FechaEmision);
                 detalle.FechaVencimiento = DateTime.Parse(FechaVencimiento);
                 detalle.CuentaID = CuentaID;
@@ -1046,10 +1135,7 @@ namespace SAG2.Controllers
                     }
                 }                
 
-                //if (Session["DetalleEgreso"] != null)
-                //{
-                    //List<DetalleEgreso> lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
-                    //Session.Remove("DetalleEgreso");
+
 
                     if (DetalleEgresoID > 0)
                     {
@@ -1062,20 +1148,46 @@ namespace SAG2.Controllers
                     {
                         lista.RemoveAt(DetalleEgresoIndex -1);
                     }
-                    //else
-                    //{
-                        //List<DetalleEgreso> lista = new List<DetalleEgreso>();
-                    //}
+
 
                     lista.Add(detalle);
+
+                    //if (DocumentoIDD == 1 && gesIva == 1 )
+                    //{
+                    //    DetalleEgreso detalleIva = new DetalleEgreso();
+                    //    if (DetalleEgresoID == 0)
+                    //    {
+                    //       // DetalleEgreso detalleIva = new DetalleEgreso();
+                    //        detalleIva.DocumentoID = detalle.DocumentoID;
+                    //        detalleIva.Monto = ValorIva;
+                    //        detalleIva.FechaEmision = detalle.FechaEmision;
+                    //        detalleIva.FechaVencimiento = detalle.FechaVencimiento;
+                    //        detalleIva.CuentaID = cuentaIva;
+                    //        detalleIva.Glosa = "IVA CRÉDITO FISCAL";
+                    //        detalleIva.NDocumento = detalle.NDocumento;
+                    //        detalleIva.Iva = 2;
+                    //    }
+                    //    else {
+                    //        detalleIva = lista.Where(d => d.CuentaID == cuentaIva).FirstOrDefault();
+                    //        int DetalleEgresoIDIva = detalleIva.ID;
+                    //        int index = lista.FindIndex(d => d.ID == DetalleEgresoIDIva);
+                    //        lista.RemoveAt(index);
+                    //        detalleIva.DocumentoID = detalle.DocumentoID;
+                    //        detalleIva.Monto = ValorIva;
+                    //        detalleIva.FechaEmision = detalle.FechaEmision;
+                    //        detalleIva.FechaVencimiento = detalle.FechaVencimiento;
+                    //        detalleIva.CuentaID = cuentaIva;
+                    //        detalleIva.Glosa = "IVA CRÉDITO FISCAL";
+                    //        detalleIva.NDocumento = detalle.NDocumento;
+                    //        detalleIva.Iva = 2;
+                        
+                    //    }
+                    //    lista.Add(detalleIva);
+
+                    //}
+
                     Session.Add("DetalleEgreso", lista);
-                //}
-                //else
-                //{
-                    //List<DetalleEgreso> lista = new List<DetalleEgreso>();
-                    //lista.Add(detalle);
-                    //Session.Add("DetalleEgreso", lista);
-                //}
+
                 return "OK";
             } 
             catch (Exception e)
@@ -1170,20 +1282,36 @@ namespace SAG2.Controllers
                     {
                         // Edicion de detalle de egreso ya registrado
                         int index = lista.FindIndex(d => d.ID == DetalleEgresoID);
-                        //boletaID = lista[index].BoletaHonorarioID;
-                        if (index >= 0)
-                        {
-                            lista.RemoveAt(index);
-                        }
-                        else {
-                            lista.RemoveAt(DetalleEgresoID - 1);
-                        }
+                        int Iva = lista[index].Iva;         
+                            //boletaID = lista[index].BoletaHonorarioID;
+                            if (index >= 0)
+                            {
+                                lista.RemoveAt(index);
+                            }
+                            else
+                            {
+                                lista.RemoveAt(DetalleEgresoID - 1);
+                            }
+                        
                     }
                     else if (DetalleEgresoIndex > -1)
-                    {
-                        //boletaID = lista[DetalleEgresoIndex - 1].BoletaHonorarioID;
-                        lista.RemoveAt(DetalleEgresoIndex - 1);
+                    {                 
+                      lista.RemoveAt(DetalleEgresoIndex - 1);          
                     }
+                    int cuentaIva = 0;
+                    try
+                    {
+
+                        Cuenta CIva = new Cuenta();
+                        CIva = db.Cuenta.Where(d => d.CuentaIva == 3 && d.Tipo.Equals("E")).FirstOrDefault();
+                        cuentaIva = CIva.ID;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                    var detalleIva = lista.Where(d => d.CuentaID == cuentaIva).FirstOrDefault();
+                    lista.Remove(detalleIva);
 
                     Session.Remove("DetalleEgreso");
                     Session.Add("DetalleEgreso", lista);
@@ -1200,6 +1328,101 @@ namespace SAG2.Controllers
 
                 return "OK";
             } 
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+
+
+        public string LineaIVA(int DetalleEgresoID = 0, int DetalleEgresoIndex = -1)
+        {
+            try
+            {
+                if (Session["DetalleEgreso"] != null)
+                {
+                    int Iva = 0;
+                    try
+                    {
+                        var ReferenciaIva = db.Referencia.Where(d => d.PREDETERMINADO == 1 && d.GRUPO.Equals("IVA")).FirstOrDefault();
+
+                        Iva = int.Parse(ReferenciaIva.VALOR.ToString());
+                    }
+                    catch (Exception)
+                    {
+                        Iva = 19;
+                    }
+                   int DocumentoIDD = Int32.Parse(Request.Form["DocumentoIDD"].ToString());
+                   int gesIva = 0;
+                   Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+                   gesIva = Proyecto.MI;
+ 
+                   if (DocumentoIDD == 1 && gesIva == 1)
+                   {
+                    List<DetalleEgreso> lista = null;
+				   lista = (List<DetalleEgreso>)Session["DetalleEgreso"];
+                   if (lista.Count > 0)
+                   {
+                       DetalleEgreso detalle = lista.FirstOrDefault();
+                       var CIva = db.Cuenta.Where(d => d.CuentaIva == 3 && d.Tipo.Equals("E")).FirstOrDefault();
+                       int cuentaIva = CIva.ID;
+                       int ValorNeto = lista.Where(d => d.CuentaID != cuentaIva ).Sum(d => d.Monto);
+                       double VIva = Iva * ValorNeto;
+                       VIva = VIva / 100;
+                       VIva = Math.Round(VIva);
+                       int ValorIva = int.Parse(VIva.ToString());
+                       DetalleEgreso detalleIva = new DetalleEgreso();
+                       DetalleEgreso detalleIvaRev = new DetalleEgreso();
+                       if (DetalleEgresoID == 0)
+                       {
+                           detalleIvaRev = lista.Where(d => d.CuentaID == cuentaIva).FirstOrDefault();
+                           if (detalleIvaRev == null)
+                           {
+                               detalleIva.DocumentoID = detalle.DocumentoID;
+                               detalleIva.Monto = ValorIva;
+                               detalleIva.FechaEmision = detalle.FechaEmision;
+                               detalleIva.FechaVencimiento = detalle.FechaVencimiento;
+                               detalleIva.CuentaID = cuentaIva;
+                               detalleIva.Glosa = "IVA CRÉDITO FISCAL";
+                               detalleIva.NDocumento = detalle.NDocumento;
+                               detalleIva.Iva = 2;
+                               lista.Add(detalleIva);
+                           }
+
+                       }
+                       else
+                       {
+                           detalleIva = lista.Where(d => d.CuentaID == cuentaIva).FirstOrDefault();
+                           int DetalleEgresoIDIva = detalleIva.ID;
+                           int index = lista.FindIndex(d => d.ID == DetalleEgresoIDIva);
+                           lista.RemoveAt(index);
+                           detalleIva.DocumentoID = detalle.DocumentoID;
+                           detalleIva.Monto = ValorIva;
+                           detalleIva.FechaEmision = detalle.FechaEmision;
+                           detalleIva.FechaVencimiento = detalle.FechaVencimiento;
+                           detalleIva.CuentaID = cuentaIva;
+                           detalleIva.Glosa = "IVA CRÉDITO FISCAL";
+                           detalleIva.NDocumento = detalle.NDocumento;
+                           detalleIva.Iva = 2;
+                            lista.Add(detalleIva);
+
+                       }
+                      
+                       Session.Remove("DetalleEgreso");
+                       Session.Add("DetalleEgreso", lista);
+                   }
+
+                   }
+
+
+
+
+                }
+
+
+                return "OK";
+            }
             catch (Exception e)
             {
                 return e.Message;

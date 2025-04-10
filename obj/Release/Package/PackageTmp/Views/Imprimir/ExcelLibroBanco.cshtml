@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<SAG2.Models.Movimiento>
 @{
     Layout = null;
-
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
     Response.Clear();
     Response.Buffer = true;
     Response.ContentType = "application/vnd.ms-excel";
@@ -167,6 +167,61 @@
             {
                 totalDebe = totalDebe + item.Monto_Ingresos;
             }
+                 SAG2.Models.DetalleIngresoIva detallesIngreso = db.DetalleIngresoIva.Where(d => d.MovimientoID == item.ID).FirstOrDefault();
+                if( detallesIngreso != null ){
+                    <tr @Html.Raw(null)>
+                        <td align="center" style="white-space: nowrap; overflow: hidden;">@item.Fecha.Value.ToShortDateString()</td>
+                        <td align="center">@item.Cheque</td>
+                        <td align="right">
+                        @if (item.Nulo != null && item.Nulo.Equals("S"))
+                        {
+                            @Html.Raw("$0");
+                        }
+                        else
+                        {
+                            @Html.Raw("$" + detallesIngreso.ValorNeto.ToString("#,##0"));
+                            Saldo = Saldo + detallesIngreso.ValorNeto;
+                        }
+                        </td>
+                        <td align="right">-</td>
+                        <td align="right">
+                            @Html.Raw("$" + @Saldo.ToString("#,##0"))
+                        </td>
+                        <td align="center" style="white-space: nowrap; overflow: hidden;">@item.TipoComprobante.Nombre</td>
+                        <td align="center">@item.NumeroComprobante</td>
+                        <td nowrap>@if (@item.Cuenta != null)
+                        { @System.Web.HttpUtility.UrlDecode(utils.cuentaPadre(@item.Cuenta)) }</td>
+
+                        <td align="left" nowrap>@item.Cuenta.NombreLista    </td>
+                        <td nowrap>@System.Web.HttpUtility.UrlDecode(descripcion)</td>
+                    </tr>
+                    <tr @Html.Raw(null)>
+                        <td align="center" style="white-space: nowrap; overflow: hidden;">@item.Fecha.Value.ToShortDateString()</td>
+                        <td align="center">@item.Cheque</td>
+                        <td align="right">
+                        @if (item.Nulo != null && item.Nulo.Equals("S"))
+                        {
+                            @Html.Raw("$0");
+                        }
+                        else
+                        {
+                            @Html.Raw("$" + detallesIngreso.ValorIva.ToString("#,##0"));
+                            Saldo = Saldo + detallesIngreso.ValorIva;
+                        }
+                        </td>
+                        <td align="right">-</td>
+                        <td align="right">
+                            @Html.Raw("$" + @Saldo.ToString("#,##0"))
+                        </td>
+                        <td align="center" style="white-space: nowrap; overflow: hidden;">@item.TipoComprobante.Nombre</td>
+                        <td align="center">@item.NumeroComprobante</td>
+                        <td nowrap>@if (@detallesIngreso.Cuenta != null)
+                        { @System.Web.HttpUtility.UrlDecode(utils.cuentaPadre(@detallesIngreso.Cuenta)) }</td>
+
+                        <td align="left" nowrap>@detallesIngreso.Cuenta.NombreLista    </td>
+                        <td nowrap>@System.Web.HttpUtility.UrlDecode(descripcion)</td>
+                     </tr>
+                }else{
         <tr @Html.Raw(null)>
             <td align="center" style="white-space: nowrap; overflow: hidden;">@item.Fecha.Value.ToShortDateString()</td>
             <td align="center">@item.Cheque</td>
@@ -193,7 +248,8 @@
             <td align="left" nowrap>@item.Cuenta.NombreLista    </td>
             <td nowrap>@System.Web.HttpUtility.UrlDecode(descripcion)</td>
         </tr>
-        }
+    }    
+    }
         else
         {
             if (item.Nulo != null && item.Nulo.Equals("S"))
@@ -267,7 +323,7 @@
             else
             {
 
-                SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+               
                 List<SAG2.Models.DetalleEgreso> detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
 
                 foreach (var detalle in detalles)

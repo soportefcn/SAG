@@ -34,11 +34,11 @@
               </select>
           </div>
             <div class="form-group" style="margin-right: 30px;margin-left: 0px;">
-                @Html.Label("Proyecto:")
+             <label>Programa </label>
             </div>
             <div class="form-group" style="margin-right: 50px;">               
                 <select name="ProyectoID" id="ProyectoID" class="js-autocomplete" >
-                 <option value="-1"> - Seleccione proyecto</option>
+                 <option value="-1"> - Seleccione Programa</option>
                     @foreach (SAG2.Models.Proyecto Proyecto in ViewBag.Proyectos)
                     {
                         if (proyectoID == Proyecto.ID)

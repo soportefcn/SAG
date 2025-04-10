@@ -22,8 +22,7 @@
 	    "Diciembre"
 	};
 
-    int Periodo = @ViewBag.Periodo;
-    int Mes = @ViewBag.Mes;
+
 }
     <script type="text/javascript">
         $(document).ready(function() {
@@ -55,50 +54,28 @@
                         }
                     </select>
                 </td>
-                 <th class="active" nowrap="nowrap">Mes</th>
-                <td>
-                    <select name="MesApertura" id="Mesapertura" class="form-control">
-                     @for (var i = 0; i < 12; i++)
-                    {
-                        <option value="@Html.Raw((@i + 1).ToString())" @if (@ViewBag.Mes == (i + 1))
-                                                                     { @Html.Raw("selected=\"selected\"") }>
-                          @Html.Raw(@Meses[@i])
-                        </option>
-                     }
-                    </select>
-
-
-                </td>
-                <th class="active" nowrap="nowrap">Periodo</th>
-                <td>
-                                 <select name="PeriodoApertura" id="PeriodoApertura" class="form-control">
-                  @for (var i = DateTime.Now.Year - 10; i <= DateTime.Now.Year + 1; i++)
-                  {
-                      <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.Periodo == i)
-                                                                 { @Html.Raw("selected=\"selected\"") }>
-                          @Html.Raw((@i).ToString())
-                  </option>
-                  }
-              </select>
-                </td>
-            </tr>
-            <tr>
-                <th class="active" nowrap="nowrap">Tipo</th>
-                <td style="width:" colspan="5">
-                    <select name="tipo" id="tipo" class="js-autocomplete" >
-                        <option value="0"> Todos </option>   
-                        <option value=1>Antecedentes del Programa</option>   
-                        <option value=2>Antecedentes del Convenio</option>  
-                        <option value=3>Contratos</option>  
-                        <option value=4>Antecedentes Administrativos, Financieros y Contables</option>  
-                    </select>
-
-                </td>
+            
+  
+    
 
             </tr>
 
         </tbody>
     </table>
+    <div class="form-inline form-group">
+                    <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                    <label>Desde</label>
+                </div>
+                <div class ="form-group">
+                    <input name="Desde" id="Desde" class="calendario form-control" value="@Html.Raw(@ViewBag.Desde)" maxlength="10" />
+                </div>
+                <div class="form-group" style="margin-right: 10px;margin-left:8px">
+                    <label>Hasta</label>
+                </div>
+                <div class ="form-group">
+                    <input name="Hasta" id="Hasta" class="calendario form-control" value="@Html.Raw(@ViewBag.Hasta)" maxlength="10" style="margin-right: 20px;" />
+                </div>
+                          </div>
       <div class="form-inline">
                   <div class ="form-group"><input type="submit" value="Ver resultados!" class="btn btn-primary"  /></div>
                    
@@ -174,10 +151,10 @@
 
             // (int Periodo, int Mes, int ProyectoID, int Tipo
             var ProyectoID = $("#Proyecto").val();
-            var mes = $("#Mesapertura").val();
-            var Periodo = $("#PeriodoApertura").val();
-            var Tipo = $("#tipo").val();         
-            window.open("/SAG_5/Administracion/InicioLogExcel?Periodo=" + Periodo + '&Mes=' + mes + '&ProyectoID=' + ProyectoID + '&Tipo=' + Tipo, 'Inicio Log');
+            var Desde = $("#Desde").val();
+            var Hasta = $("#Hasta").val();
+           
+            window.open("/SAG_5/Administracion/InicioLogExcel?Desde=" + Desde + '&Hasta=' + Hasta + '&ProyectoID=' + ProyectoID, 'Inicio Log');
             return false;
         });
     });

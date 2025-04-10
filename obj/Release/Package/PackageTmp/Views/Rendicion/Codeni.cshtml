@@ -180,6 +180,10 @@
     </tr>
     @foreach (SAG2.Models.Cuenta item in CuentasIngresos)
     {
+        if (item.CuentaIva == 0) 
+        {
+             if (item.ID != 1){
+            if (item.ID != 6){ 
         monto = 0;
         string codigo = item.Codigo;
         try
@@ -215,7 +219,7 @@
             </tr>
             }
         }
-    }
+        } } } }
     <tr>
         <td  style="border: 0; background-color: 0;">&nbsp;&nbsp;&nbsp;&nbsp;Total Ingresos del Período</td>
         <th style="text-align:right;" >$@Html.Raw(totalIngresos.ToString("#,##0"))</th>
@@ -245,16 +249,18 @@ else
     </tr>
     @foreach (SAG2.Models.Cuenta item in CuentasEgresos)
     {
-        monto = 0;
-        string codigo = item.Codigo;
-        try
+        if (item.CuentaIva == 0)
         {
-            monto = Egresos.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto);
-            monto = monto - Reintegros.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto_Ingresos);
-            totalEgresos = totalEgresos + monto;
-        }
-        catch (Exception)
-        { }
+            monto = 0;
+            string codigo = item.Codigo;
+            try
+            {
+                monto = Egresos.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto);
+                monto = monto - Reintegros.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto_Ingresos);
+                totalEgresos = totalEgresos + monto;
+            }
+            catch (Exception)
+            { }
     <tr>
         <td style=" border:0;">&nbsp;&nbsp;&nbsp;&nbsp;@Html.Raw(item.NombreLista)</td>
         <td align="right" style="color: Red;" class="subtotal">
@@ -271,6 +277,7 @@ else
                 try
                 {
                     montoHijo = Egresos.Where(i => i.Cuenta.ID == hijo.ID).Sum(i => i.Monto);
+                    montoHijo = montoHijo - Reintegros.Where(i => i.Cuenta.Codigo.StartsWith(codigo)).Sum(i => i.Monto_Ingresos);
                 }
                 catch (Exception)
                 { }
@@ -281,6 +288,7 @@ else
             }
         }
     </tr>
+        }
     }
     <tr>
         <td align="left" style="border: 0; background-color: 0;">&nbsp;&nbsp;&nbsp;&nbsp;Total Egresos del Período</td>

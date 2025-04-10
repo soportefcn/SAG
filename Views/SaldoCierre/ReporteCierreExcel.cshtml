@@ -199,8 +199,18 @@
         {
             xProyectoID = DatoProyecto.ID;
         }
-        var Numcuenta = cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().NumeroLista.ToString();
-        int IdCuenta = int.Parse(cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().ID.ToString());
+ 
+		       var Numcuenta = "";
+        int IdCuenta = 0;
+        try
+        {
+             Numcuenta = cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().NumeroLista.ToString();
+             IdCuenta = int.Parse(cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().ID.ToString());
+        }
+        catch {
+             Numcuenta = "";
+             IdCuenta = 0;
+        }
         // supervisor
         var nombre = "";
         try

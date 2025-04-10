@@ -26,7 +26,7 @@
     </tr>
 @foreach (var item in Model) {
     string F1 = item.FechaInicio.ToShortDateString();
-    string F2 = item.FechaInicio.ToShortDateString();
+    string F2 = item.FechaTermino.ToShortDateString();
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.tipo )

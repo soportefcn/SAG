@@ -150,7 +150,7 @@
             <div class="soloImpresion">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td valign="top" style="border: 0;"><strong>Consejo de Defensa del Niño<br />
+                <td valign="top" style="border: 0;"><strong>Fundación Ciudad del Niño<br />
                 @Html.Raw(Proyecto)</strong></td>
                 <td align="right" valign="top" style="border: 0;">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
               </tr>
@@ -206,7 +206,7 @@
             <option value="E">Egresos</option>
         </select>
         <select name="periodoControl" id="periodoControl" class="añoPresupuesto">
-            @for (int i = DateTime.Now.Year - 2; i < DateTime.Now.Year + 5; i++)
+            @for (int i = DateTime.Now.Year - 4; i < DateTime.Now.Year + 5; i++)
             {
             <option value="@Html.Raw((i).ToString())"@{
                 if (i.ToString().Equals(ViewBag.Periodo_Inicio))
@@ -221,8 +221,8 @@
         <select name="Texcel" id="Texcel">
             <option value="">Tipo de Excel</option>
             <option value="n">Reporte Normal</option>
-             <option value="r">Reporte Estandar</option>
-           
+            <option value="r">Reporte Estandar</option>
+            <option value="rp">Todos Real Ppto </option>
           
         </select>
         <select name="exportarPresupuestoExcel" id="exportarPresupuestoExcel">

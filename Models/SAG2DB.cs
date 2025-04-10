@@ -8,6 +8,7 @@ namespace SAG2.Models
         public DbSet<CuentaCorriente> CuentaCorriente { get; set; }
         public DbSet<Direccion> Direccion { get; set; }
         public DbSet<Proyecto> Proyecto { get; set; }
+        public DbSet<ProyectosExcluidos> ProyectosExcluidos { get; set; }
         public DbSet<Movimiento> Movimiento { get; set; }
         public DbSet<Persona> Persona { get; set; }
         public DbSet<SistemaAsistencial> SistemaAsistencial { get; set; }
@@ -95,7 +96,6 @@ namespace SAG2.Models
 
         // Indice Gestion
         public DbSet<IndicadoresGestion> IndicadoresGestion { get; set; }
-
         public DbSet<Inventario> Inventario { get; set; }
         public DbSet<Especie> Especie { get; set; }
         public DbSet<Familia> Familia { get; set; }
@@ -178,9 +178,18 @@ namespace SAG2.Models
         public DbSet<HallazgoCierre> HallazgoCierre { get; set; }
         public DbSet<HallazgoAvance> HallazgoAvance { get; set; }
         public DbSet<Grupo> Grupo { get; set; }
+        public DbSet<DetalleIngresoIva> DetalleIngresoIva { get; set; }
+        public DbSet<InformeCuenta> informeCuenta { get; set; }
+        public DbSet<InformeCuentaPto> informeCuentaPto { get; set; }
+        public DbSet<InformeCuentaDetalle> InformeCuentaDetalle { get; set; }
+       
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {          
+        {
+            modelBuilder.Entity<InformeCuentaDetalle>().ToTable("InformeCuentaDetalle");
+            modelBuilder.Entity<InformeCuenta>().ToTable("InformeCuenta");
+            modelBuilder.Entity<InformeCuentaPto>().ToTable("InformeCuentaPto");
+            modelBuilder.Entity<DetalleIngresoIva>().ToTable("DetalleIngresoIva");
             modelBuilder.Entity<Estandarvalores>().ToTable("Estandarvalores"); 
             modelBuilder.Entity<InventarioCorrelativo>().ToTable("InventarioCorrelativo");
             modelBuilder.Entity<EspecieCuenta>().ToTable("EspecieCuenta");
@@ -197,6 +206,7 @@ namespace SAG2.Models
             modelBuilder.Entity<CuentaCorriente>().ToTable("CuentaCorriente");
             modelBuilder.Entity<Direccion>().ToTable("Direccion");
             modelBuilder.Entity<Proyecto>().ToTable("Proyectos");
+            modelBuilder.Entity<ProyectosExcluidos>().ToTable("ProyectosExcluidos");
             modelBuilder.Entity<Movimiento>().ToTable("Movimiento");
             modelBuilder.Entity<Persona>().ToTable("Persona");
             modelBuilder.Entity<SistemaAsistencial>().ToTable("SistemaAsistencial");
@@ -345,5 +355,6 @@ namespace SAG2.Models
         }
         public System.Data.Entity.DbSet<SAG2.Models.DetalleInformes> DetalleInformes { get; set; }
         public System.Data.Entity.DbSet<SAG2.Models.CuentasPadres> CuentasPadres { get; set; }
+        
     }
 }

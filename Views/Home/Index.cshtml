@@ -199,8 +199,9 @@
                     <th class="active">   Convenio Docto :     </th>
                     <td>
                        @{
-                            if(ConvenioArchivo != null){
-                             <a  href="@Url.Action("Download","Resolucion",new {ImageName = ConvenioArchivo.NombreArchivo })"> <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color:red;"></i></a>
+                         if(ConvenioArchivo != null){
+                                string NomArch = "CN_" + Proyecto.TipoProyecto.Sigla + "_" + Proyecto.CodCodeni + ".pdf";
+                             <a  href="@Url.Action("Download","Resolucion",new {ImageName = ConvenioArchivo.NombreArchivo, NomArch = NomArch })"> <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true" style="color:red;"></i></a>
                            
                             }
                             
@@ -243,13 +244,15 @@
                     int ContadorProrroga = 1;
                     foreach (var Registro in Resolucion)
                     {
-                        var TDocumento = ResolDoc.Where(d => d.ResolucionID == Registro.ID).ToList();
+                       string Fec = Registro.FechaInicio.ToString("yyyyMMdd");
+                       string NomArch = "RES_" + Fec + "_" + Registro.tipo.Substring(0, 2) + "_" + Proyecto.TipoProyecto.Sigla + "_" + Proyecto.CodCodeni + ".pdf";                
+                       var TDocumento = ResolDoc.Where(d => d.ResolucionID == Registro.ID).ToList();
                        if(ContadorProrroga <= 3 ){                                                                   
                         <tr>
                             <th class="active">@Registro.tipo</th>
                             <td>
                                 @foreach(var Documento in TDocumento  ){                   
-                                      <a class="btn btn-success" href="@Url.Action("Download","BienAutorizacion",new {ImageName = Documento.NombreArchivo })">Resolucion</a>
+                                         <a class="btn btn-success" href="@Url.Action("Download","Resolucion",new {ImageName = Documento.NombreArchivo , NomArch = NomArch })">Resolucion</a>
                                  }
                             </td>
                             <th class="active">Res. EX. </th><td>@Registro.ResEx </td>
@@ -282,9 +285,9 @@
                     <td>@Html.Raw(rol.TipoRol.Nombre.ToUpper())</td>
                     <td>@Html.Raw(rol.Persona.NombreLista.ToUpper())</td>
                     <td>
-                        @if (rol.Persona.CorreoElectronico != null)
+                        @if (rol.Correo != null)
                         {
-                            <a href="mailto:@Html.Raw(rol.Persona.CorreoElectronico.ToLower())"> @Html.Raw(rol.Persona.CorreoElectronico.ToUpper())</a>
+                            <a href="mailto:@Html.Raw(rol.Correo.ToLower())"> @Html.Raw(rol.Correo.ToUpper())</a>
                         }
                         else
                         {

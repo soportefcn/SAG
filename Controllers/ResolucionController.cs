@@ -54,6 +54,8 @@ namespace SAG2.Controllers
             ConvenioF.FechaTermino = convemio.FechaTermino;
             ViewBag.ConvenioArchivo = db.ConvenioDescarga.Where(d => d.ProyectoID == proyectoID && d.Estado == 1).FirstOrDefault();
             TempData["Message"] = null;
+            string NomArch = "CN_" + Proyecto.TipoProyecto.Sigla + "_" + Proyecto.CodCodeni + ".pdf";
+            ViewBag.NomArch = NomArch;
             return View(ConvenioF);
         }
 
@@ -105,7 +107,8 @@ namespace SAG2.Controllers
             {
 
             }
-
+            string NomArch = "CN_" + Proyecto.TipoProyecto.Sigla + "_" + Proyecto.CodCodeni + ".pdf";
+            ViewBag.NomArch = NomArch;
 
             return RedirectToAction("Index", "Home");
         }
@@ -232,15 +235,24 @@ namespace SAG2.Controllers
                         string _path = Path.Combine(Server.MapPath("~/archivos"), filename);
                         file.SaveAs(_path);
                         ResolucionDescarga trDocumento = db.ResolucionDescarga.Where(dx => dx.ResolucionID == resolucion.ID).FirstOrDefault();
-                        
-                        trDocumento.NombreArchivo = _path;
-                        trDocumento.ResolucionID = resolucion.ID;
-                        db.Entry(trDocumento).State = EntityState.Modified;
+                        if (trDocumento != null)
+                        {
+                            trDocumento.NombreArchivo = _path;
+                            trDocumento.ResolucionID = resolucion.ID;
+                            db.Entry(trDocumento).State = EntityState.Modified;
+                        }
+                        else {
+                            ResolucionDescarga DocAdjunto = new ResolucionDescarga();
+                            DocAdjunto.NombreArchivo = _path;
+                            DocAdjunto.ResolucionID = resolucion.ID;
+                            db.ResolucionDescarga.Add(DocAdjunto);
+                        }
                         db.SaveChanges();
                     }
                 }
                 catch (Exception)
                 {
+                    
 
                 }
 
@@ -254,11 +266,10 @@ namespace SAG2.Controllers
         }
 
 
-        public FileResult Download(string ImageName)
+        public FileResult Download(string ImageName, string NomArch)
         {
-            return File(ImageName, System.Net.Mime.MediaTypeNames.Application.Octet, string.Format("Doc{0}", "Documento.pdf"));
+            return File(ImageName, System.Net.Mime.MediaTypeNames.Application.Octet, string.Format("{0}", NomArch));
         }
-
         //
         // GET: /Resolucion/Delete/5
  

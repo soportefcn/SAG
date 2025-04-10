@@ -95,3 +95,29 @@ input[type="text"], textarea
 }
     </div>
 </div>
+<script>
+    function NombreUsuario(PersonaID) {
+        url = '@Url.Action("NombreUsuario", "Usuarios")';
+        
+        $.post(url, { PersonaID: PersonaID },
+           function (data) {
+               if (data == "N") {
+                   alert("Persona tiene Usuario Asignado");
+               } else {
+                   $("#Nombre").val(data);
+               }
+           })
+           .success(function () { })
+           .error(function () { })
+           .complete(function () { });
+        }
+
+    $(document).ready(function () {
+        $('#PersonaID').change(function () {
+            NombreUsuario($(this).val());
+    });
+
+
+
+    });
+</script>

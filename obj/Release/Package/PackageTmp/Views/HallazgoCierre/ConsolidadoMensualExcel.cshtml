@@ -1,0 +1,130 @@
+﻿@model IEnumerable<SAG2.Models.HallazgoCierre>
+
+@{
+    Layout = null;
+    ViewBag.Title = "ConsolidadoMensual";
+    List<SAG2.Models.Hallazgo> HallazgoComentario = new List<SAG2.Models.Hallazgo>();
+    HallazgoComentario = ViewBag.Hallazgocometario;
+    int HallazgoTabla = 0;
+
+    var Meses = new string[12]
+    {
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    };
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.AddHeader("Content-Disposition", "attachment;filename=ConsoMensual-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Balance Presupuestario</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+
+        }
+    </style>
+</head>
+<body>
+ <h3>Hallazgo</h3>
+<table align="center" cellspacing="0" cellpadding="3" width="100%" border="1" >
+ <tr>
+     <th>Periodo</th>
+     <th>Mes </th>
+     <th> Nombre Programa  </th>
+     <th> Cuenta</th>
+     <th>  Clasificaci&oacute;n </th>
+        <th>
+            Observacion
+        </th>
+        <th>
+          Estado
+        </th>
+    </tr>
+@foreach (var item in Model) {
+    <tr>
+        <td>  @Html.DisplayFor(modelItem => item.Periodo)</td>
+         <td>  @Meses[item.Mes - 1] </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.proyecto.NombreLista)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.conceptoCalsificacion.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.conceptoCalsificacion.clasificacion.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Observaciones)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.etapa.Descripcion)
+        </td> 
+    </tr>
+}
+
+</table>
+<br />
+       @foreach (var dato in HallazgoComentario) { 
+            if(dato.Comentario != "" ){
+                HallazgoTabla = 1; 
+            }
+        }
+
+
+  
+@if(HallazgoTabla == 1 ){
+      <h3>Comentarios</h3>
+<table align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+    <thead>
+        <tr class="alert-info">
+            <td><label>Periodo</label> </td><td>Mes</td><td> <label>Nombre Programa</label> </td><td colspan="4"><label>Comentario</label></td>
+        </tr>
+    </thead>
+    <tbody>
+  
+        @foreach (var dato in HallazgoComentario) { 
+             if(dato.Comentario != "" ){
+        <tr>
+            <td>@dato.Periodo </td>  <td>  @Meses[dato.Mes - 1] </td><td> @dato.proyecto.NombreLista</td><td style="text-align:justify;"colspan="4">@dato.Comentario</td>
+        </tr>
+             }
+        
+    }
+
+    </tbody>
+</table>
+}
+</body>
+
+</html>

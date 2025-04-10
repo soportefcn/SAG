@@ -6,7 +6,7 @@
 @model SAG2.Models.IntervencionResumen
 @{
     Layout = "~/Views/Shared/_Layoutinf.cshtml";
-    ViewBag.Title = "Intervenciones por Proyecto";
+    ViewBag.Title = "Intervenciones por Programa";
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
     //List<SAG2.Models.IntervencionResumen> inter = db.IntervencionResumen.ToList();
     List<SAG2.Models.IntervencionResumen> intervenciones = new List<SAG2.Models.IntervencionResumen>();
@@ -31,7 +31,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <select name="Proyecto" id="Proyecto" class="js-autocomplete">
-                        <option value="-1"> - Seleccione proyecto</option>
+                        <option value="-1"> - Seleccione Programa</option>
                         @foreach (SAG2.Models.Proyecto Proyecto in pro)
                         {
                             if (proyectoID == Proyecto.ID)
@@ -68,9 +68,9 @@
             <tr>
                 <th style="width: 60px;">Período</th>
                 <th style="width: 35px;">Mes</th>
-                <th style="width: 55px; text-align: center;">Proyecto</th>
+                <th style="width: 55px; text-align: center;">Programa</th>
                 <th style="width: 55px; text-align: center;" >Cod. Sename</th>
-                <th style="width: 100px; text-align: center;"  align="center">Tipo Proyecto</th>
+                <th style="width: 100px; text-align: center;"  align="center">Tipo Programa</th>
                 <th style="width: 100px; text-align: center;">Línea de protección</th>
                 <th style="width: 60px; text-align: center;">Región</th>
                 <th style="width: 60px;">Comuna</th>

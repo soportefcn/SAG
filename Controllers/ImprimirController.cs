@@ -29,11 +29,18 @@ namespace SAG2.Controllers
 
         public ActionResult Ingreso(int id)
         {
+            int GesIva = 0;
+            int ValorNeto = 0;
+            int ValorIva = 0;
+            int ValorTotal = 0;
             Movimiento movimiento = db.Movimiento.Find(id);
             Persona Persona = (Persona)Session["Persona"];
+            DetalleIngresoIva DetalleIva = new DetalleIngresoIva();
+
             @ViewBag.Ejecutor = Persona.NombreCompleto;
             @ViewBag.CodSename = ((Proyecto)Session["Proyecto"]).CodSename;
             @ViewBag.DetallesR = db.DetalleIngreso.Where(d => d.MovimientoID == movimiento.ID).ToList();
+           // ViewBag.GesIva = ((Proyecto)Session["Proyecto"]).MI;
             try
             {
                 @ViewBag.Director = db.Rol.Include(r => r.TipoRol).Include(r => r.Persona).Where(r => r.TipoRolID == 1).Where(r => r.ProyectoID == movimiento.ProyectoID).Single().Persona.NombreCompleto;
@@ -41,6 +48,23 @@ namespace SAG2.Controllers
             }
             catch
             {}
+            try
+            {
+              DetalleIva = db.DetalleIngresoIva.Where(d => d.MovimientoID == id).FirstOrDefault();
+              if (DetalleIva != null) {
+                  GesIva = 1;
+                  ValorNeto = DetalleIva.ValorNeto;
+                  ValorIva = DetalleIva.ValorIva;
+                  ValorTotal = DetalleIva.Total;                             
+              }
+            }
+            catch (Exception)
+            { }
+
+            ViewBag.GesIva = GesIva;
+            ViewBag.ValorNeto = ValorNeto;
+            ViewBag.ValorIva = ValorIva;
+            ViewBag.Total = ValorTotal;
 
             return View(movimiento);
         }

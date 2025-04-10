@@ -27,6 +27,8 @@
             }
         }
     }
+    
+    
 }
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
@@ -36,11 +38,17 @@ input[type="text"], textarea
 {
     text-transform: uppercase;
 }
+
+input::placeholder {
+ color:blue !important; 
+  font-size: 10px;
+  font-style: italic;
+}
 </style>
 <div id="SAGBox">
     
    <div class="panel panel-default">
-  <div class="panel-heading"><h3><b>Registro de Comprobante de Egreso</b></h3></div>
+  <div class="panel-heading"><h3><b>Registro de Comprobante de Egreso</h3></div>
    <div class="panel-body">
     <div class="btn-group">
        <a href="./Index" id="linkGeneral" class ="btn btn-default">GENERAL</a>
@@ -54,12 +62,13 @@ input[type="text"], textarea
 {
     @Html.Hidden("FondoFijoGrupoID", null);
     @Html.Raw(@ViewBag.Mensaje)
-     <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="no" />
+     <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="NO" />
+     <input type="hidden" name="GestionIva" id="GestionIva" value="@ViewBag.GestionIva" />
     <input type="hidden" name="Periodo" id="Periodo" value="@Periodo.ToString("####")" />
     <input type="hidden" name="Mes" id="Mes" value="@Mes.ToString("00")" />
     <input type="hidden" name="ImprimirComprobante" id="ImprimirComprobante" value="false" />
     <input type="hidden" name="PreguntarImprimir" id="PreguntarImprimir" value="true" />
-        <input type="hidden" name="NDocumento" id="NDocumento" value="1" />
+    <input type="hidden" name="NDocumento" id="NDocumento" value="1" />
 
          <div class="form-group form-inline">
             <div class="form-group" style="margin-right: 30px;margin-left: 7px;">
@@ -77,13 +86,22 @@ input[type="text"], textarea
              </div>
       
         <div class="form-group form-inline">
+               <div class="form-group" style="margin-left: 7px;">
+                    <label>Medio Pago</label>
+                    <br />
+                   <select class="form-control valid" id="TipoPagoID" name="TipoPagoID">
+						<option value=""></option>
+						<option value="1">CHEQUE</option>
+						<option selected="selected" value="2">TRANSFERENCIA</option>
+					</select>
+            </div>
             <div class="form-group" style="margin-left: 7px;">
-            @Html.LabelFor(model => model.Cheque)
-            <br />
-           <input id="Cheque" class="form-control" type="text" value="" name="Cheque" data-val-number="The field N&#186; Cheque must be a number." data-val="true">
-        </div>
+              <label id="LPago1"> N° </label>
+                <br />
+             <input id="Cheque" class="form-control" type="text" maxlength="9" placeholder="Max 9 digitos" value="" name="Cheque" data-val-number="The field N&#186; Cheque must be a number." data-val="true">
+            </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.FechaCheque)
+            <label id="LPago1">Fecha</label>
         <br />
             @Html.TextBoxFor(model => model.FechaCheque, new { @Value = Fecha.ToShortDateString(), @class = "calendario form-control" })
             </div>
@@ -165,16 +183,34 @@ input[type="text"], textarea
         </div>
             </div>
     <div id="Fingreso">
-    <div class="form-group form-inline">
-        <div class="form-group" style="margin-left: 7px; margin-right:10px">
-            @Html.Label("Tipo Documento")
-        </div>
-        <div class="form-group">
-            @Html.DropDownList("DocumentoIDD", null,String.Empty, new { @class = "form-control"})
-        </div>
+        <div class="form-group form-inline">
+            <div class="form-group" style="margin-left: 7px; margin-right:10px">
+                @Html.Label("Tipo Documento")
+            </div>
+            <div class="form-group">
+                @Html.DropDownList("DocumentoIDD", null,String.Empty, new { @class = "form-control"})
+            </div>
         </div>
            
-      
+          <div id="formularioGestionIva" style="display: none;">
+           <div class ="form-group form-inline">
+                <div class="form-group">
+                   <label> Valor Neto</label> 
+                    <br />     
+                    <input class="form-control"  id="ValorNeto" name="ValorNeto" type="text" value="0">
+                 </div>
+                 <div class="form-group">
+                    <label>% Iva</label>  
+                    <br />     
+                    <input class="form-control"  id="Iva" name="Iva" type="text" value="@ViewBag.Iva">
+                 </div>
+                  <div class="form-group">
+                    <label> Valor Iva </label>
+                    <br />     
+                    <input class="form-control"  id="ValorIva" name="ValorIva" type="text" value="0">
+                 </div>
+          </div>     
+        </div>
          <div class="form-group form-inline">
             <div class="form-group" style="margin-left: 7px; margin-right:10px">
                  @Html.Label("Nº Documento")
@@ -183,7 +219,7 @@ input[type="text"], textarea
         </div>
 
         <div class="form-group">
-            @Html.Label("Monto $")
+         <label id="Fmonto">Monto $</label>
         <br />
             @*Html.TextBox("Monto")*@
             <input id="Monto" name="Monto" type="text" value="" class="valid validarCero form-control">
@@ -211,7 +247,14 @@ input[type="text"], textarea
                 @Html.Raw(@ViewBag.Arbol)
             </select>
         </div>
+          <div class="form-group" id="DetalleAnexo" style="display:none;"><strong style="margin-left: 10px;">Con Anexo 10 </strong>   
+               <select name="AnexoID" id="AnexoID" class="form-control">
+                <option value="1">Si</option>
+                <option value="0" selected>No</option>
+            </select>
+
           </div>
+       </div>
       <div class="form-group">
             <div class="alert alert-danger" role="alert"><label id="texto" ></label></div>
           <div class="alert alert-warning" style="display:none;" id="DRespaldo"><strong>Doc. Respaldo :</strong><label id="Respaldo"></label></div>
@@ -230,15 +273,16 @@ input[type="text"], textarea
         </p>
         </div>
     <div class="row">
-  <div class="col-xs-12 col-md-8"></div>
-  <div class="col-xs-6 col-md-4 form-inline" style="text-align: right;">
-      <div class="form-group-inline">
-           <input type="button" value="Eliminar Linea" id="BorrarLinea" class="btn btn-danger" />
-             <input type="button" value="Guardar Linea" id="GuardarLinea" class="btn btn-primary" />
-           
+        <div class="col-xs-12 col-md-8">
+            <input type="button" value="Calcular Iva" id="LineaIva" class="btn btn-warning" style="display: none;">
         </div>
-  </div>
-</div>
+        <div class="col-xs-6 col-md-4 form-inline" style="text-align: right;">
+            <div class="form-group-inline">
+               <input type="button" value="Eliminar Linea" id="BorrarLinea" class="btn btn-danger" />
+               <input type="button" value="Guardar Linea" id="GuardarLinea" class="btn btn-primary" />          
+            </div>
+        </div>
+    </div>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
     <div id="DetalleData"></div>
@@ -260,7 +304,7 @@ input[type="text"], textarea
             var html = "";
             var Detalle = $.parseJSON(data);
             if (Detalle.length > 0) {
-                var html = "<table class='table table-bordered'> <tr class='info'> <td>#</td><td>N° Comp. D/P</td><td> Documento</td><td>N° Doc</td><td>Monto</td><td>Emision</td><td>Vencimiento</td><td>Cuenta</td><td>Glosa</td></tr> "
+                var html = "<table class='table table-bordered'> <tr class='info'> <td>#</td><td>N° Comp. D/P</td><td> Documento</td><td>N° Doc</td><td>Monto</td><td>Emision</td><td>Vencimiento</td><td>Cuenta</td><td>Glosa</td><td style='width:0'></td></tr> "
                 for (i = 0; i < Detalle.length; i++) {
                     var documento = "";
                     if (Detalle[i].Documento != null) {
@@ -277,8 +321,21 @@ input[type="text"], textarea
                     html = html + "<td>" + Detalle[i].FechaVencimiento + "</td>";
                     html = html + "<td>" + Detalle[i].NombreCuenta + "</td>";
                     html = html + "<td>" + Detalle[i].Glosa + "</td>";
+                    html = html + "<td>" + Detalle[i].Iva + "</td>";
                     html = html + "</tr>";
                     ValorEgresos += Detalle[i].Monto;
+
+                    if (Detalle[i].Iva == 0) {
+                        $(".egreso #DocumentoIDD").val("");
+                        $(".egreso #NDocumentoD").val("");
+                        $("#LineaIva").hide();
+                    }
+                    if (Detalle[i].Iva == 1) {
+                        $("#LineaIva").show();
+                    }
+                    if (Detalle[i].Iva == 2) {
+                        $("#LineaIva").hide();
+                    }
 
                 }
                 html = html + "</table>";
@@ -291,6 +348,7 @@ input[type="text"], textarea
                 }
             } else {
                 $('#Origen').prop('disabled', false);
+                $("#LineaIva").hide();
             }
             var xpress = document.getElementById("DetalleData");
             $("#BorrarLinea").hide();
@@ -301,20 +359,20 @@ input[type="text"], textarea
            
             $('body').css('opacity', '1');
             $(".egreso #NComprobanteDP").val("");
-            $(".egreso #DocumentoIDD").val("");
-            $(".egreso #NDocumentoD").val("");
+  
             $(".egreso #Monto").val("");
             $(".egreso #CuentaID").val("");
             $(".egreso #Glosa").val("");         
             $(".egreso #DeudaPendienteID").val("");
             $(".egreso #BoletaHonorarioID").val("");
             $(".egreso #texto").val("");
+            $("#AnexoID").val("0");
             $('#DRespaldo').css('display', 'none')
+            $('#DetalleAnexo').css('display', 'none')
         });
     };
 
     $(".egreso #GuardarLinea").click(function () {
-
 
         if ($("#CuentaID").val() == "" && $(".egreso #Origen").val() != "ff") {
             $('body').css('opacity', '0.25');
@@ -326,7 +384,6 @@ input[type="text"], textarea
 
         var monto = new Number($("#Monto").val());
         var montoEgreso = new Number($("#Monto_Egresos").val());
-
         var montoTotal = monto + montoEgreso;
 
 
@@ -421,8 +478,6 @@ input[type="text"], textarea
             $(".egreso #DetalleEgresoIndex").val("");
         }
 
-
-
         window.parent.document.getElementById("NComprobanteDP").value = "";
         window.parent.document.getElementById("DocumentoIDD").value = "";
         window.parent.document.getElementById("NDocumentoD").value = "";
@@ -438,6 +493,35 @@ input[type="text"], textarea
         $("#texto").val("");
     });
 
+    $("#LineaIva").click(function () {
+        var GestionIva = $("#GestionIva").val();
+        var DocumentoID = $("#DocumentoIDD option:selected").attr('value');
+        if (DocumentoID == 1 && GestionIva == 1) {
+            $.post("/SAG_5/Egresos/LineaIVA", $("#detalle form").serialize(),
+            function (data) {
+                if (data == "OK") {
+                    $.get('/SAG_5/Data/SumaDetalleEgreso', function (data) {
+                        $('#Monto_Egresos').val(data);
+                        $('body').css('opacity', '0.25');
+                        CargaGrilla();
+                        window.parent.document.getElementById("texto").innerHTML = "";
+                        alert("Calculo de IVA con exito!");
+                        $('body').css('opacity', '1');
+                    });
+                } else {
+                    $('body').css('opacity', '0.25');
+                    alert("Ocurrió un error al borrar el detalle.");
+                    $('body').css('opacity', '1');
+                    return false;
+                }
+            })
+            .success(function () { })
+            .error(function () { })
+            .complete(function () { });
+        } 
+
+
+    });
 
     function Glosa(idcuenta) {
         if (idcuenta == "") {
@@ -465,12 +549,37 @@ input[type="text"], textarea
                         $('#DRespaldo').css('display', 'none')
                         $("#Glosa").html("");
                     }
-
                 },
                 error: function (xhr) { alert("Error "); }
             });
         }
     }
+
+    function ConAnexo(idcuenta) {
+        if (idcuenta == "") {
+            $('#DetalleAnexo').css('display', 'none')          
+        } else {
+            var url = '@Url.Action("DisponibleAnexo", "data")';
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: { xCuentaID: idcuenta },
+                success: function (data, textStatus, xhr) {
+                    var Datos = data;                   
+                    if (Datos != 0) {                       
+                        $('#DetalleAnexo').css('display', '');
+                    } else {
+                        $('#DetalleAnexo').css('display', 'none');
+                        $("#AnexoID").val("0");
+                    }
+                },
+                error: function (xhr) { alert("Error "); }
+            });
+        }
+    }
+
     $(".egreso #DocumentoIDD").change(function () {
 
         if ($(this).val() == 3) {
@@ -506,7 +615,6 @@ input[type="text"], textarea
     });
 
     $(".egreso #Origen").change(function () {
-
 
         $(".egreso #NComprobanteDP").removeAttr("disabled");
         $(".egreso #NDocumento").removeAttr("disabled");
@@ -559,9 +667,6 @@ input[type="text"], textarea
             /* Desplegamos los fondos fijos activos */
             window.open("/SAG_5/Egresos/FondoFijo", 'SeleccionCC', 'width=800,height=400');
 
-            /*
-
-*/
         } else if ($(this).val() == "dp") {
             if (personalID != 0) {
                 window.open("/SAG_5/DeudasPendientes/ListadoEgreso/?personalID=" + personalID, 'SeleccionDP', 'width=800,height=400');
@@ -599,15 +704,43 @@ input[type="text"], textarea
     });
 
     $(".egreso #Origen").change();
+
+    $("#DocumentoIDD").change(function () {
+        // Así accedemos al Texto de la opción seleccionada
+        var GestionIva = $("#GestionIva").val();
+        var DocumentoID = $("#DocumentoIDD option:selected").attr('value');
+        if (DocumentoID == 1 && GestionIva == 1) {          
+           
+            $("#Fmonto").html("$ Monto Neto");
+        
+        } else {           
+            $("#LineaIva").hide();
+            $("#Fmonto").html("$ Monto");
+        }
+
+    });
+
+    $("#ValorNeto").change(function () {
+        var PIva = 19;
+        var Vneto = $("#ValorNeto").val();
+        var VIva = (PIva * Vneto) / 100;
+        $('#ValorIva').val(Math.round(VIva));
+        var total = parseInt(Vneto) + parseInt(Math.round(VIva));
+        $('#Monto').val(total);
+
+    });
+
     $("#CuentaID").change(function () {
         // Así accedemos al Texto de la opción seleccionada
         var valor = $("#CuentaID option:selected").attr('title');
         $("#texto").html(valor)
         var idCuenta = $("#CuentaID option:selected").attr('value');
         Glosa(idCuenta);
+     //   ConAnexo(idCuenta);
         // Si seleccionamos la opción "Texto 2"
         // nos mostrará por pantalla "Texto 2"
     });
+
     $("#CuentaID").keydown(function () {
         // Así accedemos al Texto de la opción seleccionada
         var valor = $("#CuentaID option:selected").attr('title');
@@ -615,17 +748,14 @@ input[type="text"], textarea
         $("#texto").html(valor)
         var idCuenta = $("#CuentaID option:selected").attr('value');
         Glosa(idCuenta);
-        // alert(valor);
-        // Si seleccionamos la opción "Texto 2"
-        // nos mostrará por pantalla "Texto 2"
+        ConAnexo(idCuenta);
+
     });
     $("#CuentaID").keyup(function () {
         // Así accedemos al Texto de la opción seleccionada
         var valor = $("#CuentaID option:selected").attr('title');
         $("#texto").html(valor)
-        // alert(valor);
-        // Si seleccionamos la opción "Texto 2"
-        // nos mostrará por pantalla "Texto 2"
+
     });
     var baseUrl = "";
 
@@ -641,7 +771,8 @@ input[type="text"], textarea
             window.parent.document.getElementById("CuentaID").value = "";
             window.parent.document.getElementById("Glosa").value = "";
             window.parent.document.getElementById("DeudaPendienteID").value = "";
-          
+            $('#DetalleAnexo').css('display', 'none')
+            $("#AnexoID").val("0");
             window.parent.document.getElementById("BoletaHonorarioID").value = "";
             window.parent.document.getElementById("texto").innerHTML = "";
             $("#BorrarLinea").hide();
@@ -659,6 +790,8 @@ input[type="text"], textarea
             window.parent.document.getElementById("DeudaPendienteID").value = "";
             window.parent.document.getElementById("BoletaHonorarioID").value = "";
             window.parent.document.getElementById("texto").innerHTML = "";
+            $('#DetalleAnexo').css('display', 'none')
+            $("#AnexoID").val("0");
             if (window.parent.document.getElementById("Origen").value == "oo") {
                 $("#BorrarLinea").show();
                 $("#Linea_" + dato).css('background-color', 'yellow');
@@ -679,16 +812,48 @@ input[type="text"], textarea
 
                     var Datos = DEgreso;
                     if (Datos.FondoFijoID == null && Datos.DeudaPendienteID == null && Datos.BoletaHonorarioID == null) {
-                        $('#DetalleEgresoIndex').val(dato);
-                        $('#Monto').val(Datos.Monto);
-                        $('#NDocumentoD').val(Datos.NDocumento);
-                        $('#DocumentoIDD').val(Datos.DocumentoID);
-                        $('#Glosa').val(Datos.Glosa);
-                        $('#CuentaID').val(Datos.CuentaID);
-                        $("#CuentaID").change();
-                        window.parent.document.getElementById("Origen").value = "oo";
-                        window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
-                        window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                        if (Datos.Iva == 0) {
+                            $('#DetalleEgresoIndex').val(dato);
+                            $('#Monto').val(Datos.Monto);
+                            $('#NDocumentoD').val(Datos.NDocumento);
+                            $('#DocumentoIDD').val(Datos.DocumentoID);
+                            $('#Glosa').val(Datos.Glosa);
+                            $('#CuentaID').val(Datos.CuentaID);
+                            $("#CuentaID").change();
+                            $("#AnexoID").val(Datos.Anexo);
+                            window.parent.document.getElementById("Origen").value = "oo";
+                            window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
+                         
+                            window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                        }
+                        if (Datos.Iva == 1) {
+                            var PIva = 19;
+                            $('#DetalleEgresoIndex').val(dato);
+                            $('#ValorNeto').val(Datos.Monto);
+                            var Vneto = $("#ValorNeto").val();
+                            var VIva = (PIva * Vneto) / 100;
+                            $('#ValorIva').val(Math.round(VIva));
+                            var total = parseInt(Vneto) + parseInt(Math.round(VIva));
+                            $('#Monto').val(Datos.Monto);
+                            $('#NDocumentoD').val(Datos.NDocumento);
+                            $('#DocumentoIDD').val(Datos.DocumentoID);
+                            $('#Glosa').val(Datos.Glosa);
+                            $('#CuentaID').val(Datos.CuentaID);
+                            $("#CuentaID").change();
+                            $("#AnexoID").val(Datos.Anexo);
+                            window.parent.document.getElementById("Origen").value = "oo";
+                            window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
+                            $("#GuardarLinea").show();
+                            window.parent.document.getElementById("GuardarLinea").style.display = 'block-inline';
+                            window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                        }
+                        if (Datos.Iva == 2) {
+                            alert("Debe Seleccionar el otro concepto")
+                            $("#Linea_" + dato).css('background-color', 'white');
+                            $("#BorrarLinea").hide();
+                            $("#GuardarLinea").hide();
+                        }
+
                     }
                     if (Datos.DeudaPendienteID != null) {
                         $('#DeudaPendienteID').val(Datos.DeudaPendienteID);
@@ -720,19 +885,13 @@ input[type="text"], textarea
                     alert("error");
                 }
             });
-        }    }
+        }
+
+    }
 
     $(document).ready(function () {
 
-        $(window).focusin(function () {
-            if ($("#ActualizarGrilla").val() == "SI") {
-                
-                $("#ActualizarGrilla").val("NO");
-				if (window.parent.document.getElementById("Origen").value != "hs") {																	 
-                    CargaGrilla();
-                  }              
-            }
-        });
+
     });
 
 </script>

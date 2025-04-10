@@ -27,6 +27,15 @@
     {
         alertas = Session["Alertas"].ToString();
     }
+
+    var FechaMensaje = @ViewBag.FechaMensaje;
+    var DiasMensaje = @ViewBag.DiasMensaje;
+    if (Session["FechaMensaje"] != null)
+    {
+        FechaMensaje = Session["FechaMensaje"].ToString();
+        DiasMensaje = Int32.Parse(Session["DiasMensaje"].ToString());
+    }
+
 }
 <!DOCTYPE html>
 <html>
@@ -226,18 +235,13 @@
                           @if (!Usuario.esUsuario && alertas.Equals("1") && (autorizacionesPendientes > 0 || respuestaAuditoria > 0))
                           {
         <div class="aviso no-imprimir"> 
-        @if (autorizacionesPendientes > 0)
-        {
-            if (autorizacionesPendientes == 1)
+    
+            @if (FechaMensaje != "")
             {
-                <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Autorizaciones/Pendientes" style="display: block;" class="alert alert-info" >Hay @autorizacionesPendientes autorización pendiente.</a>
+                <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Resolucion/Create" style="display: block;" class="alert alert-info" >@FechaMensaje.  </a>
+             <hr align="center" />
             }
-            else
-            { 
-                <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Autorizaciones/Pendientes" style="display: block;" class="alert alert-info" >Hay @autorizacionesPendientes autorizaciones pendientes.</a>
-            }
-            <hr align="center" />
-            }
+
               @if (PreguntasPendientes > 0)
               {
        
@@ -269,7 +273,7 @@
     
     @if (Usuario.esAdministrador || Session["CambioTipo"] != null)
     {
-        <div class="aviso_left no-imprimir"><p>Sag_20170117</p><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Administrador">Administrador</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Supervisor">Supervisor</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Usuario">Usuario</a></div>
+        <div class="aviso_left no-imprimir"><p>Sag_20241111</p><a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Administrador">Administrador</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Supervisor">Supervisor</a> | <a href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/Home/CambiarTipo?tipo=Usuario">Usuario</a></div>
     }
         <hr>
      

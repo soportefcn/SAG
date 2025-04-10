@@ -1,0 +1,84 @@
+﻿@model IEnumerable<SAG2.Models.InformeCuentaDetalle>
+@{
+    ViewBag.Title = "Real";
+    Layout = null;
+
+
+    string proyecto_file = "Fundacion";
+    
+    
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.Charset = "utf-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=RealDetalle-" + proyecto_file + "-ANUAL-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Control Presupuestario</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+
+        }
+    </style>
+</head>
+<body>
+    <table align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+        <tr>
+           <td>Linea</td><td>Tipo Programa</td><td>Region</td><td>CC</td><td>Nombre</td><td>Periodo</td><td>Mes</td>
+            <td>TipoDoc</td><td>NumeroComprobante</td><td>Fecha Doc</td><td>Tipo Beneficiario</td><td>Rut Beneficiario</td><td>Nombre Beneficiario</td>
+               <td>Cuenta</td><td>Medio</td><td>Numero Medio</td> <td>Valor</td><td>Glosa</td>
+        </tr>
+
+            @foreach(SAG2.Models.InformeCuentaDetalle registro in Model ){ 
+                         <tr>
+                             <td>@registro.LineaSigla</td>
+                            <td>@registro.TipoPrograma</td>
+                            <td>@registro.Region</td>
+                            <td>@registro.CC</td>
+                            <td>@registro.Programa</td>
+                            <td>@registro.Periodo</td>
+                            <td>@registro.Mes</td>
+                            <td>@registro.TipoDoc </td>
+                            <td>@registro.NumeroComprobante </td>
+                             <td>@registro.FechaDoc </td>
+                            <td>@registro.TipoBeneficiario </td>
+                            <td>@registro.RutTB</td>
+                            <td>@registro.NombreTB</td>
+                            <td>@registro.Codigo - @registro.Cuenta</td>
+                             <td>@registro.Medio</td>
+                             <td>@registro.MedioNum</td>                                                 
+                            <td class="num">@registro.Valor</td>
+                              <td class="num">@registro.Glosa</td>
+                        </tr>
+                     }                
+
+
+
+        
+    </table>
+
+    
+ 
+   
+</body>
+</html>

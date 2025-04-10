@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using SAG2.Models;
 using SAG2.Classes;
+using System.Web.Script.Serialization;
 
 namespace SAG2.Controllers
 { 
@@ -122,6 +123,7 @@ namespace SAG2.Controllers
         public ActionResult Create()
         {
             ViewBag.PersonaID = new SelectList(db.Persona.OrderBy(u => u.Nombres).ThenBy(u => u.ApellidoParterno).ThenBy(u => u.ApellidoMaterno), "ID", "NombreLista");
+            ViewBag.Nombre = "";
             return View();
         } 
 
@@ -151,6 +153,7 @@ namespace SAG2.Controllers
             {
                 usuario.Estado = "A";
             }
+ 
             utils.Log(2, "Estado de usuario definido");
 
             if (Request.Form["tipoUsuario"] != null && !"".Equals(Request.Form["tipoUsuario"].ToString()))
@@ -168,51 +171,70 @@ namespace SAG2.Controllers
                 }
             }
             utils.Log(2, "Nivel de usuario definido");
-            
-            try
+            int RegUsuario = 0;
+            if (Request.Form["Nombre"] != null)
             {
-                if (ModelState.IsValid)
+                var revUsuario = db.Usuario.Where(d => d.Nombre.Equals(usuario.Nombre)).ToList();
+                if (revUsuario.Count > 0)
                 {
-                    db.Usuario.Add(usuario);
-                    db.SaveChanges();
-                    utils.Log(2, "Usuario registrado en la base de datos");
-                    return RedirectToAction("Create");
+                    RegUsuario = 1;
+                    utils.Log(2, "Usuario ya existe");
                 }
-                else
-                {
-                    utils.Log(2, "Error al registrar usuario en la base de datos");
-                    throw new Exception("Ocurrión un error al crear el usuario");
-                }
+                usuario.Estado = "A";
             }
-            catch (Exception e)
+            if (RegUsuario == 0)
             {
-                utils.Log(2, "Exception1: " + e.StackTrace);
-                string Mensaje = "";
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        db.Usuario.Add(usuario);
+                        db.SaveChanges();
+                        utils.Log(2, "Usuario registrado en la base de datos");
+                        return RedirectToAction("Create");
+                    }
+                    else
+                    {
+                        utils.Log(2, "Error al registrar usuario en la base de datos");
+                        throw new Exception("Ocurrión un error al crear el usuario");
+                    }
+                }
+                catch (Exception e)
+                {
+                    utils.Log(2, "Exception1: " + e.StackTrace);
+                    string Mensaje = "";
 
-                if (e.InnerException.InnerException != null)
-                {
-                    utils.Log(2, "Exception3: " + e.InnerException.InnerException.Message);
-                    Mensaje = utils.mensajeError(e.InnerException.InnerException.Message);
-                }
-                else if (e.InnerException != null)
-                {
-                    utils.Log(2, "Exception2: " + e.InnerException.Message);
-                    Mensaje = utils.mensajeError(e.InnerException.Message);
-                }
-                else
-                {
-                    utils.Log(2, "Exception4: " + e.Message);
-                    Mensaje = utils.mensajeError(e.Message);
+                    if (e.InnerException.InnerException != null)
+                    {
+                        utils.Log(2, "Exception3: " + e.InnerException.InnerException.Message);
+                        Mensaje = utils.mensajeError(e.InnerException.InnerException.Message);
+                    }
+                    else if (e.InnerException != null)
+                    {
+                        utils.Log(2, "Exception2: " + e.InnerException.Message);
+                        Mensaje = utils.mensajeError(e.InnerException.Message);
+                    }
+                    else
+                    {
+                        utils.Log(2, "Exception4: " + e.Message);
+                        Mensaje = utils.mensajeError(e.Message);
+                    }
+
+                    if (Mensaje.Contains("IX_Usuario"))
+                    {
+                        ViewBag.Mensaje = utils.mensajeError("El usuario <strong>" + usuario.Nombre + "</strong> ya se encuentra registrado en la base de datos, presione Buscar en el menu y modifique el Rol ya existente.");
+                    }
                 }
 
-                if (Mensaje.Contains("IX_Usuario"))
-                {
-                    ViewBag.Mensaje = utils.mensajeError("El usuario <strong>" + usuario.Nombre + "</strong> ya se encuentra registrado en la base de datos, presione Buscar en el menu y modifique el Rol ya existente.");
-                }
+                ViewBag.PersonaID = new SelectList(db.Persona.OrderBy(u => u.Nombres).ThenBy(u => u.ApellidoParterno).ThenBy(u => u.ApellidoMaterno), "ID", "NombreLista", usuario.PersonaID);
+                return View();
             }
-
-            ViewBag.PersonaID = new SelectList(db.Persona.OrderBy(u => u.Nombres).ThenBy(u => u.ApellidoParterno).ThenBy(u => u.ApellidoMaterno), "ID", "NombreLista", usuario.PersonaID);
-            return View();
+            else {
+                ViewBag.PersonaID = new SelectList(db.Persona.OrderBy(u => u.Nombres).ThenBy(u => u.ApellidoParterno).ThenBy(u => u.ApellidoMaterno), "ID", "NombreLista", usuario.PersonaID);
+                ViewBag.Nombre = Request.Form["Nombre"].ToString().ToLower();
+                ViewBag.Mensaje = utils.mensajeError("El Nombre de Usuario <strong>" + usuario.Nombre + "</strong> ya se encuentra registrado en la base de datos.");
+                return View();
+            }
         }
         
         //
@@ -320,6 +342,46 @@ namespace SAG2.Controllers
             db.Usuario.Remove(usuario);
             db.SaveChanges();
             return RedirectToAction("Create");
+        }
+
+        public string darNombre(string nombre,string ApPaterno, int x) {
+            string xNombre = nombre.Substring(0, x) + ApPaterno;
+            xNombre = xNombre.ToLower();
+
+                  var revUsuario = db.Usuario.Where(d => d.Nombre.Equals(xNombre)).ToList();
+                  if (revUsuario.Count != 0)
+                  {
+                      x++;
+                      xNombre = darNombre(nombre, ApPaterno, x);
+                  }
+                      return xNombre;
+               
+           
+        }
+
+
+        public string NombreUsuario(int PersonaID)
+        {
+            string resultado = "";
+
+            var revUsuario = db.Usuario.Where(d => d.PersonaID == PersonaID ).ToList();
+            if (revUsuario.Count > 0)
+            {
+                resultado = "N";
+
+            }
+            else {
+
+                var DatoPersona = db.Persona.Find(PersonaID);
+
+                resultado = darNombre(DatoPersona.NombreCompleto,DatoPersona.ApellidoParterno, 1);
+            
+            
+            }
+
+                     
+
+            return resultado;
         }
 
         protected override void Dispose(bool disposing)

@@ -4,6 +4,7 @@
     int Saldo = 0;
     int totalDebe = 0;
     int totalHaber = 0;
+    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
     SAG2.Models.CuentaCorriente CuentaCorriente = (SAG2.Models.CuentaCorriente)ViewBag.cuentaCorriente;
     SAG2.Models.Proyecto Proyecto = (SAG2.Models.Proyecto)Session["Proyecto"];
     SAG2.Classes.Util utils = new SAG2.Classes.Util();
@@ -121,7 +122,7 @@
         <tr>
             <td valign="top">
                 <strong>
-                    Fundación Ciudad del Niño<br />
+                   Fundaci&oacute;n Ciudad del Ni&ntilde;o<br />
                     @Html.Raw(Proyecto.NombreLista)<br />
                     Codigo Sename: @Html.Raw(Proyecto.CodSename)
                 </strong>
@@ -176,56 +177,149 @@
                     }
                     else
                     {
-                    totalDebe = totalDebe + item.Monto_Ingresos;
+                        totalDebe = totalDebe + item.Monto_Ingresos;
                     }
-            <tr @Html.Raw(nulo)>
-                <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.Fecha.Value.ToShortDateString()</div></td>
-                <td align="center"><div class="campos">@item.Cheque</div></td>
-                <td align="right"><div class="campos">$@item.Monto_Ingresos.ToString("#,###")@{Saldo = Saldo + item.Monto_Ingresos;}</div></td>
-                <td align="right"><div class="campos">-</td>
-                <td align="right"><div class="campos">$@Saldo.ToString("#,###")</div></td>
-                <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.TipoComprobante.Nombre</div></td>
-                <td align="center"><div class="campos">@item.NumeroComprobante</div></td>
-                <td style="white-space: nowrap;">
-                    <div class="campos">
-                        @if (@item.Cuenta != null)
-                        {@Html.Raw(utils.cuentaPadre(@item.Cuenta, largoCuenta))}
-                    </div>
-                </td>
-                <td style="white-space: nowrap;">
-                    <div class="campos">
-                        @if (@item.Cuenta != null)
-                        {
-                            try
-                            {
-                                {@Html.Raw(@item.Cuenta.NombreLista.Substring(0, 30))}
-                            }
-                            catch (Exception)
-                            {
+                    SAG2.Models.DetalleIngresoIva detallesIngreso = db.DetalleIngresoIva.Where(d => d.MovimientoID == item.ID).FirstOrDefault();
+                    if (detallesIngreso != null)
+                    {
+                        <tr @Html.Raw(nulo)>
+                            <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.Fecha.Value.ToShortDateString()</div></td>
+                            <td align="center"><div class="campos">@item.Cheque</div></td>
+                            <td align="right"><div class="campos">$@detallesIngreso.ValorNeto.ToString("#,###")@{Saldo = Saldo + detallesIngreso.ValorNeto;}</div></td>
+                            <td align="right"><div class="campos">-</td>
+                            <td align="right"><div class="campos">$@Saldo.ToString("#,###")</div></td>
+                            <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.TipoComprobante.Nombre</div></td>
+                            <td align="center"><div class="campos">@item.NumeroComprobante</div></td>
+                            <td style="white-space: nowrap;">
+                                <div class="campos">
+                                    @if (@item.Cuenta != null)
+                                    {@Html.Raw(utils.cuentaPadre(@item.Cuenta, largoCuenta))}
+                                </div>
+                            </td>
+                            <td style="white-space: nowrap;">
+                                <div class="campos">
+                                    @if (@item.Cuenta != null)
+                                    {
+                                        try
+                                        {
+                                            {@Html.Raw(@item.Cuenta.NombreLista.Substring(0, 30))}
+                                        }
+                                        catch (Exception)
+                                        {
 
-                                {@Html.Raw(@item.Cuenta.NombreLista)}
+                                            {@Html.Raw(@item.Cuenta.NombreLista)}
+                                        }
+                                    }
+                                </div>
+                            </td>
+                            <td style="white-space: nowrap; overflow: hidden;">
+                                <div class="campos">
+                                    @if (item.Nulo != null && item.Nulo.Equals("S"))
+                                    {
+                                        @Html.Raw("COMPROBANTE NULO");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(descripcion.ToUpper());
+                                    }
+                             </div>
+                          </td>
+                        </tr>
+                         <tr @Html.Raw(nulo)>
+                            <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.Fecha.Value.ToShortDateString()</div></td>
+                            <td align="center"><div class="campos">@item.Cheque</div></td>
+                            <td align="right"><div class="campos">$@detallesIngreso.ValorIva.ToString("#,###")@{Saldo = Saldo + detallesIngreso.ValorIva;}</div></td>
+                            <td align="right"><div class="campos">-</td>
+                            <td align="right"><div class="campos">$@Saldo.ToString("#,###")</div></td>
+                            <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.TipoComprobante.Nombre</div></td>
+                            <td align="center"><div class="campos">@item.NumeroComprobante</div></td>
+                            <td style="white-space: nowrap;">
+                                <div class="campos">
+                                    @if (@item.Cuenta != null)
+                                    {@Html.Raw(utils.cuentaPadre(@detallesIngreso.Cuenta, largoCuenta))}
+                                </div>
+                            </td>
+                            <td style="white-space: nowrap;">
+                                <div class="campos">
+                                    @if (@item.Cuenta != null)
+                                    {
+                                        try
+                                        {
+                                            {@Html.Raw(@detallesIngreso.Cuenta.NombreLista.Substring(0, 30))}
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                            {@Html.Raw(@detallesIngreso.Cuenta.NombreLista)}
+                                        }
+                                    }
+                                </div>
+                            </td>
+                            <td style="white-space: nowrap; overflow: hidden;">
+                                <div class="campos">
+                                    @if (item.Nulo != null && item.Nulo.Equals("S"))
+                                    {
+                                        @Html.Raw("COMPROBANTE NULO");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(descripcion.ToUpper());
+                                    }
+                             </div>
+                          </td>
+                        </tr>
+                    }
+                    else
+                    {
+                <tr @Html.Raw(nulo)>
+                    <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.Fecha.Value.ToShortDateString()</div></td>
+                    <td align="center"><div class="campos">@item.Cheque</div></td>
+                    <td align="right"><div class="campos">$@item.Monto_Ingresos.ToString("#,###")@{Saldo = Saldo + item.Monto_Ingresos;}</div></td>
+                    <td align="right"><div class="campos">-</td>
+                    <td align="right"><div class="campos">$@Saldo.ToString("#,###")</div></td>
+                    <td align="center" style="white-space: nowrap; overflow: hidden;"><div class="campos">@item.TipoComprobante.Nombre</div></td>
+                    <td align="center"><div class="campos">@item.NumeroComprobante</div></td>
+                    <td style="white-space: nowrap;">
+                        <div class="campos">
+                            @if (@item.Cuenta != null)
+                            {@Html.Raw(utils.cuentaPadre(@item.Cuenta, largoCuenta))}
+                        </div>
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <div class="campos">
+                            @if (@item.Cuenta != null)
+                            {
+                                try
+                                {
+                                    {@Html.Raw(@item.Cuenta.NombreLista.Substring(0, 30))}
+                                }
+                                catch (Exception)
+                                {
+
+                                    {@Html.Raw(@item.Cuenta.NombreLista)}
+                                }
                             }
-                        }
-                    </div>
-                </td>
-                <td style="white-space: nowrap; overflow: hidden;">
-                    <div class="campos">
-                        @if (item.Nulo != null && item.Nulo.Equals("S"))
-                        {
-                            @Html.Raw("COMPROBANTE NULO");
-                        }
-                        else
-                        {
-                            @Html.Raw(descripcion.ToUpper());
-                        }
-                    </div>
-                </td>
-            </tr>
-        }
-        else
-        {
-        if (item.Nulo != null && item.Nulo.Equals("S"))
-        {
+                        </div>
+                    </td>
+                    <td style="white-space: nowrap; overflow: hidden;">
+                        <div class="campos">
+                            @if (item.Nulo != null && item.Nulo.Equals("S"))
+                            {
+                                @Html.Raw("COMPROBANTE NULO");
+                            }
+                            else
+                            {
+                                @Html.Raw(descripcion.ToUpper());
+                            }
+                        </div>
+                    </td>
+                </tr>
+                    }
+                }
+                else
+                {
+                    if (item.Nulo != null && item.Nulo.Equals("S"))
+                    {
             <tr style="text-decoration: line-through;">
                 <td align="center">
                     <div class="campos">
@@ -291,8 +385,8 @@
                     <div class="campos">
                         @if (@item.Cuenta != null)
                         {@Html.Raw(utils.cuentaPadre(@item.Cuenta, 16)) }
-                    else
-                    {@Html.Raw("-")}
+                        else
+                        {@Html.Raw("-")}
                     </div>
                 <td style="white-space: nowrap;">
                     <div class="campos">
@@ -313,20 +407,20 @@
                 </td>
                 <td><div class="campos">COMPROBANTE NULO</div></td>
             </tr>
-    }
-    else
-    {
-    SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
+                    }
+                    else
+                    {
 
-    if ((item.FondoFijo != null && item.FondoFijo.Equals("S")))
-    {
-    List<SAG2.Models.DetalleEgreso>
-        Detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
-        var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
 
-        //var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
-        foreach (var detalle in detalles)
-        {
+                        if ((item.FondoFijo != null && item.FondoFijo.Equals("S")))
+                        {
+                            List<SAG2.Models.DetalleEgreso>
+                                Detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+                            var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
+
+                            //var detalles = Detalles.GroupBy(d => d.CuentaID).Select(grp => grp.First());
+                            foreach (var detalle in detalles)
+                            {
             <tr>
                 <td><div class="campos">@item.Fecha.Value.ToShortDateString()</div></td>
                 <td align="center"><div class="campos">@Html.DisplayFor(modelItem => item.Cheque)</div></td>
@@ -335,8 +429,8 @@
                     <div class="campos">
                         $@Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto).ToString("#,##0")
                         @{
-                            Saldo = Saldo - Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto);
-                            totalHaber = totalHaber + Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto);
+                                Saldo = Saldo - Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto);
+                                totalHaber = totalHaber + Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto);
                         }
                     </div>
                 </td>
@@ -381,15 +475,15 @@
                     </div>
                 </td>
             </tr>
-    }
-    }
-    else
-    {
-    List<SAG2.Models.DetalleEgreso>
-        detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
-        foreach (var detalle in detalles)
-        {
-        totalHaber = totalHaber + detalle.Monto;
+                            }
+                        }
+                        else
+                        {
+                            List<SAG2.Models.DetalleEgreso>
+                                detalles = db.DetalleEgreso.Where(d => d.MovimientoID == item.ID).ToList();
+                            foreach (var detalle in detalles)
+                            {
+                                totalHaber = totalHaber + detalle.Monto;
         <tr>
             <td align="center"><div class="campos">@item.Fecha.Value.ToShortDateString()</div></td>
             <td align="center"><div class="campos">@item.Cheque</div></td>
@@ -452,11 +546,11 @@
                 </div>
             </td>
         </tr>
-    }
-    }
-    }
-    }
-    }
+                            }
+                        }
+                    }
+                }
+            }
     <tr>
         <th colspan="4" rowspan="2">Totales</th>
         <th align="right">$@totalDebe.ToString("#,##0")</th>

@@ -20,6 +20,11 @@
         chConfir = "checked";
     }
     int mes_actual = DateTime.Now.Month;
+    int PeriodoEnCurso = DateTime.Now.Year;
+    if (PeriodoEnCurso < periodo_inicio)
+    {
+        mes_actual = 1;
+    }
     bool subtotales = false;
     var Meses = new string[12]
     {
@@ -69,7 +74,7 @@
         <input type="hidden" name="XperiodoPresupuesto" id="XperiodoPresupuesto" value="@periodo_inicio" />             
         <table class="table table-bordered">
             <tr>
-               <th>Archivo</th><td><input type="file" name="file" id="file" /></td><td><input class="btn btn-success"  type="submit" value="Cargar"/></td>
+               <th>Archivo CSV</th><td><input type="file" name="file" id="file" accept=".csv" /></td><td><input class="btn btn-success"  type="submit" value="Cargar"/></td>
             </tr>
              @if (ViewBag.MensajeCSV != "")
             { 

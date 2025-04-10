@@ -152,8 +152,7 @@ input[type="text"], textarea
                 @Html.LabelFor(model => model.CorreoElectronico, "Correo")
         </div>
             <div class="form-group" >
-       @Html.TextBoxFor(model => model.CorreoElectronico, new { @tabindex = "8", @class = "form-control"  })
-
+      <input class="form-control" id="CorreoElectronico" name="CorreoElectronico" tabindex="8" type="text" value="" style="width: 270px;">
       </div></div>
        </div>
        <div aria-labelledby="dlaboral-tab" id="dlaboral" class="tab-pane fade" role="tabpanel">
@@ -246,3 +245,75 @@ input[type="text"], textarea
     </fieldset>
 }</div>
 </div>
+<script>
+
+    function RescatarDatos(rutDato) {
+        if (rutDato != "") {
+            var url =  '@Url.Action("PersonaData", "Personal")';
+
+            return $.ajax({
+                url: url,
+                method: 'POST',
+                async: false,
+                dataType: 'json',
+                data: { DatoRut: rutDato },
+                success: function (data, textStatus, xhr) {
+                    var Datos = data;
+
+                    var dFecha = Datos.FechaNacimiento;
+                    var datosFecha = dFecha.split("-");
+                    var xfecha = datosFecha[0] + "-" + datosFecha[1] + "-" + datosFecha[2];
+                    var dFecha2 = Datos.FechaIngresoSistema;
+                    var datosFecha2 = dFecha2.split("-");
+                    var xfecha2 = datosFecha2[0] + "-" + datosFecha2[1] + "-" + datosFecha2[2];
+                    var Sexo = Datos.Sexo ;
+                    // Datos Personales
+                    $('#Nombres').val(Datos.Nombres);
+                    $('#ApellidoParterno').val(Datos.ApellidoParterno);
+                    $('#ApellidoMaterno').val(Datos.ApellidoMaterno);
+                    $("#FechaNacimiento").val(xfecha);
+                    //document.getElementById('#EstadoCivil').val(Datos.EstadoCivil);
+                    if ($('#Sexo option[value="' + Sexo + '"]').length > 0) {
+                        $('#Sexo').val(Sexo);
+                    } else {
+                        console.log('El valor no existe en el combo');
+                    }
+                    $('#EstadoCivil').val(Datos.EstadoCivil);
+                    // Datos contactos
+                    $('#Direccion_Calle').val(Datos.Calle);
+                    $('#Direccion_Numero').val(Datos.Numero);
+                    $('#Direccion_Depto').val(Datos.Depto);
+                    $('#Celular').val(Datos.Celular);
+                    $('#Fijo').val(Datos.Fijo);
+                    $('#CorreoElectronico').val(Datos.CorreoElectronico);
+
+                    // Datos Laborales
+                    $('#SueldoBase').val(Datos.SueldoBase);
+                    $('#BonoLocomocion').val(Datos.BonoLocomocion);
+                    $('#BonoColacion').val(Datos.BonoColacion);
+                    $('#BonoAsignacion').val(Datos.BonoAsignacion);
+                    $('#BonoReemplazo').val(Datos.BonoReemplazo);
+                    $('#Otros').val(Datos.Otros);
+                    $("#FechaIngresoSistema").val(xfecha2);
+                },
+                error: function (xhr) { alert("Error "); }
+            });
+        }
+    };
+
+    $(document).ready(function () {
+        baseUrl = '@Request.Url.Scheme' + '://' + '@Request.Url.Authority';
+
+
+        $("#DVBuscar").focusout(function () {
+            var rut = $("#Rut").val() + "-" + $("#DVBuscar").val();
+            var dv = $("#DVBuscar").val();
+            if (dv != "") {
+                RescatarDatos(rut);
+                }
+            });
+
+
+        });
+
+</script>

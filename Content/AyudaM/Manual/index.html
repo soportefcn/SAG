@@ -117,6 +117,7 @@
               <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#ControlInterno">Bodega </a></li>
               <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Informes">Conceptos</a></li>
               <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Supervisores">Cuentas</a></li>
+              <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#GlosaCuenta">Glosa x Cuenta</a></li>
               <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Administracion">Intervenciones</a></li>
               <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Inventario">Inventario</a></li>
               <li><a class="d-inline-flex align-items-center rounded text-decoration-none" href="#Personal">Personal</a></li>
@@ -279,6 +280,9 @@
                 </button>
                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manualIntervencion">
                   Manual de Intervenciones
+                </button>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manualSag">
+                  Manual Sag Act Ago 2023
                 </button>
               </div>
           </div>
@@ -470,6 +474,28 @@
               </div>
           </div>
       </article>
+      <article class="my-3" id="GlosaCuenta">
+        <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+            <h3>Mantenedores</h3>
+        </div>
+
+        <div>
+            <div class="bd-example-snippet bd-code-snippet">
+                <div class="bd-example">
+                    <p class="display-6">5.5 Glosa x Cuenta</p>
+                    <p> Al presionar en Mantenedores – Glosa xCuentas, se abre un recuadro el cual nos permite seleccionar la cuenta e Ingresar la Glosa y los respaldos , donde existen palabras Reservadas en la Glosa 
+                      los cuales son : </br>
+                      _periodo	:	Periodo Contable </br>
+                      _mes	:	Mes contable </br>
+                      _nProyecto	:	codigo codeni - Nombre Proyecto </br>
+                      _proyecto	:	Nombre Proyecto </br>
+                      los cuales son utlizados en los Ingresos y Egresos
+                      , la siguiente imagen muestra el mantenedor:</p>
+                    <img src="../Imagenes/GlosaCuentas.png" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </article>
       <article class="my-3" id="Administracion">
           <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
               <h3>Mantenedores</h3>
@@ -478,9 +504,9 @@
           <div>
               <div class="bd-example-snippet bd-code-snippet">
                   <div class="bd-example">
-                      <p class="display-6">5.5 Intervenciones</p>
+                      <p class="display-6">5.6 Intervenciones</p>
                       <p>Al presionar en Mantenedores – Intervenciones, se despliega una lista de opciones las cuales permite modificar o crear datos del programa para el valor de las intervenciones, tanto como Medida de Protección o Sobre Atenciones por 80 BIS:</p>
-                      <img src="../Imagenes/Intervenciones.png" class="img-fluid">
+                      <img src="../Imagenes/Interv2.png" class="img-fluid">
                   </div>
               </div>
           </div>
@@ -493,7 +519,7 @@
         <div>
             <div class="bd-example-snippet bd-code-snippet">
                 <div class="bd-example">
-                    <p class="display-6">5.6 Inventarios</p>
+                    <p class="display-6">5.7 Inventarios</p>
                     <p>Al presionar en Mantenedores – Inventario, se despliega una lista de opciones las cuales permite modificar o crear, Familias, Sub Familias, Estados, Procedencias, Condición y Dependencias de Inventario:</p>
                     <img src="../Imagenes/Inventario.png" class="img-fluid">
                 </div>
@@ -508,7 +534,7 @@
       <div>
           <div class="bd-example-snippet bd-code-snippet">
               <div class="bd-example">
-                  <p class="display-6">5.7 Personal</p>
+                  <p class="display-6">5.8 Personal</p>
                   <p>Al presionar en Mantenedores – Personal se despliega una lista de opciones las cuales permite visualizar, modificar o crear tanto Profesión, Cargos y Asignar Roles a los usuarios.</p>
                   <img src="../Imagenes/mPersonal.png" class="img-fluid"><br>
                   <p>Al seleccionar las siguientes opciones:<br><strong>Maestro Personal :</strong><br>Permite buscar y crear al personal de un programa, según la siguiente imagen:</p>
@@ -533,14 +559,18 @@
     <div>
         <div class="bd-example-snippet bd-code-snippet">
             <div class="bd-example">
-                <p class="display-6">5.8 Programas</p>
+                <p class="display-6">5.9 Programas</p>
                 <p>Al presionar en Mantenedores – Programas se despliega una lista de opciones para crear o modificar programas y contratos</p>
                 <img src="../Imagenes/MPrograma.png" class="img-fluid"><br>
                 <p>Al seleccionar las siguientes opciones: <br><strong>Programas:</strong>En el da la opción de Crear un programa en el Software SAG respetando el correlativo asignado en los programas o modificar los datos creados, según la siguiente imagen:
                 </p>
-                <img src="../Imagenes/Programa.png" class="img-fluid"><br>
+                <img src="../Imagenes/Programa2.png" class="img-fluid"><br>
                 <p><strong>Contratos:</strong>En el da la opción de Crear un Contrato para que figure en la Página de Inicio del programa en el Software SAG, según la siguiente imagen </p>
                 <img src="../Imagenes/contratos.png" class="img-fluid"><br>
+                <p>Listado Programa : Nos permite buscar los programas, segun el estado del programa donde podemos cambiar el estado </p>
+                <img src="../Imagenes/ListadoPrograma.png" class="img-fluid"><br>
+                <p>Listado Programa Presupuesto: Nos permite buscar los programas, segun Tipo , Programa o Region , mostrando la información del Programa, es posible exportarlo a Excel </p>
+                <img src="../Imagenes/ListadoProgramaPresupuesto.png" class="img-fluid"><br>
               </div>
         </div>
     </div>
@@ -553,7 +583,7 @@
   <div>
       <div class="bd-example-snippet bd-code-snippet">
           <div class="bd-example">
-              <p class="display-6"> 5.9 Proveedores </p>
+              <p class="display-6"> 5.10 Proveedores </p>
               <p>Al presionar en Mantenedores – Proveedores se despliega la siguiente pantalla la cual permite visualizar un proveedor creado o crear uno nuevo</p>
               <img src="../Imagenes/Proveedores.png" class="img-fluid">
           </div>
@@ -568,7 +598,7 @@
   <div>
       <div class="bd-example-snippet bd-code-snippet">
           <div class="bd-example">
-              <p class="display-6">5.10 Reportes</p>
+              <p class="display-6">5.11 Reportes</p>
               <p>Al presionar en Mantenedores – Reportes se despliega una lista con Tipo de Reportes y Contenido Reporte que es solo para desarrollo en los reportes de Estados de Resultado.</p>
               <img src="../Imagenes/Mreportes.png" class="img-fluid">
           </div>
@@ -583,7 +613,7 @@
   <div>
       <div class="bd-example-snippet bd-code-snippet">
           <div class="bd-example">
-              <p class="display-6">5.11 Tasa Imp. Honorario</p>
+              <p class="display-6">5.12 Tasa Imp. Honorario</p>
               <p>Al presionar en Mantenedores – Tasa Imp. Honorario se despliega una pantalla que permite visualizar la Tasa de Impuesto de Honorarios o crear una nueva, esto se crea una vez al año según SII, por honorarios por segunda categoría o honorarios con préstamos estatal. <br>
                 Al crearse habilita la tasa de impuesto al seleccionar en un egreso con boleta de honorarios.
               </p>
@@ -722,7 +752,7 @@
                 En el Menú al presionar Rendición de Cuentas – Corregir Honorarios, da la siguiente opción:
               </p>
               <img src="../Imagenes/corregirH.png" class="img-fluid"><br>
-              <p><i>Esta opción es utilizada cuando una boleta queda emitida y se debe modificar, cuando en el informe de honorarios se visualiza alguna boleta sin conciliar.</i></p>
+              <p><i>Esta opción es utilizada cuando una boleta queda emitida y se debe modificar, nos permite buscar por periodo, cuando la boleta no esta asociada a un egreso, nos mostrara con color Rojo permitiendo eliminarla.</i></p>
           </div>
       </div>
   </div>
@@ -1274,7 +1304,23 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <iframe src="../doc/MIntervenciones.pdf" height="100%" width="100%"></iframe>
+        <iframe src="../doc/MIntervenciones2.pdf" height="100%" width="100%"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="manualSag" tabindex="-1" aria-labelledby="manualSagLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4" id="manualSagLabel">Manual de Sag Act Agosto 2023</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <iframe src="../doc/ManSAG_AGO23.pdf" height="100%" width="100%"></iframe>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

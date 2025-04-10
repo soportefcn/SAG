@@ -54,6 +54,7 @@ namespace SAG2.Controllers
                     xdata.FondoFijoID = data.FondoFijoID;
                     xdata.FechaEmision = data.FechaEmision;
                     xdata.FechaVencimiento = data.FechaVencimiento;
+                    xdata.Iva = data.Iva;
                 }
             }
         }
@@ -83,6 +84,7 @@ namespace SAG2.Controllers
                   xdata.FondoFijoID = data.FondoFijoID;
                   xdata.FechaEmision = data.FechaEmision;
                   xdata.FechaVencimiento = data.FechaVencimiento;
+                  xdata.Iva = data.Iva;
               }
               else {
                   int i = 0;
@@ -102,6 +104,7 @@ namespace SAG2.Controllers
                           xdata.FondoFijoID = dataN.FondoFijoID;
                           xdata.FechaEmision = dataN.FechaEmision;
                           xdata.FechaVencimiento = dataN.FechaVencimiento;
+                          xdata.Iva = dataN.Iva;
                       }
                   }
               
@@ -133,6 +136,7 @@ namespace SAG2.Controllers
                     xdata.FondoFijoID = data.FondoFijoID;
                     xdata.DeudaPendienteID = data.DeudaPendienteID;
                     xdata.BoletaHonorarioID = data.BoletaHonorarioID;
+                    xdata.Iva = data.Iva;
                     xdata.DetalleID = data.ID;
                     if (data.Glosa == null)
                     {

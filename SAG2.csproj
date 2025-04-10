@@ -108,7 +108,10 @@
     <Compile Include="Controllers\CuentasPadresController.cs" />
     <Compile Include="Controllers\DetalleInformesController.cs" />
     <Compile Include="Controllers\EstadoIntervencionController.cs" />
+    <Compile Include="Controllers\EstadoResultadoController.cs" />
+    <Compile Include="Controllers\EstadoResultadoPresupuestoController.cs" />
     <Compile Include="Controllers\FileController.cs" />
+    <Compile Include="Controllers\HallazgoCierreController.cs" />
     <Compile Include="Controllers\HorasExtrasController.cs" />
     <Compile Include="Controllers\IndicadorCalidadController.cs" />
     <Compile Include="Controllers\InformeController.cs" />
@@ -122,6 +125,7 @@
     <Compile Include="Controllers\SaldoCierreController.cs" />
     <Compile Include="Controllers\TipoInformeController.cs" />
     <Compile Include="Controllers\TipoPagoController.cs" />
+    <Compile Include="Controllers\TipoRolController.cs" />
     <Compile Include="Controllers\ValorUFController.cs" />
     <Compile Include="Models\BienCondicion.cs" />
     <Compile Include="Models\BienEstadoInventario.cs" />
@@ -132,6 +136,7 @@
     <Compile Include="Models\BienSubFamilia.cs" />
     <Compile Include="Models\chequesNo.cs" />
     <Compile Include="Models\CInformeCierre.cs" />
+    <Compile Include="Models\Clasificacion.cs" />
     <Compile Include="Models\ControlFlujo.cs" />
     <Compile Include="Models\CuentaGlosa.cs" />
     <Compile Include="Models\cuentaGrupo.cs" />
@@ -1018,9 +1023,6 @@
     <Content Include="Views\Shared\PopUp.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\Copy of Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Ingresos\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -1505,7 +1507,6 @@
     <Content Include="Views\Presupuesto\ExcelBalance.cshtml" />
     <Content Include="Views\Presupuesto\LineaProteccion.cshtml" />
     <Content Include="Views\Presupuesto\LineaResponsabilidad.cshtml" />
-    <Content Include="Views\Presupuesto\Copy of ExcelBalance.cshtml" />
     <Content Include="Views\Presupuesto\ExcelBalanceSemestre1.cshtml" />
     <Content Include="Views\Presupuesto\ExcelBalanceSemestre2.cshtml" />
     <Content Include="Views\Presupuesto\ExcelLineaResponsabilidad.cshtml" />
@@ -1668,7 +1669,6 @@
     </Content>
     <Content Include="Views\Presupuesto\ExcelResumenSemestre1.cshtml" />
     <Content Include="Views\Presupuesto\ExcelResumenSemestre2.cshtml" />
-    <Content Include="Views\Presupuesto\ExcelSemestre1.cshtml_con_cuenta_vehiculos" />
     <Content Include="Views\Presupuesto\LineaPrevencion.cshtml" />
     <Content Include="Views\RespuestaAuditoria\Create.cshtml" />
     <Content Include="Views\RespuestaAuditoria\Delete.cshtml" />
@@ -1954,6 +1954,56 @@
     <Content Include="Views\TipoPago\Index.cshtml" />
     <Content Include="Views\TipoPago\Create.cshtml" />
     <Content Include="Views\TipoPago\Edit.cshtml" />
+    <Content Include="Views\HallazgoCierre\ConsolidadoMensual.cshtml" />
+    <Content Include="Views\HallazgoCierre\ConsolidadoMensualExcel.cshtml" />
+    <Content Include="Views\HallazgoCierre\HallazgoAvance.cshtml" />
+    <Content Include="Views\HallazgoCierre\HallazgoGrafico.cshtml" />
+    <Content Include="Views\HallazgoCierre\Index.cshtml" />
+    <Content Include="Views\Resolucion\Convenio.cshtml" />
+    <Content Include="Views\Presupuesto\ExcelPresTodos.cshtml" />
+    <Content Include="Views\Presupuesto\ExcelPresupuesto.cshtml" />
+    <Content Include="Views\Presupuesto\PresVisualizar.cshtml" />
+    <Content Include="Views\Resolucion\Listado.cshtml" />
+    <Content Include="Views\EstadoResultado\ReporteLineaEstandar.cshtml" />
+    <Content Include="Views\EstadoResultado\ReporteLineaEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultado\ReporteProgramaEstandar.cshtml" />
+    <Content Include="Views\EstadoResultado\ReporteProgramaEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultado\reporteRegionEstandar.cshtml" />
+    <Content Include="Views\EstadoResultado\reporteRegionEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultado\reporteTipoEstandar.cshtml" />
+    <Content Include="Views\EstadoResultado\reporteTipoEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultado\_EstandarReal.cshtml" />
+    <Content Include="Views\EstadoResultado\_EstandarRealExcel.cshtml" />
+    <None Include="Properties\PublishProfiles\sagweb.pubxml" />
+    <Content Include="Views\TipoRol\Create.cshtml" />
+    <Content Include="Views\TipoRol\Delete.cshtml" />
+    <Content Include="Views\TipoRol\Details.cshtml" />
+    <Content Include="Views\TipoRol\Edit.cshtml" />
+    <Content Include="Views\TipoRol\Index.cshtml" />
+    <Content Include="Views\Senainfo\ExportarLinea.cshtml" />
+    <Content Include="Views\Presupuesto\ExcelRealPptoTodos.cshtml" />
+    <Content Include="Views\Presupuesto\ExcelRealTodos.cshtml" />
+    <Content Include="Views\Presupuesto\ExcelRealTodosDetalle.cshtml" />
+    <Content Include="Views\EstadoResultado\_Real.cshtml" />
+    <Content Include="Views\EstadoResultado\_SintesisReal.cshtml" />
+    <Content Include="Views\EstadoResultado\_RealExcel.cshtml" />
+    <Content Include="Views\EstadoResultado\_SintesisRealExcel.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\ReporteLineaEstandar.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\ReporteLineaEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\ReporteProgramaEstandar.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\ReporteProgramaEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\reporteRegionEstandar.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\reporteRegionEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\reporteTipoEstandar.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\reporteTipoEstandarExcel.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\_EstandarReal.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\_EstandarRealExcel.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\_Real.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\_RealExcel.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\_SintesisReal.cshtml" />
+    <Content Include="Views\EstadoResultadoPresupuesto\_SintesisRealExcel.cshtml" />
+    <Content Include="Views\Presupuesto\RealTodosDetalle.cshtml" />
+    <Content Include="Views\Presupuesto\RealTodosDetalleExcel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uploads\" />

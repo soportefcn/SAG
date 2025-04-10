@@ -111,7 +111,7 @@
 <body>
 <table>
     <tr>
-        <td><h2>Estado Resultado @periodo_inicio</h2></td>
+        <td><h2>Control Presupuestario @periodo_inicio</h2></td>
         <td colspan="6"><h3>@Proyecto</h3></td>
     </tr>
 </table>
@@ -224,7 +224,17 @@ else
                     
                             
                             int valorg = 0;
-                            
+                              // aqui codigo   4.2 RESCATE DEL FONDO DAP
+                            if (cuenta1.Codigo.Equals("4.2"))
+                            {
+                                int ReintegrosDap = reintegros.Where(d => d.Cuenta.Codigo.Equals("10.1")).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                valor_ingresos = valor_ingresos + ReintegrosDap;
+                            }
+                            if (cuenta1.Codigo.Equals("10.1")){
+                                valor_reintegros = 0;
+                            }                          
+							
+							
                             if (cuenta1.Codigo.Equals("7.2.1")){
                                 valorg = 0;
                             }
@@ -648,7 +658,7 @@ else
             
             <td class="num" style="background-color: #D3D3D3;">+H127+H5</td>
              </tr>
-       @* <tr>
+        <tr>
             <th align="left" class="text">NECESIDAD DE FINANCIAMIENTO</th>
             @{
            columna_actual = 2;
@@ -673,7 +683,7 @@ else
             }
             }
             <td class="num" style="background-color: #D3D3D3;">+H128+H129</td>
-            </tr>*@
+            </tr>
         </table>
     }
 }

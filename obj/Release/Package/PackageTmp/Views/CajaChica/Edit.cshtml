@@ -88,8 +88,8 @@ input[type="text"], textarea
 	<div  style ="width: 500px ; display:inline-block">
         <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Buscar" href="../Index?Grupo=@ViewBag.FondoFijoGrupoID" onclick="window.open(this.href, 'Buscar','width=750,height=400,scrollbars=yes,menubar=no,toolbars=no'); return false"><span class ="fa fa-search fa-lg"></span></a>
           <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Nuevo" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/CajaChica/Create?Grupo=@ViewBag.FondoFijoGrupoID"><span class ="fa fa-file-o  fa-lg"></span></a>
-             <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../../Imprimir/InformeFondoFijo?Grupo=@ViewBag.FondoFijoGrupoID&ProyectoID=@Html.Raw(Model.ProyectoID.ToString())" class="imprimirInformeMes"><span class ="fa fa-print fa-lg"></span></a>
-  
+          <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Imprimir" href="../../Imprimir/InformeFondoFijo?Grupo=@ViewBag.FondoFijoGrupoID&ProyectoID=@Html.Raw(Model.ProyectoID.ToString())" class="imprimirInformeMes"><span class ="fa fa-print fa-lg"></span></a>
+
         <!--<a href="./Index" id="Guardar">GUARDAR</a></p> -->
         <a class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar" href="../Delete/@Html.Raw(Model.ID.ToString())" onclick="return confirm('Realmente desea borrar este registro?');"><span class ="fa fa-trash-o fa-lg"></span></a>
         <a class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Cancelar" href="@System.Configuration.ConfigurationManager.AppSettings["prePath"].ToString()/CajaChica/Create?Grupo=@ViewBag.FondoFijoGrupoID"><span class ="fa fa-undo fa-lg"></span></a>

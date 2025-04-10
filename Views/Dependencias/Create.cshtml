@@ -11,6 +11,11 @@ input[type="text"], textarea
     text-transform: uppercase;
 }
 </style>
+ <script type="text/javascript">
+        $(document).ready(function() {
+          $(".js-autocomplete").select2();
+        });
+    </script>
 <div id="SAGBox">
     <h3>Dependencia</h3>
 
@@ -34,24 +39,15 @@ input[type="text"], textarea
      </div>
        <div class ="form-group form-inline">
             <div class="form-group" style="margin-right: 30px;">
-           <label>Proyecto</label> 
+           <label>Programa</label> 
 
         </div>
         <div class="form-group">
-              <script type="text/javascript">
-        $(document).ready(function() {
-          $(".js-autocomplete").select2();
-        });
-    </script>
 
-        <select name="Proyecto" id="Proyecto" class="js-autocomplete">
-            <option value="0"> - Seleccione proyecto</option>
-      
-                    <option selected="selected" value="@ViewBag.ProyectoID">@ViewBag.NombreEstado</option>
-          
+
+        <select name="ProyectoID" id="ProyectoID" class="js-autocomplete">               
+                    <option selected value="@ViewBag.ProyectoID">@ViewBag.NombreEstado</option>          
                     <option value="0">Todos</option>
-               
-            }
         </select>
            
         </div>

@@ -31,6 +31,8 @@ namespace SAG2.Models
         public double Uss { get; set; }
         public double UssQ { get; set; }
         public int ResumenID { get; set; }
+        public string Discapacidad { get; set; }
+        public string Art30 { get; set; }
 
         public DateTime FechaIngreso { get; set; }
         public virtual Proyecto Proyecto { get; set; }

@@ -1,7 +1,7 @@
 ﻿@model SAG2.Models.IntervencionResumen
 @{
     Layout = "~/Views/Shared/_Layoutinf.cshtml";
-    ViewBag.Title = "Intervenciones por Proyecto";
+    ViewBag.Title = "Intervenciones por Programa";
     SAG2.Models.SAG2DB db = new SAG2.Models.SAG2DB();
     List<SAG2.Models.IntervencionResumen> intervenciones = new List<SAG2.Models.IntervencionResumen>();
     List<SAG2.Models.Region> regiones = db.Region.ToList();
@@ -13,12 +13,12 @@
     int proyectoID = Model.ProyectoID;
 
     Layout = null;
-    ViewBag.Title = "Intervenciones por proyecto";
+    ViewBag.Title = "Intervenciones por Programa";
     SAG2.Classes.Util utils = new SAG2.Classes.Util();
     Response.Clear();
     Response.Buffer = true;
     Response.ContentType = "application/vnd.ms-excel";
-    Response.AddHeader("Content-Disposition", "attachment;filename=Intervenciones.Proyecto.Sag2-" + DateTime.Now.ToShortDateString() + ".xls");
+    Response.AddHeader("Content-Disposition", "attachment;filename=Intervenciones.Programa.Sag2-" + DateTime.Now.ToShortDateString() + ".xls");
     string FechaSis = DateTime.Now.ToShortDateString();
 }
 
@@ -40,16 +40,16 @@
 <table cellpadding="5" border="1" style="width: 80%;">
 
     <tr>
-        <th rowspan="2" colspan="8" style="font-size: 30px; font-weight: bold;">Intervenciones por Proyecto</th>
+        <th rowspan="2" colspan="14" style="font-size: 30px; font-weight: bold;">Intervenciones por Programa</th>
 
     </tr>
     <tr></tr>
     <tr>
         <th colspan="1" rowspan="1">Per&iacute;odo</th>
         <th colspan="1" rowspan="1">Mes</th>
-        <th colspan="1" rowspan="1">Proyecto</th>
+        <th colspan="1" rowspan="1">Programa</th>
         <th colspan="1" rowspan="1">Cod. Sename</th>
-        <th colspan="1" rowspan="1">Tipo Proyecto</th>
+        <th colspan="1" rowspan="1">Tipo Programa</th>
         <th colspan="1" rowspan="1">L&iacute;nea de Protecci&oacute;n</th>
         <th colspan="1" rowspan="1">Regi&oacute;n</th>
         <th colspan="1" rowspan="1">Comuna</th>
@@ -74,10 +74,10 @@
             {
                 numInterDeuda = interD.Where(p => p.ProyectoID == proyectoID).Where(m => m.Mes == item.Mes).Where(a => a.Anio == item.Anio).Where(d => d.Bis == item.Tipo).Sum(n => n.TotalIntervencionesAPagar);
             }
-            //if (item.EstadoID == 2)
-            //{
-            //    montoDeuda = item.Valor;
-            //}
+            /*  if (item.EstadoID == 2)
+            {
+                montoDeuda = item.Valor;
+            }*/
             var reg = regiones.Find(p => p.ID == item.RegionID).Nombre;
             var nombrePro = pro.Find(p => p.ID == item.ProyectoID).Nombre;
             var tp = tipoPro.Find(p => p.ID == pro.Find(i => i.ID == item.ProyectoID).TipoProyectoID).Nombre;

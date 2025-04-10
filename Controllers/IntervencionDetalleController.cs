@@ -210,7 +210,10 @@ namespace SAG2.Controllers
                             {
                                 if (upload.ContentLength > 0)
                                 {
-                                    string name = String.Format("Informe de atención Mensual {0}.csv",DateTime.Now.ToString().Replace(":","."));
+                                    string CC = db.Proyecto.Find(model.ProyectoID).CodCodeni;
+                                    string xname = model.FechaIngreso.Year + "" + model.FechaIngreso.Month + "_" + CC + "_" + DateTime.Now.ToString().Replace(":", "").Replace("-","");
+
+                                    string name = String.Format("IAM{0}.csv", xname);
                                     string _path = Path.Combine(Server.MapPath("~/Archivos"), name);
                                     upload.SaveAs(_path);
                                     System.Threading.Thread.Sleep(1000);
@@ -242,7 +245,7 @@ namespace SAG2.Controllers
                                         inter.Uss = VALORUSS;
                                         inter.UssQ = Q;
                                         string[] values = line.Split(';');
-                                        if (values.Length == 11)
+                                        if (values.Length == 13)
                                         {
                                             inter.CodigoSename = values[0];
                                             inter.ApellidoPaterno = values[1];
@@ -250,10 +253,12 @@ namespace SAG2.Controllers
                                             inter.Nombre = values[3];
                                             inter.DiasAtencion = int.Parse(values[5]);
                                             inter.DiasAusente = int.Parse(values[7]);
-                                            inter.NumInter = int.Parse(values[8]);
-                                            inter.TotalIntervencionesAPagar = int.Parse(values[9]);
-                                            inter.Bis = int.Parse(values[8]);
-                                            inter.BisArch = int.Parse(values[8]);
+                                            inter.NumInter = int.Parse(values[10]);
+                                            inter.TotalIntervencionesAPagar = int.Parse(values[11]);
+                                            inter.Bis = int.Parse(values[10]);
+                                            inter.BisArch = int.Parse(values[10]);
+                                            inter.Discapacidad = values[8];
+                                            inter.Art30 = values[9];
                                             if (inter.Bis > 0 && inter.TotalIntervencionesAPagar > 0)
                                             {
                                                 inter.Tipo = 2;
@@ -356,7 +361,8 @@ namespace SAG2.Controllers
 
         public ActionResult ResumenAtenciones2(int idProyecto)
         {
-            List<IntervencionResumen> model = db.IntervencionResumen.Where(a=> a.EstadoID == 2 && a.ProyectoID == idProyecto).ToList();
+            int periodo = (int)Session["Periodo"];
+            List<IntervencionResumen> model = db.IntervencionResumen.Where(a=> a.EstadoID == 2 && a.ProyectoID == idProyecto && a.Anio == periodo).ToList();
             
 
             return View(model);
@@ -439,12 +445,19 @@ namespace SAG2.Controllers
 
         }
 
-        public ActionResult ResumenAtenciones()
+        public ActionResult ResumenAtenciones(int? idProyecto = 0)
         {
+            Proyecto Proyecto = new Proyecto();
             int filtro = int.Parse(Session["Filtro"].ToString());  
             Usuario usuario = (Usuario)Session["Usuario"];
             Persona persona = (Persona)Session["Persona"];
-            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            if (idProyecto == 0)
+            {
+                Proyecto = (Proyecto)Session["Proyecto"];
+            }
+            else {
+                Proyecto = db.Proyecto.Find(idProyecto);
+            }
             int periodo = (int)Session["Periodo"];
 
             if (!usuario.esUsuario)
@@ -460,7 +473,7 @@ namespace SAG2.Controllers
 
 
             }  
-            List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == Proyecto.ID && a.Anio == periodo ).OrderByDescending(a => a.ID ).ToList();
+            List<IntervencionResumen> model = db.IntervencionResumen.Where(a => a.ProyectoID == Proyecto.ID && a.Anio == periodo ).OrderByDescending(a => a.Mes).ToList();
             ViewBag.ProyectoID = Proyecto.ID;
             ViewBag.Periodo = periodo;
             return View(model);
@@ -855,8 +868,8 @@ namespace SAG2.Controllers
                 int  MontoMedPro = model.Sum(a => a.TotalPagar) - model.Sum(a => a.TotalPagarBis);
                 int Monto80BIs = model.Sum(a => a.TotalPagarBis);
 
-                int InterveBIS = model.Sum(a => a.TotalIntervencionesAPagar) - model.Sum(a => a.Bis); 
-                int InterveMedPro = model.Sum(a => a.Bis);
+                int InterveBIS = model.Sum(a => a.Bis);
+                int InterveMedPro = model.Sum(a => a.TotalIntervencionesAPagar) - model.Sum(a => a.Bis); 
 
                 IntervencionResumen IMedPro = new IntervencionResumen();
 
@@ -879,6 +892,7 @@ namespace SAG2.Controllers
                 IMedPro.UssQ = model[0].UssQ;
                 db.IntervencionResumen.Add(IMedPro);
                 db.SaveChanges();
+
                 int idXMedPro = IMedPro.ID;
 // 
 
@@ -920,8 +934,7 @@ namespace SAG2.Controllers
                     {
                         item.ResumenID = idXMedPro;
                     }
-
-                    if (item.Tipo == 1)
+                    else
                     {
                         item.ResumenID = IDxIBis;
                     }
@@ -935,7 +948,7 @@ namespace SAG2.Controllers
             {
                 TempData["Message"] = "Error" + ex.Message;
             }
-            return RedirectToAction("ResumenAtenciones2", new {idProyecto = id });
+            return RedirectToAction("ResumenAtenciones", new { idProyecto = id });
         }
 
         public ActionResult Listado()

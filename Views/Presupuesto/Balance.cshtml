@@ -178,7 +178,7 @@
                         </div>
 
                         <strong>
-                            Consejo de Defensa del Niño<br />
+                           Fundacion Ciudad del del Niño<br />
                             <select name="Proyectos2" id="Proyectos2" class="js-autocomplete">
                                 <option value="-1"> - Seleccione proyecto</option>
                                 @foreach (SAG2.Models.Proyecto Proyectos2 in ViewBag.Proyectos)
@@ -193,7 +193,7 @@
                                     }
                                 }
                             </select>
-                            <select name="mes2" id="mes2" class="js-autocomplete">
+@*                            <select name="mes2" id="mes2" class="js-autocomplete">
                                 <option selected="selected" value="0">Seleccione un mes para CSV</option>
                                 <option value="1">Enero</option>
                                 <option value="2">Febrero</option>
@@ -208,15 +208,15 @@
                                 <option value="11">Noviembre</option>
                                 <option value="12">Diciembre</option>
 
-                            </select>
+                            </select>*@
                         </strong>
-                        <label>Todos los proyectos</label>
-                    <input id="todos" name="todos" value="true" type="checkbox" />
+               @*         <label>Todos los proyectos</label>
+                    <input id="todos" name="todos" value="true" type="checkbox" />*@
                     <div class="ocultoImpresion">
                         <br />
                         <input class="btn btn-primary" type="submit" value="Procesar" />
 
-                        <input class="btn btn-success" type="submit" id="csv" value="CSV" />
+@*                        <input class="btn btn-success" type="submit" id="csv" value="CSV" />*@
 
                         </td>
                         <td align="right" valign="top" style="border: 0;">Fecha: <strong>@Html.Raw(DateTime.Now.ToShortDateString())</strong></td>
@@ -264,7 +264,7 @@
                 </div>
                 <div class="col-md-3 col-lg-3">
                     <select name="periodoBalance" id="periodoBalance" class="añoPresupuesto form-control">
-                        @for (int i = DateTime.Now.Year - 3; i < DateTime.Now.Year + 5; i++)
+                        @for (int i = DateTime.Now.Year - 4; i < DateTime.Now.Year + 5; i++)
                         {
                             <option value="@Html.Raw((i).ToString())" @{ if (i.ToString().Equals(ViewBag.Periodo_Inicio)) { @Html.Raw(" selected=\"selected\"") ; } }>
                                 @Html.Raw((i).ToString())
@@ -278,6 +278,8 @@
                         <option value="Anual">Anual</option>
                         <option value="1S">1er Semestre</option>
                         <option value="2S">2do Semestre</option>
+                        <option value="TodosReal">Todos Real</option>
+                         <option value="TodosRealDetalle">Todos Real Detalle</option>
                     </select>
                 </div>
 
@@ -822,7 +824,15 @@
                                                                                                             int valor_reintegros = reintegros.Where(d => d.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
                                                                                                             int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta1.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
                                                                                                             int valorg = 0;
-                                                                                                            
+                                                                                                            if (cuenta1.Codigo.Equals("7.1.9"))
+                                                                                                            {
+                                                                                                                int valor_reintegrosgastos = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals(cuenta1.Codigo)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
+                                                                                                                valorg = (valor_egresos + valor_GastosReintegros) - (valor_reintegros + valor_reintegrosgastos);
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                valorg = (valor_egresos + valor_GastosReintegros) - valor_reintegros;
+                                                                                                            }
                                                                                                             <td class="@Html.Raw("Periodo" + mes_inicio)" style=" display: none;text-align: right;">@valor_presupuesto.ToString("#,##0")</td>
                                                                                                             if (cuenta.Tipo.Equals("I"))
                                                                                                             {

@@ -2,6 +2,8 @@
 @using SAG2.Models;
 @{
     Layout = null;
+	System.Text.RegularExpressions.Regex replace_Peso = new System.Text.RegularExpressions.Regex("[$]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    System.Text.RegularExpressions.Regex replace_Signo = new System.Text.RegularExpressions.Regex("[ª]", System.Text.RegularExpressions.RegexOptions.Compiled);
     SAG2DB db = new SAG2DB();
     Response.ContentType = "text/plain; charset=UTF-8";
     Response.Charset = "UTF-8";
@@ -146,11 +148,25 @@
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Í", "I");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ú", "U");
+                    descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "À", "A");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, ",", " ");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                     descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
-
+                    descripcion = descripcion.Replace(".", "");
+                    descripcion = descripcion.Replace("'", "");
+                    descripcion = descripcion.Replace("*", "");
+                    descripcion = descripcion.Replace("&", "");
+                    descripcion = descripcion.Replace("(", "");
+                    descripcion = descripcion.Replace(")", "");
+                    descripcion = descripcion.Replace("\"", "");
+                    descripcion = descripcion.Replace("/", "");
+                    descripcion = descripcion.Replace(":", "");
+					descripcion = descripcion.Replace("|", "");
+					descripcion = descripcion.Replace("+", "");
+					descripcion = replace_Peso.Replace(descripcion.ToUpper(), "");
+                    descripcion = replace_Signo.Replace(descripcion.ToUpper(), "");
+					
                     try
                     {
                         descripcion = descripcion.Substring(0, 20).Trim();
@@ -275,11 +291,25 @@
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Í", "I");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ú", "U");
+                        descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "À", "A");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, ",", " ");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                         descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
-
+                        descripcion = descripcion.Replace(".", "");
+                        descripcion = descripcion.Replace("'", "");
+                        descripcion = descripcion.Replace("*", "");
+                        descripcion = descripcion.Replace("&", "");
+                        descripcion = descripcion.Replace("(", "");
+                        descripcion = descripcion.Replace(")", "");
+                        descripcion = descripcion.Replace("\"", "");
+                        descripcion = descripcion.Replace("/", "");
+                        descripcion = descripcion.Replace(":", "");
+						descripcion = descripcion.Replace("|", "");
+						descripcion = descripcion.Replace("+", "");
+						descripcion = replace_Peso.Replace(descripcion.ToUpper(), "");
+						descripcion = replace_Signo.Replace(descripcion.ToUpper(), "");
+                        
                         if (descripcion.Length > 20)
                         {
                             descripcion = descripcion.Substring(0, 20);
@@ -335,11 +365,25 @@
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "Í", "I");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ó", "O");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "Ú", "U");
+                    destino = System.Text.RegularExpressions.Regex.Replace(destino, "À", "A");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, ",", " ");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", "");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "°", "");
                     destino = System.Text.RegularExpressions.Regex.Replace(destino, "%", "");
-
+                    destino = destino.Replace(".", "");
+                    destino = destino.Replace("'", "");
+                    destino = destino.Replace("*", "");
+                    destino = destino.Replace("&", "");
+                    destino = destino.Replace("(", "");
+                    destino = destino.Replace(")", "");
+                    destino = destino.Replace("\"", "");
+                    destino = destino.Replace("/", "");
+                    destino = destino.Replace(":", "");
+					destino = destino.Replace("|", "");
+					destino = destino.Replace("+", "");
+                    destino = replace_Peso.Replace(destino.ToUpper(), "");
+                    destino = replace_Signo.Replace(destino.ToUpper(), "");
+					
                     if (destino.Length > 40)
                     {
                         destino = destino.Substring(0, 40);
@@ -442,11 +486,11 @@
                         {
                             if (@item.Nulo != null && @item.Nulo.ToString().Equals("S"))
                             {
-                                @Html.Raw("0000000001");
+                                @Html.Raw("000000001");
                             }
                             else if (@Detalles.Where(d => d.CuentaID == detalle.CuentaID).Sum(d => d.Monto) == 0)
                             {
-                                @Html.Raw("0000000001");
+                                @Html.Raw("000000001");
                             }
                             else
                             {
@@ -470,11 +514,25 @@
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Í", "I");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ó", "O");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "Ú", "U");
+                            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "À", "A");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, ",", " ");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
-
+                            descripcion = descripcion.Replace(".", "");
+                            descripcion = descripcion.Replace("'", "");
+                            descripcion = descripcion.Replace("*", "");
+                            descripcion = descripcion.Replace("&", "");
+                            descripcion = descripcion.Replace("(", "");
+                            descripcion = descripcion.Replace(")", "");
+                            descripcion = descripcion.Replace("\"", "");
+                            descripcion = descripcion.Replace("/", "");
+                            descripcion = descripcion.Replace(":", "");
+							descripcion = descripcion.Replace("|", "");
+							descripcion = descripcion.Replace("+", "");
+                            descripcion = replace_Peso.Replace(descripcion.ToUpper(), "");
+							descripcion = replace_Signo.Replace(descripcion.ToUpper(), "");
+							
                             if (descripcion.Length > 20)
                             {
                                 descripcion = descripcion.Substring(0, 20);
@@ -539,6 +597,21 @@
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "°", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "%", "");
+                        destino = System.Text.RegularExpressions.Regex.Replace(destino, "À", "A");
+                        destino = destino.Replace(".", "");
+                        destino = destino.Replace("'", "");
+                        destino = destino.Replace("*", "");
+                        destino = destino.Replace("&", "");
+                        destino = destino.Replace("(", "");
+                        destino = destino.Replace(")", "");
+                        destino = destino.Replace("\"", "");
+                        destino = destino.Replace("/", "");
+                        destino = destino.Replace(":", "");
+						destino = destino.Replace("|", "");
+						destino = destino.Replace("+", "");
+                        destino = replace_Peso.Replace(destino.ToUpper(), "");
+						destino = replace_Signo.Replace(destino.ToUpper(), "");
+					
                         if (destino.Length > 40)
                         {
                             destino = destino.Substring(0, 40);
@@ -671,6 +744,21 @@
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "º", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "°", "");
                             descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "%", "");
+                            descripcion = System.Text.RegularExpressions.Regex.Replace(descripcion, "À", "A");
+                            descripcion = descripcion.Replace(".", "");
+                            descripcion = descripcion.Replace("'", "");
+                            descripcion = descripcion.Replace("*", "");
+                            descripcion = descripcion.Replace("&", "");
+                            descripcion = descripcion.Replace("(", "");
+                            descripcion = descripcion.Replace(")", "");
+                            descripcion = descripcion.Replace("\"", "");
+                            descripcion = descripcion.Replace("/", "");
+                            descripcion = descripcion.Replace(":", "");
+							descripcion = descripcion.Replace("|", "");
+							descripcion = descripcion.Replace("+", "");
+                            descripcion = replace_Peso.Replace(descripcion.ToUpper(), "");
+							descripcion = replace_Signo.Replace(descripcion.ToUpper(), "");
+							
                             if (descripcion.Length > 20)
                             {
                                 descripcion = descripcion.Substring(0, 20);
@@ -736,6 +824,21 @@
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "º", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "°", "");
                         destino = System.Text.RegularExpressions.Regex.Replace(destino, "%", "");
+                        destino = System.Text.RegularExpressions.Regex.Replace(destino, "À", "A");
+                        destino = destino.Replace(".", "");
+                        destino = destino.Replace("'", "");
+                        destino = destino.Replace("*", "");
+                        destino = destino.Replace("&", "");
+                        destino = destino.Replace("(", "");
+                        destino = destino.Replace(")", "");
+                        destino = destino.Replace("\"", "");
+                        destino = destino.Replace("/", "");
+                        destino = destino.Replace(":", "");
+						destino = destino.Replace("|", "");
+						destino = destino.Replace("+", "");
+                        destino = replace_Peso.Replace(destino.ToUpper(), "");
+						destino = replace_Signo.Replace(destino.ToUpper(), "");
+						
                         if (destino.Length > 40)
                         {
                             destino = destino.Substring(0, 40);

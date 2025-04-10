@@ -25,6 +25,7 @@ namespace SAG2.Models
         public string Nulo { get; set; }
         public string Conciliado { get; set; }
         public string Temporal { get; set; }
+        public int Iva { get; set; }
 
         // Relaciones opcionales
         public virtual Movimiento Egreso { get; set; }

@@ -76,7 +76,7 @@
                         <div class="form-group" style="margin-right: 10px;"><label>Año</label></div>
                             <div class="form-group">
                                    <select class="form-control" name="Periodo" id="Periodo">
-                            @for (var i = DateTime.Now.Year - 3; i <= DateTime.Now.Year + 1; i++)
+                            @for (var i = DateTime.Now.Year - 4; i <= DateTime.Now.Year + 1; i++)
                             {
                                 <option value="@Html.Raw((@i).ToString())" @if (@ViewBag.periodo == i)
                                                                             {@Html.Raw("selected=\"selected\"")}>@Html.Raw((@i).ToString())</option>
@@ -355,6 +355,100 @@ else
             }
             else
             {
+                // REvisar AQUI
+                SAG2.Models.DetalleIngresoIva detallesIngreso = db.DetalleIngresoIva.Where(d => d.MovimientoID == item.ID).FirstOrDefault();
+                if( detallesIngreso != null ){
+                    <tr>
+                        <td style="width: 80px;">
+                            @item.Fecha.Value.ToShortDateString()
+                        </td>
+                        <td style="width: 65px;" align="center">
+                            @Html.DisplayFor(modelItem => item.Cheque)
+                        </td>
+                        <td style="width: 75px;" align="right">
+                            <strong>
+                                $@detallesIngreso.ValorNeto.ToString("#,##0")
+                                @{
+                                    Saldo = Saldo + detallesIngreso.ValorNeto;
+                                    totalDebe = totalDebe + detallesIngreso.ValorNeto;
+                                }
+                            </strong>
+                        </td>
+                        <td style="width: 73px;" align="right">
+                            -
+                        </td>
+                        <td style="width: 73px;" align="right" @{ if (Saldo >= 0) { @Html.Raw(" style=\"color: Blue;\"") ; } else if (Saldo < 0) { @Html.Raw(" style=\"color: Red;\"") ; } }>
+                            $@Html.Raw(Saldo.ToString("#,##0"))
+                        </td>
+                        <td style="width: 73px;">
+                            @if (item.TipoComprobanteID == 1)
+                            {
+                                @Html.Raw("Ingreso")
+                            }
+                            else if (item.TipoComprobanteID == 3)
+                            {
+                                @Html.Raw("Reintegro")
+                            }
+                        </td>
+                        <td style="width: 33px;" align="center">
+                            @Html.Raw(@item.NumeroComprobante.ToString())
+                        </td>
+                        <td style="width: 217px;">
+                            @Html.Raw(utils.cuentaPadre(item.Cuenta))
+                        </td>
+                        <td style="width: 217px;">
+                            @Html.DisplayFor(modelItem => item.Cuenta.NombreLista)
+                        </td>
+                        <td style="width: 217px;">
+                            @item.Descripcion.ToUpper()
+                        </td>
+                    </tr>
+                     <tr>
+                        <td style="width: 80px;">
+                            @item.Fecha.Value.ToShortDateString()
+                        </td>
+                        <td style="width: 65px;" align="center">
+                            @Html.DisplayFor(modelItem => item.Cheque)
+                        </td>
+                        <td style="width: 75px;" align="right">
+                            <strong>
+                                $@detallesIngreso.ValorIva.ToString("#,##0")
+                                @{
+                                    Saldo = Saldo + detallesIngreso.ValorIva;
+                                    totalDebe = totalDebe + detallesIngreso.ValorIva;
+                                }
+                            </strong>
+                        </td>
+                        <td style="width: 73px;" align="right">
+                            -
+                        </td>
+                        <td style="width: 73px;" align="right" @{ if (Saldo >= 0) { @Html.Raw(" style=\"color: Blue;\"") ; } else if (Saldo < 0) { @Html.Raw(" style=\"color: Red;\"") ; } }>
+                            $@Html.Raw(Saldo.ToString("#,##0"))
+                        </td>
+                        <td style="width: 73px;">
+                            @if (item.TipoComprobanteID == 1)
+                            {
+                                @Html.Raw("Ingreso")
+                            }
+                            else if (item.TipoComprobanteID == 3)
+                            {
+                                @Html.Raw("Reintegro")
+                            }
+                        </td>
+                        <td style="width: 33px;" align="center">
+                            @Html.Raw(@item.NumeroComprobante.ToString())
+                        </td>
+                        <td style="width: 217px;">
+                            @Html.Raw(utils.cuentaPadre(detallesIngreso.Cuenta))
+                        </td>
+                        <td style="width: 217px;">
+                              @Html.Raw(detallesIngreso.Cuenta.NombreLista)
+                        </td>
+                        <td style="width: 217px;">
+                            @item.Descripcion.ToUpper()
+                        </td>
+                    </tr>
+                }else{
                     <tr>
                         <td style="width: 80px;">
                             @item.Fecha.Value.ToShortDateString()
@@ -400,7 +494,8 @@ else
                             @item.Descripcion.ToUpper()
                         </td>
                     </tr>
-            }
+            }       
+    }
             saldoLB = Saldo;
         }
     }

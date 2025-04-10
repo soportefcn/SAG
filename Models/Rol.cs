@@ -12,6 +12,7 @@ namespace SAG2.Models
         public int ProyectoID { get; set; }
         public int TipoRolID { get; set; }
         public string Comentarios { get; set; }
+        public string Correo { get; set; }
 
         public virtual Persona Persona { get; set; }
         public virtual Proyecto Proyecto { get; set; }

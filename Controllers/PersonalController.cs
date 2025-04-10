@@ -38,6 +38,17 @@ namespace SAG2.Controllers
                           select r.Persona;
             return View(persona.OrderBy(p => p.Nombres).ThenBy(p => p.ApellidoParterno).ThenBy(p => p.ApellidoMaterno).ToList());
         }
+
+        public ViewResult PopUpDetalle(int? ProyectoID)
+        {
+            Usuario Usuario = (Usuario)Session["Usuario"];
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            var rol = db.Rol.Include(r => r.Persona).Include(r => r.TipoRol).Where(r => r.ProyectoID == Proyecto.ID);
+            var persona = from r in rol
+                          select r.Persona;
+            return View(persona.OrderBy(p => p.Nombres).ThenBy(p => p.ApellidoParterno).ThenBy(p => p.ApellidoMaterno).ToList());
+        }
+        
         public ViewResult PopUpTipoPrograma(int? ProyectoID = 0, int? TipoProgramaID = 0)
         {
             var rol = db.Rol.Include(r => r.Persona).Include(r => r.TipoRol);
@@ -59,6 +70,7 @@ namespace SAG2.Controllers
             
             return View(persona.OrderBy(p => p.Nombres).ThenBy(p => p.ApellidoParterno).ThenBy(p => p.ApellidoMaterno).ToList());
         }
+        
         public ViewResult PopUpBH(int ProyectoID)
         {
             Usuario Usuario = (Usuario)Session["Usuario"];
@@ -219,6 +231,12 @@ namespace SAG2.Controllers
                 rol.PersonaID = Persona.ID;
                 rol.TipoRolID = 9; // Sin Rol
                 rol.ProyectoID = Proyecto.ID;
+                try
+                {
+                    rol.Correo = persona.CorreoElectronico;
+                }
+                catch (Exception) 
+                { }
                 rol.Comentarios = "Rol asignado automáticamente.";
 
                 try
@@ -288,7 +306,7 @@ namespace SAG2.Controllers
                         rol.TipoRolID = 9; // Sin Rol
                         rol.ProyectoID = Proyecto.ID;
                         rol.Comentarios = "Rol asignado automáticamente.";
-
+                        rol.Correo = persona.CorreoElectronico;
                         db.Rol.Add(rol);
                         db.SaveChanges();
 
@@ -314,13 +332,18 @@ namespace SAG2.Controllers
  
         public ActionResult Edit(int id)
         {
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+
             if (Session["mensaje"] != null)
             {
                 ViewBag.Mensaje = utils.mensajeError(Session["mensaje"].ToString());
                 Session.Remove("mensaje");
             }
+            Rol RolAct = db.Rol.Where(d => d.PersonaID == id && d.ProyectoID == Proyecto.ID).FirstOrDefault();
+        
 
             Persona persona = db.Persona.Find(id);
+            persona.CorreoElectronico = RolAct.Correo; 
             ViewBag.TipoPersonalID = new SelectList(db.TipoPersonal, "ID", "Nombre", persona.TipoPersonalID);
             ViewBag.ProfesionID = new SelectList(db.Profesion.Where(p => p.ID != 1), "ID", "Nombre", persona.ProfesionID);
             ViewBag.RegionID = new SelectList(db.Region.OrderBy(a => a.Nombre), "ID", "Nombre", persona.Direccion.Comuna.RegionID);
@@ -334,6 +357,7 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Edit(Persona persona)
         {
+             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             try
             {
                 persona.DV = Request.Form["DVBuscar"].ToString();
@@ -353,6 +377,15 @@ namespace SAG2.Controllers
                 persona.Direccion = Direccion;
                 db.Entry(persona).State = EntityState.Modified;
                 db.SaveChanges();
+
+
+                // 
+                Rol RolAct = db.Rol.Where(d => d.PersonaID == persona.ID && d.ProyectoID == Proyecto.ID).FirstOrDefault();
+                RolAct.Correo = persona.CorreoElectronico;
+                db.Entry(RolAct).State = EntityState.Modified;
+                db.SaveChanges();
+               
+
                 TempData["Message"] = "Creado con exito " + persona.Nombres + " " + persona.ApellidoParterno + " " + persona.ApellidoMaterno;
                 return RedirectToAction("Create");
             }
@@ -414,6 +447,40 @@ namespace SAG2.Controllers
                                      }).ToList();
 
             return new JavaScriptSerializer().Serialize(CuentasCorrientes);
+        }
+
+        public string PersonaData(string DatoRut)
+        {
+            Persona dataPersona = new Persona();
+            string[] datos = DatoRut.Split('-');
+            string rut = datos[0];
+            string dv = datos[1];
+            dataPersona = db.Persona.Where(d => d.Rut == rut && d.DV == dv).FirstOrDefault();
+            DateTime Fech = DateTime.Parse( dataPersona.FechaNacimiento.ToString());
+            DateTime Fech2 = DateTime.Parse(dataPersona.FechaIngresoSistema.ToString());
+            DataPersonaform xdata = new DataPersonaform();
+            xdata.ID = dataPersona.ID;
+            xdata.Nombres = dataPersona.Nombres;
+            xdata.ApellidoParterno = dataPersona.ApellidoParterno;
+            xdata.ApellidoMaterno = dataPersona.ApellidoMaterno;
+            xdata.Celular = dataPersona.Celular;
+            xdata.Fijo = dataPersona.Fijo;
+            xdata.CorreoElectronico = dataPersona.CorreoElectronico;
+            xdata.SueldoBase = dataPersona.SueldoBase;
+            xdata.BonoLocomocion = dataPersona.BonoLocomocion;
+            xdata.BonoColacion = dataPersona.BonoColacion;
+            xdata.BonoAsignacion = dataPersona.BonoAsignacion;
+            xdata.BonoReemplazo = dataPersona.BonoReemplazo;
+            xdata.Otros = dataPersona.Otros;
+            xdata.Calle = dataPersona.Direccion.Calle;
+            xdata.Numero = dataPersona.Direccion.Numero;
+            xdata.Depto = dataPersona.Direccion.Depto;
+            xdata.FechaNacimiento = Fech.ToShortDateString();
+            xdata.EstadoCivil = dataPersona.EstadoCivil;
+            xdata.Sexo = dataPersona.Sexo;
+            xdata.FechaIngresoSistema = Fech2.ToShortDateString();
+
+         return new JavaScriptSerializer().Serialize(xdata);
         }
 
         protected override void Dispose(bool disposing)

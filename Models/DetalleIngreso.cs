@@ -23,4 +23,19 @@ namespace SAG2.Models
         public virtual Movimiento Ingreso { get; set; }
 
     }
+
+    public class DetalleIngresoIva {
+        [ScaffoldColumn(false)]
+        public int ID { get; set; }
+        public int? MovimientoID { get; set; }
+        public int CuentaID { get; set; }
+        public int Iva { get; set; }
+        public int ValorNeto { get; set; }
+        public int ValorIva { get; set; }
+        public int Total { get; set; }
+
+        public virtual Movimiento Ingreso { get; set; }
+        public virtual Cuenta Cuenta { get; set; }
+    
+    }
 }

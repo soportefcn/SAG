@@ -1,10 +1,4 @@
-body {
-    padding-top: 0px;
-    background-color: #ffffff;   
-    font-family: 'Montserrat' !important;
-    font-size: 16px;
-    color: #666;
-}
+
 .expandido 
 {
     width: 100px !important;
@@ -176,11 +170,5 @@ table.tabla_comprobante, table.tabla_comprobante tr, table.tabla_comprobante tr 
 
 tr.row_comprobante:hover 
 {
-    background-color:#blue !imporant; 
+    background-color: #F0F0F0 !imporant;
 }
-.alert-dang {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
-

@@ -20,10 +20,14 @@
     catch (Exception)
     { }
 }
-
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $(".js-autocomplete").select2();
+        });
+    </script>
 <div class="panel panel-info">
   <div class="panel-heading">
-    <h3 class="panel-title">Proyectos Presupuesto</h3>
+    <h3 class="panel-title">Programa Presupuestos</h3>
   </div>
   <div class="panel-body">
         @using (Html.BeginForm())
@@ -33,7 +37,7 @@
                <td>
                    <div class="row">
                        <div class="col-md-2"> Tipo  @Html.DropDownList("TipoProgramaID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div> 
-                       <div class="col-md-4">Proyecto  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
+                       <div class="col-md-4">Programas  @Html.DropDownList("ProyectoID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
                        <div class="col-md-2">Region   @Html.DropDownList("regionID",null, " TODOS " , new { @class = "form-control js-autocomplete"} )</div>
                         <div class="col-md-4" >Estado 
                             <select name="filtroPrograma" id="filtroPrograma" class="form-control js-autocomplete" >
@@ -44,8 +48,8 @@
                         </div>
                    </div>
                    <div class="row">
-                        <div class="col-md-2"> Codigo Sename  <input class="form-control" id="CodSename" name="CodSename" style="width: 100%;" type="text" value="@ViewBag.CodSename"> </div> 
-                         <div class="col-md-2"> Codigo Codeni  <input class="form-control" id="CodCodeni" name="CodCodeni" style="width: 100%;" type="text" value="@ViewBag.CodCodeni"></div> 
+                        <div class="col-md-2"> Cód. Sename/Servicio Mejor Niñez  <input class="form-control" id="CodSename" name="CodSename" style="width: 100%;" type="text" value="@ViewBag.CodSename"> </div> 
+                         <div class="col-md-2"> Codigo SAG  <input class="form-control" id="CodCodeni" name="CodCodeni" style="width: 100%;" type="text" value="@ViewBag.CodCodeni"></div> 
                    </div>
                 </td>
            </tr> 
@@ -65,7 +69,7 @@
     <thead>
         <tr class="success">
             <th>COD SAG</th>
-            <th> COD SENAME</th>
+            <th> COD SENAME / Servicio Mejor Niñez</th>
             <th> NOMBRE PROGRAMA</th>
             <th> FONO</th>
             <th> LINEA</th>

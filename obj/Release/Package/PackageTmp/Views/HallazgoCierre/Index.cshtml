@@ -1,0 +1,453 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    ViewBag.Title = "Hallazgo Cierre";
+    
+    //
+    var Meses = new string[12]
+    {
+	    "Enero",
+	    "Febrero",
+	    "Marzo",
+	    "Abril",
+	    "Mayo",
+	    "Junio",
+	    "Julio",
+	    "Agosto",
+	    "Septiembre",
+	    "Octubre",
+	    "Noviembre",
+	    "Diciembre"
+	};
+    List<SAG2.Models.Proyecto> Proyectos = new List<SAG2.Models.Proyecto>();
+    List<SAG2.Models.Cuenta> Cuentas = new List<SAG2.Models.Cuenta>();
+    List<SAG2.Models.CuentaCorriente> cta = new List<SAG2.Models.CuentaCorriente>();
+    List<SAG2.Models.Rol> Rol = new List<SAG2.Models.Rol>();
+    List<SAG2.Models.Persona> Per = new List<SAG2.Models.Persona>();
+    List<SAG2.Models.Saldo> Saldo = new List<SAG2.Models.Saldo>();
+    List<SAG2.Models.Movimiento> ingresos = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleEgreso> egresos = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Movimiento> reintegros = new List<SAG2.Models.Movimiento>();
+    List<SAG2.Models.DetalleReintegro> reintegrosGastos = new List<SAG2.Models.DetalleReintegro>();
+    List<SAG2.Models.Periodo> Provision = new List<SAG2.Models.Periodo>();
+    List<SAG2.Models.CInformeCierre> InformeCuenta = new List<SAG2.Models.CInformeCierre>();
+    List<SAG2.Models.DetalleEgreso> NoCobrados = new List<SAG2.Models.DetalleEgreso>();
+    List<SAG2.Models.Conciliacion> Conciliacion = new List<SAG2.Models.Conciliacion>();
+    List<SAG2.Models.GinformeCierre> nombreGrupo = new List<SAG2.Models.GinformeCierre>();
+    List<SAG2.Models.ParametroInforme> Parametro = new List<SAG2.Models.ParametroInforme>();
+    List<SAG2.Models.SaldosCorporativos> SaldosCorporativos = new List<SAG2.Models.SaldosCorporativos>();
+    List<SAG2.Models.chequesNo> NoCobrados2 = new List<SAG2.Models.chequesNo>();
+    List<SAG2.Models.DatoHallazgo> Datos = new List<SAG2.Models.DatoHallazgo>();
+    List<SAG2.Models.HallazgoCierre> Registros = new List<SAG2.Models.HallazgoCierre>();
+    
+    
+    
+    SAG2.Models.DatoHallazgo Valor_Dato = new SAG2.Models.DatoHallazgo();
+    // ViewBag.saldoViewBag.NombreGrupo
+
+    //   ViewBag.SaldosCorpo = db.SaldosCorporativos.ToList();
+
+    Rol = (List<SAG2.Models.Rol>)@ViewBag.Rol;
+    Proyectos = (List<SAG2.Models.Proyecto>)@ViewBag.Proyectos;
+    Cuentas = (List<SAG2.Models.Cuenta>)@ViewBag.cuentas;
+    cta = (List<SAG2.Models.CuentaCorriente>)@ViewBag.Cta;
+    Per = (List<SAG2.Models.Persona>)@ViewBag.per;
+    Saldo = (List<SAG2.Models.Saldo>)@ViewBag.saldo;
+    ingresos = (List<SAG2.Models.Movimiento>)@ViewBag.Ingresos;
+    egresos = (List<SAG2.Models.DetalleEgreso>)@ViewBag.egresos;
+    reintegros = (List<SAG2.Models.Movimiento>)@ViewBag.reintegros;
+    reintegrosGastos = (List<SAG2.Models.DetalleReintegro>)@ViewBag.reintegrosGastos;
+    Provision = (List<SAG2.Models.Periodo>)@ViewBag.provision;
+    InformeCuenta = (List<SAG2.Models.CInformeCierre>)@ViewBag.InformeCuenta;
+    NoCobrados = (List<SAG2.Models.DetalleEgreso>)@ViewBag.Nocobrados;
+    Conciliacion = (List<SAG2.Models.Conciliacion>)@ViewBag.Conciliacion;
+    nombreGrupo = (List<SAG2.Models.GinformeCierre>)@ViewBag.NombreGrupo;
+    Parametro = (List<SAG2.Models.ParametroInforme>)@ViewBag.Parametro;
+    SaldosCorporativos = (List<SAG2.Models.SaldosCorporativos>)@ViewBag.SaldosCorpo;
+    NoCobrados2 = (List<SAG2.Models.chequesNo>)@ViewBag.Nocobrados2;
+    Registros = (List<SAG2.Models.HallazgoCierre>)@ViewBag.HallazgoCierre;
+    
+
+    int xmes = ViewBag.DesdeMes;
+    int xPeriodo = ViewBag.DesdePeriodo;
+    int Prid = ViewBag.ProyectoID;
+   
+    //
+    var NomProyecto = Proyectos.Where(d => d.ID == Prid).FirstOrDefault().NombreLista;
+    var CodCodeni = Proyectos.Where(d => d.ID == Prid).FirstOrDefault().CodCodeni;
+    var CodigoSename = Proyectos.Where(d => d.ID == Prid).FirstOrDefault().CodSename;
+    var Numcuenta = cta.Where(c => c.ProyectoID == Prid).FirstOrDefault().NumeroLista.ToString();
+    var Region = Proyectos.Where(d => d.ID == Prid).FirstOrDefault().Direccion.Comuna.Region.Nombre.ToString();
+    var Ciudad = Proyectos.Where(d => d.ID == Prid).FirstOrDefault().Direccion.Comuna.Nombre.ToString();
+    int IdCuenta = cta.Where(c => c.ProyectoID == Prid).FirstOrDefault().ID;
+
+    double SaldoInicial = 0;
+    try
+    {
+        SaldoInicial = double.Parse(Saldo.Where(d => d.CuentaCorrienteID.Equals(IdCuenta)).FirstOrDefault().SaldoInicialCartola.ToString());
+    }
+    catch (Exception e)
+    {
+        SaldoInicial = 0;
+    }
+    
+    //
+
+    // Total Ingresos
+    double valorIngresos = double.Parse(ingresos.Where(m => (m.CuentaID == 20 || m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8 || m.CuentaID == 12 || m.CuentaID == 158) && m.Temporal == null && m.ProyectoID == Prid).Sum(m => m.Monto_Ingresos).ToString());
+
+    double valor_ReintegrosIngresos = double.Parse(reintegros.Where(e => (e.CuentaID == 20 || e.CuentaID == 3 || e.CuentaID == 4 || e.CuentaID == 5 || e.CuentaID == 8 || e.CuentaID == 12 || e.CuentaID == 158)).Where(d => d.ProyectoID == Prid).Sum(d => d.Monto_Ingresos).ToString());
+    valorIngresos = valorIngresos + valor_ReintegrosIngresos;
+
+    // Inversion
+    double valorInversion = 0;
+
+
+    valorInversion = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == Prid && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+    double valor_ReintegrosE = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Where(d => d.ProyectoID == Prid).Sum(d => d.Monto_Ingresos).ToString());
+    double valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 127 || e.CuentaIDD == 101 || e.CuentaIDD == 102 || e.CuentaIDD == 104 || e.CuentaIDD == 43)).Where(d => d.Reintegro.ProyectoID == Prid).Sum(d => d.Monto).ToString());
+
+    valorInversion = (valorInversion + valor_GastosReintegros) - valor_ReintegrosE;
+    double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == Prid && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79 || e.CuentaID == 155)).Sum(m => m.Monto).ToString());
+    double Saldocta = 0;
+    try
+    {
+        Saldocta = double.Parse(Saldo.Where(d => d.CuentaCorrienteID.Equals(IdCuenta)).FirstOrDefault().SaldoFinal.ToString());
+    }
+    catch (Exception e)
+    {
+        Saldocta = 0;
+    }
+    
+    int Provi = 0;
+    try
+    {
+        Provi = int.Parse(Provision.Where(p => p.ProyectoID == Prid).FirstOrDefault().Indemnizacion.ToString());
+    }
+    catch (Exception e)
+    {
+        Provi = 0;
+    }
+    double SaldoReal = double.Parse(Saldocta.ToString()) - Provi;
+
+    double ValorConciliacion = 0;
+    double DepositosNoconsignados = 0;
+    double GastoConciliacion = 0;
+    try
+    {
+        ValorConciliacion = Conciliacion.Where(d => d.ProyectoID == Prid).FirstOrDefault().SaldoCartola;
+        DepositosNoconsignados = Conciliacion.Where(d => d.ProyectoID == Prid).FirstOrDefault().Depositos;
+        GastoConciliacion = Conciliacion.Where(d => d.ProyectoID == Prid).FirstOrDefault().Gastos;
+        ValorConciliacion = Saldocta + DepositosNoconsignados + GastoConciliacion;
+    }
+    catch (Exception e)
+    {
+        ValorConciliacion = 0;
+        DepositosNoconsignados = 0;
+    }
+    double No1 = 0;
+    try
+    {
+        No1 = NoCobrados.Where(d => d.Egreso.ProyectoID == Prid && d.Egreso.Mes <= xmes).Sum(d => d.Monto);
+    }
+    catch (Exception e)
+    {
+        No1 = 0;
+    }
+
+    double No2 = 0;
+    try
+    {
+        No2 = NoCobrados2.Where(d => d.ProyectoID == Prid).Sum(d => d.Monto);
+    }
+    catch (Exception e)
+    {
+        No2 = 0;
+    }
+    No1 = No1 + No2;
+
+    double SaldoCuentaBanco = 0;
+    try
+    {
+        SaldoCuentaBanco = SaldosCorporativos.Where(d => d.Numerocuenta == Numcuenta).FirstOrDefault().Saldo_Disponible;
+
+    }
+    catch (Exception e)
+    {
+        SaldoCuentaBanco = 0;
+    }
+    double diferencia = ValorConciliacion - SaldoCuentaBanco;
+
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".js-autocomplete").select2();
+    });
+ </script>
+<div class="container-fluid">
+    <div class="row">
+          <div class="col-md-12">
+        <table>
+            <tr>
+                <td>Fundaci&oacute;n Ciudad del Ni&ntilde;o</td>
+            </tr>
+        </table>
+        <h2>Hallazgo de Cierre de Mes</h2>
+    @using (Html.BeginForm())
+   {
+        <table class="table-condensed table-bordered table-striped">
+    <tr>
+        <td>Mes</td>
+        <td>
+            <select name="MesCierre" id="MesCierre"  class="form-control">
+                @for (var imes = 0; imes < 12; imes++)
+                {
+                    <option value="@Html.Raw((@imes + 1).ToString())"@if (xmes == (imes + 1))
+                                                                  {@Html.Raw("selected=\"selected\"")}>@Html.Raw(@Meses[@imes])</option>
+                }
+                </select>
+        </td>
+        <td>Año</td>
+        <td>
+            <select name="PeriodoCierre" id="PeriodoCierre" class="form-control">
+                @for (int iPeriodo = DateTime.Now.Year - 3; iPeriodo < DateTime.Now.Year + 5; iPeriodo++)
+                {
+                    <option value="@Html.Raw((iPeriodo).ToString())"
+                            @{ if (iPeriodo == xPeriodo)
+                               { @Html.Raw(" selected=\"selected\"") ; } }>
+                        @Html.Raw((iPeriodo).ToString())
+                        </option>
+                    }
+            </select>
+        </td>
+        <td colspan="2">                    
+                     <input type="submit" id="Procesar" value="Procesar" class="btn btn-success " />
+        </td>
+    </tr>
+    <tr></tr>
+    <tr></tr>
+    <tr>
+        <td>Programa</td>
+        <td>
+
+            <select name="ProyectoCierreID" id="ProyectoCierreID" class="form-control js-autocomplete">
+                <option value="-1"> - Seleccione proyecto</option>
+                @foreach (SAG2.Models.Proyecto Proyectos2 in ViewBag.Proyectos)
+                {
+                    if (Proyectos2.ID == Prid)
+                    {
+                        <option selected="selected" value="@Proyectos2.ID">@Proyectos2.NombreEstado</option>
+                    }
+                    else
+                    {
+                        <option value="@Proyectos2.ID">@Proyectos2.NombreEstado</option>
+                    }
+                }
+        </td>
+        <td>Código SENAME</td>
+        <td>@CodigoSename</td>
+        <td>Cod. Inst.</td>
+        <td>@CodCodeni</td>
+    </tr>
+    <tr>
+        <td>Region</td>
+        <td>@Region</td>
+        <td>Ciudad</td>
+        <td colspan="3">@Ciudad</td>
+    </tr>
+    <tr>
+        <td>Auditor</td>
+        <td colspan="5">@ViewBag.Auditor</td>
+    </tr>
+           
+</table>
+      }
+<br /><br />
+
+    </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+        @using (Html.BeginForm("Ingreso", "HallazgoCierre", FormMethod.Post))
+        {
+               <input type="hidden" name="Periodo" id="Periodo" value="@xPeriodo" />
+               <input type="hidden" name="Mes" id="Mes" value="@xmes" />
+               <input type="hidden" name="ProyectoID" id="Mes" value="@Prid" />
+            <table class="table  table-bordered">
+                <tr class="success">
+                    <td style="width: 138px;">Clasificacion</td><td style="width: 90px;">Codigo</td> <td style="width: 200px;">Variable</td> <td style="width: 300px;"></td><td></td><td>Observacion</td><td></td>
+                </tr>
+                @foreach (var DatoX in ViewBag.ConceptosClasificacion)
+                {
+                    string valor = "";
+                    if (DatoX.Codigo == "1")
+                    {
+                        valor = NomProyecto;
+                    }
+                    if (DatoX.Codigo == "2")
+                    {
+                        valor = CodCodeni;
+                    }
+                    if (DatoX.Codigo == "3")
+                    {
+                        valor = Numcuenta;
+                    }
+                    if (DatoX.Codigo == "4")
+                    {
+                        valor = SaldoInicial.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "5")
+                    {
+                        valor = valorIngresos.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "6")
+                    {
+                        valor = valorInversion.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "7")
+                    {
+                        valor = valorEgresos.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "8")
+                    {
+                        valor = Saldocta.ToString("#,##0");
+                    }
+
+                    if (DatoX.Codigo == "9")
+                    {
+                        valor = Provi.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "10")
+                    {
+                        valor = SaldoReal.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "11")
+                    {
+                        valor = Saldocta.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "12")
+                    {
+                        valor = ValorConciliacion.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "13")
+                    {
+                        valor = No1.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "14")
+                    {
+                        valor = SaldoCuentaBanco.ToString("#,##0");
+                    }
+                    if (DatoX.Codigo == "15")
+                    {
+                        valor = diferencia.ToString("#,##0");
+                    }
+                    if (DatoX.TipoID != 1)
+                    {
+
+                        string CodigoCuenta = DatoX.Codigo;
+                        var CuentaCodigo = Cuentas.Where(d => d.Codigo.Contains(CodigoCuenta)).FirstOrDefault();
+                        var Nombrecuenta = InformeCuenta.Where(d => d.CuentaID == CuentaCodigo.ID).FirstOrDefault();
+                        string TipoCuenta = CuentaCodigo.Tipo;
+                        double Ingresos = double.Parse(ingresos.Where(m => (m.CuentaID == Nombrecuenta.CuentaID) && m.Temporal == null && m.ProyectoID == Prid).Sum(m => m.Monto_Ingresos).ToString());
+                        double VEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == Prid && (e.CuentaID == Nombrecuenta.CuentaID)).Sum(m => m.Monto).ToString());
+                        double vReintegrosE = double.Parse(reintegros.Where(e => (e.CuentaID == Nombrecuenta.CuentaID)).Where(d => d.ProyectoID == Prid).Sum(d => d.Monto_Ingresos).ToString());
+                        double vGastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == Nombrecuenta.CuentaID)).Where(d => d.Reintegro.ProyectoID == Prid).Sum(d => d.Monto).ToString());
+                        double valorCuenta = (VEgresos + vGastosReintegros) - (vReintegrosE + Ingresos);
+                        double valor_reintegrosgastos = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.Reintegro.ProyectoID == Prid).Sum(d => d.Monto).ToString());
+                        double valorCuenta2 = (VEgresos + vGastosReintegros) - (vReintegrosE + valor_reintegrosgastos);
+                        double vReintegrosE2 = vReintegrosE + valor_reintegrosgastos;
+                        double MostrarValor = 0;
+                        if (TipoCuenta.Trim() == "I")
+                        {
+                            MostrarValor = Ingresos;
+                        }
+                        else
+                        {
+                            MostrarValor = valorCuenta;
+                        }
+
+                        if (DatoX.TipoID == 3)
+                        {
+                            MostrarValor = (vReintegrosE * -1);
+                        }
+                        if (DatoX.TipoID == 4)
+                        {
+                            MostrarValor = VEgresos;
+                        }
+                        valor = MostrarValor.ToString("#,##0");
+
+                    }
+            
+                          <tr>
+                              <td>@DatoX.clasificacion.Nombre </td>
+                              <td>@DatoX.Codigo</td>
+                              <td>@DatoX.Descripcion</td>
+                              <td>@valor</td>
+                              <td></td>
+                              <td id="Celda-@DatoX.ID">
+                                       @{
+                                        var ObservacionCierre = Registros.Where(d => d.ConceptosClasificacionID == DatoX.ID).ToList();
+                                        int contador = 0;  
+                                        foreach(SAG2.Models.HallazgoCierre xRegistro in ObservacionCierre ) {
+                                            contador = xRegistro.Indice;
+                                            string xcodigo = "OBS" + xRegistro.Indice + "-" + xRegistro.ConceptosClasificacionID;
+                                            <input  id='@xcodigo' name='@xcodigo' class='form-control'   type='text' value='@xRegistro.Observaciones'> </input><br />
+                                        }                                  
+                                   }
+                                    @if(contador == 0)
+                                    {
+                                        contador = 1;
+                                        
+                                          <input  id='OBS1-@DatoX.ID' name='OBS1-@DatoX.ID' class='form-control'   type='text' value=''> </input>
+                                    }                      
+                              </td> 
+                              <td><button id="@DatoX.ID" Contador="@contador" class="Agregar btn btn-success">+</button></td>               
+                          </tr>
+
+                }
+            </table>
+            <div class="row">
+                
+                <div class="col-md-12" >
+                   
+                      <div class="col-md-8">   
+                           <div class="form-group">   
+                                <label class="control-label col-md-2">Comentarios</label>                                
+                                <div class="col-md-12">
+                                    <textarea class="form-control" name="HallazgoComentario" id="HallazgoComentario" rows="4">@ViewBag.ComentarioHallazgo</textarea>                
+                                </div>  
+                            </div>                    
+                        </div>
+                         <div class="col-md-4">
+                             <br /><br /><br /><br /><br />
+                                <input type="submit" id="Procesar" value="Grabar" class="btn btn-primary " />
+                            </div>
+                </div>
+            </div>
+
+                       
+                           
+        }
+           </div>
+
+    </div>
+ </div>
+
+  <script>
+      $(document).ready(function () {
+          $(".Agregar").click(function () {   
+              var x = this.id;
+              bloque = document.getElementById('Celda-' + x);
+              var incremento = parseInt($(this).attr("Contador")) + 1;
+              var br = document.createElement('br');
+              bloque.appendChild(br);
+              elemento = document.createElement('input');
+              elemento.setAttribute("class", "form-control");
+              elemento.id = 'OBS' + incremento + '-' + x;
+              elemento.name = 'OBS' + incremento + '-' + x;
+              bloque.appendChild(elemento);
+              $(this).attr("Contador", incremento);
+              return false;
+          });
+      });
+  </script>

@@ -199,8 +199,18 @@
         {
             xProyectoID = DatoProyecto.ID;
         }
-        var Numcuenta = cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().NumeroLista.ToString();
-        int IdCuenta = int.Parse(cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().ID.ToString());
+ 
+		       var Numcuenta = "";
+        int IdCuenta = 0;
+        try
+        {
+             Numcuenta = cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().NumeroLista.ToString();
+             IdCuenta = int.Parse(cta.Where(c => c.ProyectoID == xProyectoID).FirstOrDefault().ID.ToString());
+        }
+        catch {
+             Numcuenta = "";
+             IdCuenta = 0;
+        }
         // supervisor
         var nombre = "";
         try
@@ -296,7 +306,7 @@
 
         // Total egresos
 
-        double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == xProyectoID && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+        double valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.ProyectoID == xProyectoID && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79 || e.CuentaID == 155)).Sum(m => m.Monto).ToString());
         double valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 155 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.ProyectoID == xProyectoID).Sum(d => d.Monto_Ingresos).ToString());
         var DatosReintegros = reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43 || e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163 || e.CuentaID == 41 || e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 125 || e.CuentaID == 123 || e.CuentaID == 123 || e.CuentaID == 62 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60 || e.CuentaID == 61 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70 || e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 76 || e.CuentaID == 75 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.ProyectoID == xProyectoID).ToList();
 

@@ -147,7 +147,7 @@ catch (Exception ex)
         <td>Indicadores de Gestion A&ntilde;o</td>
         <td>
             <select name="periodoIndicador" id="periodoIndicador" class="añoPresupuesto">
-                @for (int i = DateTime.Now.Year - 3; i < DateTime.Now.Year + 5; i++)
+                @for (int i = DateTime.Now.Year - 4; i < DateTime.Now.Year + 2; i++)
                 {
                     <option value="@Html.Raw((i).ToString())"
                             @{ if (i == ViewBag.Periodo) { @Html.Raw(" selected=\"selected\"") ; } }>

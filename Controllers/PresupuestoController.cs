@@ -163,7 +163,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
        
@@ -315,7 +315,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -529,7 +529,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -703,7 +703,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -860,7 +860,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -1021,7 +1021,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") ).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -1137,7 +1137,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -1386,13 +1386,21 @@ namespace SAG2.Controllers
                 }
                 else {
                     mensajeCSV = "Previsualizar CSV";
+                    int PresupuestoID = 0;
+                    try
+                    {
+                        PresupuestoID = int.Parse(ViewBag.PresupuestoID);
+                    }
+                    catch (Exception) {
+                        PresupuestoID = 0;
+                    }
                     foreach (DetalleArch Data in lista) {
                         DetallePresupuesto Registro = new DetallePresupuesto();
                         Registro.CuentaID = Data.CuentaID;
                         Registro.Mes = Data.Mes;
                         Registro.Monto = Data.Monto;
                         Registro.Periodo = Data.Periodo;
-                        Registro.PresupuestoID = int.Parse(ViewBag.PresupuestoID);
+                        Registro.PresupuestoID = PresupuestoID;
                         dppTTO.Add(Registro);
                     
                     
@@ -1713,7 +1721,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -1745,8 +1753,131 @@ namespace SAG2.Controllers
            
            
             return View();
-        } 
-        
+        }
+
+        public ActionResult ExcelRealTodos(int Periodo = 0)
+        {
+            Usuario Usuario = (Usuario)Session["Usuario"];
+            int UsuarioID = Usuario.ID;
+            List<InformeCuenta> Registros = new List<InformeCuenta>();
+
+            db.Database.ExecuteSqlCommand("SP_InformeCuenta " + Periodo + ", " + Usuario.ID);
+            Registros = db.informeCuenta.Where(d => d.Periodo == Periodo && d.UsuarioID == UsuarioID).ToList();
+            return View(Registros);
+        }
+        public ActionResult ExcelRealTodosDetalle(int Periodo = 0)
+        {
+            Usuario Usuario = (Usuario)Session["Usuario"];
+            int UsuarioID = Usuario.ID;
+            List<InformeCuentaDetalle> Registros = new List<InformeCuentaDetalle>();
+
+            db.Database.ExecuteSqlCommand("SP_InformeCuentaDetalle " + Periodo + ", " + Usuario.ID);
+            Registros = db.InformeCuentaDetalle.Where(d => d.Periodo == Periodo && d.UsuarioID == UsuarioID).ToList();
+            return View(Registros);
+        }
+        public ActionResult RealTodosDetalle()
+        {
+            Usuario usuario = (Usuario)Session["Usuario"];
+            int mes = (int)Session["Mes"];
+            int año = (int)Session["Periodo"];
+            int numberOfDays = DateTime.DaysInMonth(año, mes);
+            DateTime Inicio = new DateTime(año, mes, 1);
+            DateTime Fin = new DateTime(año, mes, numberOfDays);
+            Proyecto Proyecto = (Proyecto)Session["Proyecto"];
+            int filtro = int.Parse(Session["Filtro"].ToString());
+
+            var pr_id = Proyecto.ID;
+            ViewBag.tpID = 0;
+            ViewBag.RegID = 0;
+            if (!usuario.esUsuario)
+            {
+                ViewBag.ProyectoID = utils.ProyectoFiltro(filtro, Proyecto.ID);
+            }
+            else
+            {
+                ViewBag.ProyectoID = new SelectList(db.Proyecto.Where(p => p.Eliminado == null && p.Cerrado == null && p.ID == Proyecto.ID), "ID", "NombreLista", Proyecto.ID);
+            }
+
+            ViewBag.TipoProgramaID = new SelectList(db.TipoProyecto.ToList(), "ID", "Sigla");
+            ViewBag.regionID = new SelectList(db.Region.ToList(), "ID", "Nombre");
+            ViewBag.PrID = Proyecto.ID.ToString();
+            ViewBag.Entrada = 0;
+            ViewBag.Desde = Inicio.ToShortDateString();
+            ViewBag.Hasta = Fin.ToShortDateString();
+            ViewBag.Arbol = utils.generarSelectHijos2(db.Cuenta.Find(ctes.raizCuentaIngresos));
+
+
+            return View();
+        }
+        public ActionResult RealTodosDetalleExcel(string Hasta, string Desde, int Cuenta, int ProyectoID, int tipoProyectoID, int RegionID)
+        {
+            Usuario Usuario = (Usuario)Session["Usuario"];
+            int UsuarioID = Usuario.ID;
+            List<InformeCuentaDetalle> Registros = new List<InformeCuentaDetalle>();
+            //string NombreRegion = "";
+            string Sigla = "";
+            string Region = "";
+            string[] xFecha1 = Hasta.Split('-');
+            string[] xFecha2 = Desde.Split('-');
+            Hasta = xFecha1[2] + "/" + xFecha1[1] + "/" + xFecha1[0];
+            Desde = xFecha2[2] + "/" + xFecha2[1] + "/" + xFecha2[0];
+            DateTime Hastax = DateTime.Parse(Hasta);
+            DateTime DesdeX = DateTime.Parse(Desde);
+            if (tipoProyectoID != 0)
+            {
+                Sigla = db.TipoProyecto.Find(tipoProyectoID).Sigla;
+            }
+            if (RegionID != 0)
+            {
+                Region = db.Region.Find(RegionID).Nombre;
+
+            }
+            int xPeriodo = 2024;
+
+
+            db.Database.ExecuteSqlCommand("SP_InformeCuentaDetalle " + xPeriodo + ", " + Usuario.ID);
+
+            Registros = db.InformeCuentaDetalle.Where(d => d.Periodo == xPeriodo && d.UsuarioID == UsuarioID).ToList();
+            Registros = Registros.Where(d => d.FechaDoc >= DesdeX).Where(d => d.FechaDoc <= Hastax).ToList();
+            // .Where(m => m.Fecha >= Inicio).Where(m => m.Fecha <= Fin)
+            if (ProyectoID != 1)
+            {
+                Registros = Registros.Where(d => d.ProgramaID == ProyectoID).ToList();
+            }
+            else
+            {
+                if (tipoProyectoID != 0)
+                {
+                    Registros = Registros.Where(d => d.TipoPrograma.Equals(Sigla)).ToList();
+                }
+
+            }
+            if (RegionID != 0)
+            {
+                Registros = Registros.Where(d => d.Region.Equals(Region)).ToList();
+            }
+            if (Cuenta != 0)
+            {
+                Registros = Registros.Where(d => d.CuentaID == Cuenta).ToList();
+            }
+
+            return View(Registros);
+
+        }
+        public ActionResult ExcelRealPptoTodos(int Periodo = 0)
+        {
+            Usuario Usuario = (Usuario)Session["Usuario"];
+            int UsuarioID = Usuario.ID;
+            List<InformeCuentaPto> Registros = new List<InformeCuentaPto>();
+
+
+            db.Database.ExecuteSqlCommand("SP_InformeCuentaPto " + Periodo + ", " + Usuario.ID);
+
+            Registros = db.informeCuentaPto.Where(d => d.Periodo == Periodo && d.UsuarioID == UsuarioID).ToList();
+            return View(Registros);
+
+
+        }
         
         public ActionResult ExcelPresupuesto(int Periodo = 0, int pr_id = 0)
         {
@@ -1827,7 +1958,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -1957,7 +2088,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -2120,7 +2251,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -2288,7 +2419,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -2454,7 +2585,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -2619,7 +2750,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -2782,7 +2913,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -2947,7 +3078,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -3112,7 +3243,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -3278,7 +3409,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
         public ActionResult ExcelLineaResumenInformeTrimestral(int Periodo = 0, int Linea = 0, int tri = 0)
@@ -3444,7 +3575,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") ).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0 ).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -3610,7 +3741,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
         public ActionResult ExcelLineaResumenInformeSinteSemestral(int Periodo = 0, int Linea = 0, int se = 0)
@@ -3774,7 +3905,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
         public ActionResult ExcelLineaResumenInformeSinteTrimestral(int Periodo = 0, int Linea = 0, int tri = 0)
@@ -3938,7 +4069,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4186,7 +4317,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4324,7 +4455,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4463,7 +4594,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4611,7 +4742,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4730,7 +4861,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4860,7 +4991,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -4993,7 +5124,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
             ViewBag.NProy = db.Proyecto.Where(p => p.ID == pr_id).Take(1).Single().Nombre;
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -5177,7 +5308,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado. " + ex.StackTrace);
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -5343,7 +5474,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).Where( c => c.Estado == 1).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).Where(c => c.Estado == 1 && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -5490,7 +5621,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.Estado == 1).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.Estado == 1 && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -5628,7 +5759,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -5768,7 +5899,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -5913,7 +6044,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -6209,7 +6340,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 
@@ -6343,7 +6474,7 @@ namespace SAG2.Controllers
                 ViewBag.NoHayPresupuesto = utils.mensajeError("Para poder ver el control debe existir un Presupuesto formulado.");
             }
 
-            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9")).OrderBy(c => c.Orden);
+            var cuenta = db.Cuenta.Where(c => !c.Codigo.Equals("0") && !c.Codigo.Equals("7.3.9") && c.CuentaIva == 0).OrderBy(c => c.Orden);
             return View(cuenta.ToList());
         }
 

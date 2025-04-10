@@ -25,7 +25,7 @@ input[type="text"], textarea
 
     </div>
     <div id="contenido" class="personal">
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Proyectos", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.Raw(@ViewBag.Mensaje)
     @Html.ValidationSummary(true)
@@ -48,11 +48,11 @@ input[type="text"], textarea
            <div class="form-group" style="margin-right: 20px;">
                 @if (Usuario.esAdministrador)
                 {
-                    @Html.TextBoxFor(model => model.Institucion, new { @class = "form-control", @style="width: 250px;" })
+                    @Html.TextBoxFor(model => model.Institucion, new { @class = "form-control", @style="width: 350px;" })
                 }
                 else
                 {
-                    @Html.TextBoxFor(model => model.Institucion, new { @class = "form-control", @readonly = "readonly", @style="width: 250px;" })
+                    @Html.TextBoxFor(model => model.Institucion, new { @class = "form-control", @readonly = "readonly", @style="width: 350px;" })
                 }
            </div>
           <div class="form-group" style="margin-right: 10px;">
@@ -79,7 +79,7 @@ input[type="text"], textarea
           </div>
       <div class="form-group form-inline">
           <div class="form-group" style="margin-right: 15px;">
-               @Html.LabelFor(model => model.CodCodeni, "Cód. CODENI")
+               @Html.LabelFor(model => model.CodCodeni, "Cód. Programa")
           </div>
           <div class="form-group" style="margin-right: 99px;">
               @if (Usuario.esAdministrador)
@@ -137,22 +137,25 @@ input[type="text"], textarea
           </div>
        </div>
     <h3><b>Antecedentes del Convenio</b></h3>
-    <div class="form-group form-inline">
-          <div class="form-group" style="margin-right: 10px;">
-             @Html.LabelFor(model => model.Convenio.ResEx, "Res. Ex.")
-              </div>
-        <div class="form-group">
-            @Html.TextBoxFor(model => model.Convenio.ResEx, new { @class = "form-control" })
+    <div class="row form-group form-inline">
+          <div class="form-group col-md-4" >             
+              <label class="control-label col-md-3" style="padding-left: 0px;top: 10px;">Res.Ex.</label>             
+                <div class="form-group col-md-9">
+                    @Html.TextBoxFor(model => model.Convenio.ResEx, new { @class = "form-control" })
+                </div>
+            </div>
+          <div class="form-group col-md-4">
+               <label class="control-label col-md-3" style="padding-left: 0px;top: 10px;">Nº Plazas</label>              
+            <div class="form-group col-md-9">
+                @Html.TextBoxFor(model => model.Convenio.NroPlazas, new { @class = "form-control" })
+            </div>
           </div>
-          <div class="form-group">@Html.LabelFor(model => model.Convenio.NroPlazas, "Nº Plazas")</div>
-            <div class="form-group">@Html.TextBoxFor(model => model.Convenio.NroPlazas, new { @class = "form-control" })</div>
     </div>
-    <div class="form-group form-inline">
-          <div class="form-group" style="margin-right: 10px;">
-              <label>Desde</label>
-          </div>
-         <div class="form-group" style="margin-right: 10px;">
-              @{
+    <div class="row form-group form-inline">
+          <div class="form-group col-md-4">
+              <label class="control-label col-md-3" style="padding-left: 0px;top: 10px;">Desde</label>          
+                <div class="form-group col-md-9">
+                @{
                 if (Model.Convenio.FechaInicio != null)
                 {
                         @Html.TextBox("FechaInicio", Model.Convenio.FechaInicio.Value.ToShortDateString(), new {  @class = "calendario form-control" })
@@ -163,63 +166,78 @@ input[type="text"], textarea
                 }
                     }
           </div>
-         <div class="form-group" style="margin-right: 10px;">
-              <label>Hasta</label>
-          </div>
-         <div class="form-group" style="margin-right: 10px;">
-            @{
-                if (Model.Convenio.FechaTermino != null)
-                {
-                   @Html.TextBox("FechaTermino", Model.Convenio.FechaTermino.Value.ToShortDateString(), new { @class = "calendario form-control" })
-                }
-                else
-                {
-                    @Html.TextBox("FechaTermino", string.Empty, new {  @class = "calendario form-control" })
-                }
-                    } 
-         </div>
+              </div>
+         <div class="form-group col-md-4">
+              <label class="control-label col-md-3" style="padding-left: 0px;top: 10px;">Hasta</label>         
+             <div class="form-group col-md-9">
+                @{
+                    if (Model.Convenio.FechaTermino != null)
+                    {
+                        @Html.TextBox("FechaTermino", Model.Convenio.FechaTermino.Value.ToShortDateString(), new { @class = "calendario form-control" })
+                    }
+                    else
+                    {
+                        @Html.TextBox("FechaTermino", string.Empty, new {  @class = "calendario form-control" })
+                    }
+                } 
+            </div>
+      </div>
     </div>
-     <div class="form-group form-inline">     
-         <div class="form-group" style="margin-right: 10px;">
-               @Html.LabelFor(model => model.EdadMinima, "Edad mínima")   
+      <label>Edades</label>
+     <div class="row form-group form-inline">     
+         <div class="form-group col-md-4">
+             <label class="control-label col-md-3" style="padding-left: 0px;top: 10px;">Mínima</label>                     
+            <div class="form-group col-md-9">
+                 @Html.TextBoxFor(model => model.EdadMinima, new { @class = "form-control" })   
+             </div>
+         </div>
+          <div class="form-group col-md-4">
+              <label class="control-label col-md-3" style="padding-left: 0px;top: 10px;">Máxima</label>              
+                <div class="form-group col-md-9">
+                    @Html.TextBoxFor(model => model.EdadMaxima, new { @class = "form-control" })  
+                </div>
           </div>
-         <div class="form-group" style="margin-right: 10px;">
-             @Html.TextBoxFor(model => model.EdadMinima, new { @class = "form-control" })   
-          </div>
-          <div class="form-group" style="margin-right: 10px;">
-             @Html.LabelFor(model => model.EdadMaxima, "Edad máxima")  
-          </div>
-         <div class="form-group" style="margin-right: 10px;">
-              @Html.TextBoxFor(model => model.EdadMaxima, new { @class = "form-control" })  
-          </div>
-          <div class="form-group" style="margin-right: 10px;">
-             @Html.LabelFor(model => model.Sexo)
-          </div>
-          <div class="form-group" style="margin-right: 10px;">
+          <div class="form-group col-md-4">
+            <label class="control-label col-md-3" style="padding-left: 0px;top: 10px;">Sexo</label>               
+            <div class="form-group col-md-9">
                  <select id="Sexo" name="Sexo" class="form-control">
-                    <option value="F"@if (Model.Sexo == "F") {@Html.Raw(" selected=\"selected\"")}>Femenino</option>
-                    <option value="M"@if (Model.Sexo == "M") {@Html.Raw(" selected=\"selected\"")}>Masculino</option>
-                    <option value="A"@if (Model.Sexo == "A") {@Html.Raw(" selected=\"selected\"")}>Mixto</option>
+                    <option value="F"@if (Model.Sexo == "F")
+                                     {@Html.Raw(" selected=\"selected\"")}>Femenino</option>
+                    <option value="M"@if (Model.Sexo == "M")
+                                     {@Html.Raw(" selected=\"selected\"")}>Masculino</option>
+                    <option value="A"@if (Model.Sexo == "A")
+                                     {@Html.Raw(" selected=\"selected\"")}>Mixto</option>
                 </select>
           </div>
+          </div>
      </div>
-       <div class="form-group"><lable>Comentarios</lable></div>
-            <div class="form-group">@Html.TextAreaFor(model => model.Convenio.Comentarios, new { @class="form-control" })</div>
+
+       <div class="form-group">
+           <label>Comentarios</label>
+
+            <div class="form-group">@Html.TextAreaFor(model => model.Convenio.Comentarios, new { @class = "form-control", @rows = 4 })
+
+
+            </div>
+
+       </div>
       <div class="form-group form-inline">
           	<div class="form-group" style="margin-right: 10px;">
              <label>Tipo Pago Intervención</label> 
           </div>
 			<div class="form-group" style="margin-right: 10px;">
                  <select id="Convenio.Tintervencion" name="Convenio.Tintervencion" class="form-control">
-                    <option value="1"@if (Model.Convenio.Tintervencion == 1) {@Html.Raw(" selected=\"selected\"")}>Valor USS</option>
-                    <option value="2"@if (Model.Convenio.Tintervencion == 2) {@Html.Raw(" selected=\"selected\"")}>Valor UF</option>
+                    <option value="1"@if (Model.Convenio.Tintervencion == 1)
+                                     {@Html.Raw(" selected=\"selected\"")}>Valor USS</option>
+                    <option value="2"@if (Model.Convenio.Tintervencion == 2)
+                                     {@Html.Raw(" selected=\"selected\"")}>Valor UF</option>
                 </select>
 			</div>
             <div  class="form-group">@Html.LabelFor(model => model.ValorSubvencion, "Subvención diaria")</div>
-            <div  class="form-group">@Html.TextBoxFor(model => model.ValorSubvencion, new {  @class="form-control" })</div>
+            <div  class="form-group">@Html.TextBoxFor(model => model.ValorSubvencion, new { @class = "form-control" })</div>
          
             <div  class="form-group">@Html.LabelFor(model => model.DiasAtencion, "Dias atención")</div>
-            <div  class="form-group">@Html.TextBoxFor(model => model.DiasAtencion, new {  @class="form-control" })</div>
+            <div  class="form-group">@Html.TextBoxFor(model => model.DiasAtencion, new { @class = "form-control" })</div>
             
      
 
@@ -235,6 +253,18 @@ input[type="text"], textarea
                 { 
                 <input class="form-control" type="checkbox" name="Flexibilizacion" value="S" tabindex="21" />
                 }
+
+            </div>
+              <div class="form-group"><label>Gestion IVA</label> </div>
+             <div class="form-group">
+                 <select id="MI" name="MI" class="form-control">
+                    <option value="1"@if (Model.MI == 1)
+                                     {@Html.Raw(" selected=\"selected\"")}>SI</option>
+                    <option value="0"@if (Model.MI == 0)
+                                     {@Html.Raw(" selected=\"selected\"")}>NO</option>
+                </select>
+
+ 
 
             </div>
           </div>

@@ -11,7 +11,28 @@
     Response.AddHeader("Content-Disposition", "attachment;filename=Cuentas-" + DateTime.Now.ToShortDateString() + ".xls");
     string FechaSis = DateTime.Now.ToShortDateString();
 }
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
 
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+
+        }
+    </style>
 <div id="SAGBox">
     <h2>Informe de Cuenta: @Model.Select(x => x.NombreCuenta).First()</h2>
     <p>@ViewBag.Proyectonombre </p>
@@ -33,8 +54,9 @@
          <th>Tipo</th>
          <th>Region</th>
          <th>CC</th>
+         <th>Programa</th>
         <th>Tipo Movimiento</th>
-        <th>N&#176; Comprobante</th>
+        <th>N&#176;</th>
         <th>Fecha</th>
        <th>Cuenta </th>
         <th>N&#176; Cheque</th>
@@ -45,11 +67,27 @@
         </tr>
     @foreach (var item in Model)
     {
-
+       int Monto = 0;
+        try
+        {
+            if (item.TipoComprobanteID == 3)
+            {
+                Monto = item.Monto * -1;
+            }
+            else
+            {
+                Monto = item.Monto;
+            }
+        }
+        catch (Exception)
+        {
+            Monto = item.Monto;
+        }
         <tr>
             <td>@item.Tipo  </td>
             <td>@item.Region   </td>
             <td>@item.codCodeni </td>
+            <td>@item.ProyectoNombre </td>
             <td align="center">
                 @{
                     if (item.TipoComprobanteID == 1)
@@ -79,11 +117,11 @@
                 </td>
                 <td>@item.NombreCuenta</td>
                 <td>@item.Cheque</td>
-                <td align="right">
+                <td class="num">
                     @if (item.Estado == 0) {
                         @Html.Raw("0").ToString();
                     }else{
-                        @item.Monto.ToString("###,##")
+                        @Monto.ToString("###,##")
                     }
                 </td>
                 <td>@item.CtaCte</td>

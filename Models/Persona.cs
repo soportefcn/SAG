@@ -91,4 +91,39 @@ namespace SAG2.Models
             get { return RutDV + " " + NombreCompleto; }
         }
     }
+
+    public class DataPersonaform {
+        public int ID { get; set; }
+        public int DireccionID { get; set; }
+        public string Rut { get; set; }
+        public string DV { get; set; }
+        public string Nombres { get; set; }
+        public string ApellidoParterno { get; set; }
+        public string ApellidoMaterno { get; set; }
+        public string FechaIngreso { get; set; }
+        public string FechaNacimiento { get; set; }
+        public string FechaIngresoSistema { get; set; }
+        public string Sexo { get; set; }
+        public string EstadoCivil { get; set; }
+        public int? Mostrar { get; set; }
+        public int? Celular { get; set; }
+        public int? Fijo { get; set; }
+        public string CorreoElectronico { get; set; }
+        public int? TipoPersonalID { get; set; }
+        public int? ProfesionID { get; set; }
+        public int? EspecializacionID { get; set; }
+        public int? CargoID { get; set; }
+        public int? SueldoBase { get; set; }
+        public int? BonoLocomocion { get; set; }
+        public int? BonoColacion { get; set; }
+        public int? BonoAsignacion { get; set; }
+        public int? BonoReemplazo { get; set; }
+        public int? Otros { get; set; }
+        public string Calle { get; set; }
+        public string Numero { get; set; }
+        public string Depto { get; set; }
+        public int ComunaID { get; set; }
+    
+    }
+    
 }

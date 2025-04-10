@@ -1,7 +1,6 @@
 ﻿/// <reference path="funciones.js" />
 $(document).ready(function () {
- 
-        $("#Info").click(function () {
+	   $("#Info").click(function () {
             Swal.fire({
                 title: '<strong>Palabras Reservadas </strong>',
                 icon: 'info',
@@ -18,8 +17,7 @@ $(document).ready(function () {
 
             })
         });
-   
-
+   								  
     if ($("#BorrarLinea").val() != undefined) {
         $("#BorrarLinea").hide();
     }
@@ -250,6 +248,26 @@ $(document).ready(function () {
     });
     
 
+    /*
+    $("#Bruto").change(function () {
+        if ($('#Bruto').val() != "") {
+            var bruto = new Number($('#Bruto').val());
+           
+            var porce=10.75;
+            var retencion = bruto * porce / 100;
+       
+            
+         
+            var checkText = $("#Porcentaje").val();;
+            alert('jquery catch select text' + checkText);
+            alert($(".Porcentaje").find("option:selected").text() + ' clicked!');
+            var neto = bruto - retencion;
+            $('#Retencion').val(Math.round(retencion));
+            $('#Neto').val(Math.round(neto));
+        }
+    });
+                */
+
 
     $("#Bruto").change(function () {
         if ($('#Bruto').val() != "") {
@@ -260,7 +278,7 @@ $(document).ready(function () {
             
             var retencion = bruto * porce / 100;
 
-            var neto = bruto - retencion;
+            var neto = bruto - Math.round(retencion);
             $('#Retencion').val(Math.round(retencion));
             $('#Neto').val(Math.round(neto));
         }
@@ -350,7 +368,7 @@ $(document).ready(function () {
     });
 
     $(".egreso #detalle").hide();
-
+ 
 
     /*
     $(".egreso #FondoFijoGrupoID").change(function(){
@@ -358,62 +376,7 @@ $(document).ready(function () {
     });
     */
 
-   
-
-    //$(".egreso #BorrarLinea").click(function () {
-    //    var monto = new Number($("#Monto").val());
-    //    var montoEgreso = new Number($("#Monto_Egresos").val());
-    //     Guardamos linea del formulario si opcion es otro
-    //    if ($(".egreso #Origen").val() == "oo" || $(".egreso #Origen").val() == "dp" || $(".egreso #Origen").val() == "hs") {
-    //        $.post("/SAG_5/Egresos/BorrarLinea", $("#detalle form").serialize(),
-    //        function (data) {
-    //            if (data == "OK") {
-    //                $.get('/SAG_5/Data/SumaDetalleEgreso', function(data) {
-    //                    $('#Monto_Egresos').val(data);
-    //                    $('body').css('opacity','0.25');
-    //                    alert("Detalle borrada con exito!");
-    //                    $('body').css('opacity','1');
-    //                });
-    //            } else {
-    //                $('body').css('opacity','0.25');
-    //                alert("Ocurrió un error al borrar el detalle.");
-    //                $('body').css('opacity','1');
-    //                return false;
-    //            }
-    //        })
-    //        .success(function () { })
-    //        .error(function () { })
-    //        .complete(function () { });
-    //    } else if ($(".egreso #Origen").val() == "ff") {
-           
-    //    }
-
-    //    if ($(".egreso #DetalleEgresoID") != undefined && $(".egreso #DetalleEgresoID").val() != "" && $(".egreso #DetalleEgresoID") != null && $(".egreso #DetalleEgresoID").val() != "0") {
-    //        $(".egreso #DetalleEgresoID").val("");
-    //    } else {
-    //        $(".egreso #DetalleEgresoIndex").val("");
-    //    }
-
-    //    var currSrc = $("#iframeDetalle").attr("src");
-    //    $("#iframeDetalle").attr("src", "");
-    //    $("#iframeDetalle").attr("src", currSrc);
-    //    $("#iframeDetalle").show();
-
-    //    $("#iframeDetalle").attr("src", "");
-    //    $("#iframeDetalle").attr("src", currSrc);
-    //    $("#iframeDetalle").show();
-
-    //    $(".egreso #NComprobanteDP").val("");
-    //    $(".egreso #DocumentoID").val("");
-    //    $(".egreso #NDocumento").val("");
-    //    $(".egreso #Monto").val("");
-    //    $(".egreso #CuentaID").val("");
-    //    $(".egreso #Glosa").val("");
-    //    $(".egreso #Origen").val("");
-    //    $(".egreso #DeudaPendienteID").val("");
-    //    $(".egreso #BoletaHonorarioID").val("");
-    //});
-
+  
 
     /**************  Salida ****/
    
@@ -639,7 +602,7 @@ $(document).ready(function () {
         window.parent.document.getElementById("Origen").value = "";
         window.parent.document.getElementById("DeudaPendienteID").value = "";
         window.parent.document.getElementById("BoletaHonorarioID").value = "";
-       
+
         if ($(this).attr("DetalleEgresoID") != undefined && $(this).attr("DetalleEgresoID") != "" && $(this).attr("DetalleEgresoID") != null && $(this).attr("DetalleEgresoID") != "0") {
             window.parent.document.getElementById("DetalleEgresoID").value = "";
             window.parent.document.getElementById("DetalleEgresoID").value = $(this).attr("DetalleEgresoID");
@@ -995,7 +958,20 @@ $(document).ready(function () {
         window.location = '/SAG_5/Presupuesto/LineaResponsabilidad?Periodo=' + periodo + '&Linea=' + linea;
         return false;
     }); 
-    
+        $("#exportarPreExcel").change(function () {
+        var value = $(this).val();
+        var periodo = $("#periodoControlPresupuesto").val();
+        var pr_id = $("#Proyectos2").val();
+        if (value != "") {
+            if (value == "Pro") {
+                window.open('/SAG_5/Presupuesto/ExcelPresupuesto?Periodo=' + periodo + '&pr_id=' + pr_id, '', '');
+            }
+            if (value == "Todos") {
+                window.open('/SAG_5/Presupuesto/ExcelPresTodos?Periodo=' + periodo + ' ');
+            }
+
+        }
+    });
 
     $("#exportarPresupuestoExcel").change(function () {
         var value = $(this).val();
@@ -1010,6 +986,9 @@ $(document).ready(function () {
                 }
                 if (td == "r") {               
                     window.open('/SAG_5/Presupuesto/ExcelResumenProyecto?Periodo=' + periodo + '&pr_id=' + pr_id, '', '');
+                }
+                if (td == "rp") {
+                    window.open('/SAG_5/Presupuesto/ExcelRealPptoTodos?Periodo=' + periodo + ' ');
                 }
 
             } else if (value == "1S") {
@@ -1269,6 +1248,11 @@ $(document).ready(function () {
                 window.open('/SAG_5/Presupuesto/Excel', '', '');
             } else if (value == "4T") {
                 window.open('/SAG_5/Presupuesto/Excel', '', '');
+            } else if (value == "TodosReal") {
+                window.open('/SAG_5/Presupuesto/ExcelRealTodos?Periodo=' + periodo + ' ');
+            }
+            else if (value == "TodosRealDetalle") {
+                window.open('/SAG_5/Presupuesto/ExcelRealTodosDetalle?Periodo=' + periodo + ' ');
             }
         }
 
@@ -1454,8 +1438,17 @@ $(document).ready(function () {
         }
     });
 
-    // Replicar primer valor
+    /* Replicar primer valor
+    $(".ReplicarValor").click(function () {
+        var cuentaID = $(this).attr("cuenta");
+        var valor = $("#Presupuesto_1_" + cuentaID).val();
 
+        if (valor != "") {
+            for (var i = 2; i < 13; i++) {
+                $("#Presupuesto_" + i + "_" + cuentaID).val(valor).change();
+            }
+        }
+    });*/
 
     $("#TipoCuenta").change(function () {
         $(".cuenta_I").hide();
@@ -1600,18 +1593,8 @@ $(document).ready(function () {
             $('body').css('opacity','1');
         }
 
-        if ($("#Cheque").val() != undefined) {
-            var Valor = $("#Cheque").val();
-            var Rev1 = $.isNumeric(Valor);
-            if (!Rev1) {
-                alert("El cheque debe ser numerico");
-                return false;
-            }
-            if (Valor.length > 9) {
-                alert("El numero del Cheque no debe ser superior a 9 digitos");
-                return false;
-            }
-        }
+
+        
         return true;
     });
 
@@ -1723,7 +1706,6 @@ $(document).ready(function () {
         }
         return false;
     });
-
     $(".tipobeneficiario #DVBuscar").focusout(function(){
         $("#PersonaID").val("0");
         $("#ProveedorID").val("0");

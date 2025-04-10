@@ -68,6 +68,7 @@ input[type="text"], textarea
     @Html.HiddenFor(model => model.TipoComprobanteID)
     @Html.HiddenFor(model => model.FechaCreacion)
     @Html.Hidden("MontoOriginal", "0")
+    <input type="hidden" name="GestionIva" id="GestionIva" value="@ViewBag.GestionIva" />
      <input type="hidden" name="ActualizarGrilla" id="ActualizarGrilla" value="no" />
     <input type="hidden" name="FondoFijoGrupoID" id="FondoFijoGrupoID" value="@ViewBag.FondoFijoGrupoID" />
     <input type="hidden" name="NDocumento" id="NDocumento" value="1" />
@@ -278,7 +279,25 @@ input[type="text"], textarea
         }
         </div>
             </div>
-    
+         <div id="formularioGestionIva" style="display: none;">
+           <div class ="form-group form-inline">
+                <div class="form-group">
+                   <label> Valor Neto</label> 
+                    <br />     
+                    <input class="form-control"  id="ValorNeto" name="ValorNeto" type="text" value="@ViewBag.ValorNeto">
+                 </div>
+                 <div class="form-group">
+                    <label>% Iva</label>  
+                    <br />     
+                    <input class="form-control"  id="Iva" name="Iva" type="text" value="@ViewBag.Iva">
+                 </div>
+                  <div class="form-group">
+                    <label> Valor Iva </label>
+                    <br />     
+                    <input class="form-control"  id="ValorIva" name="ValorIva" type="text" value="@ViewBag.ValorIva">
+                 </div>
+          </div>     
+        </div>
        <div class="form-group form-inline">
         <div class="form-group" style="margin-right: 15px;">
             @Html.Label("Nº Documento")
@@ -323,12 +342,19 @@ input[type="text"], textarea
       </div>
           if (Model.Nulo == null || Model.Nulo.Equals("N"))
          {
-             <div class="btn-group">
-                <input class="btn btn-primary" type="button" value="Guardar línea" id="GuardarLinea" class="boton" />
-                <input class="btn btn-danger" type="button" value="Borrar línea" id="BorrarLinea" class="boton" />
+            <div class="row">
+                <div class="col-xs-12 col-md-8">
+                    <input type="button" value="Calcular Iva" id="LineaIva" class="btn btn-warning" style="display: none;">
+                </div>
+                <div class="col-xs-6 col-md-4 form-inline" style="text-align: right;">
+                    <div class="form-group-inline">
+                       <input type="button" value="Eliminar Linea" id="BorrarLinea" class="btn btn-danger" />
+                       <input type="button" value="Guardar Linea" id="GuardarLinea" class="btn btn-primary" />          
+                    </div>
+                </div>
             </div>
-          }
-        
+         }
+         <p>&nbsp;</p>
         <p>&nbsp;</p>
        
     
@@ -341,7 +367,7 @@ input[type="text"], textarea
     <div id="DetalleData"></div>
   
     
-    }
+}
         </fieldset>
     </div>
     </div> 
@@ -398,6 +424,7 @@ input[type="text"], textarea
                     html = html + "<td>" + Detalle[i].FechaVencimiento + "</td>";
                     html = html + "<td>" + Detalle[i].NombreCuenta + "</td>";
                     html = html + "<td>" + Detalle[i].Glosa + "</td>";
+                    html = html + "<td>" + Detalle[i].Iva + "</td>";
                     html = html + "</tr>";
                     ValorEgresos += Detalle[i].Monto;
 
@@ -418,6 +445,17 @@ input[type="text"], textarea
                         window.parent.document.getElementById("Origen").value = "dp";                       
                         $('#Origen').prop('disabled', true);
                     }
+                    if (Detalle[i].Iva == 0) {
+                        $(".egreso #DocumentoIDD").val("");
+                        $(".egreso #NDocumentoD").val("");
+                        $("#LineaIva").hide();
+                    }
+                    if (Detalle[i].Iva == 1) {
+                        $("#LineaIva").show();
+                    }
+                    if (Detalle[i].Iva == 2) {
+                        $("#LineaIva").hide();
+                    }
 
                 }
                 html = html + "</table>";
@@ -428,9 +466,38 @@ input[type="text"], textarea
             xpress.innerHTML = html;
 
         });
+      
     };
 
+    $("#LineaIva").click(function () {
+        var GestionIva = $("#GestionIva").val();
+        var DocumentoID = $("#DocumentoIDD option:selected").attr('value');
+        if (DocumentoID == 1 && GestionIva == 1) {
+            $.post("/SAG_5/Egresos/LineaIVA", $("#detalle form").serialize(),
+            function (data) {
+                if (data == "OK") {
+                    $.get('/SAG_5/Data/SumaDetalleEgreso', function (data) {
+                        $('#Monto_Egresos').val(data);
+                      
+                        CargaGrilla();
+                       
+                        alert("Calculo de IVA con exito!");
+                       
+                    });
+                } else {
+                 
+                    alert("Ocurrió un error al borrar el detalle.");
 
+                    return false;
+                }
+            })
+            .success(function () { })
+            .error(function () { })
+            .complete(function () { });
+        }
+
+
+    });
     $("#BorrarLinea").click(function () {
         var monto = new Number($("#Monto").val());
         var montoEgreso = new Number($("#Monto_Egresos").val());
@@ -470,8 +537,7 @@ input[type="text"], textarea
 
 
         window.parent.document.getElementById("NComprobanteDP").value = "";
-        window.parent.document.getElementById("DocumentoIDD").value = "";
-        window.parent.document.getElementById("NDocumentoD").value = "";
+
         window.parent.document.getElementById("Monto").value = "";
         window.parent.document.getElementById("CuentaID").value = "";
         window.parent.document.getElementById("Glosa").value = "";
@@ -484,7 +550,35 @@ input[type="text"], textarea
         $("#texto").val("");
     });
 
+    $("#LineaIva").click(function () {
+        var GestionIva = $("#GestionIva").val();
+        var DocumentoID = $("#DocumentoIDD option:selected").attr('value');
+        if (DocumentoID == 1 && GestionIva == 1) {
+            $.post("/SAG_5/Egresos/LineaIVA", $("#detalle form").serialize(),
+            function (data) {
+                if (data == "OK") {
+                    $.get('/SAG_5/Data/SumaDetalleEgreso', function (data) {
+                        $('#Monto_Egresos').val(data);
+                     
+                        CargaGrilla();
+    
+                        alert("Calculo de IVA con exito!");
+                        $('body').css('opacity', '1');
+                    });
+                } else {
+                 
+                    alert("Ocurrió un error al borrar el detalle.");
+                    $('body').css('opacity', '1');
+                    return false;
+                }
+            })
+            .success(function () { })
+            .error(function () { })
+            .complete(function () { });
+        }
 
+
+    });
     $(".egreso #GuardarLinea").click(function () {
         if ($("#CuentaID").val() == "" && $(".egreso #Origen").val() != "ff") {
             $('body').css('opacity', '0.25');
@@ -506,8 +600,7 @@ input[type="text"], textarea
                     // Si el monto fue guardado leemos utilidad para sumar detalles del egreso
                     $("#Monto_Egresos").val(montoTotal);
                     $(".egreso #NComprobanteDP").val("");
-                    $(".egreso #DocumentoIDD").val("");
-                    $(".egreso #NDocumentoD").val("");
+
                     $(".egreso #Monto").val("");
                     $(".egreso #CuentaID").val("");
                     $(".egreso #Glosa").val("");
@@ -817,18 +910,50 @@ input[type="text"], textarea
                         var XFecha1 = Get_Fecha(value);
                         var XFecha2 = Get_Fecha(value2);
 
-                        $('#DetalleEgresoID').val(dato);
-                        $('#Monto').val(Datos.Monto);
-                        $('#NDocumentoD').val(Datos.NDocumento);
-                        $('#DocumentoIDD').val(Datos.DocumentoID);
-                        $('#Glosa').val(Datos.Glosa);
-                        $('#CuentaID').val(Datos.CuentaID);
-                        $('#FechaEmision').val(XFecha1);
-                        $('#FechaVencimiento').val(XFecha2);
-                        $("#CuentaID").change();
-                        window.parent.document.getElementById("Origen").value = "oo";
-                        window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
-                        window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                        if (Datos.Iva == 0) {
+                            $('#DetalleEgresoID').val(dato);
+                            $('#Monto').val(Datos.Monto);
+                            $('#NDocumentoD').val(Datos.NDocumento);
+                            $('#DocumentoIDD').val(Datos.DocumentoID);
+                            $('#Glosa').val(Datos.Glosa);
+                            $('#CuentaID').val(Datos.CuentaID);
+                            $('#FechaEmision').val(XFecha1);
+                            $('#FechaVencimiento').val(XFecha2);
+                            $("#CuentaID").change();
+                            window.parent.document.getElementById("Origen").value = "oo";
+                            window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
+
+                            window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                        }
+                        if (Datos.Iva == 1) {
+                           
+                             $('#Origen').prop('disabled', true);
+                           
+                         
+                            $('#DetalleEgresoID').val(dato);
+       
+                            $('#Monto').val(Datos.Monto);
+                            $('#NDocumentoD').val(Datos.NDocumento);
+                            $('#DocumentoIDD').val(Datos.DocumentoID);
+                            $('#Glosa').val(Datos.Glosa);
+                            $('#CuentaID').val(Datos.CuentaID);
+                            $('#FechaEmision').val(XFecha1);
+                            $('#FechaVencimiento').val(XFecha2);
+                            $("#CuentaID").change();
+                            window.parent.document.getElementById("Origen").value = "oo";
+                            window.parent.document.getElementById("MontoOriginal").value = Datos.Monto;
+                            $("#GuardarLinea").show();
+                            window.parent.document.getElementById("GuardarLinea").style.display = 'block-inline';
+                            window.parent.document.getElementById("BorrarLinea").style.display = 'block-inline';
+                          
+                            
+                        }
+                        if (Datos.Iva == 2) {
+                            alert("Debe Seleccionar el otro concepto")
+                            $("#Linea_" + dato).css('background-color', 'white');
+                            $("#BorrarLinea").hide();
+                            $("#GuardarLinea").hide();
+                        }
                     }
     
                     if (Datos.DeudaPendienteID != null) {

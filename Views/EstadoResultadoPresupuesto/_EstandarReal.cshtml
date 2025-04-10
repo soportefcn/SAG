@@ -1,0 +1,1702 @@
+﻿@if (ViewBag.entrada == 2)
+{
+    int mesSeleccion = ViewBag.Mes;
+    var Meses = ViewBag.GrupoMeses;
+    var NombreMeses = new string[12]
+                 {
+                    "Ene.",
+                    "Feb.",
+                    "Mar.",
+                    "Abr.",
+                    "May.",
+                    "Jun.",
+                    "Jul.",
+                    "Ago.",
+                    "Sep.",
+                    "Oct.",
+                    "Nov.",
+                    "Dic."
+                };
+    var CalMeses = new int[12] {
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12 };
+
+    try
+    {
+
+
+
+        int id = ViewBag.ID;
+        int periodo = ViewBag.Periodo;
+
+        List<SAG2.Models.Movimiento> ingresos = ViewBag.ingresos;
+        List<SAG2.Models.DetalleEgreso> egresos = ViewBag.egresos;
+        List<SAG2.Models.Movimiento> reintegros = ViewBag.reintegros;
+        List<SAG2.Models.DetalleReintegro> reintegrosGastos = ViewBag.reintegrosGastos;
+        List<SAG2.Models.DetalleIngresoIva> ingresoIVA = ViewBag.IngresosIva;
+        List<SAG2.Models.DetallePresupuesto> DetallePresupuesto = ViewBag.DetallePresupuesto;
+        
+        // Real 
+   
+        var saldoInicial = new double[14];
+        var Subvencion = new double[13];
+		var Sobreatencion = new double[13];
+		var BonoAguilnado = new double[13];
+		var Remuneracion = new double[13];
+		var ProvisionIndemnizacion = new double[13];
+		var Funcionamiento = new double[13];
+		var ApTecnico = new double[13];
+		var APBeneficiario =  new double[13];
+		var Inversion = new double[13];
+		var FinanciamientoIngreso = new double[13];
+		var FinanciamientoEgreso = new double[13];
+		var IngresosPrestamo = new double[13];
+		var EgresosPrestamo = new double[13];
+  		var DAP = new double[13];
+		var InteresesDAP = new double[13];
+		var RescateDAP = new double[13];
+        var IvaIngreso = new double[13];
+        var IvaEgreso = new double[13];
+        
+        // Presupuesto
+        var saldoInicialPre = new double[14];
+        var SubvencionPre = new double[13];
+        var SobreatencionPre = new double[13];
+        var BonoAguilnadoPre = new double[13];
+        var RemuneracionPre = new double[13];
+        var ProvisionIndemnizacionPre = new double[13];
+        var FuncionamientoPre = new double[13];
+        var ApTecnicoPre = new double[13];
+        var APBeneficiarioPre = new double[13];
+        var InversionPre = new double[13];
+        var FinanciamientoIngresoPre = new double[13];
+        var FinanciamientoEgresoPre = new double[13];
+        var IngresosPrestamoPre = new double[13];
+        var EgresosPrestamoPre = new double[13];
+        var DAPPre = new double[13];
+        var InteresesDAPPre = new double[13];
+        var RescateDAPPre = new double[13];
+        
+
+        double xTotSename = 0;
+		var xSSaldo = ViewBag.SaldoInicial;
+        double SSaldo = xSSaldo;
+		saldoInicial[1] = SSaldo;
+        saldoInicialPre[1] = SSaldo;
+        
+        foreach (var mes in CalMeses)
+        {
+			// Ingresos
+		
+            double valorIngresos = ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4 || m.CuentaID == 5 || m.CuentaID == 8) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            xTotSename += valorIngresos;			
+			// Ingresos
+            // Real
+			double valorSubencion = ingresos.Where(m => (m.CuentaID == 3 || m.CuentaID == 4) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            double ValorIngresoIva = ingresoIVA.Where(d => d.Ingreso.Mes == mes).Sum(d => d.ValorIva);
+            double valorSobreatencion = ingresos.Where(m => (m.CuentaID == 5) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            double valorBonoAguilnado = ingresos.Where(m => (m.CuentaID == 8) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+            
+            Subvencion[mes] = valorSubencion;                    
+            IvaIngreso[mes] = ValorIngresoIva;		
+			Sobreatencion[mes] = valorSobreatencion;		
+			BonoAguilnado[mes] = valorBonoAguilnado;
+            // Presupuesto
+            double valorSubencionPre = DetallePresupuesto.Where(m => (m.CuentaID == 3 || m.CuentaID == 4)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            double valorSobreatencionPre = DetallePresupuesto.Where(m => (m.CuentaID == 5)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            double valorBonoAguilnadoPre = DetallePresupuesto.Where(m => (m.CuentaID == 8)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+
+            SubvencionPre[mes] = valorSubencionPre;          
+            SobreatencionPre[mes] = valorSobreatencionPre;
+            BonoAguilnadoPre[mes] = valorBonoAguilnadoPre;
+            
+            
+			// Egresos
+				double valorEgresos =  0;
+				double valor_Reintegros = 0;
+				double valor_GastosReintegros = 0;
+                double valorEgresosPre = 0;
+			// Remuneracion			
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 22 || e.CuentaIDD == 23 || e.CuentaIDD == 25 || e.CuentaIDD == 26 || e.CuentaIDD == 27 || e.CuentaIDD == 28 || e.CuentaIDD == 163)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                Remuneracion[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 22 || e.CuentaID == 23 || e.CuentaID == 25 || e.CuentaID == 26 || e.CuentaID == 27 || e.CuentaID == 28 || e.CuentaID == 163)).Sum(m => m.Monto).ToString());
+                RemuneracionPre[mes] = valorEgresosPre;
+            // Próvision de Fondos para Indemnizaciones
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 41)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 41)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                ProvisionIndemnizacion[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 41)).Sum(m => m.Monto).ToString());
+                ProvisionIndemnizacionPre[mes] = valorEgresosPre;
+            // Funcionamiento
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 33 || e.CuentaIDD == 34 || e.CuentaIDD == 35 || e.CuentaIDD == 36 || e.CuentaIDD == 44 || e.CuentaIDD == 123 || e.CuentaIDD == 125 || e.CuentaIDD == 48 || e.CuentaIDD == 49 || e.CuentaIDD == 52 || e.CuentaIDD == 150 || e.CuentaIDD == 151 || e.CuentaIDD == 153 || e.CuentaIDD == 154 || e.CuentaIDD == 53 || e.CuentaIDD == 54 || e.CuentaIDD == 55 || e.CuentaIDD == 56 || e.CuentaIDD == 57 || e.CuentaIDD == 58 || e.CuentaIDD == 147 || e.CuentaIDD == 149 || e.CuentaIDD == 61 || e.CuentaIDD == 62 || e.CuentaIDD == 64 || e.CuentaIDD == 145 || e.CuentaIDD == 44 || e.CuentaIDD == 123 || e.CuentaIDD == 50 || e.CuentaIDD == 59 || e.CuentaIDD == 60)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                Funcionamiento[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 33 || e.CuentaID == 34 || e.CuentaID == 35 || e.CuentaID == 36 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 125 || e.CuentaID == 48 || e.CuentaID == 49 || e.CuentaID == 52 || e.CuentaID == 150 || e.CuentaID == 151 || e.CuentaID == 153 || e.CuentaID == 154 || e.CuentaID == 53 || e.CuentaID == 54 || e.CuentaID == 55 || e.CuentaID == 56 || e.CuentaID == 57 || e.CuentaID == 58 || e.CuentaID == 147 || e.CuentaID == 149 || e.CuentaID == 61 || e.CuentaID == 62 || e.CuentaID == 64 || e.CuentaID == 145 || e.CuentaID == 44 || e.CuentaID == 123 || e.CuentaID == 50 || e.CuentaID == 59 || e.CuentaID == 60)).Sum(m => m.Monto).ToString());
+                FuncionamientoPre[mes] = valorEgresosPre;
+            // Apoyo Tecnico
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 66 || e.CuentaIDD == 146 || e.CuentaIDD == 68 || e.CuentaIDD == 69 || e.CuentaIDD == 70)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                ApTecnico[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 66 || e.CuentaID == 146 || e.CuentaID == 68 || e.CuentaID == 69 || e.CuentaID == 70)).Sum(m => m.Monto).ToString());
+                ApTecnicoPre[mes] = valorEgresosPre;
+            // Apoyo Beneficiarios
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 72 || e.CuentaIDD == 73 || e.CuentaIDD == 74 || e.CuentaIDD == 75 || e.CuentaIDD == 76 || e.CuentaIDD == 77 || e.CuentaIDD == 78 || e.CuentaIDD == 79)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                APBeneficiario[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 72 || e.CuentaID == 73 || e.CuentaID == 74 || e.CuentaID == 75 || e.CuentaID == 76 || e.CuentaID == 77 || e.CuentaID == 78 || e.CuentaID == 79)).Sum(m => m.Monto).ToString());
+                APBeneficiarioPre[mes] = valorEgresosPre;
+            // Inversion
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 127 || e.CuentaIDD == 101 || e.CuentaIDD == 102 || e.CuentaIDD == 104 || e.CuentaIDD == 43)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                Inversion[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 127 || e.CuentaID == 101 || e.CuentaID == 102 || e.CuentaID == 104 || e.CuentaID == 43)).Sum(m => m.Monto).ToString());
+                InversionPre[mes] = valorEgresosPre;
+            // FinanciamientoIngreso
+				double valorFinIngreso = ingresos.Where(m => (m.CuentaID == 10 || m.CuentaID == 12 || m.CuentaID == 14 || m.CuentaID == 20 || m.CuentaID == 158) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+				FinanciamientoIngreso[mes] = valorFinIngreso;
+                double valorFinIngresoPre = DetallePresupuesto.Where(m => (m.CuentaID == 10 || m.CuentaID == 12 || m.CuentaID == 14 || m.CuentaID == 20 || m.CuentaID == 158)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                FinanciamientoIngresoPre[mes] = valorFinIngresoPre;
+            // FinanciamientoEgreso
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 155 || e.CuentaIDD == 156 || e.CuentaIDD == 159)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                FinanciamientoEgreso[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Sum(m => m.Monto).ToString());
+                FinanciamientoEgresoPre[mes] = valorEgresosPre;
+            // IngresosPrestamo
+				double valorIngresosPrestamo = ingresos.Where(m => (m.CuentaID == 19) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+				IngresosPrestamo[mes] = valorIngresosPrestamo;
+                double valorIngresosPrestamoPre = DetallePresupuesto.Where(m => (m.CuentaID == 19)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                IngresosPrestamoPre[mes] = valorIngresosPrestamoPre;
+            // EgresosPrestamo
+			    valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 63)).Sum(m => m.Monto).ToString());
+                valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 63)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 63)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                EgresosPrestamo[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                valorEgresosPre = double.Parse(DetallePresupuesto.Where(e => e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 63)).Sum(m => m.Monto).ToString());
+                EgresosPrestamoPre[mes] = valorEgresosPre;
+            // DAP
+                valorEgresos = double.Parse(egresos.Where(e => e.Egreso.Temporal == null && e.Egreso.Mes == mes && e.Egreso.Periodo == periodo && (e.CuentaID == 40)).Sum(m => m.Monto).ToString());
+                 valor_Reintegros = double.Parse(reintegros.Where(e => (e.CuentaID == 40)).Where(d => d.Mes == mes).Where(d => d.Periodo == periodo).Sum(d => d.Monto_Ingresos).ToString());
+                 valor_GastosReintegros = double.Parse(reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(e => (e.CuentaIDD == 40)).Where(d => d.Reintegro.Mes == mes).Where(d => d.Reintegro.Periodo == periodo).Sum(d => d.Monto).ToString());
+                 DAP[mes] = (valorEgresos + valor_GastosReintegros) - valor_Reintegros;
+                 valorEgresosPre = double.Parse(DetallePresupuesto.Where(e =>  e.Mes == mes && e.Periodo == periodo && (e.CuentaID == 40)).Sum(m => m.Monto).ToString());
+                 DAPPre[mes] = valorEgresosPre;
+            // InteresesDAP
+                 InteresesDAP[mes] = ingresos.Where(m => (m.CuentaID == 16) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                 InteresesDAPPre[mes] = DetallePresupuesto.Where(m => (m.CuentaID == 16)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+            // Rescate DAP
+                 RescateDAP[mes] = ingresos.Where(m => (m.CuentaID == 17) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                 RescateDAPPre[mes] = DetallePresupuesto.Where(m => (m.CuentaID == 17)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+             // SAldo Inicial
+                 // Valor IVA
+                 double ValorIvaE = double.Parse(egresos.Where(e => e.Cuenta.Codigo.Equals("12.1") && e.Egreso.Mes == mes).Sum(e => e.Monto).ToString());
+                 IvaEgreso[mes] = ValorIvaE;
+                 // Real
+                 double valorIngresosMes = BonoAguilnado[mes] + Sobreatencion[mes] + Subvencion[mes] + ValorIngresoIva;
+                 double valorEgresosMes = IvaEgreso[mes] + Inversion[mes] + Funcionamiento[mes] + ApTecnico[mes] + APBeneficiario[mes] + ProvisionIndemnizacion[mes] + Remuneracion[mes]; ;
+                 double valorFinancia = (FinanciamientoIngreso[mes] + IngresosPrestamo[mes]) - (EgresosPrestamo[mes] + FinanciamientoEgreso[mes]);
+                 double ValorDAP = (InteresesDAP[mes] + RescateDAP[mes]) - DAP[mes];
+                 // Presupuesto
+                 double valorIngresosMesPre = BonoAguilnadoPre[mes] + SobreatencionPre[mes] + SubvencionPre[mes];
+                 double valorEgresosMesPre =  InversionPre[mes] + FuncionamientoPre[mes] + ApTecnicoPre[mes] + APBeneficiarioPre[mes] + ProvisionIndemnizacionPre[mes] + RemuneracionPre[mes]; ;
+                 double valorFinanciaPre = (FinanciamientoIngresoPre[mes] + IngresosPrestamoPre[mes]) - (EgresosPrestamoPre[mes] + FinanciamientoEgresoPre[mes]);
+                 double ValorDAPPre = (InteresesDAPPre[mes] + RescateDAPPre[mes]) - DAPPre[mes];
+            
+                 saldoInicial[(mes + 1)] = saldoInicial[mes] + (valorIngresosMes - valorEgresosMes) + valorFinancia + ValorDAP;
+                 saldoInicialPre[(mes + 1)] = saldoInicialPre[mes] + (valorIngresosMesPre - valorEgresosMesPre) + valorFinanciaPre + ValorDAPPre;
+		
+        }
+       
+        // Aqui
+
+
+    <div class="col-md-12" style="overflow-y: scroll;overflow-x: scroll;" id="prueba ocultoImpresion">
+        <table border="1" class="table table-bordered table-hover">
+            <tr>
+                <tH>Estado de Resultado</tH>
+                @if (@ViewBag.Mes == 13 || @ViewBag.Mes == 14)
+                {
+                <tH colspan="26"> @ViewBag.NombreLista</tH>
+                }
+                @if (@ViewBag.Mes == 15)
+                {
+                <tH colspan="50">@ViewBag.NombreLista</tH>
+                }
+                 @if (@ViewBag.Mes < 13)
+                 {
+                <tH >@ViewBag.NombreLista</tH>
+                 }
+            </tr>
+            <tr>
+                <th rowspan="2">CONCEPTO</th>
+                @foreach (var mes in Meses)
+                {
+                 <th colspan="4"> @NombreMeses[mes - 1]</th>
+                }
+            </tr>
+            <tr>
+                @foreach (var mes in Meses)
+                {     
+                    <th style="width:80px !important;">Pres $</th>               
+                    <th style="width:80px !important;">Real $</th>
+                    <th style="width:80px !important;">Desv $</th>               
+                    <th style="width:80px !important;">Desv %</th> 
+                }
+                @if (@ViewBag.Mes > 12)
+                { 
+                    <th colspan="1"> Total</th>
+                } 
+            </tr>
+
+         
+         <tr style="background-color: yellow; text-align: left">
+
+            <th align="left">SALDO INICIAL</th>
+           @{ 
+				foreach (var mes in Meses)
+                {
+					double MSaldo = saldoInicial[mes];
+                    double MSaldoPre = saldoInicialPre[mes];
+                    double Desviacion = MSaldoPre - MSaldo;
+                    
+                   <td style="text-align: right;font-weight: bold;color:blue;">
+                       	@if (MSaldoPre != 0)
+						{
+							@MSaldoPre.ToString("$#,###")
+						}else{
+							@Html.Raw("$0")
+						}
+                   </td>
+					<td style="text-align: right;font-weight: bold;color:blue;">                                 
+						@if (MSaldo != 0)
+						{
+							@MSaldo.ToString("$#,###")
+						}else{
+							@Html.Raw("$0")
+						}
+					</td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+                    </td>
+                    <td></td>
+                  }
+                if (@ViewBag.Mes > 12)
+                {
+                    double PSename = 0;
+                    if (xTotSename != 0) {
+                        PSename = (saldoInicial[1] / xTotSename) * 100;
+                    }
+					<th style="text-align: right;font-weight: bold;color:blue;"> @saldoInicial[1].ToString("$#,###")</th>
+					<th style="text-align: right;font-weight: bold;color:blue;"> @PSename.ToString("#.##") %</th>
+                }
+            }    
+        
+        </tr>
+            <tr style="background-color: silver; text-align: left">
+                <th>INGRESOS</th>
+            </tr>
+            <tr style=";">
+                <th style="text-align: left"> Subvenci&oacute;n</th>
+                 @{ 
+                  double xTot1 = 0;
+                  double xTot1Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos = Subvencion[mes];
+                    double valorIngresosPre = SubvencionPre[mes];
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                    xTot1Pre += valorIngresosPre;		
+                    xTot1 += valorIngresos;    
+                                   
+                    <td style=" text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresosPre != 0)
+                        {
+							@valorIngresosPre.ToString("$#,###")              
+                        }else{
+							@Html.Raw("$0")
+						}
+                    </td>
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        {
+							@valorIngresos.ToString("$#,###")              
+                        }else{
+							@Html.Raw("$0")
+						}
+                    </td>  
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+                    </td>  
+                    <td></td>             
+                }
+
+                  @if (@ViewBag.Mes > 12)
+                  {
+                     // TotalesREstandar[0] = xTot1;
+                      double PSename = (xTot1 / xTotSename) * 100;
+                        
+                     <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTot1 != 0)
+                       { @xTot1.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                        <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTot1 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    % </th>
+                  } 
+            </tr>
+            <tr style="">
+                <th style="text-align: left"> Sobreatenciones</th>
+                @{ 
+                  double xTot2 = 0;
+                  double xTot2Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos =  Sobreatencion[mes];
+                    xTot2 += valorIngresos;
+                    double valorIngresosPre = SobreatencionPre[mes];
+                    xTot2Pre += valorIngresosPre;
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                    <td style=" text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresosPre != 0)
+                        {@valorIngresosPre.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style=" text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        {@valorIngresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td> 
+                    <td style=" text-align: right; font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+
+                    </td>  
+                    <td></td>               
+                }
+                 @if (@ViewBag.Mes > 12)
+                 {
+                     //TotalesREstandar[1] = xTot2;
+                     double PSename = (xTot2 / xTotSename) * 100;
+
+                     <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTot2 != 0)
+                       { @xTot2.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                       <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTot2 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                 } 
+
+            </tr>
+
+            <tr style="">
+                <th style="text-align: left"> Bonos Aguinaldos</th>
+                 @{ 
+                 double xTot4 = 0; double xTot4Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos = BonoAguilnado[mes];
+                    xTot4 += valorIngresos;
+                    double valorIngresosPre = BonoAguilnadoPre[mes];
+                    xTot4Pre += valorIngresosPre;
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                   <td style=" text-align: right; font-weight: bold;color:blue;">
+                       @if (valorIngresosPre != 0)
+                        { @valorIngresosPre.ToString("$#,###") }
+                        else
+                        { @Html.Raw("$0") }
+                   </td>
+                    <td style=" text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        { @valorIngresos.ToString("$#,###") }
+                        else
+                        { @Html.Raw("$0") }
+                    </td>
+                 <td style=" text-align: right; font-weight: bold;color:blue;">
+                     @Desviacion.ToString("$#,###")
+
+                 </td>  
+                  <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                       // TotalesREstandar[2] = xTot4;
+                        double PSename = (xTot4 / xTotSename) * 100;
+
+                     <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTot4 != 0)
+                       { @xTot4.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                    <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTot4 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    } 
+            </tr>
+
+            <tr style="background-color: silver; text-align: left">
+                <th>Total Ingr. Sename</th>
+                 @{ 
+                    double xTot6 = 0; double xTot6Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos = BonoAguilnado[mes] + Sobreatencion[mes] + Subvencion[mes];
+                    double valorIngresosPre = BonoAguilnadoPre[mes] + SobreatencionPre[mes] + SubvencionPre[mes];
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                    xTot6 += valorIngresos; xTot6Pre += valorIngresosPre;
+                    <td>
+                        @if (valorIngresosPre != 0)
+                        {@valorIngresosPre.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="background-color: silver; text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        {@valorIngresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                   <td style="background-color: silver; text-align: right; font-weight: bold;color:blue;">
+                       @Desviacion.ToString("$#,###")
+                   </td> 
+                    <td></td>                
+                }
+                  @if (@ViewBag.Mes > 12)
+                  { 
+                     <th style="background-color: silver; text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTot6 != 0 && xTotSename != 0)
+                       { @xTot6.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                    <th> 100 %</th>
+                  }
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Egresos</th>
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Personal</th>
+            </tr>
+            <tr style="">
+                <th style="text-align: left">Remuneraciones</th>
+                 @{ 
+                  double xRem = 0; double xRemPre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorEgresos = Remuneracion[mes];
+                    xRem += valorEgresos;
+                    double valorEgresosPre = RemuneracionPre[mes];
+                    xRem += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                    
+                    <td>
+                         @if (valorEgresosPre != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                  <td style="text-align: right; font-weight: bold;color:blue;">
+                      @Desviacion.ToString("$#,###")
+                  </td>  
+                    <td></td>
+                   
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                        //TotalesREstandar[4] = xRem;
+                        double PSename = (xRem / xTotSename) * 100;
+
+                    <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xRem != 0)
+                       { @xRem.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>  
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xRem != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    }
+            </tr>
+            <tr style="">
+                <th style=" text-align: left">Pr&oacute;vision de Fondos para Indemnizaciones</th>
+                @{ 
+                    double xProv = 0; double xProvPre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double  valorEgresos =  ProvisionIndemnizacion[mes];
+                    xProv += valorEgresos;
+                    double valorEgresosPre = ProvisionIndemnizacionPre[mes];
+                    xProvPre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                       @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+                    </td>  
+                    <td></td>
+                }
+                  @if (@ViewBag.Mes > 12)
+                  {
+                     // TotalesREstandar[5] = xProv;
+                      double PSename = (xProv / xTotSename) * 100;
+
+                    <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xProv != 0)
+                       { @xProv.ToString("#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xProv != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                  }
+            </tr>
+            <tr style="background-color: silver; text-align: left">
+                <th>Total Personal</th>
+                   @{ 
+                  double xPer = 0; double xPerPre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                   double valorEgresos = ProvisionIndemnizacion[mes] + Remuneracion[mes];
+                    xPer += valorEgresos;
+                    double valorEgresosPre = ProvisionIndemnizacionPre[mes] + RemuneracionPre[mes];
+                    xPerPre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td> 
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                   <td style="text-align: right; font-weight: bold;color:blue;">
+                       @Desviacion.ToString("$#,###")
+                   </td> 
+                    <td></td>                  
+                }
+                  @if (@ViewBag.Mes > 12)
+                  {
+                     // TotalesREstandar[6] = xPer;
+                      double PSename = (xPer / xTotSename) * 100;
+
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xPer != 0)
+                       { @xPer.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xPer != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                  }
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Operaci&oacute;n</th>
+            </tr>
+
+            <tr>
+                <th style="text-align: left">Funcionamiento</th>
+                 @{ 
+                  double xCB = 0; double xCBPre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double  valorEgresos = Funcionamiento[mes];
+                    xCB += valorEgresos;
+                    double valorEgresosPre = FuncionamientoPre[mes];
+                    xCBPre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                     <td style="text-align: right; font-weight: bold;color:blue;">
+                         @Desviacion.ToString("$#,###")
+                     </td>  
+                    <td></td>
+                }
+                   @if (@ViewBag.Mes > 12)
+                   {
+
+                       double PSename = (xCB / xTotSename) * 100;
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xCB != 0)
+                       { @xCB.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xCB != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                   }
+            </tr>
+            <tr>
+                <th style="text-align: left">Ap T&eacute;cnico</th>
+                @{ 
+                   double xAI = 0; double xAIPre = 0;
+				}
+                @foreach (var mes in Meses)
+                {
+                    double valorEgresos = ApTecnico[mes];
+                    xAI += valorEgresos;
+                    double valorEgresosPre = ApTecnicoPre[mes];
+                    xAIPre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>  
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+                    </td>  
+                    <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                        //TotalesREstandar[8] = xAI;
+                        double PSename = (xAI / xTotSename) * 100;
+                      <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI != 0)
+                       { @xAI.ToString("$#,###") }
+                       else
+                       {@Html.Raw("0")}
+                    </th>
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    }
+            </tr>
+            <tr>
+            <th style="text-align: left">Ap. Beneficiarios</th>
+               @{ 
+                    double xTTEgreso3 = 0; double xTTEgreso3Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorEgresos =  APBeneficiario[mes];
+                    xTTEgreso3 += valorEgresos;
+                    double valorEgresosPre = APBeneficiarioPre[mes];
+                    xTTEgreso3Pre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>   
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+                    </td>   
+                    <td></td>          
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                       // TotalesREstandar[9] = xTTEgreso3;
+                        double PSename = (xTTEgreso3 / xTotSename) * 100;
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTTEgreso3 != 0)
+                       { @xTTEgreso3.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                       <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTTEgreso3 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    }
+            </tr>
+
+
+
+
+            <tr style="background-color: silver; text-align: left">
+                <th>Total Operaci&oacute;n</th>
+                @{
+                    double xTotalOperaciones = 0; double xTotalOperacionesPre = 0;
+                    }
+                 @foreach (var mes in Meses)
+                 {
+                    double valorEgresos = Funcionamiento[mes] + ApTecnico[mes] + APBeneficiario[mes];
+                     xTotalOperaciones += valorEgresos;
+                     double valorEgresosPre = FuncionamientoPre[mes] + ApTecnicoPre[mes] + APBeneficiarioPre[mes];
+                     xTotalOperacionesPre += valorEgresosPre;
+                     double Desviacion = valorEgresosPre - valorEgresos;
+                     <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>                     
+                    <td style="text-align: right; font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>  
+                     <td style="text-align: right; font-weight: bold;color:blue;">
+                         @Desviacion.ToString("$#,###")
+                     </td>    
+                     <td></td>            
+                 }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                        //TotalesREstandar[10] = xTotalOperaciones;
+                        double PSename = (xTotalOperaciones / xTotSename) * 100;   
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotalOperaciones != 0)
+                       { @xTotalOperaciones.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                    <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotalOperaciones != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    }                            
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left">Inversi&oacute;n</th>
+                @{ 
+                    double xTinvEgreso1 = 0; double xTinvEgreso1Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                   double valorEgresos = Inversion[mes];
+                    xTinvEgreso1 += valorEgresos;
+                    double valorEgresosPre = InversionPre[mes];
+                    xTinvEgreso1Pre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                         @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                   <td style="text-align: right; font-weight: bold;color:blue;">
+                       @Desviacion.ToString("$#,###")
+                   </td>  
+                    <td></td> 
+                }
+                     @if (@ViewBag.Mes > 12)
+                     {
+
+                         double PSename = (xTinvEgreso1 / xTotSename) * 100;  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;color:blue;">  
+                                    @if (xTinvEgreso1 != 0)
+                                    {
+                                     @xTinvEgreso1.ToString("$#,###")
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                </th>
+                            <th style="background-color: silver; text-align: right; font-weight: bold;color:blue;">  
+                                    @if (xTinvEgreso1 != 0 && xTotSename != 0)
+                                    {
+                                        { @PSename.ToString("#.##") }
+                                    }
+                                    else
+                                    {@Html.Raw("0")}
+                                %</th>
+                     } 
+            </tr>
+
+   
+            <tr style="background-color: silver; text-align: left">
+                <th>Total Egresos</th>
+                                 @{
+                     double xTotegreso = 0; double xTotegresoPre = 0;
+                                }
+                                @foreach (var mes in Meses)
+                                {   //valorIngresos
+                                   double  valorEgresos = Inversion[mes] + Funcionamiento[mes] + ApTecnico[mes] + APBeneficiario[mes] + ProvisionIndemnizacion[mes] + Remuneracion[mes];
+                                   double valorEgresosPre = InversionPre[mes] + FuncionamientoPre[mes] + ApTecnicoPre[mes] + APBeneficiarioPre[mes] + ProvisionIndemnizacionPre[mes] + RemuneracionPre[mes];
+                                   xTotegreso += valorEgresos; xTotegresoPre += valorEgresos;
+                                   double Desviacion = valorEgresosPre - valorEgresos;
+                                    
+                                    <td style="background-color: silver;text-align: right; font-weight: bold;color:blue;">
+                                        @if (valorEgresosPre != 0)
+                                        {@valorEgresosPre.ToString("$#,###")                                          
+                                        }
+                                        else
+                                        {@Html.Raw("$0")}
+                                    </td>
+                                    <td style="background-color: silver;text-align: right; font-weight: bold;color:blue;">
+                                        @if (valorEgresos != 0)
+                                        {@valorEgresos.ToString("$#,###")                                          
+                                        }
+                                        else
+                                        {@Html.Raw("$0")}
+                                    </td>
+                                    <td style="background-color: silver;text-align: right; font-weight: bold;color:blue;">
+                                        @Desviacion.ToString("$#,###")
+                                    </td>  
+                                    <td></td>
+                                }
+                                 @if (@ViewBag.Mes > 12)
+                                 {
+                                     //TotalesREstandar[12] = xTotegreso;
+                                     double PSename = (xTotegreso / xTotSename) * 100;  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;color:blue;">  
+                                      @if (xTotegreso != 0)
+                                      {
+                                    @xTotegreso.ToString("$#,###") 
+                                      }
+                                      else
+                                      {@Html.Raw("$0")}
+                                </th>
+                                  <th style="background-color: silver; text-align: right; font-weight: bold;color:blue;">  
+                                      @if (xTotegreso != 0 && xTotSename != 0)
+                                      { @PSename.ToString("#.##") }
+
+                                      else
+                                      {@Html.Raw("0")}
+                                %</th>
+                                 } 
+            </tr>
+            <tr style="background-color: silver; text-align: left">
+                <th >Resultado</th>
+                @{
+                 double xTotflujo = 0; double xTotflujoPre = 0;
+				}
+                @foreach (var mes in Meses)
+                {  
+                    double TotalFlujo = 0;
+                    double valorIngresos = BonoAguilnado[mes] + Sobreatencion[mes] + Subvencion[mes];
+                    double valorEgresos = Inversion[mes] + Funcionamiento[mes] + ApTecnico[mes] + APBeneficiario[mes] + ProvisionIndemnizacion[mes] + Remuneracion[mes];;
+                                                    
+                    if (valorEgresos >= 0){
+						TotalFlujo = valorIngresos - valorEgresos;
+                    }else{
+                        TotalFlujo = valorIngresos + valorEgresos;
+                    }
+                    double TotalFlujoPre = 0;
+                    double valorIngresosPre = BonoAguilnadoPre[mes] + SobreatencionPre[mes] + SubvencionPre[mes];
+                    double valorEgresosPre = InversionPre[mes] + FuncionamientoPre[mes] + ApTecnicoPre[mes] + APBeneficiarioPre[mes] + ProvisionIndemnizacionPre[mes] + RemuneracionPre[mes]; ;
+
+                    if (valorEgresosPre >= 0)
+                    {
+                        TotalFlujoPre = valorIngresosPre - valorEgresosPre;
+                    }
+                    else
+                    {
+                        TotalFlujoPre = valorIngresosPre + valorEgresosPre;
+                    }
+                    double Desviacion = TotalFlujoPre - TotalFlujo;
+                    xTotflujo += TotalFlujo; xTotflujoPre += TotalFlujoPre;
+                
+                        <td style=" background-color: silver;text-align: right; font-weight: bold;color:blue; ">
+							@if (TotalFlujoPre != 0)
+							{                                            
+								@(TotalFlujoPre.ToString("$#,###"))                          
+							}else{
+								@Html.Raw("$0")
+							}
+                        </td>
+						<td style=" background-color: silver;text-align: right; font-weight: bold;color:blue; ">
+							@if (TotalFlujo != 0)
+							{                                            
+								@(TotalFlujo.ToString("$#,###"))                          
+							}else{
+								@Html.Raw("$0")
+							}
+                        </td>
+                         <td style="background-color: silver;text-align: right; font-weight: bold;color:blue;">
+                             @Desviacion.ToString("$#,###")
+                         </td>  
+                        <td></td>
+
+                }
+                @if (@ViewBag.Mes > 12){
+
+                    double PSename = (xTotflujo / xTotSename) * 100;  
+                    <th style="background-color: silver;text-align: right; font-weight: bold;color:blue; ">  
+                                    @if (xTotflujo != 0)
+                                    {
+                                     @xTotflujo.ToString("$#,###")
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                </th>
+                                 <th style="background-color: silver;text-align: right; font-weight: bold;color:blue; ">  
+                                    @if (xTotflujo != 0 && xTotSename != 0)
+                                    {
+                                    @PSename.ToString("#.##")
+                                    }
+                                    else
+                                    {@Html.Raw("0")}
+                                %</th>
+                                } 
+ 
+            </tr>
+            <tr>
+                <th style="background-color: silver; text-align: left"> Financimiento </th>
+            </tr>
+           <tr style="">
+                <th style="text-align: left"> Financiamiento Ing</th> 
+                @{ 
+                double xTotf2 = 0; double xTotf2Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos = FinanciamientoIngreso[mes];
+                    xTotf2 += valorIngresos;
+                    double valorIngresosPre = FinanciamientoIngresoPre[mes];
+                    xTotf2Pre += valorIngresosPre;
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                    <td style=" text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresosPre != 0)
+                        {@valorIngresosPre.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td>
+                    <td style=" text-align: right; font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        {@valorIngresos.ToString("$#,###") }
+                        else
+                        {@Html.Raw("$0")}
+                    </td> 
+                    <td>@Desviacion.ToString("$#,###")</td>  
+                    <td></td>                
+                }
+                 @if (@ViewBag.Mes > 12)
+                 {
+                     double PSename = (xTotf2 / xTotSename) * 100; 
+                     <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotf2 != 0)
+                       { @xTotf2.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                    <th style=" text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotf2 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                 } 
+
+            </tr>
+            <tr>
+                <th style="text-align: left">Financiamiento Egr</th>
+                 @{ 
+                 double xAI1 = 0; double xAI1Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorEgresos = FinanciamientoEgreso[mes];
+                    xAI1 += valorEgresos;
+                    double valorEgresosPre = FinanciamientoEgresoPre[mes];
+                    xAI1Pre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                   <td style="text-align: right;font-weight: bold;color:red;">
+                        @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                   </td>
+                    <td style="text-align: right;font-weight: bold;color:red;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>  
+                    <td style="text-align: right;font-weight: bold;color:red;">>
+                        @Desviacion.ToString("$#,###")
+                    </td>  
+                    <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+
+                        double PSename = (xAI1 / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:red;"> 
+                       @if (xAI1 != 0)
+                       { @xAI1.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$ 0")}
+                    </th>
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI1 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0 %")}
+                    </th>
+                    }
+            </tr>
+			<tr>
+          <th style="text-align: left">Ingresos Préstamos (+)</th>
+                   @{ 
+                    double xAI11 = 0; double xAI11Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos = IngresosPrestamo[mes];
+                    xAI11 = xAI11 + valorIngresos;
+                    double valorIngresosPre = IngresosPrestamoPre[mes];
+                    xAI11Pre = xAI11Pre + valorIngresosPre;
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                   <td style="text-align: right;font-weight: bold;color:blue;">
+                      @if (valorIngresosPre != 0)
+                        {@valorIngresosPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                   </td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        {@valorIngresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td> 
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+                    </td>  
+                    <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+
+                        double PSename = (xAI11 / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI11 != 0)
+                       { @xAI11.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$ 0")}
+                    </th>
+                    <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI11 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    }
+            </tr>
+            <tr>
+            <th style="text-align: left">Egresos Préstamos (-)</th>
+            @{ 
+                double xAI12 = 0; double xAI12Pre = 0;
+             }
+            @foreach (var mes in Meses)
+            {
+				double valorEgresos = EgresosPrestamo[mes];
+                xAI12 += valorEgresos;
+                double valorEgresosPre = EgresosPrestamoPre[mes];
+                xAI12Pre += valorEgresosPre;
+                double Desviacion = valorEgresosPre - valorEgresos;
+				<td style="text-align: right;font-weight: bold;color:blue;">
+                    @if (valorEgresosPre != 0){
+						@valorEgresosPre.ToString("$#,###")
+					}else{
+						@Html.Raw("$0")
+					}
+				</td>
+                <td style="text-align: right;font-weight: bold;color:blue;">
+                    @if (valorEgresos != 0){
+						@valorEgresos.ToString("$#,###")
+					}else{
+						@Html.Raw("$0")
+					}
+                </td> 
+                <td style="text-align: right;font-weight: bold;color:blue;">
+                 @Desviacion.ToString("$#,###")  
+                </td>
+                <td></td> 
+            }
+            @if (@ViewBag.Mes > 12) {
+
+                double PSename = (xAI12 / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI12 != 0)
+                       { @xAI12.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$ 0")}
+                    </th>
+                    <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI12 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    }
+            </tr>
+             <tr style="background-color: silver; text-align: left">
+                <th >Total Financiamiento</th>
+                  @{ 
+                    double xTotfinan = 0; double xTotfinanPre = 0;
+                   }
+                  @foreach (var mes in Meses)
+                  {
+                      double valorEgresos = (FinanciamientoIngreso[mes] + IngresosPrestamo[mes]) - (EgresosPrestamo[mes] + FinanciamientoEgreso[mes]);
+                      double valorEgresosPre = (FinanciamientoIngresoPre[mes] + IngresosPrestamoPre[mes]) - (EgresosPrestamoPre[mes] + FinanciamientoEgresoPre[mes]);
+                      xTotfinan += valorEgresos; xTotfinanPre += valorEgresosPre;
+                      double Desviacion = valorEgresosPre - valorEgresos;
+                      <td style="text-align: right;font-weight: bold;color:blue;">
+                            @if (valorEgresosPre != 0)
+                            {@valorEgresosPre.ToString("$#,###")}
+                            else
+                            {@Html.Raw("$0")}
+                      </td>
+                      <td style="text-align: right;font-weight: bold;color:blue;">
+                            @if (valorEgresos != 0)
+                            {@valorEgresos.ToString("$#,###")}
+                            else
+                            {@Html.Raw("$0")}
+                       </td>  
+                       <td style="text-align: right;font-weight: bold;color:blue;">
+                           @Desviacion.ToString("$#,###")
+                       </td>  
+                      <td></td>
+                  }
+                    @if (@ViewBag.Mes > 12)
+                    {
+
+                        double PSename = (xTotfinan / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotfinan != 0)
+                       { @xTotfinan.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                   <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotfinan != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                   %</th>
+                      
+                    }
+              </tr>
+            @if(ViewBag.ConIva == 1){
+             <tr>
+                <th style="background-color: silver; text-align: left">Gestion IVA </th>
+            </tr>
+             <tr>
+                <th  style="background-color: silver; text-align: left">IVA DÉBITO FISCAL </th>
+                  @{ 
+                    double xTotIvaI = 0;
+                   }
+                  @foreach (var mes in Meses)
+                  {
+                      double valorEgresos = IvaIngreso[mes];
+
+                      xTotIvaI += valorEgresos;
+                      <td></td>
+                      <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td> 
+                      <td></td> 
+                      <td></td>
+                  }
+                    @if (@ViewBag.Mes > 12)
+                    {
+
+                        double PSename = (xTotIvaI / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotIvaI != 0)
+                       { @xTotIvaI.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                   <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotIvaI != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                   %</th>
+                      
+                    }
+              </tr>
+                <tr>
+                <th  style="background-color: silver; text-align: left">IVA CRÉDITO FISCAL </th>
+                  @{ 
+                    double xTotIvaE = 0;
+                   }
+                  @foreach (var mes in Meses)
+                  {
+                      double valorEgresos = IvaEgreso[mes];
+
+                      xTotIvaE += valorEgresos;
+                      <td></td>
+                      <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td> 
+                      <td></td> 
+                      <td></td>
+                  }
+                    @if (@ViewBag.Mes > 12)
+                    {
+
+                        double PSename = (xTotIvaE / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotIvaE != 0)
+                       { @xTotIvaE.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$0")}
+                    </th>
+                   <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xTotIvaE != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                   %</th>
+                      
+                    }
+              </tr>
+            }
+            <tr style="background-color: silver; text-align: left">
+                <th >Saldo Final Sin DAP</th>
+                 @{ 
+                     double xTotDesfinan = 0; double xTotDesfinanPre = 0;
+                  }
+                  @foreach (var mes in Meses)
+                   {
+
+                        double valorIngresos = BonoAguilnado[mes] + Sobreatencion[mes] + Subvencion[mes] + IvaIngreso[mes];
+                        double valorEgresos = Inversion[mes] + Funcionamiento[mes] + ApTecnico[mes] + APBeneficiario[mes] + ProvisionIndemnizacion[mes] + Remuneracion[mes] + IvaEgreso[mes];
+                        double valorFinancia = (FinanciamientoIngreso[mes] + IngresosPrestamo[mes]) - (EgresosPrestamo[mes] + FinanciamientoEgreso[mes]);
+                        double Valorx = saldoInicial[mes] + (valorIngresos - valorEgresos) + valorFinancia;
+                        
+                        double valorIngresosPre = BonoAguilnadoPre[mes] + SobreatencionPre[mes] + SubvencionPre[mes];
+                         double valorEgresosPre = InversionPre[mes] + FuncionamientoPre[mes] + ApTecnicoPre[mes] + APBeneficiarioPre[mes] + ProvisionIndemnizacionPre[mes] + RemuneracionPre[mes] ;
+                         double valorFinanciaPre = (FinanciamientoIngresoPre[mes] + IngresosPrestamoPre[mes]) - (EgresosPrestamoPre[mes] + FinanciamientoEgresoPre[mes]);
+                         double ValorxPre = saldoInicialPre[mes] + (valorIngresosPre - valorEgresosPre) + valorFinanciaPre;
+                         xTotDesfinan += Valorx; xTotDesfinanPre += ValorxPre;
+                         double Desviacion = ValorxPre - Valorx;           
+                        <td  style="background-color: silver; text-align: right;font-weight: bold;color:blue; ">
+                          @if (ValorxPre != 0)
+                           {  @(ValorxPre.ToString("$#,###"))               }
+                                        else
+                                        {
+                                             @Html.Raw("$0")
+                                        }
+                        </td>      
+                        <td style="background-color: silver; text-align: right;font-weight: bold;color:blue; ">
+                                        @if (Valorx != 0)
+                                        {
+                                            @(Valorx.ToString("$#,###"))
+                                        }
+                                        else
+                                        {
+                                             @Html.Raw("$0")
+                                        }
+                                      
+                                    </td> 
+                          <td style="background-color: silver; text-align: right;font-weight: bold;color:blue; ">
+                              @Desviacion.ToString("$#,###")
+                          </td> 
+                                    <td></td>                          
+                                }
+                                
+                              @if (@ViewBag.Mes > 12)
+                              {
+
+                                  double PSename = (xTotDesfinan / xTotSename) * 100; 
+
+                                <th style="background-color: silver; text-align: right; font-weight: bold;color:blue">  
+                                    @if (xTotDesfinan != 0)
+                                    {
+                                     @xTotDesfinan.ToString("$#,###")
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                </th>
+                                 <th style="background-color: silver; text-align: right; font-weight: bold;color:blue">  
+                                    @if (xTotDesfinan != 0 && xTotSename != 0)
+                                    {
+                                      @PSename.ToString("#.##") 
+                                    }
+                                    else
+                                    {@Html.Raw("0")}
+                                %</th>
+                              } 
+            </tr>
+			<tr>
+			</tr>
+		       <tr>
+                <th style="text-align: left">DAP</th>
+                   @{ 
+                              double xAI13 = 0; double xAI13Pre = 0; // AQui voy pre
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorEgresos = DAP[mes];
+                    xAI13 += valorEgresos;
+                    double valorEgresosPre = DAPPre[mes];
+                    xAI13Pre += valorEgresosPre;
+                    double Desviacion = valorEgresosPre - valorEgresos;
+                   <td style="text-align: right;font-weight: bold;color:red;">
+                        @if (valorEgresosPre != 0)
+                        {@valorEgresosPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                   </td>
+                    <td style="text-align: right;font-weight: bold;color:red;">
+                        @if (valorEgresos != 0)
+                        {@valorEgresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>  
+                    <td style="text-align: right;font-weight: bold;color:red;">
+                        @Desviacion.ToString("$#,###")
+                    </td>  
+                    <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                        double PSename = (xAI13 / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:red;"> 
+                       @if (xAI13 != 0)
+                       { @xAI13.ToString("$#,###") }
+                       else
+                       {@Html.Raw("0")}
+                    </th>
+                    <th style="text-align: right; font-weight: bold;color:red;"> 
+                       @if (xAI13 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw(" 0")}
+                    %</th>
+                    }
+            </tr>	
+              <tr>
+                <th style="text-align: left">Intereses DAP</th>
+               @{ 
+                    double xAI111 = 0; double xAI111Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresosPre = InteresesDAPPre[mes];
+                    xAI111Pre = xAI111Pre + valorIngresosPre;
+                    double valorIngresos = InteresesDAP[mes];
+                    xAI111 = xAI111 + valorIngresos;
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                   <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorIngresosPre != 0)
+                        {@valorIngresosPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                   </td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        {@valorIngresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>  
+                   <td style="text-align: right;font-weight: bold;color:blue;">
+                       @Desviacion.ToString("$#,###")
+                   </td> 
+                    <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                       // TotalesREstandar[21] = xAI111;
+                        double PSename = (xAI111 / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI111 != 0)
+                       { @xAI111.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$ 0")}
+                    </th>
+                       <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI111 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw("0")}
+                    %</th>
+                    }
+            </tr>
+			   <tr>
+                <th style="text-align: left">Rescate DAP</th>
+                   @{ 
+                    double xAI1122 = 0; double xAI1122Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorIngresos = ingresos.Where(m => (m.CuentaID == 17) && m.Temporal == null && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto_Ingresos);
+                    xAI1122 = xAI1122 + valorIngresos;
+                    double valorIngresosPre = DetallePresupuesto.Where(m => (m.CuentaID == 17)  && m.Mes == mes && m.Periodo == periodo).Sum(m => m.Monto);
+                    xAI1122Pre = xAI1122Pre + valorIngresosPre;
+                    double Desviacion = valorIngresosPre - valorIngresos;
+                   <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorIngresosPre != 0)
+                        {@valorIngresosPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                   </td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (valorIngresos != 0)
+                        {@valorIngresos.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>  
+                     <td style="text-align: right;font-weight: bold;color:blue;">
+                         @Desviacion.ToString("$#,###")
+                     </td>  
+                    <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+
+                        double PSename = (xAI1122 / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI1122 != 0)
+                       { @xAI1122.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$ 0")}
+                    </th>
+                    <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI1122 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw(" 0")}
+                    %</th>
+                    }
+            </tr>
+		    <tr>
+                <th style="text-align: left">Total DAP</th>
+                   @{ // aqui voy
+                    double xAI1123 = 0; double xAI1123Pre = 0;
+                }
+                @foreach (var mes in Meses)
+                {
+                    double valorEgresos = DAP[mes];
+                    double valorIngresos = InteresesDAP[mes] + RescateDAP[mes];
+                    double ValorMostrar = valorIngresos - valorEgresos;
+                    xAI1123 = xAI1123 + ValorMostrar;
+                    double valorEgresosPre = DAPPre[mes];
+                    double valorIngresosPre = InteresesDAPPre[mes] + RescateDAPPre[mes];
+                    double ValorMostrarPre = valorIngresosPre - valorEgresosPre;
+                    xAI1123Pre = xAI1123Pre + ValorMostrarPre;
+                    double Desviacion = ValorMostrarPre - ValorMostrar;
+                   <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (ValorMostrarPre != 0)
+                        {@ValorMostrarPre.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                   </td>
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @if (ValorMostrar != 0)
+                        {@ValorMostrar.ToString("$#,###")}
+                        else
+                        {@Html.Raw("$0")}
+                    </td>  
+                    <td style="text-align: right;font-weight: bold;color:blue;">
+                        @Desviacion.ToString("$#,###")
+                    </td>  
+                    <td></td>
+                }
+                    @if (@ViewBag.Mes > 12)
+                    {
+                        double PSename = (xAI1123 / xTotSename) * 100; 
+                     <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI1123 != 0)
+                       { @xAI1123.ToString("$#,###") }
+                       else
+                       {@Html.Raw("$ 0")}
+                    </th>
+                    <th style="text-align: right; font-weight: bold;color:blue;"> 
+                       @if (xAI1123 != 0 && xTotSename != 0)
+                       { @PSename.ToString("#.##") }
+                       else
+                       {@Html.Raw(" 0")}
+                    %</th>
+                    }
+            </tr>
+               <tr style="background-color: silver; text-align: left">
+                <th >Saldo Final</th>
+                                 @{ 
+                    double xTotDesfinan2 = 0; double xTotDesfinan2Pre = 0;
+                                }
+                                @foreach (var mes in Meses)
+                                {
+                                    double Valorx = new double();
+                                    double valorIngresos = BonoAguilnado[mes] + Sobreatencion[mes] + Subvencion[mes] + IvaIngreso[mes];
+                                    double valorEgresos = Inversion[mes] + Funcionamiento[mes] + ApTecnico[mes] + APBeneficiario[mes] + ProvisionIndemnizacion[mes] + Remuneracion[mes] + IvaEgreso[mes];
+                                    double valorFinancia = (FinanciamientoIngreso[mes] + IngresosPrestamo[mes]) - (EgresosPrestamo[mes] + FinanciamientoEgreso[mes]);
+                                    double ValorDAP = (InteresesDAP[mes] + RescateDAP[mes]) - DAP[mes];
+
+                                    double ValorxPre = new double();
+                                    double valorIngresosPre = BonoAguilnadoPre[mes] + SobreatencionPre[mes] + SubvencionPre[mes];
+                                    double valorEgresosPre = InversionPre[mes] + FuncionamientoPre[mes] + ApTecnicoPre[mes] + APBeneficiarioPre[mes] + ProvisionIndemnizacionPre[mes] + RemuneracionPre[mes];
+                                    double valorFinanciaPre = (FinanciamientoIngresoPre[mes] + IngresosPrestamoPre[mes]) - (EgresosPrestamoPre[mes] + FinanciamientoEgresoPre[mes]);
+                                    double ValorDAPPre = (InteresesDAPPre[mes] + RescateDAPPre[mes]) - DAPPre[mes];
+
+                                    Valorx = saldoInicial[mes] + (valorIngresos - valorEgresos) + valorFinancia + ValorDAP; 
+                                    xTotDesfinan2 += Valorx;
+                                    ValorxPre = saldoInicialPre[mes] + (valorIngresosPre - valorEgresosPre) + valorFinanciaPre + ValorDAPPre;
+                                    xTotDesfinan2Pre += ValorxPre;
+                                    double Desviacion = ValorxPre - Valorx;
+
+                                    <td style="background-color: silver; text-align: right;font-weight: bold;color:blue;">
+                                     @if (ValorxPre != 0)
+                                        {
+                                            @(ValorxPre.ToString("$#,###"))
+                                        }
+                                        else
+                                        {
+                                             @Html.Raw("$0")
+                                        }
+                                    </td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold;color:blue;">
+                                        @if (Valorx != 0)
+                                        {
+                                            @(Valorx.ToString("$#,###"))
+                                        }
+                                        else
+                                        {
+                                             @Html.Raw("$0")
+                                        }
+                                      
+                                    </td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold;color:blue;">
+                                        @Desviacion.ToString("$#,###")
+                                    </td>  
+                                    <td></td>
+                                }
+                                
+                              @if (@ViewBag.Mes > 12)
+                              {
+
+                                  double PSename = (xTotDesfinan2 / xTotSename) * 100; 
+                               
+                                <th style="background-color: silver; text-align: right; font-weight: bold;color:blue">  
+                                    @if (xTotDesfinan2 != 0)
+                                    {
+                                     @xTotDesfinan2.ToString("$#,###")
+                                    }
+                                    else
+                                    {@Html.Raw("$0")}
+                                </th>
+                                  <th style="background-color: silver; text-align: right; font-weight: bold;color:blue">  
+                                    @if (xTotDesfinan2 != 0 && xTotSename != 0)
+                                    {
+                                    @PSename.ToString("#.##")
+                                    }
+                                    else
+                                    {@Html.Raw("0")}
+                                %</th>
+                              } 
+            </tr>
+        </table>
+		<br><br>
+    </div>
+    }
+    catch
+    {
+
+    }
+}

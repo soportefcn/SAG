@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Cuentas";
     Layout = "~/Views/Shared/_Layoutinf.cshtml";
+    string color = "blue";
 }
     <script type="text/javascript">
         $(document).ready(function() {
@@ -85,45 +86,46 @@
         </tr>
     @foreach (var item in Model)
     {
+        int monto = item.Monto; color = "blue";
         if (item.Estado == 0)
         {
            
-            <tr style="text-decoration: line-through;">        
-            
-             <td>@item.Tipo  </td>
-            <td>@item.Region   </td>
-            <td>@item.codCodeni </td>
-            <td>@item.ProyectoNombre </td>
-            <td align="center">
+            <tr style="text-decoration: line-through;">                  
+                <td>@item.Tipo  </td>
+                <td>@item.Region   </td>
+                <td>@item.codCodeni </td>
+                <td>@item.ProyectoNombre </td>
+                <td align="center">
                 @{ 
-            if (item.TipoComprobanteID == 1)
-            {
+                    if (item.TipoComprobanteID == 1)
+                    {
                         <a href="@Url.Action("Edit", "Ingresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Ingreso  <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /> </a>
-            }
-            if (item.TipoComprobanteID == 2)
-            { 
+                    }
+                    if (item.TipoComprobanteID == 2)
+                    { 
                          <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-            }
-            if (item.TipoComprobanteID == 3)
-            { 
-                    <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-            }
-            if (item.TipoComprobanteID == 4)
-            { 
-                    <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Gasto Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-            } 
+                    }
+                    if (item.TipoComprobanteID == 3)
+                    {
+                        monto = item.Monto * -1; color = "RED";
+                        <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    }
+                    if (item.TipoComprobanteID == 4)
+                    { 
+                        <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Gasto Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
+                    } 
                  }
-            </td>
-             <td>
-                @Html.DisplayFor(modelItem => item.NumeroComprobante)
-            </td>
-            <td>
-                @item.Fecha.Value.ToShortDateString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumeroComprobante)
+                </td>
+                <td>
+                    @item.Fecha.Value.ToShortDateString()
             </td>
             <td>@item.NombreCuenta</td>
             <td>@item.Cheque</td>
             <td align="right">
-                @item.Monto.ToString("###,##")
+                @monto.ToString("###,##")
             </td>
             <td>@item.CtaCte</td>
             <td>@item.Glosa</td>
@@ -138,24 +140,25 @@
             <td>@item.codCodeni </td>
             <td>@item.ProyectoNombre </td>
             <td align="center">
-                @{ 
-            if (item.TipoComprobanteID == 1)
-            {
+            @{ 
+                if (item.TipoComprobanteID == 1)
+                {
                         <a href="@Url.Action("Edit", "Ingresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Ingreso  <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /> </a>
-            }
-            if (item.TipoComprobanteID == 2)
-            { 
+                }
+                if (item.TipoComprobanteID == 2)
+                { 
                          <a href="@Url.Action("Edit", "Egresos", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();">Egreso <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-            }
-            if (item.TipoComprobanteID == 3)
-            { 
+                }
+                if (item.TipoComprobanteID == 3)
+                {
+                    monto = item.Monto * -1; color = "RED";
                     <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-            }
-            if (item.TipoComprobanteID == 4)
-            { 
+                }
+                if (item.TipoComprobanteID == 4)
+                {    
                     <a href="@Url.Action("Edit2", "Reintegros", new { id = item.IDComprobante })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"> Gasto Reintegros <img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
-            } 
-                 }
+                } 
+             }
             </td>
              <td>
                 @Html.DisplayFor(modelItem => item.NumeroComprobante)
@@ -166,7 +169,8 @@
             <td>@item.NombreCuenta</td>
             <td>@item.Cheque</td>
             <td align="right">
-                @item.Monto.ToString("###,##")
+                <span style="color:@Html.Raw(color)"> @monto.ToString("###,##")</span>
+               
             </td>
             <td>@item.CtaCte</td>
             <td>@item.Glosa</td>

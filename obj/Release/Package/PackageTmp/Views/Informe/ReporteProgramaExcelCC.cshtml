@@ -70,25 +70,11 @@
     th {
         font-size: 11px !important;
     }
-     .xlCelda {       
-            font-family: "Arial Narrow", sans-serif !important        
-            text-align: right !important;
-            vertical-align: middle !important;
-            border: .5pt solid black !important;
-            width:200px !important;
-        }
 </style>
 <style media="screen">
     th {
         font-size: 11px !important;
     }
-         .xlCelda {       
-            font-family: "Arial Narrow", sans-serif !important        
-            text-align: right !important;
-            vertical-align: middle !important;
-            border: .5pt solid black !important;
-            width:200px !important;
-        }
 
 </style>
 
@@ -154,8 +140,7 @@
             <table border="1" class="table table-bordered table-hover">
                 <tr>
                     <tH>Estado de Resultado</tH>
-                    
-                    <tH colspan="4">@db.Proyecto.Find(id).NombreLista </tH>
+                    <tH colspan="3">@db.Proyecto.Find(id).NombreLista </tH>
                 </tr>
                 <tr>
 
@@ -171,10 +156,10 @@
                 <tr>
                     @foreach (var mes in Meses)
                     {
-                        <th class="xlCelda">Pres $</th>
-                        <th class="xlCelda">Real $</th>
-                        <th class="xlCelda">Desv. $</th>
-                        <th class="xlCelda">Desv. %</th>
+                        <th style="width:80px !important;">Pres $</th>
+                        <th style="width:80px !important;">Real $</th>
+                        <th style="width:80px !important;">Desv. $</th>
+                        <th style="width:80px !important;">Desv. %</th>
                
                     }
                    @if (@ViewBag.Mes > 12)
@@ -226,7 +211,7 @@
 
                            }
                        }
-                  <td class="xlCelda"> 
+                  <td style="text-align: right;font-weight: bold;"> 
                                 @if (SSaldoPre != 0)
                                {
                                                  @SSaldoPre.ToString("$#,###")
@@ -234,7 +219,7 @@
                                else
                                {@Html.Raw("$0")}
                   </td>
-                <td class="xlCelda">
+                <td style="text-align: right;font-weight: bold;">
                    
                                @if (SSaldo != 0)
                                {
@@ -248,7 +233,7 @@
                        double diffTotal = (SSaldo - SSaldoPre);
                        double diffTotalPor = ((diffTotal) / (SSaldoPre));
                                         
-                <td class="xlCelda"> 
+                <td style="text-align: right;font-weight: bold;"> 
                                                    @if (diffTotal != 0)
                                {
                                                  @diffTotal.ToString("$#,###")
@@ -256,7 +241,7 @@
                                else
                                {@Html.Raw("$0")}
                  </td>
-                <td class="xlCelda"> @diffTotalPor.ToString("## %")</td>
+                <td style="text-align: right;font-weight: bold;"> @diffTotalPor.ToString("## %")</td>
               
                 
                                         saldoInicial[mes] = SSaldo;
@@ -265,7 +250,7 @@
                    }
                    if (@ViewBag.Mes > 12)
                    { 
-                        <th class="xlCelda"> @saldoInicial[1].ToString("$#,###")</th>
+                        <th style="text-align: right;font-weight: bold;"> @saldoInicial[1].ToString("$#,###")</th>
                    } 
             }         
         </tr>
@@ -309,7 +294,7 @@
                                         double diffTotalPor = 0;
                                         xTotSaldo = xTotSaldo + totalIngresosEgreso[mesTotal];
                                          
-                                        <th class="xlCelda">
+                                        <th style="background-color: silver; text-align: right;font-weight: bold; ">
                                             @if (totalesPresupuestosIngresos[mesTotal] != 0)
                                             {
                                                 @totalesPresupuestosIngresos[mesTotal].ToString("$#,###")
@@ -319,7 +304,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </th>
-                                        <th class="xlCelda">
+                                        <th style="background-color: silver; text-align: right;font-weight: bold; ">
                                             @if (totalIngresosEgreso[mesTotal] != 0)
                                             {
                                                 @totalIngresosEgreso[mesTotal].ToString("$#,###")
@@ -327,7 +312,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </th>
-                                        <th class="xlCelda">
+                                        <th style="background-color: silver; text-align: right;font-weight: bold; ">
                                              @if (diffTotal != 0)
                                             {
                                                 @diffTotal.ToString("$#,###")
@@ -335,14 +320,14 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </th>
-                                        <th class="xlCelda"> @diffTotalPor.ToString("## %")</th>
+                                        <th style="background-color: silver; text-align: right;font-weight: bold; "> @diffTotalPor.ToString("## %")</th>
                                     }
                                     else if (cuenta.Tipo == "E")
                                     {
                                         double diffTotal = (totalEgreso[mesTotal] - totalPresupuestoE[mesTotal]);
                                         double diffTotalPor = 0 ;
                                         xTotSaldo = xTotSaldo + totalEgreso[mesTotal];
-                                        <th class="xlCelda">
+                                        <th style="background-color: silver; text-align: right;font-weight: bold; ">
                                             @if (totalPresupuestoE[mesTotal] != 0)
                                             {
                                                 @totalPresupuestoE[mesTotal].ToString("$#,###")
@@ -352,7 +337,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </th>
-                                        <th class="xlCelda">
+                                        <th style="background-color: silver; text-align: right; font-weight: bold;">
                                             @if (totalEgreso[mesTotal] != 0)
                                             {
                                                 @totalEgreso[mesTotal].ToString("$#,###")
@@ -361,7 +346,7 @@
                                             {@Html.Raw("$0")}
 
                                         </th>
-                                        <th class="xlCelda">
+                                        <th style="background-color: silver; text-align: right;font-weight: bold; ">
                                              @if (diffTotal != 0)
                                             {
                                                 @diffTotal.ToString("$#,###")
@@ -370,7 +355,7 @@
                                             {@Html.Raw("$0")}
 
                                         </th>
-                                        <th class="xlCelda">@diffTotalPor.ToString("## %")</th>
+                                        <th style="background-color: silver; text-align: right;font-weight: bold; ">@diffTotalPor.ToString("## %")</th>
 
                                     }
 
@@ -384,7 +369,7 @@
                              { 
                                 
                                  
-                                <th class="xlCelda"> 
+                                <th style="background-color: silver; text-align: right; font-weight: bold;"> 
                                      @if (xTotSaldo != 0)
                                      {
                                       @xTotSaldo.ToString("$#,###") }
@@ -399,7 +384,7 @@
                              break;
                         case 2:
                             <tr >
-                                <th class="xlCelda">TOTAL INGRESOS</th>
+                                <th style="background-color: silver; text-align: left">TOTAL INGRESOS</th>
                                       @{ 
                              double xTotIng = 0;
                                 }
@@ -410,7 +395,7 @@
                                     double valorDif = valorIngresos - valorPresupuesto;
                                     double valorDifPor = (valorDif) / (valorPresupuesto);
      
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                         @if (valorPresupuesto != 0)
                                         {@valorPresupuesto.ToString("$#,###")
                                             
@@ -418,7 +403,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold;">
                                         @if (valorIngresos != 0)
                                         {@valorIngresos.ToString("$#,###")
                                             {
@@ -429,13 +414,13 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">@valorDif.ToString("$#,###")</td>
-                                    <td class="xlCelda">@valorDifPor.ToString("## %")</td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">@valorDif.ToString("$#,###")</td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">@valorDifPor.ToString("## %")</td>
    
                                 }
                              @if (@ViewBag.Mes > 12)
                              { 
-                                <th class="xlCelda"> 
+                                <th style="background-color: silver; text-align: right; font-weight: bold;"> 
                                       @if (xTotIng != 0)
                                       {
                                       @xTotIng.ToString("$#,###") 
@@ -463,7 +448,7 @@
                                     double valorDif = valorEgresos - valorPresupuesto;
                                     double valorDifPor = 0;
 
-                                    <td class="xlCelda" >
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                           @if (valorPresupuesto != 0)
                                         {@valorPresupuesto.ToString("$#,###")
                                             valorDifPor = (valorDif) / (valorPresupuesto);
@@ -472,7 +457,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
                                         @if (valorEgresos != 0)
                                         {@valorEgresos.ToString("$#,###")
                                             xTotegreso += valorEgresos;
@@ -480,7 +465,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                          @if (valorDif != 0)
                                         {@valorDif.ToString("$#,###")
                                        
@@ -489,11 +474,11 @@
                                         {@Html.Raw("$0")}
 
                                     </td>
-                                    <td class="xlCelda">@valorDifPor.ToString("## %")</td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">@valorDifPor.ToString("## %")</td>
                                 }
                                  @if (@ViewBag.Mes > 12)
                                  { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
                                       @if (xTotegreso != 0)
                                       {
                                     @xTotegreso.ToString("$#,###") 
@@ -523,7 +508,7 @@
 
                                     if (cuenta.Tipo == "I" || cuenta.Tipo == null)
                                     {
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right;font-weight: bold; ">
                                             @if (valorPresupuesto != 0)
                                             {@valorPresupuesto.ToString("$#,###")
                                                 {
@@ -534,7 +519,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right; font-weight: bold; ">
                                             @if (valorIngresos != 0)
                                             {@valorIngresos.ToString("$#,###")
                                                 {
@@ -546,7 +531,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style="text-align: right;font-weight: bold; ">
                                              @if (valorDif != 0)
                                             {@valorDif.ToString("$#,###")
                        
@@ -554,7 +539,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">@valorDifPor.ToString("##.# %")</td>
+                                        <td style="text-align: right;font-weight: bold; ">@valorDifPor.ToString("##.# %")</td>
 
                                     }
                                     else if (cuenta.Tipo == "E" || cuenta.Tipo == null)
@@ -578,7 +563,7 @@
 
                                         double DifEgresos = valorEgresos - valorPresupuestoE;
                                         double DifEgresosPor = 0;
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right;font-weight: bold; ">
                                             @if (valorPresupuestoE != 0)
                                             {@valorPresupuestoE.ToString("$#,###")
                                                 {
@@ -593,7 +578,7 @@
                                                 else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right; font-weight: bold; ">
                                             @if (valorEgresos != 0)
                                             {@valorEgresos.ToString("$#,###")
                                                 {
@@ -610,7 +595,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right;font-weight: bold; ">
                                              @if (DifEgresos != 0)
                                             {@DifEgresos.ToString("$#,###")
            
@@ -618,7 +603,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right;font-weight: bold; ">
                                              @if (DifEgresosPor != 0)
                                              {@DifEgresosPor.ToString("##.# %")}
                                               else
@@ -631,7 +616,7 @@
                                 }
                                @if (@ViewBag.Mes > 12)
                                { 
-                                <th class="xlCelda">  
+                                <th style="text-align: right; font-weight: bold;">  
                                     @if (xTot4 != 0)
                                     {
                                      @xTot4.ToString("$#,###")
@@ -667,7 +652,7 @@
                                     double TotalFlujoPre = valorPresupuestoflujoIng - valorPresupuestoflujoEgreso;
                                     double valorDif = TotalFlujo - TotalFlujoPre; 
                                     double valorDifPor = 0;
-                                     <td class="xlCelda">
+                                     <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                         @if (TotalFlujoPre != 0)
                                         {
                                              
@@ -677,7 +662,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right; font-weight: bold; ">
                                         @if (TotalFlujo != 0)
                                         {
                                              
@@ -686,7 +671,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                          @if (valorDif != 0)
                                         {
                                              
@@ -695,7 +680,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                         @if (valorDifPor != 0)
                                         {@valorDifPor.ToString("##.# %")}
                                               else
@@ -705,7 +690,7 @@
                                 }
                                 @if (@ViewBag.Mes > 12)
                                 { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver;text-align: right; font-weight: bold;">  
                                     @if (xTotflujo != 0)
                                     {
                                      @xTotflujo.ToString("$#,###")
@@ -732,7 +717,7 @@
                                     double DifEgresosPor = 0;
                                     valorEgresos = valorEgresos - valorReintegro;
                                     
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                            @if (valorPresupuestoE != 0)
                                         {
                                              
@@ -742,7 +727,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight :bold; ">
                                         @if (valorEgresos != 0)
                                         {@valorEgresos.ToString("$#,###")
                                             {
@@ -754,7 +739,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                         @if (DifEgresos != 0)
                                         {
                                              
@@ -764,7 +749,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                         @if (DifEgresosPor != 0)
                                         {
                                              
@@ -781,7 +766,7 @@
                                 }
                               @if (@ViewBag.Mes > 12)
                               { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver;text-align: right; font-weight: bold;">  
                                     @if (xTotPersonal != 0)
                                     {
                                      @xTotPersonal.ToString("$#,###")
@@ -794,7 +779,7 @@
                               break;
                         case 7:
                             <tr >
-                                <th class="xlCelda">Saldo Antes Del Financiamiento</th>
+                                <th style="background-color: silver; text-align: left">Saldo Antes Del Financiamiento</th>
                                      @{
                               double xTotSaldoA = 0;
                                 }
@@ -815,7 +800,7 @@
                                     xTotSaldoA += Valorx;
                                     double DifEgresos = Valorx - ValorxPre;
                                     double DifEgresosPor = 0;
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                         @if (ValorxPre != 0)
                                         { @(ValorxPre.ToString("$#,###"))
                                             DifEgresosPor = DifEgresos / ValorxPre;
@@ -823,7 +808,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver; text-align: right; font-weight: bold; ">
                                         @if (Valorx != 0)
                                         { @(Valorx.ToString("$#,###"))
                                          
@@ -832,7 +817,7 @@
                                         {@Html.Raw("$0")}
                                                                      
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                           @if (DifEgresos != 0)
                                         { @(DifEgresos.ToString("$#,###"))
                                          
@@ -840,7 +825,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style=" background-color: silver;text-align: right;font-weight: bold; ">
                                         @if (DifEgresosPor != 0)
                                         { @(DifEgresosPor.ToString("##.# %"))
                                          
@@ -865,7 +850,7 @@
 
                             double ValorxT = saldoInicial[1] + (valorIngresosT - valorEgresosT);
                             // xTotSaldoA += Valorx;
-                                <th class="xlCelda">  
+                                <th style="background-color: silver;text-align: right; font-weight: bold;">  
                                     @if (ValorxT != 0)
                                     {
                                      @ValorxT.ToString("$#,###")
@@ -905,7 +890,7 @@
 
                                     if (cuenta.Tipo == "I" || cuenta.Tipo == null)
                                     {
-                                        <td class="xlCelda">                             
+                                        <td style="text-align: right;font-weight: bold; ">                             
                                            @if (valorPresupuesto != 0)
                                             {@valorPresupuesto.ToString("$#,###")
                                                 valorDifPor = (valorDif) / (valorPresupuesto) ;
@@ -915,7 +900,7 @@
                                             {@Html.Raw("$0")}
 
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right; font-weight: bold; ">
                                             @if (valorIngresos != 0)
                                             {@valorIngresos.ToString("$#,###")
                                      
@@ -923,7 +908,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style="text-align: right;font-weight: bold; ">
                                            @if (valorDif != 0)
                                             {@valorDif.ToString("$#,###")
                                      
@@ -931,7 +916,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style="text-align: right;font-weight: bold; ">
                                              @if (valorDifPor != 0)
                                             {@valorDifPor.ToString("##.# %")
                                      
@@ -949,7 +934,7 @@
                                         double DifEgresosPor = (DifEgresos / valorPresupuestoE) ;
                                         valorEgresos = valorEgresos - valorRngresos2;
                                         xTot9 += valorEgresos;
-                                        <td class="xlCelda">
+                                        <td style="text-align: right;font-weight: bold; ">
                                              @if (valorPresupuestoE != 0)
                                             {@valorPresupuesto.ToString("$#,###")
                                                 DifEgresosPor = (DifEgresos) / (valorPresupuestoE);
@@ -958,7 +943,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style=" text-align: right; font-weight: bold; ">
                                             @if (valorEgresos != 0)
                                             {@valorEgresos.ToString("$#,###")
                                                 {
@@ -969,7 +954,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td style=class="xlCelda">
+                                        <td style="text-align: right;font-weight: bold; ">
                                               @if (DifEgresos != 0)
                                             {@DifEgresos.ToString("$#,###")
                 
@@ -977,7 +962,7 @@
                                             else
                                             {@Html.Raw("$0")}
                                         </td>
-                                        <td class="xlCelda">
+                                        <td style="text-align: right;font-weight: bold; ">
                                              @if (DifEgresosPor != 0)
                                             {@DifEgresosPor.ToString("##.# %")
                                      
@@ -992,7 +977,7 @@
                                 }
                          @if (@ViewBag.Mes > 12)
                          { 
-                                <th class="xlCelda">  
+                                <th style="text-align: right; font-weight: bold;">  
                                     @if (xTot9 != 0)
                                     {
                                      @xTot9.ToString("$#,###")
@@ -1019,7 +1004,7 @@
                                       double valorPresupuestoE = double.Parse(presupuestoDetalle.Where(e => e.Mes == mesE && e.Periodo == periodo && (e.CuentaID == 63 || e.CuentaID == 155 || e.CuentaID == 156 || e.CuentaID == 159)).Sum(m => m.Monto).ToString());
                                       double DifEgresos = valorEgresosE - valorPresupuestoE;
                                     double DifEgresosPor = 0;
-                                      <td class="xlCelda">
+                                      <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                          @if (valorPresupuestoE != 0)
                                          {
                                             @(valorPresupuestoE.ToString("$#,###"))
@@ -1030,7 +1015,7 @@
                                        @Html.Raw("$0")
                                        }
                                       </td>
-                                        <td class="xlCelda">
+                                        <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                        @if (valorEgresosE != 0)
                                        {
                                             @(valorEgresosE.ToString("$#,###"))
@@ -1040,7 +1025,7 @@
                                        @Html.Raw("$0")
                                        }
                                     </td>
-                                      <td class="xlCelda">
+                                      <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                        @if (DifEgresos != 0)
                                        {
                                             @(DifEgresos.ToString("$#,###"))
@@ -1050,7 +1035,7 @@
                                        @Html.Raw("$0")
                                        }
                                       </td>
-                                      <td class="xlCelda">
+                                      <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                        @if (DifEgresosPor != 0)
                                        {
                                             @(DifEgresosPor.ToString("##.# %"))
@@ -1063,7 +1048,7 @@
                                   }
                               @if (@ViewBag.Mes > 12)
                               { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
                                     @if (xTotEg0 != 0)
                                     {
                                      @xTotEg0.ToString("$#,###")
@@ -1087,8 +1072,8 @@
                                     valorIngresos = valorIngresos - (valorEgresosE);
                                     xTotFinam += valorIngresos;
                                     
-                                    <td class="xlCelda"></td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
+                                    <td style=" background-color: silver;text-align: right; font-weight: bold; ">
                                         @if (valorIngresos != 0)
                                         {@valorIngresos.ToString("$#,###")
                            
@@ -1096,13 +1081,13 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda"></td>
-                                    <td class="xlCelda"></td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
 
                                 }
                               @if (@ViewBag.Mes > 12)
                               { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
                                     @if (xTotFinam != 0)
                                     {
                                      @xTotFinam.ToString("$#,###")
@@ -1143,8 +1128,8 @@
                                     xTotDesfinan += Valorx;
                                     
 
-                                    <td ></td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                         @if (Valorx != 0)
                                         {
                                             @(Valorx.ToString("$#,###"))
@@ -1155,8 +1140,8 @@
                                         }
                                       
                                     </td>
-                                    <td class="xlCelda"></td>
-                              <td class="xlCelda"></td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
+                              <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
 
 
 
@@ -1180,7 +1165,7 @@
 
 
                                   double ValorxT = saldoInicial[1] + (valorIngresosT - valorEgresosT) + valorIngresosFinanT;
-                                <th class="xlCelda">  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
                                     @if (ValorxT != 0)
                                     {
                                      @ValorxT.ToString("$#,###")
@@ -1259,7 +1244,7 @@
                                     xxTotOperac += xTotOperac;
                                     double DifEgresos = xTotOperac - TotFinanPre;
                                     double DifEgresosPor = 0;
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                            @if (TotFinanPre != 0)
                                          {@TotFinanPre.ToString("$#,###")
                                             {
@@ -1271,7 +1256,7 @@
                                         {@Html.Raw("$0")}
                                     </td>
                                     
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
                                         @if (xTotOperac != 0)
                                          {@xTotOperac.ToString("$#,###")
                                             {
@@ -1282,14 +1267,14 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                          @if (DifEgresos != 0)
                                          {@DifEgresos.ToString("$#,###")
                                         }
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                          @if (DifEgresosPor != 0)
                                          {@DifEgresosPor.ToString("##.# %")
                                         }
@@ -1305,7 +1290,7 @@
                                 }
                                @if (@ViewBag.Mes > 12)
                                { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
                                     @if (xxTotOperac != 0)
                                     {
                                      @xxTotOperac.ToString("$#,###")
@@ -1360,7 +1345,7 @@
                                     double DifEgresosPor = 0;
 
                                     xxTot71 += xTot71;
-                                 <td class="xlCelda">
+                                 <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                        @if (xTot71Pre != 0)
                                         {@xTot71Pre.ToString("$#,###")
                                             DifEgresosPor = (DifEgresos / xTot71Pre);
@@ -1369,7 +1354,7 @@
                                         {@Html.Raw("$0")}
                                  </td>
                                     
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
                                         @if (xTot71 != 0)
                                         {@xTot71.ToString("$#,###")
                                             {
@@ -1381,7 +1366,7 @@
                                         {@Html.Raw("$0")}
                                     </td>
             
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                          @if (DifEgresos != 0)
                                         {    @(DifEgresos.ToString("$#,###"))   
                                                               
@@ -1389,7 +1374,7 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; ">
                                          @if (DifEgresosPor != 0)
                                          { @(DifEgresosPor.ToString("##.# %"))   
                                           
@@ -1405,7 +1390,7 @@
                                 }
                                @if (@ViewBag.Mes > 12)
                                { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
                                     @if (xxTot71 != 0)
                                     {
                                      @xxTot71.ToString("$#,###")
@@ -1437,8 +1422,8 @@
                                     double DifEgresos = valorEgresos - valorPresupuestoE;
                                     double DifEgresosPor = (DifEgresos / valorPresupuestoE) * 100;
        
-                                    <td class="xlCelda"></td>
-                                    <td class="xlCelda">
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
+                                    <td style="background-color: silver;text-align: right; font-weight: bold;">
                                         @if (valorEgresos != 0)
                                         {@valorEgresos.ToString("$#,###")
                                             {
@@ -1449,8 +1434,8 @@
                                         else
                                         {@Html.Raw("$0")}
                                     </td>
-                                    <td class="xlCelda"></td>
-                                    <td class="xlCelda"></td>
+      <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
+                                    <td style="background-color: silver; text-align: right;font-weight: bold; "></td>
                 
             
                                         totalEgreso[mes] = 0;
@@ -1460,7 +1445,7 @@
                                 }
                               @if (@ViewBag.Mes > 12)
                               { 
-                                <th class="xlCelda">  
+                                <th style="background-color: silver; text-align: right; font-weight: bold;">  
                                     @if (xTotInversion != 0)
                                     {
                                      @xTotInversion.ToString("$#,###")

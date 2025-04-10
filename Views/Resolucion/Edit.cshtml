@@ -4,7 +4,8 @@
     ViewBag.Title = "Editar";
     List<SAG2.Models.ResolucionDescarga> TDocumento = new List<SAG2.Models.ResolucionDescarga>();
     TDocumento = ViewBag.TrasladoDocumento;
-    
+    string Fec = Model.FechaInicio.ToString("yyyyMMdd");
+    string NomArch = "RES_" + Fec + "_" + Model.tipo.Substring(0, 2) + "_" + Model.Proyecto.TipoProyecto.Sigla + "_" + Model.Proyecto.CodCodeni + ".pdf"; 
 }
 
 
@@ -76,7 +77,7 @@
                        @if (ViewBag.Archivo == "si") { 
                 foreach(var Documento in TDocumento  ){
                    
-                    <a class="btn btn-info" href="@Url.Action("Download","BienAutorizacion",new {ImageName = Documento.NombreArchivo })">Descargar</a>
+                  <a class="btn btn-info" href="@Url.Action("Download","Resolucion",new {ImageName = Documento.NombreArchivo, NomArch = NomArch })">Descargar</a>
                 }
             }
                     <div class ="form-group form-inline" style=" margin-left: 40px;">

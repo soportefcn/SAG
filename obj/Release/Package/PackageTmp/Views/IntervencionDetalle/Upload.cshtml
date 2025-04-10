@@ -30,7 +30,7 @@
                 <div class="panel-body">
                     <div class="form-inline">
                         <div class="form-group" style="margin-right: 10px;">
-                            @Html.Label("Proyecto:")
+                         <label>Programa</label>
                         </div>
                         <div class="form-group" style="margin-right: 10px;">
                             @Html.DropDownListFor(model => model.ProyectoID, new SelectList(ViewBag.listadoproyecto, "Value", "Text", IDproyecto), new { @class = "form-control js-autocomplete", required = "required" })

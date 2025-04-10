@@ -1,0 +1,77 @@
+﻿@model SAG2.Models.HallazgoAvance
+
+@{
+    ViewBag.Title = "HallazgoAvance";
+   SAG2.Models.HallazgoCierre Registro = new SAG2.Models.HallazgoCierre();
+   Registro = ViewBag.Hallazgo;
+}
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<div id="SAGBox">
+<h3>Hallazgo de Cierre</h3>
+
+<table class="table-condensed table-bordered table-striped">
+    <tr class="info">
+        <th>
+           Nombre Programa
+        </th>
+        <th>
+            Cuenta
+        </th>
+        <th>
+            Clasificación
+        </th>
+        <th>
+            Observacion
+        </th>
+        <th>
+          Estado
+        </th>
+    </tr>
+    <tr> 
+        <td>@Registro.proyecto.NombreLista</td>
+        <td>@Registro.conceptoCalsificacion.Descripcion</td>
+         <td>@Registro.conceptoCalsificacion.clasificacion.Nombre</td>
+         <td>@Registro.Observaciones</td>
+         <td>@Registro.etapa.Descripcion</td>
+    </tr>
+    </table>
+    <br />
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+      
+    <fieldset>
+                 <div class="panel panel-default">
+                    <div class="panel-heading"><h3><b>Avance</b></h3></div>
+                    <div class="panel-body">
+                        <input type="hidden" name="HallazgocierreID" id="HallazgocierreID" value="@Registro.ID" />
+                        <div class="form-group form-inline">
+                            <div class="form-group">
+                                <label>Comentario:</label><br />                          
+                                <textarea class="form-control" cols="20" id="Observaciones" length="300" name="Observaciones" placeholder="Comentario" rows="3" style="width: 865px;" required=""></textarea>
+                            </div>
+                            </div>
+                          <div class="form-group form-inline">
+                            <div class="form-group">
+                                <label>Estado</label>
+                                 @Html.DropDownList("EtapaID", null, "-- Seleccione Estado--", new { @class = "form-control js-autocomplete", @style = "width: 200px;" }) 
+                            </div>
+                          </div>                  
+                    </div>
+                        <div class="panel-footer">
+                            <div style="width: 400px ; display:inline-block">
+
+                                <input type="submit" value="Guardar" class="btn btn-primary" />
+                            </div>
+                        </div>
+                 </div>
+
+
+    </fieldset>
+}
+
+
+
+</div>

@@ -53,6 +53,8 @@ input[type="text"], textarea
     <input type="hidden" name="ImprimirComprobante" id="ImprimirComprobante" value="false" />
     <input type="hidden" name="PreguntarImprimir" id="PreguntarImprimir" value="true" />
 	<input type="hidden" name="NDocumento" id="NDocumento" value="1" />
+    <input type="hidden" name="GestionIva" id="GestionIva" value="@ViewBag.GestionIva" />
+  
     <fieldset>
        
 
@@ -94,7 +96,26 @@ input[type="text"], textarea
             <div class="alert alert-warning" style="display:none;" id="DRespaldo"><strong>Doc. Respaldo :</strong><label id="Respaldo"></label></div>
 
         </div>
-
+      <div id="formularioGestionIva" style="display: none;">
+           <div class ="form-group form-inline">
+                <div class="form-group">
+                   <label> Valor Neto</label> 
+                    <br />     
+                    <input class="form-control"  id="ValorNeto" name="ValorNeto" type="text" value="0">
+                 </div>
+                 <div class="form-group">
+                    <label>% Iva</label>  
+                    <br />     
+                    <input class="form-control"  id="Iva" name="Iva" type="text" value="@ViewBag.Iva">
+                 </div>
+                  <div class="form-group">
+                    <label> Valor Iva </label>
+                    <br />     
+                    <input class="form-control"  id="ValorIva" name="ValorIva" type="text" value="0">
+                 </div>
+          </div>     
+        </div>
+      
       <div class ="form-group form-inline">
        <div class="form-group">
          @Html.LabelFor(model => model.Monto_Ingresos)
@@ -108,17 +129,16 @@ input[type="text"], textarea
       <br />
         @Html.TextBoxFor(model => model.Cheque, new { @class = "form-control" })
       </div>
-          <div id="planilla">
-<div class="form-group" style="margin-right: 30px;" >
-    <br />
-   
- <input type="button" value="Importar Planilla" id="planillaB"  class="btn btn-danger" />
-</div>
-    <div class="form-group">
+      <div id="planilla">
+            <div class="form-group" style="margin-right: 30px;" >
+                <br />   
+                <input type="button" value="Importar Planilla" id="planillaB"  class="btn btn-danger" />
+            </div>
+             <div class="form-group">
                     <input type="file" name="file" id="file" />
                 </div>
               </div>
-     </div>
+            </div>
       <br />
          <div class ="form-group form-inline">
       <div class="form-group" style="margin-right: 30px;">
@@ -267,5 +287,29 @@ input[type="text"], textarea
         }
      
     });
+    
+    $("#ValorNeto").change(function () {
+        var  PIva = 19;
+        var Vneto = $("#ValorNeto").val();
+        var VIva = (PIva * Vneto) / 100;
+        $('#ValorIva').val(Math.round(VIva));
+        var total = parseInt(Vneto) + parseInt(Math.round(VIva));
+        $('#Monto_Ingresos').val(total);
+
+    });
+
+    $(document).ready(function () {
+
+      
+        if ($("#GestionIva").val() == 1) {
+            $('#formularioGestionIva').css('display', '')
+             
+            } 
+        });
+
+
+  
+
+
 </script>
 

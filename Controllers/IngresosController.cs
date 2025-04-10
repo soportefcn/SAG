@@ -92,11 +92,20 @@ namespace SAG2.Controllers
 
         public ActionResult Create()
         {
+            decimal Iva = 0;
             int periodo = (int)Session["Periodo"];
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             Session.Remove("DetalleIngreso");
             ViewBag.NroComprobante = "1";
+            ViewBag.GestionIva = db.Proyecto.Find(Proyecto.ID).MI;
+            try{
+               var  ReferenciaIva = db.Referencia.Where(d => d.PREDETERMINADO == 1 && d.GRUPO.Equals("IVA")).FirstOrDefault();
 
+               Iva = ReferenciaIva.VALOR;
+            }catch(Exception){
+                Iva = 0;
+            }
+            ViewBag.Iva = Iva;
             if (db.Movimiento.Where(m => m.ProyectoID == Proyecto.ID).Where(a => a.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Periodo == periodo).Count() > 0)
             {
                 ViewBag.NroComprobante = db.Movimiento.Where(m => m.ProyectoID == Proyecto.ID).Where(a => a.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Periodo == periodo).Max(a => a.NumeroComprobante) + 1;
@@ -119,6 +128,21 @@ namespace SAG2.Controllers
             int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];
             int cuentaID = Int32.Parse(Request.Form["CuentaID"].ToString());
+            int GesIva = Int32.Parse(Request.Form["GestionIva"].ToString());
+            int ValorNeto = 0;
+            int ValorIva = 0;
+            int cuentaIva = 0;
+            try {
+                ValorNeto = Int32.Parse(Request.Form["ValorNeto"].ToString());
+                ValorIva = Int32.Parse(Request.Form["ValorIva"].ToString());
+                Cuenta CIva = new Cuenta();
+                  CIva = db.Cuenta.Where(d => d.CuentaIva == 3 && d.Tipo.Equals("I")).FirstOrDefault();
+                cuentaIva = CIva.ID;
+            }
+            catch (Exception) { 
+            
+            }
+
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             CuentaCorriente CuentaCorriente = (CuentaCorriente)Session["CuentaCorriente"];
             if (Proyecto.TipoProyecto.Sigla == "AC")
@@ -132,7 +156,7 @@ namespace SAG2.Controllers
                     }
                 }
             }
-
+            
             if (entro == 1)
             {
                 movimiento.NumeroComprobante = 1;
@@ -176,12 +200,29 @@ namespace SAG2.Controllers
                             foreach (DetalleIngreso detalle in lista)
                             {
                                 //  monto_egresos += detalle.Monto;
-
                                 detalle.MovimientoID = IngresoID;
                                 db.DetalleIngreso.Add(detalle);
                                 db.SaveChanges();
                             }
                             Session.Remove("DetalleReintegro");
+                        }
+                        if (GesIva == 1)
+                        {
+                            DetalleIngresoIva Registro = new DetalleIngresoIva();
+                            Registro.CuentaID = cuentaIva;
+                            Registro.MovimientoID = IngresoID;
+                            Registro.Iva = 19;
+                            Registro.ValorIva = ValorIva;
+                            Registro.ValorNeto = ValorNeto;
+                            Registro.Total = ValorIva + ValorNeto;
+                            db.DetalleIngresoIva.Add(Registro);
+                            db.SaveChanges();
+
+                            Movimiento Mreg = new Movimiento();
+                            Mreg = db.Movimiento.Find(IngresoID);
+                            Mreg.Monto_Ingresos = ValorNeto;
+                            db.Entry(Mreg).State = EntityState.Modified;
+                            db.SaveChanges();
 
                         }
 
@@ -234,6 +275,14 @@ namespace SAG2.Controllers
 
         public ActionResult Edit(int id, string imprimir = "", string mensaje = "")
         {
+            int GesIva = 0;
+            int ValorNeto = 0;
+            int ValorIva = 0;
+            int ValorTotal = 0;
+            int DetalleIvaID = 0;
+            int Iva = 0;
+            DetalleIngresoIva DetalleIva = new DetalleIngresoIva();
+
             Movimiento movimiento = db.Movimiento.Find(id);
             int periodo = (int)Session["Periodo"];
             ViewBag.NroComprobante = movimiento.NumeroComprobante.ToString();
@@ -252,8 +301,31 @@ namespace SAG2.Controllers
                 ViewBag.UltimoIdentificador = "0";
             }
 
+            try
+            {
+                DetalleIva = db.DetalleIngresoIva.Where(d => d.MovimientoID == id).FirstOrDefault();
+                if (DetalleIva != null)
+                {
+                    GesIva = 1;
+                    ValorNeto = DetalleIva.ValorNeto;
+                    ValorIva = DetalleIva.ValorIva;
+                    ValorTotal = DetalleIva.Total;
+                    DetalleIvaID = DetalleIva.ID;
+                    Iva = DetalleIva.Iva;
+                }
+            }
+            catch (Exception)
+            { }
+
             if (!mensaje.Equals(""))
                 ViewBag.Mensaje = utils.mensajeAdvertencia(mensaje);
+
+            ViewBag.GesIva = GesIva;
+            ViewBag.ValorNeto = ValorNeto;
+            ViewBag.ValorIva = ValorIva;
+            ViewBag.Total = ValorTotal;
+            ViewBag.porIva = Iva;
+            ViewBag.DetalleIva = DetalleIvaID;
 
             return View(movimiento);
         }
@@ -264,6 +336,12 @@ namespace SAG2.Controllers
         [HttpPost]
         public ActionResult Edit(Movimiento movimiento)
         {
+            int GesIva = 0;
+            int ValorNeto = 0;
+            int ValorIva = 0;            
+            int IvaPor = 0;
+            int DetalleIvaID = 0;
+
             Usuario Usuario = (Usuario)Session["Usuario"];
             int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];
@@ -271,6 +349,14 @@ namespace SAG2.Controllers
             Proyecto Proyecto = (Proyecto)Session["Proyecto"];
             CuentaCorriente CuentaCorriente = (CuentaCorriente)Session["CuentaCorriente"];
             int montoOriginal = Int32.Parse(Request.Form["MontoOriginal"].ToString());
+            GesIva = Int32.Parse(Request.Form["GestionIva"].ToString());
+            if (GesIva == 1) {
+                ValorNeto = Int32.Parse(Request.Form["ValorNeto"].ToString()); ;
+                ValorIva = Int32.Parse(Request.Form["ValorIva"].ToString()); ;
+                IvaPor = Int32.Parse(Request.Form["IVA"].ToString());
+                DetalleIvaID = Int32.Parse(Request.Form["DetalleIvaID"].ToString());           
+            
+            }
             utils.Log(1, "Ingreso a modificar ID: " + movimiento.ID);
             movimiento.CuentaID = Int32.Parse(Request.Form["CuentaID"].ToString());
             movimiento.PersonaID = null;
@@ -359,18 +445,7 @@ namespace SAG2.Controllers
                     db.Autorizacion.Add(autorizacion);
                     db.SaveChanges();
 
-                    //string MensajeCorreo = "Se Solicita Autorizacion <br> Para : ";
-                    //MensajeCorreo = MensajeCorreo + "<table><tr><td>Proyecto</td><td>" + Proyecto.NombreLista + "</td></tr>";
-                    //MensajeCorreo = MensajeCorreo + "<tr><td>Tipo Comp.</td><td>Ingreso</td></tr><tr><td># Comp</td><td>" + movimiento.NumeroComprobante + "</td></tr>";
-                    //MensajeCorreo = MensajeCorreo + "<tr><td>Solicitado Por </td><td>" + persona.NombreCompleto + "</td></tr><tr><td>tipo</td><td>Modificaci&oacute;n</td></tr> </table>";
-                   
-                    //var supervisorCorreo = db.Rol.Where(d => d.TipoRolID == 4 && d.ProyectoID == Proyecto.ID ).ToList();
-                    //foreach (var Scorreo in supervisorCorreo)
-                    //{
-                    //    string CorreoSup = db.Persona.Where(d => d.ID == Scorreo.PersonaID).FirstOrDefault().CorreoElectronico;
 
-                    //    Correo.enviarCorreo(CorreoSup, MensajeCorreo, "Autorizacion Modificaci&oacute;n");
-                    //}
 
                     ViewBag.Mensaje = utils.mensajeAdvertencia("La modificación ha sido solicitada al Supervisor.");
                 }
@@ -416,7 +491,38 @@ namespace SAG2.Controllers
             catch (Exception)
             {
                 ViewBag.UltimoIdentificador = "0";
-            } 
+            }
+            try
+            {
+                if (DetalleIvaID != 0)
+                {
+                    DetalleIngresoIva RegIva = new DetalleIngresoIva();
+                    RegIva = db.DetalleIngresoIva.Find(DetalleIvaID);
+                    int MovIng = int.Parse(RegIva.MovimientoID.ToString());
+                    RegIva.ValorNeto = ValorNeto;
+                    RegIva.ValorIva = ValorIva;
+                    RegIva.Iva = IvaPor;
+                    RegIva.Total = ValorIva + ValorNeto;
+                    db.Entry(RegIva).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    Movimiento MovReg = new Movimiento();
+                    MovReg = db.Movimiento.Find(MovIng);
+                    MovReg.Monto_Ingresos = ValorNeto;
+                    db.Entry(MovReg).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    ViewBag.GesIva = GesIva;
+                    ViewBag.ValorNeto = ValorNeto;
+                    ViewBag.ValorIva = ValorIva;
+                    ViewBag.Total = ValorIva + ValorNeto;
+                    ViewBag.porIva = IvaPor;
+                    ViewBag.DetalleIva = DetalleIvaID;
+
+                }
+            }
+            catch (Exception) { }
+
             //ViewBag.MaxComprobante = db.Movimiento.Where(m => m.ProyectoID == movimiento.ProyectoID).Where(a => a.TipoComprobanteID == ctes.tipoIngreso).Where(a => a.Periodo == periodo).Max(a => a.NumeroComprobante);
             return View(movimiento);
         }
@@ -510,7 +616,12 @@ namespace SAG2.Controllers
                     movimiento.Monto_Ingresos = 0;
                     db.SaveChanges();
                 }
-
+                DetalleIngresoIva Detalle = db.DetalleIngresoIva.Where(d => d.MovimientoID == id).FirstOrDefault();
+                if (Detalle != null)
+                {
+                    db.DetalleIngresoIva.Remove(Detalle);
+                    db.SaveChanges();
+                }
                 utils.anularSaldoIngreso(movimiento, ModelState, monto);
                 db.Movimiento.Remove(movimiento);
                 db.SaveChanges();

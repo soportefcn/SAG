@@ -1,0 +1,88 @@
+﻿@model IEnumerable<SAG2.Models.InformeCuentaPto>
+@{
+    ViewBag.Title = "Real";
+    Layout = null;
+
+    int Fila = 2;
+    string proyecto_file = "Fundacion";
+    var celdas = new string[]
+    {
+	    "", "I","J","K","L"
+	};
+    
+    Response.Clear();
+    Response.Buffer = true;
+    Response.ContentType = "application/vnd.ms-excel";
+    Response.Charset = "utf-8";
+    Response.AddHeader("Content-Disposition", "attachment;filename=RealPpto-" + proyecto_file + "-ANUAL-" + DateTime.Now.ToShortDateString() + ".xls");
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Control Presupuestario</title>
+    <style>
+        .text{
+            mso-number-format:"\@@"; /*force text*/
+            white-space: nowrap;
+            text-align: left;
+            mso-protection:locked;
+        }
+
+        .por100 {
+            white-space: nowrap;
+            mso-number-format:"Percent";
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0\.00%\;\[Red\]\\-\#\,\#\#0\.00%\;0\.00%";
+        }
+
+        .num {
+            white-space: nowrap;
+            text-align: right;
+            mso-number-format:"\[Blue\]\#\,\#\#0_ \;\[Red\]\-\#\,\#\#0\;0";
+
+        }
+    </style>
+</head>
+<body>
+    <table align="center" cellspacing="0" cellpadding="3" width="100%" border="1">
+        <tr>
+           <td>Linea</td><td>Tipo Programa</td><td>Region</td><td>CC</td><td>Nombre</td><td>Periodo</td><td>Mes</td>
+            <td>Cuenta</td><td>Pres. $</td><td>Real $</td><td>Desv. $</td><td>Desv. %</td>
+        </tr>
+
+            @foreach(SAG2.Models.InformeCuentaPto registro in Model ){ 
+                         <tr>
+                             <td>@registro.LineaSigla</td>
+                            <td>@registro.TipoProyecto</td>
+                            <td>@registro.Region</td>
+                            <td>@registro.CodCodeni</td>
+                            <td>@registro.Programa</td>
+                            <td>@registro.Periodo</td>
+                            <td>@registro.Mes</td>
+                            <td>@registro.Codigo - @registro.Cuenta</td>                                                   
+                             <td class="num">@registro.Ppto</td>
+                            <td class="num">@registro.Real</td>
+                             <td>=@celdas[2]@Fila - @celdas[1]@Fila</td>
+                             @if(registro.Tipo.Equals("I") ){
+                                <td class="por100" style="width:100%">=si(@celdas[1]@Fila = 0;100 %;@celdas[3]@Fila / @celdas[1]@Fila )</td>
+                             }else{                            
+                                 <td class="por100" style="width:100%">=si(@celdas[1]@Fila = 0;-100 %;(@celdas[3]@Fila) /(@celdas[1]@Fila) * -1 )</td>
+                             }
+
+                        </tr>
+                
+                        Fila++;
+                     }                
+
+
+
+        
+    </table>
+
+    
+ 
+   
+</body>
+</html>
+

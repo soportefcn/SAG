@@ -33,6 +33,8 @@
         @Html.HiddenFor(model => Model.ToList()[i].TotalPagarNoBis)
         @Html.HiddenFor(model => Model.ToList()[i].FechaIngreso)
         @Html.HiddenFor(model => Model.ToList()[i].Proyecto)
+        @Html.HiddenFor(model => Model.ToList()[i].Discapacidad )
+        @Html.HiddenFor(model => Model.ToList()[i].Art30)
     }
 
 
@@ -85,10 +87,21 @@
                                <br />
         </div>
         </div>
+        }
+        else
+        {
+            <div class="warning">No hay Datos que importar</div>
+        }
+
+
+
+    </div>
+    if (Model.Count() > 0)
+        {
             <table class="table table-bordered table-striped table-responsive">
               
                   <tr>
-                    <th style="align-content:center;" colspan="10"><h3>Detalle Intervenciones</h3></th>
+                    <th style="align-content:center;" colspan="12"><h3>Detalle Intervenciones</h3></th>
                 </tr>
                     <tr>
                         <th style=" width:auto;">Cod. Sename/Servicio Mejor Ni&ntilde;ez</th>
@@ -97,6 +110,8 @@
                         <th style=" width:auto;">Dias Ausente</th>
                         <th style=" width:auto;">N° Inter.</th>
                         <th style=" width:auto;">N° Inter. Otros</th>
+                        <th style ="width:auto;">Discapacidad </th>
+                        <th style ="width:auto;">Art 30 </th>
                         <th style=" width:auto;">Total a pagar</th>
                         <th style=" width:auto;">80 Bis</th>
                         <th style=" width:auto;">Total</th>
@@ -127,6 +142,8 @@
                         <td style="text-align:center;">@Html.DisplayFor(modelItem => item.DiasAusente)</td>
                         <td style="text-align:center;">@Html.DisplayFor(modelItem => item.NumInter)</td>
                         <td style="text-align:center;">@Html.DisplayFor(modelItem => item.NumInterOtro)</td>
+                         <td style="text-align:center;">@Html.DisplayFor(modelItem => item.Discapacidad)</td>
+                         <td style="text-align:center;">@Html.DisplayFor(modelItem => item.Art30 )</td>
                         <td style="text-align:center;">@Html.DisplayFor(modelItem => item.TotalIntervencionesAPagar)</td>
                         <td style="text-align:center;">@Html.DisplayFor(modelItem => item.Bis)</td>
                         @if (item.Tipo == 2)
@@ -146,14 +163,6 @@
                
             </table>
         }
-        else
-        {
-            <div class="warning">No hay Datos que importar</div>
-        }
-
-
-
-    </div>
 
 
 

@@ -33,6 +33,8 @@ namespace SAG2.Models
         public int? PeriodoInicio { get; set; }
         public int? MesInicio { get; set; }
         public int estado { get; set; }
+		public int MI {get; set;}
+        public int LF { get; set; }
         
 
         public virtual Direccion Direccion { get; set; }
@@ -96,5 +98,14 @@ namespace SAG2.Models
                 }
             }
         }
+    }
+    public class ProyectosExcluidos {
+        public int ID { get; set; }
+        public int ProyectoID { get; set; }
+        public int UsuarioID { get; set; }
+        public int Periodo { get; set; }
+        public int Mes { get; set; }
+        public DateTime Fecha { get; set; }
+        public int Estado { get; set; }
     }
 }

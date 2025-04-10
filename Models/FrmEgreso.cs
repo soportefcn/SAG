@@ -19,6 +19,7 @@ namespace SAG2.Models
         public int? DeudaPendienteID { get; set; }
         public int? FondoFijoID { get; set; }
         public int? BoletaHonorarioID { get; set; }
+        public int Iva { get; set; }
         public int? DetalleID { get; set; }
     }
 }

@@ -271,10 +271,9 @@ namespace SAG2.Classes
             string response = "";
             cuenta.Hijos = cuenta.Hijos.Where(c => c.ID != 80).OrderBy(c => c.Orden).ToList();
             foreach (Cuenta Hijo in cuenta.Hijos)
-            {
-          
+            {          
 
-                if (Hijo.Estado == 1)
+                if (Hijo.Estado == 1 && Hijo.CuentaIva == 0)
                 {
                     if (Hijo.ID == egresoID || Hijo.ID == ingresoID)
                         continue;
@@ -302,13 +301,49 @@ namespace SAG2.Classes
             }
             return response;
         }
+        public string genSelectHijos(Cuenta cuenta, int? ID = 0)
+        {
+            int egresoID = 6;
+            int ingresoID = 1;
+            string response = "";
+            cuenta.Hijos = cuenta.Hijos.Where(c => c.ID != 80).OrderBy(c => c.Orden).ToList();
+            foreach (Cuenta Hijo in cuenta.Hijos)
+            {
 
+                if (Hijo.Estado == 1)
+                {
+                    if (Hijo.ID == egresoID || Hijo.ID == ingresoID)
+                        continue;
+
+
+                    if (Hijo.Hijos.Count.Equals(0))
+                    {
+
+                        if (Hijo.ID.Equals(ID))
+                        {
+                            response += "<option value=\"" + Hijo.ID + "\" selected=\"selected\" title=\"" + Hijo.Descripcion + "\">" + Hijo.NombreLista + "</option>";
+                        }
+                        else
+                        {
+                            response += "<option value=\"" + Hijo.ID + "\" title=\"" + Hijo.Descripcion + "\">" + Hijo.NombreLista + "</option>";
+                        }
+                    }
+                    else
+                    {
+                        response += "<optgroup label=\"" + Hijo.NombreLista + "\" title=\"" + Hijo.Descripcion + "\">";
+                        response += genSelectHijos(Hijo, ID);
+                        response += "</optgroup>";
+                    }
+                }
+            }
+            return response;
+        }
         public string generarSelectHijos2(Cuenta cuenta, int? ID = 0, int? Entrada = 1)
         {
             string response;
                 SAG2DB db = new SAG2DB();
-                response = generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaIngresos),ID);
-                response += generarSelectHijos(db.Cuenta.Find(ctes.raizCuentaEgresos),ID);
+                response = genSelectHijos(db.Cuenta.Find(ctes.raizCuentaIngresos), ID);
+                response += genSelectHijos(db.Cuenta.Find(ctes.raizCuentaEgresos), ID);
                 return response;
 
         }

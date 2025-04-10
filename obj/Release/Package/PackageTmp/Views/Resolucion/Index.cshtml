@@ -7,11 +7,10 @@
 
 <div id="contenido_popup">
 
-<table class ="table table-bordered table-hover">
- <thead class="fixedHeader">
-    <tr class ="info">
+<table class ="table table-bordered table-hover"> 
+    <tr class ="success">
         <th >
-            Proyecto
+           Tipo
         </th>
         <th >
             Resolución
@@ -22,51 +21,28 @@
         <th >
             Fecha Termino
         </th>
-         <th >
-            Fecha Prorroga
-        </th>
-        <th>
-            NroPlazas
-        </th>
-        <th>
-            Comentarios
-        </th>
         
         <th style="width:40px;" class="controles"></th>
     </tr>
-</thead>
-<tbody class="scrollContent">
 @foreach (var item in Model) {
+    string F1 = item.FechaInicio.ToShortDateString();
+    string F2 = item.FechaTermino.ToShortDateString();
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Proyecto.Nombre )
+            @Html.DisplayFor(modelItem => item.tipo )
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.ResEx)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FechaInicio)
+        <td>  @F1        </td>
+        <td>  @F2
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FechaTermino)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FechaProrroga)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NroPlazas)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Comentarios)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Estado)
-        </td>
+
+
         <td style="width:40px;"> 
 			<a href="@Url.Action("Edit", "Resolucion", new { id = item.ID })" title="Seleccionar" onclick="window.opener.document.location=this.href; window.close();"><img src="@Url.Content("~/Content/Images/Badge-tick.png")" alt="Seleccionar" width="15" height="15" style="border: 0;" /></a>
         </td>
     </tr>
 }
-    </tbody>
 </table>
 </div>

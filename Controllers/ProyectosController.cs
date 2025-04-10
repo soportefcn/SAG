@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using SAG2.Comun;
 using SAG2.Models;
 using SAG2.Classes;
+using System.IO;
 
 namespace SAG2.Controllers
 { 
@@ -206,7 +207,8 @@ namespace SAG2.Controllers
             return View();
 
         }
-         [HttpPost]
+        
+        [HttpPost]
         public ViewResult ListadoProyectosPresupuesto(FormCollection form)
         {
             int filtro = int.Parse(Session["Filtro"].ToString());
@@ -451,6 +453,7 @@ namespace SAG2.Controllers
             return View();
 
         }
+        
         public ViewResult ListadoProyectos()
         {
             Usuario usuario = (Usuario)Session["Usuario"];
@@ -462,7 +465,8 @@ namespace SAG2.Controllers
 
             return View(proyecto.ToList());
         }
-         [HttpPost]
+        
+        [HttpPost]
         public ViewResult ListadoProyectos(FormCollection form)
         {
             Usuario usuario = (Usuario)Session["Usuario"];
@@ -523,7 +527,7 @@ namespace SAG2.Controllers
         // POST: /Proyectos/Create
 
         [HttpPost]
-        public ActionResult Create(Proyecto proyecto)
+        public ActionResult Create(Proyecto proyecto, HttpPostedFileBase file)
         {
             Usuario usuario = (Usuario)Session["Usuario"];
             if (!usuario.Administrador.Equals("S"))
@@ -665,6 +669,30 @@ namespace SAG2.Controllers
                             db.SaveChanges();
                         }
                     }
+
+                    try
+                    {
+                        if (file.ContentLength > 0)
+                        {
+                            string filename = "Cn" + proyecto.CodCodeni + "_" + DateTime.Now.ToShortDateString() + ".pdf";
+                            string _path = Path.Combine(Server.MapPath("~/archivos"), filename);
+                            file.SaveAs(_path);
+
+                            ConvenioDescarga trDocumento = new ConvenioDescarga();
+                            trDocumento.NombreArchivo = _path;
+                            trDocumento.ProyectoID = proyecto.ID;
+                            trDocumento.UsuarioID = usuario.ID;
+                            trDocumento.Fecha = DateTime.Now;
+                            trDocumento.Estado = 1;
+                            db.ConvenioDescarga.Add(trDocumento);
+
+                            db.SaveChanges();
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                     TempData["Message"] = "Creado con exito ";
 
                     return RedirectToAction("Create");  
@@ -739,6 +767,17 @@ namespace SAG2.Controllers
             ViewBag.SistemaAsistencialID = new SelectList(db.SistemaAsistencial, "ID", "NombreLista", proyecto.SistemaAsistencialID);
             ViewBag.TipoProyectoID = new SelectList(db.TipoProyecto, "ID", "NombreLista", proyecto.TipoProyectoID);
             ViewBag.RegionID = new SelectList(db.Region.OrderBy(a => a.Nombre), "ID", "Nombre", proyecto.Direccion.Comuna.RegionID);
+
+            string Archivo = "no";
+            var doc = db.ConvenioDescarga.Where(d => d.ProyectoID == id && d.Estado == 1).ToList();
+            if (doc.Count() > 0)
+            {
+                Archivo = "si";
+                ViewBag.Documento = doc;
+
+            }
+            ViewBag.Archivo = Archivo;
+
             return View(proyecto);
         }
 
@@ -746,7 +785,7 @@ namespace SAG2.Controllers
         // POST: /Proyectos/Edit/5
 
         [HttpPost]
-        public ActionResult Edit(Proyecto proyecto)
+        public ActionResult Edit(Proyecto proyecto, HttpPostedFileBase file)
         {
             int periodo = (int)Session["Periodo"];
             int mes = (int)Session["Mes"];
@@ -859,7 +898,13 @@ namespace SAG2.Controllers
                     db.InicioLog.Add(log);
                     db.SaveChanges();
                 }
+                try
+                {
 
+                }
+                catch (Exception) {
+                    proyecto.MI = 0;
+                }
 
                 //
                 proyecto.Convenio = null;
@@ -868,19 +913,34 @@ namespace SAG2.Controllers
                 TempData["Message"] = "Creado con exito ";
                 db.Entry(proyecto).State = EntityState.Modified;
                 db.SaveChanges();
-               ///
-                //InicioLog log = new InicioLog();
-                //log.Tipo = "Programa";
-                //log.ProyectoId = proyecto.ID;
-                //log.Fecha = DateTime.Now;
-                //log.Mes = mes;
-                //log.Periodo = periodo;
-                //log.RegistroID = proyecto.ID;
-                //log.UsuarioID = usuario.ID;
-                //log.Descripcion = "Modificado con exito " + proyecto.CodCodeni;
-                //db.InicioLog.Add(log);
-                //db.SaveChanges();
-                //
+                /// Se graba Adjunto Dcto Convenio
+                try
+                {
+                    if (file.ContentLength > 0)
+                    {
+                        string fE = DateTime.Now.Year + "" + DateTime.Now.Month + "" + DateTime.Now.Day;
+                        string filename = "Cn" + proyecto.CodCodeni + "_" + fE + ".pdf";
+                        string _path = Path.Combine(Server.MapPath("~/archivos"), filename);
+                        file.SaveAs(_path);
+
+                        db.Database.ExecuteSqlCommand("UPDATE ConvenioDescarga SET Estado = 2 WHERE ProyectoID = " + proyecto.ID);
+
+
+                        ConvenioDescarga trDocumento = new ConvenioDescarga();
+                        trDocumento.NombreArchivo = _path;
+                        trDocumento.ProyectoID = proyecto.ID;
+                        trDocumento.UsuarioID = usuario.ID;
+                        trDocumento.Fecha = DateTime.Now;
+                        trDocumento.Estado = 1;
+                        db.ConvenioDescarga.Add(trDocumento);
+                        db.SaveChanges();
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
                 return RedirectToAction("Create");
             }
             ViewBag.SistemaAsistencialID = new SelectList(db.SistemaAsistencial, "ID", "NombreLista", proyecto.SistemaAsistencialID);

@@ -220,7 +220,15 @@ else
                            
                             int valor_GastosReintegros = reintegrosGastos.Where(d => d.Reintegro.Cuenta.Codigo.Equals("7.1.9")).Where(d => d.CuentaIDD.Equals(cuenta1.ID)).Where(d => d.Reintegro.Mes == mes_inicio).Where(d => d.Reintegro.Periodo == periodo_actual).Sum(d => d.Monto);
                             int valorg = 0;
-
+                            // aqui codigo   4.2 RESCATE DEL FONDO DAP
+                            if (cuenta1.Codigo.Equals("4.2"))
+                            {
+                                int ReintegrosDap = reintegros.Where(d => d.Cuenta.Codigo.Equals("10.1")).Where(d => d.Mes == mes_inicio).Where(d => d.Periodo == periodo_actual).Sum(d => d.Monto_Ingresos);
+                                valor_ingresos = valor_ingresos + ReintegrosDap;
+                            }
+                            if (cuenta1.Codigo.Equals("10.1")){
+                                valor_reintegros = 0;
+                            }
 
                             if (cuenta1.Codigo.Equals("7.1.9"))
                             {
